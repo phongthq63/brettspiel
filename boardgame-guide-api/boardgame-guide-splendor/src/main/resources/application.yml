@@ -1,0 +1,106 @@
+server:
+  port: ${PORT:8083}
+  forward-headers-strategy: native
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    configUrl: ${SPRINGDOC_PATH:}/v3/api-docs/swagger-config
+    url: ${SPRINGDOC_PATH:}/v3/api-docs
+  path-provider: ${SPRINGDOC_PATH:}
+
+spring:
+  application:
+    name: boardgame-guide-splendor
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.redisson.spring.starter.RedissonAutoConfigurationV2
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+  threads:
+    virtual:
+      enabled: true
+
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://root:root@localhost:27017}
+      database: ${MONGODB_DATABASE:brettspiel}
+      auto-index-creation: true
+
+    redis:
+      mode: ${REDIS_MODE:single}
+      cluster:
+        nodes: ${REDIS_HOST:localhost:6379}
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      username: ${REDIS_USERNAME:default}
+      password: ${REDIS_PASSWORD:default}
+      database: 0
+
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:127.0.0.1:9092}
+    schema-registry: ${KAFKA_SCHEMA_REGISTRY:http://127.0.0.1:32253}
+    producer:
+      enable: true
+      client-id: ${PROJECT:brettspiel}.${ENVIRONMENT:dev}.splendor-producer
+      retry: 5
+      batch-size: ${KAFKA_PRODUCER_BATCH_SIZE:50}
+      linger: ${KAFKA_PRODUCER_LINGER:1000}
+      topic:
+    consumer:
+      enable: true
+      instanceId: ${PROJECT:brettspiel}.${ENVIRONMENT:dev}.service-splendor.${HOSTNAME:instance}
+      groupId: ${KAFKA_GROUP_ID:${PROJECT:brettspiel}.${ENVIRONMENT:dev}.brettspiel-splendor}
+      topic:
+      auto-offset-reset: "latest"
+      max-poll-interval-ms: 300000
+      retry: 5
+      backoff-delay: 60000
+      session-timeout-ms: 60000
+      heartbeat-interval-ms: 20000
+    sasl:
+      mechanism: ${KAFKA_MECHANISM:}
+      jaas:
+        config:
+          username: ${KAFKA_USERNAME:}
+          password: ${KAFKA_PASSWORD:}
+      security:
+        protocol: ${KAFKA_PROTOCOL:}
+
+
+service:
+  client:
+    brettspiel-socket:
+      url: http://localhost:8081
+
+
+jwt:
+  secret: ThisIsSecretKey
+
+
+sentry:
+  dsn: ${SENTRY_DSN:}
+  environment: ${ENVIRONMENT:dev}
+  connection-timeout-millis: 10000
+  read-timeout-millis: 10000
+  max-depth: 10
+  max-breadcrumbs: 30
+  max-cache-items: 100
+  sample-rate: 0.1
+  tags:
+    project: boardgame-guide-api
+    service: boardgame-guide-splendor
+  send-default-pii: true
+  logging.enabled: true
+  logging.minimum-event-level: warn
+  logging.minimum-breadcrumb-level: debug
+
+
+management:
+  endpoint:
+    health:
+      show-details: always

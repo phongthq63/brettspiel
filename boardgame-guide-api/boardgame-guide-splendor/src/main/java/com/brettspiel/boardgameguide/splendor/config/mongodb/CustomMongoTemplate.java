@@ -31,7 +31,6 @@ public class CustomMongoTemplate extends MongoTemplate {
         super(mongoDbFactory, mongoConverter);
     }
 
-    @NotNull
     @Override
     protected UpdateResult doUpdate(@NotNull String collectionName,
                                     @NotNull Query query,
@@ -48,7 +47,6 @@ public class CustomMongoTemplate extends MongoTemplate {
         return super.doUpdate(collectionName, query, update, entityClass, upsert, multi);
     }
 
-    @NotNull
     @Override
     protected <T> T doFindAndModify(@NotNull CollectionPreparer collectionPreparer,
                                     @NotNull String collectionName,

@@ -30,4 +30,16 @@ public interface ICustomSplendorGameRepository {
 
     SplendorGame buyCardFieldLevel3(String gameId, String playerId, String cardId, int gold, int onyx, int ruby, int emerald, int sapphire, int diamond);
 
+    SplendorGame reserveCardDeck1(String gameId, String playerId, String cardId, int gold);
+
+    SplendorGame reserveCardDeck2(String gameId, String playerId, String cardId, int gold);
+
+    SplendorGame reserveCardDeck3(String gameId, String playerId, String cardId, int gold);
+
+    SplendorGame reserveCardField1(String gameId, String playerId, String cardId, int gold);
+
+    SplendorGame reserveCardField2(String gameId, String playerId, String cardId, int gold);
+
+    SplendorGame reserveCardField3(String gameId, String playerId, String cardId, int gold);
+
 }

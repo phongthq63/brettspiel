@@ -6,6 +6,7 @@ import com.brettspiel.boardgameguide.splendor.constant.GameConstants;
 import com.brettspiel.boardgameguide.splendor.controller.dto.request.StartGameRequest;
 import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionBuyCardRequest;
 import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionGatherGemRequest;
+import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionReserveCardRequest;
 import com.brettspiel.boardgameguide.splendor.dto.SplendorGameDTO;
 import com.brettspiel.boardgameguide.splendor.entity.SplendorGame;
 import com.brettspiel.boardgameguide.splendor.entity.SplendorTable;
@@ -18,6 +19,7 @@ import com.brettspiel.boardgameguide.splendor.utils.GameUtils;
 import com.brettspiel.boardgameguide.splendor.vo.config.SplendorGameConfig;
 import com.brettspiel.utils.IdGenerator;
 import com.brettspiel.utils.R;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -190,11 +192,17 @@ public class GameServiceImpl implements IGameService {
         // Get from db
         SplendorGame splendorGame = splendorGameRepository.findGameUserIn(gameId, userId);
         if (splendorGame == null) {
-            log.error("startGame - User not in game - {} {}", userId, gameId);
+            log.error("startGame - User not in game - {} {}", gameId, userId);
             return R.failed("User not in game");
         }
-        if (splendorGame.getStatus() != GameConstants.STATUS_INIT) {
-            return R.failed("Game have started");
+        switch (splendorGame.getStatus()) {
+            case GameConstants.STATUS_INIT:
+                break;
+            case GameConstants.STATUS_START:
+                log.error("startGame - Game have started - {} {}", gameId, userId);
+                return R.ok();
+            case GameConstants.STATUS_END:
+                return R.failed("Game have ended");
         }
 
         // Shuffle and open deck
@@ -226,6 +234,7 @@ public class GameServiceImpl implements IGameService {
         // Save to db
         splendorGame = splendorGameRepository.startGame(gameId, deckNoble, fieldNoble, deckCard1, deckCard2, deckCard3, fieldCard1, fieldCard2, fieldCard3);
         if (splendorGame == null) {
+            log.error("startGame - Game have started - {} {}", gameId, userId);
             return R.failed("Game have started");
         }
 
@@ -313,18 +322,6 @@ public class GameServiceImpl implements IGameService {
                 (body.getDiamond() == null || body.getDiamond() == 0)) {
             return R.failed("Invalid request");
         }
-
-        // Get from db
-        SplendorGame splendorGame = splendorGameRepository.findGameUserIn(gameId, userId);
-        if (splendorGame == null) {
-            log.error("turnActionGatherGem - User not in game - {} {}", userId, gameId);
-            return R.failed("User not in game");
-        }
-        if (!Objects.equals(splendorGame.getIngameData().getCurrentPlayer(), userId)) {
-            return R.failed("Current turn isn't you");
-        }
-
-        // Validate game rule
         int onyx = body.getOnyx() == null ? 0 : body.getOnyx();
         int ruby = body.getRuby() == null ? 0 : body.getRuby();
         int emerald = body.getEmerald() == null ? 0 : body.getEmerald();
@@ -337,6 +334,26 @@ public class GameServiceImpl implements IGameService {
                 sapphire > 2 ||
                 diamond > 2) {
             return R.failed("Gather gem break rule game");
+        }
+
+        // Get from db
+        SplendorGame splendorGame = splendorGameRepository.findGameUserIn(gameId, userId);
+        if (splendorGame == null) {
+            log.error("turnActionGatherGem - User not in game - {} {}", gameId, userId);
+            return R.failed("User not in game");
+        }
+        switch (splendorGame.getStatus()) {
+            case GameConstants.STATUS_INIT:
+                log.error("turnActionGatherGem - Game not start - {} {}", gameId, userId);
+                return R.failed("Game not start");
+            case GameConstants.STATUS_START:
+                break;
+            case GameConstants.STATUS_END:
+                return R.failed("Game have ended");
+        }
+        if (!Objects.equals(splendorGame.getIngameData().getCurrentPlayer(), userId)) {
+            log.error("turnActionGatherGem - Game not start - {} {}", gameId, userId);
+            return R.failed("Current turn isn't you");
         }
         if ((splendorGame.getIngameData().getOnyx() < 4 && onyx == 2 && ruby > 0 && emerald > 0 && sapphire > 0 && diamond > 0) ||
                 (splendorGame.getIngameData().getRuby() < 4 && onyx > 0 && ruby == 2 && emerald > 0 && sapphire > 0 && diamond > 0) ||
@@ -363,6 +380,13 @@ public class GameServiceImpl implements IGameService {
                 put("player_id", userId);
                 put("round", finalSplendorGame.getIngameData().getRound());
                 put("turn", finalSplendorGame.getIngameData().getTurn());
+                put("current_player", finalSplendorGame.getIngameData().getCurrentPlayer());
+                put("next_player", finalSplendorGame.getIngameData().getNextPlayer());
+                put("onyx", onyx);
+                put("ruby", ruby);
+                put("emerald", emerald);
+                put("sapphire", sapphire);
+                put("diamond", diamond);
             }
         });
 
@@ -376,6 +400,15 @@ public class GameServiceImpl implements IGameService {
         if (splendorGame == null) {
             log.error("turnActionBuyCard - User not in game - {} {}", gameId, userId);
             return R.failed("User not in game");
+        }
+        switch (splendorGame.getStatus()) {
+            case GameConstants.STATUS_INIT:
+                log.error("turnActionBuyCard - Game not start - {} {}", gameId, userId);
+                return R.failed("Game not start");
+            case GameConstants.STATUS_START:
+                break;
+            case GameConstants.STATUS_END:
+                return R.failed("Game have ended");
         }
 
         int gold = body.getGold() == null ? 0 : body.getGold();
@@ -421,37 +454,40 @@ public class GameServiceImpl implements IGameService {
         }
 
         // Check card can buy
-        boolean findCardBuy = false;
-        if (!playerData.getReserveCards().isEmpty() && playerData.getReserveCards().stream()
-                .anyMatch(card -> Objects.equals(card.getId(), body.getCardId()))) {
-            findCardBuy = true;
+        List<Card> reserveCards = playerData.getReserveCards().stream()
+                .filter(card -> Objects.equals(card.getId(), body.getCardId()))
+                .toList();
+        if (!reserveCards.isEmpty()) {
             splendorGame = splendorGameRepository.buyCardInHand(gameId, userId, body.getCardId(), gold, onyx, ruby, emerald, sapphire, diamond);
             if (splendorGame == null) {
                 log.error("turnActionBuyCard - Buy reserve card error - {} {} {}", gameId, userId, body);
                 return R.failed("Buy reserve card error");
             }
         }
-        if (!findCardBuy && splendorGame.getIngameData().getFieldCard1().stream()
-                .anyMatch(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))) {
-            findCardBuy = true;
+        List<FieldCard> fieldCards1 = splendorGame.getIngameData().getFieldCard1().stream()
+                .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
+                .toList();
+        if (!fieldCards1.isEmpty()) {
             splendorGame = splendorGameRepository.buyCardFieldLevel1(gameId, userId, body.getCardId(), gold, onyx, ruby, emerald, sapphire, diamond);
             if (splendorGame == null) {
                 log.error("turnActionBuyCard - Buy field card level 1 error - {} {} {}", gameId, userId, body);
                 return R.failed("Buy field card level 1 error");
             }
         }
-        if (!findCardBuy && splendorGame.getIngameData().getFieldCard2().stream()
-                .anyMatch(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))) {
-            findCardBuy = true;
+        List<FieldCard> fieldCards2 = splendorGame.getIngameData().getFieldCard2().stream()
+                .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
+                .toList();
+        if (!fieldCards2.isEmpty()) {
             splendorGame = splendorGameRepository.buyCardFieldLevel2(gameId, userId, body.getCardId(), gold, onyx, ruby, emerald, sapphire, diamond);
             if (splendorGame == null) {
                 log.error("turnActionBuyCard - Buy field card level 2 error - {} {} {}", gameId, userId, body);
                 return R.failed("Buy field card level 2 error");
             }
         }
-        if (!findCardBuy && splendorGame.getIngameData().getFieldCard3().stream()
-                .anyMatch(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))) {
-            findCardBuy = true;
+        List<FieldCard> fieldCards3 = splendorGame.getIngameData().getFieldCard3().stream()
+                .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
+                .toList();
+        if (!fieldCards3.isEmpty()) {
             splendorGame = splendorGameRepository.buyCardFieldLevel3(gameId, userId, body.getCardId(), gold, onyx, ruby, emerald, sapphire, diamond);
             if (splendorGame == null) {
                 log.error("turnActionBuyCard - Buy field card level 3 error - {} {} {}", gameId, userId, body);
@@ -459,9 +495,195 @@ public class GameServiceImpl implements IGameService {
             }
         }
 
-        if (!findCardBuy) {
-            return R.failed("Card buy invalid");
+        if (reserveCards.isEmpty() && fieldCards1.isEmpty() && fieldCards2.isEmpty() && fieldCards3.isEmpty()) {
+            log.error("turnActionBuyCard - Card buy not found - {} {} {} {}", gameId, userId, body.getCardId(), splendorGame.getIngameData());
+            return R.failed("Card buy not found");
         }
+
+        // Notify all user in game
+        SplendorGame finalSplendorGame = splendorGame;
+        socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
+            {
+                put("event", GameConstants.EVENT_TURN_ACTION_BUY_CARD);
+                put("game_id", finalSplendorGame.getGameId());
+                put("table_id", finalSplendorGame.getTableId());
+                put("player_id", userId);
+                put("round", finalSplendorGame.getIngameData().getRound());
+                put("turn", finalSplendorGame.getIngameData().getTurn());
+                put("current_player", finalSplendorGame.getIngameData().getCurrentPlayer());
+                put("next_player", finalSplendorGame.getIngameData().getNextPlayer());
+                put("reserve_cards", reserveCards);
+                put("field_card_1", fieldCards1);
+                put("field_card_2", fieldCards2);
+                put("field_card_3", fieldCards3);
+            }
+        });
+
+        return R.ok();
+    }
+
+    @Override
+    public R<?> turnActionReserveCard(String userId, String gameId, TurnActionReserveCardRequest body) {
+        int countReserveDeck1 = body.getDesk1() == null ? 0 : body.getDesk1();
+        int countReserveDeck2 = body.getDesk2() == null ? 0 : body.getDesk2();
+        int countReserveDeck3 = body.getDesk3() == null ? 0 : body.getDesk3();
+        int countFieldCard = body.getCardId() == null ? 0 : 1;
+        int gold = body.getGold() == null ? 0 : body.getGold();
+
+        if (countReserveDeck1 + countReserveDeck2 + countReserveDeck3 + countFieldCard != 1) {
+            log.error("turnActionReserveCard - Reserve card break rule game - {} {} {}", gameId, userId, body);
+            return R.failed("Reserve card break rule game");
+        }
+
+        // Get from db
+        SplendorGame splendorGame = splendorGameRepository.findGameUserIn(gameId, userId);
+        if (splendorGame == null) {
+            log.error("turnActionReserveCard - User not in game - {} {}", gameId, userId);
+            return R.failed("User not in game");
+        }
+        switch (splendorGame.getStatus()) {
+            case GameConstants.STATUS_INIT:
+                log.error("turnActionReserveCard - Game not start - {} {}", gameId, userId);
+                return R.failed("Game not start");
+            case GameConstants.STATUS_START:
+                break;
+            case GameConstants.STATUS_END:
+                return R.failed("Game have ended");
+        }
+        if (countReserveDeck1 > 0 && splendorGame.getIngameData().getDeckCard1().size() < countReserveDeck1) {
+            log.error("turnActionReserveCard - Deck card 1 not have enough card - {} {} {} {}", gameId, userId, countReserveDeck1, splendorGame.getIngameData().getDeckCard1());
+            return R.failed("Deck card 1 not have enough card");
+        }
+        if (countReserveDeck2 > 0 && splendorGame.getIngameData().getDeckCard2().size() < countReserveDeck2) {
+            log.error("turnActionReserveCard - Deck card 2 not have enough card - {} {} {} {}", gameId, userId, countReserveDeck1, splendorGame.getIngameData().getDeckCard1());
+            return R.failed("Deck card 2 not have enough card");
+        }
+        if (countReserveDeck3 > 0 && splendorGame.getIngameData().getDeckCard3().size() < countReserveDeck3) {
+            log.error("turnActionReserveCard - Deck card 3 not have enough card - {} {} {} {}", gameId, userId, countReserveDeck1, splendorGame.getIngameData().getDeckCard1());
+            return R.failed("Deck card 3 not have enough card");
+        }
+        if (splendorGame.getIngameData().getGold() < gold) {
+            log.error("turnActionReserveCard - Out of gold - {} {} {} {}", gameId, userId, splendorGame.getIngameData().getGold(), gold);
+            return R.failed("Out of gold");
+        }
+
+
+        // Player data ingame
+        IngamePlayerData playerData = splendorGame.getIngameData().getPlayers().stream()
+                .filter(ingamePlayerData -> Objects.equals(ingamePlayerData.getPlayerId(), userId))
+                .findFirst()
+                .orElse(null);
+        if (playerData == null) {
+            log.error("turnActionReserveCard - System error - {} {}", gameId, userId);
+            return R.failed("System error");
+        }
+        if (playerData.getReserveCards().size() + countReserveDeck1 + countReserveDeck2 + countReserveDeck3 + countFieldCard > 3) {
+            log.error("turnActionReserveCard - Hand limit 3 - {} {} {}", gameId, userId, playerData);
+            return R.failed("Hand limit 3");
+        }
+
+        //
+        String cardIdDeck1 = null;
+        if (countReserveDeck1 > 0) {
+            cardIdDeck1 = splendorGame.getIngameData().getDeckCard1().get(0).getId();
+            splendorGame = splendorGameRepository.reserveCardDeck1(gameId, userId, cardIdDeck1, gold);
+            if (splendorGame == null) {
+                log.error("turnActionReserveCard - Reserve card deck 1 error - {} {} {}", gameId, userId, body);
+                return R.failed("Reserve card deck 1 error");
+            }
+        }
+        String cardIdDeck2 = null;
+        if (countReserveDeck2 > 0) {
+            cardIdDeck2 = splendorGame.getIngameData().getDeckCard2().get(0).getId();
+            splendorGame = splendorGameRepository.reserveCardDeck2(gameId, userId, cardIdDeck2, gold);
+            if (splendorGame == null) {
+                log.error("turnActionReserveCard - Reserve card deck 2 error - {} {} {}", gameId, userId, body);
+                return R.failed("Reserve card deck 2 error");
+            }
+        }
+        String cardIdDeck3 = null;
+        if (countReserveDeck3 > 0) {
+            cardIdDeck3 = splendorGame.getIngameData().getDeckCard3().get(0).getId();
+            splendorGame = splendorGameRepository.reserveCardDeck3(gameId, userId, cardIdDeck3, gold);
+            if (splendorGame == null) {
+                log.error("turnActionReserveCard - Reserve card deck 3 error - {} {} {}", gameId, userId, body);
+                return R.failed("Reserve card deck 3 error");
+            }
+        }
+        String cardIdField1 = null;
+        String cardIdField2 = null;
+        String cardIdField3 = null;
+        if (countFieldCard > 0) {
+            cardIdField1 = splendorGame.getIngameData().getFieldCard1().stream()
+                    .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
+                    .map(fieldCard -> fieldCard.getCard().getId())
+                    .findFirst()
+                    .orElse(null);
+            if (cardIdField1 != null) {
+                splendorGame = splendorGameRepository.reserveCardField1(gameId, userId, cardIdField1, gold);
+                if (splendorGame == null) {
+                    log.error("turnActionReserveCard - Reserve card field 1 error - {} {} {}", gameId, userId, body);
+                    return R.failed("Reserve card field 1 error");
+                }
+            }
+            cardIdField2 = splendorGame.getIngameData().getFieldCard2().stream()
+                    .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
+                    .map(fieldCard -> fieldCard.getCard().getId())
+                    .findFirst()
+                    .orElse(null);
+            if (cardIdField2 != null) {
+                splendorGame = splendorGameRepository.reserveCardField2(gameId, userId, cardIdField2, gold);
+                if (splendorGame == null) {
+                    log.error("turnActionReserveCard - Reserve card field 2 error - {} {} {}", gameId, userId, body);
+                    return R.failed("Reserve card field 2 error");
+                }
+            }
+            cardIdField3 = splendorGame.getIngameData().getFieldCard3().stream()
+                    .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
+                    .map(fieldCard -> fieldCard.getCard().getId())
+                    .findFirst()
+                    .orElse(null);
+            if (cardIdField3 != null) {
+                splendorGame = splendorGameRepository.reserveCardField3(gameId, userId, cardIdField3, gold);
+                if (splendorGame == null) {
+                    log.error("turnActionReserveCard - Reserve card field 2 error - {} {} {}", gameId, userId, body);
+                    return R.failed("Reserve card field 2 error");
+                }
+            }
+        }
+
+        if (countReserveDeck1 <= 0 &&
+                countReserveDeck2 <= 0 &&
+                countReserveDeck3 <= 0 && (cardIdField1 == null || cardIdField2 == null || cardIdField3 == null)) {
+            log.error("turnActionReserveCard - Card reverse not found - {} {} {} {}", gameId, userId, body.getCardId(), splendorGame.getIngameData());
+        }
+
+        // Notify all user in game
+        SplendorGame finalSplendorGame = splendorGame;
+        List<String> deckCard1 = cardIdDeck1 == null ? new ArrayList<>() : List.of(cardIdDeck1);
+        List<String> deckCard2 = cardIdDeck2 == null ? new ArrayList<>() : List.of(cardIdDeck2);
+        List<String> deckCard3 = cardIdDeck3 == null ? new ArrayList<>() : List.of(cardIdDeck3);
+        List<String> fieldCard1 = cardIdField1 == null ? new ArrayList<>() : List.of(cardIdField1);
+        List<String> fieldCard2 = cardIdField2 == null ? new ArrayList<>() : List.of(cardIdField2);
+        List<String> fieldCard3 = cardIdField3 == null ? new ArrayList<>() : List.of(cardIdField3);
+        socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
+            {
+                put("event", GameConstants.EVENT_TURN_ACTION_RESERVE_CARD);
+                put("game_id", finalSplendorGame.getGameId());
+                put("table_id", finalSplendorGame.getTableId());
+                put("player_id", userId);
+                put("round", finalSplendorGame.getIngameData().getRound());
+                put("turn", finalSplendorGame.getIngameData().getTurn());
+                put("current_player", finalSplendorGame.getIngameData().getCurrentPlayer());
+                put("next_player", finalSplendorGame.getIngameData().getNextPlayer());
+                put("deck_card_1", deckCard1);
+                put("deck_card_2", deckCard2);
+                put("deck_card_3", deckCard3);
+                put("field_card_1", fieldCard1);
+                put("field_card_2", fieldCard2);
+                put("field_card_3", fieldCard3);
+            }
+        });
 
         return R.ok();
     }

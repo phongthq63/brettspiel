@@ -3,6 +3,7 @@ package com.brettspiel.boardgameguide.splendor.controller;
 import com.brettspiel.boardgameguide.splendor.controller.dto.request.StartGameRequest;
 import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionBuyCardRequest;
 import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionGatherGemRequest;
+import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionReserveCardRequest;
 import com.brettspiel.boardgameguide.splendor.dto.SplendorGameDTO;
 import com.brettspiel.boardgameguide.splendor.security.UserPrincipal;
 import com.brettspiel.boardgameguide.splendor.service.IGameService;
@@ -91,6 +92,16 @@ public class GameController {
         String userId = userPrincipal.getId();
 
         return gameService.turnActionBuyCard(userId, gameId, body);
+    }
+
+    @PostMapping("/{gameId}/turn/action/reserve-card")
+    public R<?> turnActionReserveCard(@Parameter(hidden = true) Authentication authentication,
+                                      @PathVariable String gameId,
+                                      @Valid @RequestBody TurnActionReserveCardRequest body) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        String userId = userPrincipal.getId();
+
+        return gameService.turnActionReserveCard(userId, gameId, body);
     }
 
 }

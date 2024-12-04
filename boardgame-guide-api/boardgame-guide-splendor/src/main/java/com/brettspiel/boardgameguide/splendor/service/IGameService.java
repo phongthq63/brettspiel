@@ -3,6 +3,7 @@ package com.brettspiel.boardgameguide.splendor.service;
 import com.brettspiel.boardgameguide.splendor.controller.dto.request.StartGameRequest;
 import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionBuyCardRequest;
 import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionGatherGemRequest;
+import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionReserveCardRequest;
 import com.brettspiel.boardgameguide.splendor.dto.SplendorGameDTO;
 import com.brettspiel.utils.R;
 
@@ -25,5 +26,7 @@ public interface IGameService {
     R<?> turnActionGatherGem(String userId, String gameId, TurnActionGatherGemRequest body);
 
     R<?> turnActionBuyCard(String userId, String gameId, TurnActionBuyCardRequest body);
+
+    R<?> turnActionReserveCard(String userId, String gameId, TurnActionReserveCardRequest body);
 
 }

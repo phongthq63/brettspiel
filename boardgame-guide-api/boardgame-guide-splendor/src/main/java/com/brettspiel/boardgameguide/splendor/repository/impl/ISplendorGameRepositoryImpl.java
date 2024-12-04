@@ -84,24 +84,27 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
                 .and("status").is(GameConstants.STATUS_START)
                 .and("ingame_data.current_player").is(playerId));
         UpdateDefinition update = AggregationUpdate.update()
-                .set(SetOperation.builder()
+                .set(SetOperation
                         .set("ingame_data.turn")
                         .toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.turn").and(1))
                         .and()
                         .set("ingame_data.round")
-                        .toValueOf(ArithmeticOperators.Floor.floorValueOf(ArithmeticOperators.Divide.valueOf(AccumulatorOperators.Sum.sumOf("ingame_data.turn").and(1))
+                        .toValueOf(ArithmeticOperators.Floor
+                                .floorValueOf(ArithmeticOperators.Divide.valueOf(AccumulatorOperators.Sum.sumOf("ingame_data.turn").and(1))
                                 .divideBy(ArrayOperators.Size.lengthOfArray("ingame_data.player_ids"))))
                         .and()
                         .set("ingame_data.current_player")
-                        .toValueOf(ArrayOperators.ArrayElemAt.arrayOf("ingame_data.player_ids")
-                                .elementAt(ArithmeticOperators.Mod.valueOf(AccumulatorOperators.Sum.sumOf("ingame_data.turn")
-                                                .and(1))
+                        .toValueOf(ArrayOperators.ArrayElemAt
+                                .arrayOf("ingame_data.player_ids")
+                                .elementAt(ArithmeticOperators.Mod
+                                        .valueOf(AccumulatorOperators.Sum.sumOf("ingame_data.turn").and(1))
                                         .mod(ArrayOperators.Size.lengthOfArray("ingame_data.player_ids"))))
                         .and()
                         .set("ingame_data.next_player")
-                        .toValueOf(ArrayOperators.ArrayElemAt.arrayOf("ingame_data.player_ids")
-                                .elementAt(ArithmeticOperators.Mod.valueOf(AccumulatorOperators.Sum.sumOf("ingame_data.turn")
-                                                .and(2))
+                        .toValueOf(ArrayOperators.ArrayElemAt
+                                .arrayOf("ingame_data.player_ids")
+                                .elementAt(ArithmeticOperators.Mod
+                                        .valueOf(AccumulatorOperators.Sum.sumOf("ingame_data.turn").and(2))
                                         .mod(ArrayOperators.Size.lengthOfArray("ingame_data.player_ids")))));
         FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
                 .returnNew(true);
@@ -156,48 +159,47 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
                         .and("sapphire").gte(-sapphire)
                         .and("diamond").gte(-diamond)
                         .and("reserve_cards").elemMatch(Criteria.where("id").is(cardId))));
-        UpdateDefinition update = AggregationUpdate.update().set(SetOperation.builder()
-                .set("ingame_data.gold").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.gold").and(-gold))
-                .and()
-                .set("ingame_data.onyx").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.onyx").and(-onyx))
-                .and()
-                .set("ingame_data.ruby").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.ruby").and(-ruby))
-                .and()
-                .set("ingame_data.emerald").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.emerald").and(-emerald))
-                .and()
-                .set("ingame_data.sapphire").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.sapphire").and(-sapphire))
-                .and()
-                .set("ingame_data.diamond").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.diamond").and(-diamond))
-                .and()
-                .set("ingame_data.players").toValueOf(VariableOperators.Map
-                        .itemsOf("ingame_data.players")
-                        .as("player")
-                        .andApply(ObjectOperators.MergeObjects
-                                .mergeValuesOf("player")
-                                .mergeWithValuesOf(ConditionalOperators.Cond.newBuilder()
-                                        .when(ComparisonOperators.Eq.valueOf("player.player_id").equalToValue(playerId))
-                                        .then(new Document()
-                                                .append("gold", ArithmeticOperators.Subtract.valueOf("$$player.gold").subtract(-gold))
-                                                .append("onyx", ArithmeticOperators.Subtract.valueOf("$$player.onyx").subtract(-onyx))
-                                                .append("ruby", ArithmeticOperators.Subtract.valueOf("$$player.ruby").subtract(-ruby))
-                                                .append("emerald", ArithmeticOperators.Subtract.valueOf("$$player.emerald").subtract(-emerald))
-                                                .append("sapphire", ArithmeticOperators.Subtract.valueOf("$$player.sapphire").subtract(-sapphire))
-                                                .append("diamond", ArithmeticOperators.Subtract.valueOf("$$player.diamond").subtract(-diamond))
-                                                .append("cards", ArrayOperators.ConcatArrays
-                                                        .arrayOf("$$player.cards")
-                                                        .concat(ArrayOperators.Filter
-                                                                .filter("$$player.reserve_cards")
-                                                                .as("reserve_card")
-                                                                .by(ComparisonOperators.Eq
-                                                                        .valueOf("reserve_card.id")
-                                                                        .equalToValue(cardId))))
-                                                .append("reserve_cards", ArrayOperators.Filter
-                                                        .filter("$$player.reserve_cards")
-                                                        .as("reserve_card")
-                                                        .by(ComparisonOperators.Ne
-                                                                .valueOf("reserve_card.id")
-                                                                .notEqualToValue(cardId))))
-                                        .otherwiseValueOf("player")))));
+        UpdateDefinition update = AggregationUpdate.update()
+                .set(SetOperation
+                    .set("ingame_data.gold").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.gold").and(-gold))
+                    .and()
+                    .set("ingame_data.onyx").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.onyx").and(-onyx))
+                    .and()
+                    .set("ingame_data.ruby").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.ruby").and(-ruby))
+                    .and()
+                    .set("ingame_data.emerald").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.emerald").and(-emerald))
+                    .and()
+                    .set("ingame_data.sapphire").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.sapphire").and(-sapphire))
+                    .and()
+                    .set("ingame_data.diamond").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.diamond").and(-diamond))
+                    .and()
+                    .set("ingame_data.players").toValueOf(VariableOperators.Map
+                            .itemsOf("ingame_data.players")
+                            .as("player")
+                            .andApply(ObjectOperators.MergeObjects
+                                    .mergeValuesOf("player")
+                                    .mergeWithValuesOf(ConditionalOperators.Cond
+                                            .when(ComparisonOperators.Eq.valueOf("player.player_id").equalToValue(playerId))
+                                            .then(new Document()
+                                                    .append("gold", ArithmeticOperators.Subtract.valueOf("$$player.gold").subtract(-gold))
+                                                    .append("onyx", ArithmeticOperators.Subtract.valueOf("$$player.onyx").subtract(-onyx))
+                                                    .append("ruby", ArithmeticOperators.Subtract.valueOf("$$player.ruby").subtract(-ruby))
+                                                    .append("emerald", ArithmeticOperators.Subtract.valueOf("$$player.emerald").subtract(-emerald))
+                                                    .append("sapphire", ArithmeticOperators.Subtract.valueOf("$$player.sapphire").subtract(-sapphire))
+                                                    .append("diamond", ArithmeticOperators.Subtract.valueOf("$$player.diamond").subtract(-diamond))
+                                                    .append("cards", ArrayOperators.ConcatArrays
+                                                            .arrayOf("$$player.cards")
+                                                            .concat(ArrayOperators.Filter
+                                                                    .filter("$$player.reserve_cards")
+                                                                    .as("reserve_card")
+                                                                    .by(ComparisonOperators.Eq
+                                                                            .valueOf("reserve_card.id").equalToValue(cardId))))
+                                                    .append("reserve_cards", ArrayOperators.Filter
+                                                            .filter("$$player.reserve_cards")
+                                                            .as("reserve_card")
+                                                            .by(ComparisonOperators.Ne
+                                                                    .valueOf("reserve_card.id").notEqualToValue(cardId))))
+                                            .otherwise(new Document())))));
         FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
                 .returnNew(true);
 
@@ -217,45 +219,57 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
                         .and("sapphire").gte(-sapphire)
                         .and("diamond").gte(-diamond))
                 .and("ingame_data.field_card_1").elemMatch(Criteria.where("card.id").is(cardId)));
-        UpdateDefinition update = AggregationUpdate.update().set(SetOperation.builder()
-                .set("ingame_data.gold").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.gold").and(-gold))
-                .and()
-                .set("ingame_data.onyx").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.onyx").and(-onyx))
-                .and()
-                .set("ingame_data.ruby").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.ruby").and(-ruby))
-                .and()
-                .set("ingame_data.emerald").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.emerald").and(-emerald))
-                .and()
-                .set("ingame_data.sapphire").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.sapphire").and(-sapphire))
-                .and()
-                .set("ingame_data.diamond").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.diamond").and(-diamond))
-                .and()
-                .set("ingame_data.players").toValueOf(VariableOperators.Map
-                        .itemsOf("ingame_data.players")
-                        .as("player")
-                        .andApply(ObjectOperators.MergeObjects
-                                .mergeValuesOf("player")
-                                .mergeWithValuesOf(ConditionalOperators.Cond.newBuilder()
-                                        .when(ComparisonOperators.Eq.valueOf("player.player_id").equalToValue(playerId))
-                                        .then(new Document()
-                                                .append("gold", ArithmeticOperators.Subtract.valueOf("$$player.gold").subtract(-gold))
-                                                .append("onyx", ArithmeticOperators.Subtract.valueOf("$$player.onyx").subtract(-onyx))
-                                                .append("ruby", ArithmeticOperators.Subtract.valueOf("$$player.ruby").subtract(-ruby))
-                                                .append("emerald", ArithmeticOperators.Subtract.valueOf("$$player.emerald").subtract(-emerald))
-                                                .append("sapphire", ArithmeticOperators.Subtract.valueOf("$$player.sapphire").subtract(-sapphire))
-                                                .append("diamond", ArithmeticOperators.Subtract.valueOf("$$player.diamond").subtract(-diamond))
-                                                .append("cards", ArrayOperators.ConcatArrays
-                                                        .arrayOf("$$player.cards")
-                                                        .concat(VariableOperators.Map
-                                                                .itemsOf(ArrayOperators.Filter
-                                                                        .filter("ingame_data.field_card_1")
-                                                                        .as("field_card_1")
-                                                                        .by(ComparisonOperators.Eq
-                                                                                .valueOf("field_card_1.card.id")
-                                                                                .equalToValue(cardId)))
-                                                                .as("field_card")
-                                                                .andApply(ObjectOperators.GetField.getField("card").of("field_card")))))
-                                        .otherwiseValueOf("player")))));
+        UpdateDefinition update = AggregationUpdate.update()
+                .set(SetOperation
+                        .set("ingame_data.gold").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.gold").and(-gold))
+                        .and()
+                        .set("ingame_data.onyx").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.onyx").and(-onyx))
+                        .and()
+                        .set("ingame_data.ruby").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.ruby").and(-ruby))
+                        .and()
+                        .set("ingame_data.emerald").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.emerald").and(-emerald))
+                        .and()
+                        .set("ingame_data.sapphire").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.sapphire").and(-sapphire))
+                        .and()
+                        .set("ingame_data.diamond").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.diamond").and(-diamond))
+                        .and()
+                        .set("ingame_data.players").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.players")
+                                .as("player")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("player")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq
+                                                        .valueOf("player.player_id").equalToValue(playerId))
+                                                .then(new Document()
+                                                        .append("gold", ArithmeticOperators.Subtract.valueOf("$$player.gold").subtract(-gold))
+                                                        .append("onyx", ArithmeticOperators.Subtract.valueOf("$$player.onyx").subtract(-onyx))
+                                                        .append("ruby", ArithmeticOperators.Subtract.valueOf("$$player.ruby").subtract(-ruby))
+                                                        .append("emerald", ArithmeticOperators.Subtract.valueOf("$$player.emerald").subtract(-emerald))
+                                                        .append("sapphire", ArithmeticOperators.Subtract.valueOf("$$player.sapphire").subtract(-sapphire))
+                                                        .append("diamond", ArithmeticOperators.Subtract.valueOf("$$player.diamond").subtract(-diamond))
+                                                        .append("cards", ArrayOperators.ConcatArrays
+                                                                .arrayOf("$$player.cards")
+                                                                .concat(VariableOperators.Map
+                                                                        .itemsOf(ArrayOperators.Filter
+                                                                                .filter("ingame_data.field_card_1")
+                                                                                .as("field_card")
+                                                                                .by(ComparisonOperators.Eq
+                                                                                        .valueOf("field_card.card.id").equalToValue(cardId)))
+                                                                        .as("field_card")
+                                                                        .andApply(ObjectOperators.GetField.getField("card").of("field_card")))))
+                                                .otherwiseValueOf("player"))))
+                        .and()
+                        .set("ingame_data.field_card_1").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.field_card_1")
+                                .as("field_card")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("field_card")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq.valueOf("field_card.card.id").equalToValue(cardId))
+                                                .then(new Document()
+                                                        .append("card", null))
+                                                .otherwise(new Document())))));
         FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
                 .returnNew(true);
 
@@ -264,12 +278,401 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
 
     @Override
     public SplendorGame buyCardFieldLevel2(String gameId, String playerId, String cardId, int gold, int onyx, int ruby, int emerald, int sapphire, int diamond) {
-        return null;
+        Query query = Query.query(Criteria.where("game_id").is(gameId)
+                .and("status").is(GameConstants.STATUS_START)
+                .and("ingame_data.current_player").is(playerId)
+                .and("ingame_data.players").elemMatch(Criteria.where("player_id").is(playerId)
+                        .and("gold").gte(-gold)
+                        .and("onyx").gte(-onyx)
+                        .and("ruby").gte(-ruby)
+                        .and("emerald").gte(-emerald)
+                        .and("sapphire").gte(-sapphire)
+                        .and("diamond").gte(-diamond))
+                .and("ingame_data.field_card_2").elemMatch(Criteria.where("card.id").is(cardId)));
+        UpdateDefinition update = AggregationUpdate.update()
+                .set(SetOperation
+                        .set("ingame_data.gold").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.gold").and(-gold))
+                        .and()
+                        .set("ingame_data.onyx").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.onyx").and(-onyx))
+                        .and()
+                        .set("ingame_data.ruby").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.ruby").and(-ruby))
+                        .and()
+                        .set("ingame_data.emerald").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.emerald").and(-emerald))
+                        .and()
+                        .set("ingame_data.sapphire").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.sapphire").and(-sapphire))
+                        .and()
+                        .set("ingame_data.diamond").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.diamond").and(-diamond))
+                        .and()
+                        .set("ingame_data.players").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.players")
+                                .as("player")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("player")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq
+                                                        .valueOf("player.player_id").equalToValue(playerId))
+                                                .then(new Document()
+                                                        .append("gold", ArithmeticOperators.Subtract.valueOf("$$player.gold").subtract(-gold))
+                                                        .append("onyx", ArithmeticOperators.Subtract.valueOf("$$player.onyx").subtract(-onyx))
+                                                        .append("ruby", ArithmeticOperators.Subtract.valueOf("$$player.ruby").subtract(-ruby))
+                                                        .append("emerald", ArithmeticOperators.Subtract.valueOf("$$player.emerald").subtract(-emerald))
+                                                        .append("sapphire", ArithmeticOperators.Subtract.valueOf("$$player.sapphire").subtract(-sapphire))
+                                                        .append("diamond", ArithmeticOperators.Subtract.valueOf("$$player.diamond").subtract(-diamond))
+                                                        .append("cards", ArrayOperators.ConcatArrays
+                                                                .arrayOf("$$player.cards")
+                                                                .concat(VariableOperators.Map
+                                                                        .itemsOf(ArrayOperators.Filter
+                                                                                .filter("ingame_data.field_card_2")
+                                                                                .as("field_card")
+                                                                                .by(ComparisonOperators.Eq
+                                                                                        .valueOf("field_card.card.id").equalToValue(cardId)))
+                                                                        .as("field_card")
+                                                                        .andApply(ObjectOperators.GetField.getField("card").of("field_card")))))
+                                                .otherwise(new Document()))))
+                        .and()
+                        .set("ingame_data.field_card_2").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.field_card_2")
+                                .as("field_card")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("field_card")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq
+                                                        .valueOf("field_card.card.id").equalToValue(cardId))
+                                                .then(new Document()
+                                                        .append("card", null))
+                                                .otherwise(new Document())))));
+        FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
+                .returnNew(true);
+
+        return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);
     }
 
     @Override
     public SplendorGame buyCardFieldLevel3(String gameId, String playerId, String cardId, int gold, int onyx, int ruby, int emerald, int sapphire, int diamond) {
-        return null;
+        Query query = Query.query(Criteria.where("game_id").is(gameId)
+                .and("status").is(GameConstants.STATUS_START)
+                .and("ingame_data.current_player").is(playerId)
+                .and("ingame_data.players").elemMatch(Criteria.where("player_id").is(playerId)
+                        .and("gold").gte(-gold)
+                        .and("onyx").gte(-onyx)
+                        .and("ruby").gte(-ruby)
+                        .and("emerald").gte(-emerald)
+                        .and("sapphire").gte(-sapphire)
+                        .and("diamond").gte(-diamond))
+                .and("ingame_data.field_card_3").elemMatch(Criteria.where("card.id").is(cardId)));
+        UpdateDefinition update = AggregationUpdate.update()
+                .set(SetOperation
+                        .set("ingame_data.gold").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.gold").and(-gold))
+                        .and()
+                        .set("ingame_data.onyx").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.onyx").and(-onyx))
+                        .and()
+                        .set("ingame_data.ruby").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.ruby").and(-ruby))
+                        .and()
+                        .set("ingame_data.emerald").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.emerald").and(-emerald))
+                        .and()
+                        .set("ingame_data.sapphire").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.sapphire").and(-sapphire))
+                        .and()
+                        .set("ingame_data.diamond").toValueOf(AccumulatorOperators.Sum.sumOf("ingame_data.diamond").and(-diamond))
+                        .and()
+                        .set("ingame_data.players").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.players")
+                                .as("player")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("player")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq.valueOf("player.player_id").equalToValue(playerId))
+                                                .then(new Document()
+                                                        .append("gold", ArithmeticOperators.Subtract.valueOf("$$player.gold").subtract(-gold))
+                                                        .append("onyx", ArithmeticOperators.Subtract.valueOf("$$player.onyx").subtract(-onyx))
+                                                        .append("ruby", ArithmeticOperators.Subtract.valueOf("$$player.ruby").subtract(-ruby))
+                                                        .append("emerald", ArithmeticOperators.Subtract.valueOf("$$player.emerald").subtract(-emerald))
+                                                        .append("sapphire", ArithmeticOperators.Subtract.valueOf("$$player.sapphire").subtract(-sapphire))
+                                                        .append("diamond", ArithmeticOperators.Subtract.valueOf("$$player.diamond").subtract(-diamond))
+                                                        .append("cards", ArrayOperators.ConcatArrays
+                                                                .arrayOf("$$player.cards")
+                                                                .concat(VariableOperators.Map
+                                                                        .itemsOf(ArrayOperators.Filter
+                                                                                .filter("ingame_data.field_card_3")
+                                                                                .as("field_card")
+                                                                                .by(ComparisonOperators.Eq
+                                                                                        .valueOf("field_card.card.id").equalToValue(cardId)))
+                                                                        .as("field_card")
+                                                                        .andApply(ObjectOperators.GetField.getField("card").of("field_card")))))
+                                                .otherwise(new Document()))))
+                        .and()
+                        .set("ingame_data.field_card_3").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.field_card_3")
+                                .as("field_card")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("field_card")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq
+                                                        .valueOf("field_card.card.id").equalToValue(cardId))
+                                                .then(new Document()
+                                                        .append("card", null))
+                                                .otherwiseValueOf("field_card")))));
+        FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
+                .returnNew(true);
+
+        return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);
+    }
+
+    @Override
+    public SplendorGame reserveCardDeck1(String gameId, String playerId, String cardId, int gold) {
+        Query query = Query.query(Criteria.where("game_id").is(gameId)
+                .and("status").is(GameConstants.STATUS_START)
+                .and("ingame_data.current_player").is(playerId)
+                .and("ingame_data.gold").gte(gold)
+                .and("ingame_data.deck_card_1").elemMatch(Criteria.where("id").is(cardId)));
+        UpdateDefinition update = AggregationUpdate.update()
+                .set(SetOperation
+                        .set("ingame_data.gold").toValueOf(ArithmeticOperators.Subtract.valueOf("ingame_data.gold").subtract(gold))
+                        .and()
+                        .set("ingame_data.players").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.players")
+                                .as("player")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("player")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq.valueOf("player.player_id").equalToValue(playerId))
+                                                .then(new Document()
+                                                        .append("gold", AccumulatorOperators.Sum.sumOf("$$player.gold").and(gold))
+                                                        .append("reserve_cards", ArrayOperators.ConcatArrays
+                                                                .arrayOf("$$player.reserve_cards")
+                                                                .concat(ArrayOperators.Filter
+                                                                        .filter("ingame_data.deck_card_1")
+                                                                        .as("deck_card")
+                                                                        .by(ComparisonOperators.Eq.valueOf("deck_card.id").equalToValue(cardId)))))
+                                                .otherwise(new Document()))))
+                        .and()
+                        .set("ingame_data.deck_card_1").toValueOf(ArrayOperators.Filter
+                                .filter("ingame_data.deck_card_1")
+                                .as("deck_card")
+                                .by(ComparisonOperators.Ne.valueOf("deck_card.id").notEqualToValue(cardId))));
+        FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
+                .returnNew(true);
+
+        return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);
+    }
+
+    @Override
+    public SplendorGame reserveCardDeck2(String gameId, String playerId, String cardId, int gold) {
+        Query query = Query.query(Criteria.where("game_id").is(gameId)
+                .and("status").is(GameConstants.STATUS_START)
+                .and("ingame_data.current_player").is(playerId)
+                .and("ingame_data.gold").gte(gold)
+                .and("ingame_data.deck_card_2").elemMatch(Criteria.where("id").is(cardId)));
+        UpdateDefinition update = AggregationUpdate.update()
+                .set(SetOperation
+                        .set("ingame_data.gold").toValueOf(ArithmeticOperators.Subtract.valueOf("ingame_data.gold").subtract(gold))
+                        .and()
+                        .set("ingame_data.players").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.players")
+                                .as("player")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("player")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq.valueOf("player.player_id").equalToValue(playerId))
+                                                .then(new Document()
+                                                        .append("gold", AccumulatorOperators.Sum.sumOf("$$player.gold").and(gold))
+                                                        .append("reserve_cards", ArrayOperators.ConcatArrays
+                                                                .arrayOf("$$player.reserve_cards")
+                                                                .concat(ArrayOperators.Filter
+                                                                        .filter("ingame_data.deck_card_2")
+                                                                        .as("deck_card")
+                                                                        .by(ComparisonOperators.Eq.valueOf("deck_card.id").equalToValue(cardId)))))
+                                                .otherwise(new Document()))))
+                        .and()
+                        .set("ingame_data.deck_card_2").toValueOf(ArrayOperators.Filter
+                                .filter("ingame_data.deck_card_2")
+                                .as("deck_card")
+                                .by(ComparisonOperators.Ne.valueOf("deck_card.id").notEqualToValue(cardId))));
+        FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
+                .returnNew(true);
+
+        return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);
+    }
+
+    @Override
+    public SplendorGame reserveCardDeck3(String gameId, String playerId, String cardId, int gold) {
+        Query query = Query.query(Criteria.where("game_id").is(gameId)
+                .and("status").is(GameConstants.STATUS_START)
+                .and("ingame_data.current_player").is(playerId)
+                .and("ingame_data.gold").gte(gold)
+                .and("ingame_data.deck_card_3").elemMatch(Criteria.where("id").is(cardId)));
+        UpdateDefinition update = AggregationUpdate.update()
+                .set(SetOperation
+                        .set("ingame_data.gold").toValueOf(ArithmeticOperators.Subtract.valueOf("ingame_data.gold").subtract(gold))
+                        .and()
+                        .set("ingame_data.players").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.players")
+                                .as("player")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("player")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq.valueOf("player.player_id").equalToValue(playerId))
+                                                .then(new Document()
+                                                        .append("gold", AccumulatorOperators.Sum.sumOf("$$player.gold").and(gold))
+                                                        .append("reserve_cards", ArrayOperators.ConcatArrays
+                                                                .arrayOf("$$player.reserve_cards")
+                                                                .concat(ArrayOperators.Filter
+                                                                        .filter("ingame_data.deck_card_3")
+                                                                        .as("deck_card")
+                                                                        .by(ComparisonOperators.Eq.valueOf("deck_card.id").equalToValue(cardId)))))
+                                                .otherwise(new Document()))))
+                        .and()
+                        .set("ingame_data.deck_card_3").toValueOf(ArrayOperators.Filter
+                                .filter("ingame_data.deck_card_3")
+                                .as("deck_card")
+                                .by(ComparisonOperators.Ne.valueOf("deck_card.id").notEqualToValue(cardId))));
+        FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
+                .returnNew(true);
+
+        return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);
+    }
+
+    @Override
+    public SplendorGame reserveCardField1(String gameId, String playerId, String cardId, int gold) {
+        Query query = Query.query(Criteria.where("game_id").is(gameId)
+                .and("status").is(GameConstants.STATUS_START)
+                .and("ingame_data.current_player").is(playerId)
+                .and("ingame_data.gold").gte(gold)
+                .and("ingame_data.field_card_1").elemMatch(Criteria.where("card.id").is(cardId)));
+        UpdateDefinition update = AggregationUpdate.update()
+                .set(SetOperation
+                        .set("ingame_data.gold").toValueOf(ArithmeticOperators.Subtract.valueOf("ingame_data.gold").subtract(gold))
+                        .and()
+                        .set("ingame_data.players").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.players")
+                                .as("player")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("player")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq.valueOf("player.player_id").equalToValue(playerId))
+                                                .then(new Document()
+                                                        .append("gold", AccumulatorOperators.Sum.sumOf("$$player.gold").and(gold))
+                                                        .append("reserve_cards", ArrayOperators.ConcatArrays
+                                                                .arrayOf("$$player.reserve_cards")
+                                                                .concat(VariableOperators.Map
+                                                                        .itemsOf(ArrayOperators.Filter
+                                                                                .filter("ingame_data.field_card_1")
+                                                                                .as("field_card")
+                                                                                .by(ComparisonOperators.Eq.valueOf("field_card.card.id").equalToValue(cardId)))
+                                                                        .as("field_card")
+                                                                        .andApply(ObjectOperators.GetField.getField("card").of("field_card")))))
+                                                .otherwise(new Document()))))
+                        .and()
+                        .set("ingame_data.field_card_1").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.field_card_1")
+                                .as("field_card")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("field_card")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq
+                                                        .valueOf("field_card.card.id").equalToValue(cardId))
+                                                .then(new Document()
+                                                        .append("card", null))
+                                                .otherwiseValueOf("field_card")))));
+        FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
+                .returnNew(true);
+
+        return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);
+    }
+
+    @Override
+    public SplendorGame reserveCardField2(String gameId, String playerId, String cardId, int gold) {
+        Query query = Query.query(Criteria.where("game_id").is(gameId)
+                .and("status").is(GameConstants.STATUS_START)
+                .and("ingame_data.current_player").is(playerId)
+                .and("ingame_data.gold").gte(gold)
+                .and("ingame_data.field_card_2").elemMatch(Criteria.where("card.id").is(cardId)));
+        UpdateDefinition update = AggregationUpdate.update()
+                .set(SetOperation
+                        .set("ingame_data.gold").toValueOf(ArithmeticOperators.Subtract.valueOf("ingame_data.gold").subtract(gold))
+                        .and()
+                        .set("ingame_data.players").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.players")
+                                .as("player")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("player")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq.valueOf("player.player_id").equalToValue(playerId))
+                                                .then(new Document()
+                                                        .append("gold", AccumulatorOperators.Sum.sumOf("$$player.gold").and(gold))
+                                                        .append("reserve_cards", ArrayOperators.ConcatArrays
+                                                                .arrayOf("$$player.reserve_cards")
+                                                                .concat(VariableOperators.Map
+                                                                        .itemsOf(ArrayOperators.Filter
+                                                                                .filter("ingame_data.field_card_2")
+                                                                                .as("field_card")
+                                                                                .by(ComparisonOperators.Eq.valueOf("field_card.card.id").equalToValue(cardId)))
+                                                                        .as("field_card")
+                                                                        .andApply(ObjectOperators.GetField.getField("card").of("field_card")))))
+                                                .otherwise(new Document()))))
+                        .and()
+                        .set("ingame_data.field_card_2").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.field_card_2")
+                                .as("field_card")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("field_card")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq
+                                                        .valueOf("field_card.card.id").equalToValue(cardId))
+                                                .then(new Document()
+                                                        .append("card", null))
+                                                .otherwiseValueOf("field_card")))));
+        FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
+                .returnNew(true);
+
+        return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);
+    }
+
+    @Override
+    public SplendorGame reserveCardField3(String gameId, String playerId, String cardId, int gold) {
+        Query query = Query.query(Criteria.where("game_id").is(gameId)
+                .and("status").is(GameConstants.STATUS_START)
+                .and("ingame_data.current_player").is(playerId)
+                .and("ingame_data.gold").gte(gold)
+                .and("ingame_data.field_card_3").elemMatch(Criteria.where("card.id").is(cardId)));
+        UpdateDefinition update = AggregationUpdate.update()
+                .set(SetOperation
+                        .set("ingame_data.gold").toValueOf(ArithmeticOperators.Subtract.valueOf("ingame_data.gold").subtract(gold))
+                        .and()
+                        .set("ingame_data.players").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.players")
+                                .as("player")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("player")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq.valueOf("player.player_id").equalToValue(playerId))
+                                                .then(new Document()
+                                                        .append("gold", AccumulatorOperators.Sum.sumOf("$$player.gold").and(gold))
+                                                        .append("reserve_cards", ArrayOperators.ConcatArrays
+                                                                .arrayOf("$$player.reserve_cards")
+                                                                .concat(VariableOperators.Map
+                                                                        .itemsOf(ArrayOperators.Filter
+                                                                                .filter("ingame_data.field_card_3")
+                                                                                .as("field_card")
+                                                                                .by(ComparisonOperators.Eq.valueOf("field_card.card.id").equalToValue(cardId)))
+                                                                        .as("field_card")
+                                                                        .andApply(ObjectOperators.GetField.getField("card").of("field_card")))))
+                                                .otherwise(new Document()))))
+                        .and()
+                        .set("ingame_data.field_card_3").toValueOf(VariableOperators.Map
+                                .itemsOf("ingame_data.field_card_3")
+                                .as("field_card")
+                                .andApply(ObjectOperators.MergeObjects
+                                        .mergeValuesOf("field_card")
+                                        .mergeWithValuesOf(ConditionalOperators.Cond
+                                                .when(ComparisonOperators.Eq
+                                                        .valueOf("field_card.card.id").equalToValue(cardId))
+                                                .then(new Document()
+                                                        .append("card", null))
+                                                .otherwiseValueOf("field_card")))));
+        FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
+                .returnNew(true);
+
+        return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);
     }
 
 }

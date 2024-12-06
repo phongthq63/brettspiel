@@ -16,7 +16,10 @@ import java.util.List;
 @Data
 public class IngamePlayerDataVO extends BaseVO {
 
-    @Schema(description = "Điểm")
+    @Schema(description = "Id người chơi", example = "63adv0adv84a3ds121asc")
+    private String playerId;
+
+    @Schema(description = "Điểm", example = "12")
     private Integer score;
 
     @Schema(description = "Thông tin quý tộc sở hữu")

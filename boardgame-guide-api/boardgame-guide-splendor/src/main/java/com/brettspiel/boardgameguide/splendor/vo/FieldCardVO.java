@@ -1,6 +1,7 @@
 package com.brettspiel.boardgameguide.splendor.vo;
 
 import com.brettspiel.service.vo.BaseVO;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,8 +13,10 @@ import lombok.EqualsAndHashCode;
 @Data
 public class FieldCardVO extends BaseVO {
 
+    @Schema(description = "Vị trí", example = "1")
     private Integer position;
 
+    @Schema(description = "Thông tin bài")
     private CardVO card;
 
 }

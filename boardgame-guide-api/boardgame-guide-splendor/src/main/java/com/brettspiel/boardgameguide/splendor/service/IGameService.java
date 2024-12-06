@@ -1,9 +1,6 @@
 package com.brettspiel.boardgameguide.splendor.service;
 
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.StartGameRequest;
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionBuyCardRequest;
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionGatherGemRequest;
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionReserveCardRequest;
+import com.brettspiel.boardgameguide.splendor.controller.dto.request.*;
 import com.brettspiel.boardgameguide.splendor.dto.SplendorGameDTO;
 import com.brettspiel.utils.R;
 
@@ -19,6 +16,8 @@ public interface IGameService {
 
     R<?> startGame(String userId, String gameId);
 
+    R<?> startTurn(String userId, String gameId);
+
     R<?> endTurn(String userId, String gameId);
 
     R<?> turnActionSkip(String userId, String gameId);
@@ -28,5 +27,7 @@ public interface IGameService {
     R<?> turnActionBuyCard(String userId, String gameId, TurnActionBuyCardRequest body);
 
     R<?> turnActionReserveCard(String userId, String gameId, TurnActionReserveCardRequest body);
+
+    R<?> turnBonusActionTakeNoble(String userId, String gameId, TurnBonusActionTakeNobleRequest body);
 
 }

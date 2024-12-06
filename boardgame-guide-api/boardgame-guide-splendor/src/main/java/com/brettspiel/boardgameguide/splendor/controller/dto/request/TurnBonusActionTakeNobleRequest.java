@@ -8,14 +8,14 @@ import lombok.EqualsAndHashCode;
 
 /**
  * Created by Quach Thanh Phong
- * On 11/17/2024 - 8:04 PM
+ * On 12/5/2024 - 2:27 PM
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class StartGameRequest extends BaseRequest {
+public class TurnBonusActionTakeNobleRequest extends BaseRequest {
 
     @NotBlank
-    @Schema(description = "Id bàn chơi", requiredMode = Schema.RequiredMode.REQUIRED, example = "6a83v1ac1a68sgva03cs0a3sc1")
-    private String tableId;
+    @Schema(description = "Id quý tộc lấy", requiredMode = Schema.RequiredMode.REQUIRED, example = "noble_4r4g")
+    private String nobleId;
 
 }

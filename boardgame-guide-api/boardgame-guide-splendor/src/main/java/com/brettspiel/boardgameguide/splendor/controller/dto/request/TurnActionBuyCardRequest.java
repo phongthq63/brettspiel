@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 public class TurnActionBuyCardRequest extends BaseRequest {
 
     @NotBlank
-    @Schema(description = "Id thẻ bài mua", example = "diamond_3")
+    @Schema(description = "Id thẻ bài mua", requiredMode = Schema.RequiredMode.REQUIRED, example = "diamond_3")
     private String cardId;
 
     @NegativeOrZero

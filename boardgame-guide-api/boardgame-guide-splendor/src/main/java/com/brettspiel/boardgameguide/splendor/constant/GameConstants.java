@@ -23,4 +23,7 @@ public class GameConstants {
     public final static String EVENT_TURN_ACTION_BUY_CARD = "TURN_ACTION_BUY_CARD";
     public final static String EVENT_TURN_ACTION_RESERVE_CARD = "TURN_ACTION_RESERVE_CARD";
 
+
+    public final static String EVENT_TURN_BONUS_ACTION_TAKE_NOBLE = "TURN_BONUS_ACTION_TAKE_NOBLE";
+
 }

@@ -2,6 +2,7 @@ package com.brettspiel.boardgameguide.splendor.controller.dto.request;
 
 import com.brettspiel.service.dto.request.BaseRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NegativeOrZero;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,6 +13,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TurnActionGatherGemRequest extends BaseRequest {
+
+    @NegativeOrZero
+    @Schema(description = "Số lượng mã não tương tác (+ lấy, - trả)", example = "1")
+    private Integer gold;
 
     @Schema(description = "Số lượng mã não tương tác (+ lấy, - trả)", example = "1")
     private Integer onyx;

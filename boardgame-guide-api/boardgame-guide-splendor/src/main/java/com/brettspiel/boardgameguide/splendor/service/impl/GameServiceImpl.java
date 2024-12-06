@@ -3,10 +3,7 @@ package com.brettspiel.boardgameguide.splendor.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.brettspiel.assist.SocketAssist;
 import com.brettspiel.boardgameguide.splendor.constant.GameConstants;
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.StartGameRequest;
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionBuyCardRequest;
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionGatherGemRequest;
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionReserveCardRequest;
+import com.brettspiel.boardgameguide.splendor.controller.dto.request.*;
 import com.brettspiel.boardgameguide.splendor.dto.SplendorGameDTO;
 import com.brettspiel.boardgameguide.splendor.entity.SplendorGame;
 import com.brettspiel.boardgameguide.splendor.entity.SplendorTable;
@@ -19,7 +16,6 @@ import com.brettspiel.boardgameguide.splendor.utils.GameUtils;
 import com.brettspiel.boardgameguide.splendor.vo.config.SplendorGameConfig;
 import com.brettspiel.utils.IdGenerator;
 import com.brettspiel.utils.R;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -261,25 +257,118 @@ public class GameServiceImpl implements IGameService {
     }
 
     @Override
-    public R<?> endTurn(String userId, String gameId) {
-        // Update turn in db
-        SplendorGame splendorGame = splendorGameRepository.endTurn(gameId, userId);
+    public R<?> startTurn(String userId, String gameId) {
+        // Get from db
+        SplendorGame splendorGame = splendorGameRepository.findGameUserIn(gameId, userId);
         if (splendorGame == null) {
-            log.error("endTurn - Current turn isn't you - {} {}", gameId, userId);
-            return R.failed("Current turn isn't you");
+            log.error("startTurn - User not in game - {} {}", gameId, userId);
+            return R.failed("User not in game");
+        }
+        switch (splendorGame.getStatus()) {
+            case GameConstants.STATUS_INIT:
+                log.error("startTurn - Game not start - {} {}", gameId, userId);
+                return R.failed("Game not start");
+            case GameConstants.STATUS_START:
+                break;
+            case GameConstants.STATUS_END:
+                return R.failed("Game have ended");
+        }
+
+        // Fill card to field
+        String cardIdDeck1 = null;
+        if (!splendorGame.getIngameData().getDeckCard1().isEmpty() &&
+                splendorGame.getIngameData().getFieldCard1().stream()
+                        .anyMatch(fieldCard -> fieldCard.getCard() == null)) {
+            cardIdDeck1 = splendorGame.getIngameData().getDeckCard1().get(0).getId();
+            splendorGame = splendorGameRepository.fillFieldLevel1(gameId, userId, cardIdDeck1);
+            if (splendorGame == null) {
+                log.error("startTurn - Fill field card 1 error - {} {}", gameId, userId);
+                return R.failed("Fill field card 1 error");
+            }
+        }
+        String cardIdDeck2 = null;
+        if (!splendorGame.getIngameData().getDeckCard2().isEmpty() &&
+                splendorGame.getIngameData().getFieldCard2().stream()
+                        .anyMatch(fieldCard -> fieldCard.getCard() == null)) {
+            cardIdDeck2 = splendorGame.getIngameData().getDeckCard2().get(0).getId();
+            splendorGame = splendorGameRepository.fillFieldLevel2(gameId, userId, cardIdDeck2);
+            if (splendorGame == null) {
+                log.error("startTurn - Fill field card 2 error - {} {}", gameId, userId);
+                return R.failed("Fill field card 2 error");
+            }
+        }
+        String cardIdDeck3 = null;
+        if (!splendorGame.getIngameData().getDeckCard3().isEmpty() &&
+                splendorGame.getIngameData().getFieldCard3().stream()
+                        .anyMatch(fieldCard -> fieldCard.getCard() == null)) {
+            cardIdDeck3 = splendorGame.getIngameData().getDeckCard3().get(0).getId();
+            splendorGame = splendorGameRepository.fillFieldLevel3(gameId, userId, cardIdDeck3);
+            if (splendorGame == null) {
+                log.error("startTurn - Fill field card 3 error - {} {}", gameId, userId);
+                return R.failed("Fill field card 3 error");
+            }
+        }
+
+        // Notify to all user in game
+        SplendorGame finalSplendorGame = splendorGame;
+        List<String> fieldCard1 = cardIdDeck1 == null ? new ArrayList<>() : List.of(cardIdDeck1);
+        List<String> fieldCard2 = cardIdDeck2 == null ? new ArrayList<>() : List.of(cardIdDeck2);
+        List<String> fieldCard3 = cardIdDeck3 == null ? new ArrayList<>() : List.of(cardIdDeck3);
+        socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
+            {
+                put("event", GameConstants.EVENT_START_GAME);
+                put("game_id", finalSplendorGame.getGameId());
+                put("table_id", finalSplendorGame.getTableId());
+                put("player_ids", finalSplendorGame.getPlayerIds());
+                put("round", finalSplendorGame.getIngameData().getRound());
+                put("turn", finalSplendorGame.getIngameData().getTurn());
+                put("current_player", finalSplendorGame.getIngameData().getCurrentPlayer());
+                put("next_player", finalSplendorGame.getIngameData().getNextPlayer());
+                put("field_card_1", fieldCard1);
+                put("field_card_2", fieldCard2);
+                put("field_card_3", fieldCard3);
+            }
+        });
+
+        return R.ok();
+    }
+
+    @Override
+    public R<?> endTurn(String userId, String gameId) {
+        SplendorGame splendorGame = splendorGameRepository.findGameUserIn(gameId, userId);
+        if (splendorGame == null) {
+            log.error("endTurn - User not in game - {} {}", gameId, userId);
+            return R.failed("User not in game");
+        }
+        switch (splendorGame.getStatus()) {
+            case GameConstants.STATUS_INIT:
+                log.error("endTurn - Game not start - {} {}", gameId, userId);
+                return R.failed("Game not start");
+            case GameConstants.STATUS_START:
+                break;
+            case GameConstants.STATUS_END:
+                return R.failed("Game have ended");
+        }
+
+        // Update turn in db
+        splendorGame = splendorGameRepository.endTurn(gameId, userId);
+        if (splendorGame == null) {
+            log.error("endTurn - End turn error - {} {}", gameId, userId);
+            return R.failed("End turn error");
         }
 
         // Notify all user in game
+        SplendorGame finalSplendorGame = splendorGame;
         socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
             {
                 put("event", GameConstants.EVENT_END_TURN);
-                put("game_id", splendorGame.getGameId());
-                put("table_id", splendorGame.getTableId());
+                put("game_id", finalSplendorGame.getGameId());
+                put("table_id", finalSplendorGame.getTableId());
                 put("player_id", userId);
-                put("round", splendorGame.getIngameData().getRound());
-                put("turn", splendorGame.getIngameData().getTurn());
-                put("current_player", splendorGame.getIngameData().getCurrentPlayer());
-                put("next_player", splendorGame.getIngameData().getNextPlayer());
+                put("round", finalSplendorGame.getIngameData().getRound());
+                put("turn", finalSplendorGame.getIngameData().getTurn());
+                put("current_player", finalSplendorGame.getIngameData().getCurrentPlayer());
+                put("next_player", finalSplendorGame.getIngameData().getNextPlayer());
             }
         });
 
@@ -288,11 +377,20 @@ public class GameServiceImpl implements IGameService {
 
     @Override
     public R<?> turnActionSkip(String userId, String gameId) {
-        // Update turn in db
-        SplendorGame splendorGame = splendorGameRepository.endTurn(gameId, userId);
+        // Get from db
+        SplendorGame splendorGame = splendorGameRepository.findGameUserIn(gameId, userId);
         if (splendorGame == null) {
-            log.error("turnActionSkip - Current turn isn't you - {} {}", gameId, userId);
-            return R.failed("Current turn isn't you");
+            log.error("turnActionSkip - User not in game - {} {}", gameId, userId);
+            return R.failed("User not in game");
+        }
+        switch (splendorGame.getStatus()) {
+            case GameConstants.STATUS_INIT:
+                log.error("turnActionSkip - Game not start - {} {}", gameId, userId);
+                return R.failed("Game not start");
+            case GameConstants.STATUS_START:
+                break;
+            case GameConstants.STATUS_END:
+                return R.failed("Game have ended");
         }
 
         // Notify all user in game
@@ -322,6 +420,8 @@ public class GameServiceImpl implements IGameService {
                 (body.getDiamond() == null || body.getDiamond() == 0)) {
             return R.failed("Invalid request");
         }
+
+        int gold = body.getGold() == null ? 0 : body.getGold();
         int onyx = body.getOnyx() == null ? 0 : body.getOnyx();
         int ruby = body.getRuby() == null ? 0 : body.getRuby();
         int emerald = body.getEmerald() == null ? 0 : body.getEmerald();
@@ -363,8 +463,23 @@ public class GameServiceImpl implements IGameService {
             return R.failed("Gather gem break rule game");
         }
 
+        // Player data ingame
+        IngamePlayerData playerData = splendorGame.getIngameData().getPlayers().stream()
+                .filter(ingamePlayerData -> Objects.equals(ingamePlayerData.getPlayerId(), userId))
+                .findFirst()
+                .orElse(null);
+        if (playerData == null) {
+            log.error("turnActionBuyCard - System error - {} {}", gameId, userId);
+            return R.failed("System error");
+        }
+        if (playerData.getGold() + playerData.getOnyx() + playerData.getRuby() + playerData.getEmerald() + playerData.getSapphire() + playerData.getDiamond() +
+                gold + onyx + ruby + emerald + sapphire + diamond > 10) {
+            return R.failed("You have more than 10 gem and gold");
+        }
+
+
         // Update db
-        splendorGame = splendorGameRepository.gatherGem(gameId, userId, onyx, ruby, emerald, sapphire, diamond);
+        splendorGame = splendorGameRepository.gatherGem(gameId, userId, gold, onyx, ruby, emerald, sapphire, diamond);
         if (splendorGame == null) {
             log.error("turnActionGatherGem - Invalid request - {} {} {} {} {} {} {}", gameId, userId, onyx, ruby, emerald, sapphire, diamond);
             return R.failed("Invalid request");
@@ -567,6 +682,15 @@ public class GameServiceImpl implements IGameService {
             return R.failed("Out of gold");
         }
 
+        // Get config in game
+        Card cardData = splendorGame.getCards().stream()
+                .filter(card -> Objects.equals(card.getId(), body.getCardId()))
+                .findFirst()
+                .orElse(null);
+        if (cardData == null) {
+            log.error("turnActionReserveCard - Invalid card - {} {} {}", gameId, userId, body.getCardId());
+            return R.failed("Invalid card");
+        }
 
         // Player data ingame
         IngamePlayerData playerData = splendorGame.getIngameData().getPlayers().stream()
@@ -682,6 +806,65 @@ public class GameServiceImpl implements IGameService {
                 put("field_card_1", fieldCard1);
                 put("field_card_2", fieldCard2);
                 put("field_card_3", fieldCard3);
+            }
+        });
+
+        return R.ok();
+    }
+
+    @Override
+    public R<?> turnBonusActionTakeNoble(String userId, String gameId, TurnBonusActionTakeNobleRequest body) {
+        // Get from db
+        SplendorGame splendorGame = splendorGameRepository.findGameUserIn(gameId, userId);
+        if (splendorGame == null) {
+            log.error("turnBonusActionTakeNoble - User not in game - {} {}", gameId, userId);
+            return R.failed("User not in game");
+        }
+        switch (splendorGame.getStatus()) {
+            case GameConstants.STATUS_INIT:
+                log.error("turnBonusActionTakeNoble - Game not start - {} {}", gameId, userId);
+                return R.failed("Game not start");
+            case GameConstants.STATUS_START:
+                break;
+            case GameConstants.STATUS_END:
+                return R.failed("Game have ended");
+        }
+
+        // Get config in game
+        Noble nobleData = splendorGame.getNobles().stream()
+                .filter(noble -> Objects.equals(noble.getId(), body.getNobleId()))
+                .findFirst()
+                .orElse(null);
+        if (nobleData == null) {
+            log.error("turnBonusActionTakeNoble - Invalid noble - {} {} {}", gameId, userId, body.getNobleId());
+            return R.failed("Invalid noble");
+        }
+        if (splendorGame.getIngameData().getFieldNoble().stream()
+                .noneMatch(fieldNoble -> fieldNoble.getNoble() != null && Objects.equals(fieldNoble.getNoble().getId(), body.getNobleId()))) {
+            log.error("turnBonusActionTakeNoble - Noble not found - {} {} {} {}", gameId, userId, body.getNobleId(), splendorGame.getIngameData());
+            return R.failed("Noble not found");
+        }
+
+        //
+        splendorGame = splendorGameRepository.takeNoble(gameId, userId, body.getNobleId());
+        if (splendorGame == null) {
+            log.error("turnBonusActionTakeNoble - Take noble error - {} {} {}", gameId, userId, body.getNobleId());
+            return R.failed("Take noble error");
+        }
+
+        // Notify all user in game
+        SplendorGame finalSplendorGame = splendorGame;
+        socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
+            {
+                put("event", GameConstants.EVENT_TURN_BONUS_ACTION_TAKE_NOBLE);
+                put("game_id", finalSplendorGame.getGameId());
+                put("table_id", finalSplendorGame.getTableId());
+                put("player_id", userId);
+                put("round", finalSplendorGame.getIngameData().getRound());
+                put("turn", finalSplendorGame.getIngameData().getTurn());
+                put("current_player", finalSplendorGame.getIngameData().getCurrentPlayer());
+                put("next_player", finalSplendorGame.getIngameData().getNextPlayer());
+                put("noble", body.getNobleId());
             }
         });
 

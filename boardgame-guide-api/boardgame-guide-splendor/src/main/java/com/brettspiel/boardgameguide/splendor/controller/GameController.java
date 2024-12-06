@@ -1,9 +1,6 @@
 package com.brettspiel.boardgameguide.splendor.controller;
 
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.StartGameRequest;
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionBuyCardRequest;
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionGatherGemRequest;
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.TurnActionReserveCardRequest;
+import com.brettspiel.boardgameguide.splendor.controller.dto.request.*;
 import com.brettspiel.boardgameguide.splendor.dto.SplendorGameDTO;
 import com.brettspiel.boardgameguide.splendor.security.UserPrincipal;
 import com.brettspiel.boardgameguide.splendor.service.IGameService;
@@ -56,6 +53,15 @@ public class GameController {
         return gameService.startGame(userId, gameId);
     }
 
+    @PostMapping("/{gameId}/turn/start")
+    public R<?> startTurn(@Parameter(hidden = true) Authentication authentication,
+                          @PathVariable String gameId) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        String userId = userPrincipal.getId();
+
+        return gameService.startTurn(userId, gameId);
+    }
+
     @PostMapping("/{gameId}/turn/end")
     public R<?> endTurn(@Parameter(hidden = true) Authentication authentication,
                         @PathVariable String gameId) {
@@ -102,6 +108,16 @@ public class GameController {
         String userId = userPrincipal.getId();
 
         return gameService.turnActionReserveCard(userId, gameId, body);
+    }
+
+    @PostMapping("/{gameId}/turn/bonus-action/take-noble")
+    public R<?> turnBonusActionTakeNoble(@Parameter(hidden = true) Authentication authentication,
+                                         @PathVariable String gameId,
+                                         @Valid @RequestBody TurnBonusActionTakeNobleRequest body) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        String userId = userPrincipal.getId();
+
+        return gameService.turnBonusActionTakeNoble(userId, gameId, body);
     }
 
 }

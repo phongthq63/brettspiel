@@ -20,7 +20,13 @@ public interface ICustomSplendorGameRepository {
 
     SplendorGame endTurn(String gameId, String playerId);
 
-    SplendorGame gatherGem(String gameId, String playerId, int onyx, int ruby, int emerald, int sapphire, int diamond);
+    SplendorGame fillFieldLevel1(String gameId, String playerId, String cardId);
+
+    SplendorGame fillFieldLevel2(String gameId, String playerId, String cardId);
+
+    SplendorGame fillFieldLevel3(String gameId, String playerId, String cardId);
+
+    SplendorGame gatherGem(String gameId, String playerId, int gold, int onyx, int ruby, int emerald, int sapphire, int diamond);
 
     SplendorGame buyCardInHand(String gameId, String playerId, String cardId, int gold, int onyx, int ruby, int emerald, int sapphire, int diamond);
 
@@ -41,5 +47,7 @@ public interface ICustomSplendorGameRepository {
     SplendorGame reserveCardField2(String gameId, String playerId, String cardId, int gold);
 
     SplendorGame reserveCardField3(String gameId, String playerId, String cardId, int gold);
+
+    SplendorGame takeNoble(String gameId, String playerId, String nobleId);
 
 }

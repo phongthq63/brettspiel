@@ -1,6 +1,6 @@
 package com.brettspiel.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
@@ -12,10 +12,10 @@ import java.util.Locale;
  * On 9/16/2024 - 9:26 AM
  */
 @Component
+@RequiredArgsConstructor
 public class MessageUtils {
 
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
 
 

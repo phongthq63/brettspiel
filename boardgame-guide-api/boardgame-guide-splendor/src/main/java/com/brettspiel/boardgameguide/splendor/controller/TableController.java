@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Table")
 @RestController
 @RequestMapping(value = "/table")
+@RequiredArgsConstructor
 public class TableController {
 
-    @Autowired
-    private ITableService tableService;
+    private final ITableService tableService;
 
 
     @PostMapping("")

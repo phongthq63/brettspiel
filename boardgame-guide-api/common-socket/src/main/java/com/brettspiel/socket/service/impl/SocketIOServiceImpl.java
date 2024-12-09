@@ -30,7 +30,7 @@ public class SocketIOServiceImpl implements ISocketIOService, EventInterceptor {
 
     private final boolean cluster;
 
-    private SocketIOServer socketIOServer;
+    private final SocketIOServer socketIOServer;
 
     private final ISocketIOClientService socketIOClientService;
 
@@ -78,7 +78,6 @@ public class SocketIOServiceImpl implements ISocketIOService, EventInterceptor {
         }
         if (socketIOServer != null) {
             socketIOServer.stop();
-            socketIOServer = null;
         }
     }
 

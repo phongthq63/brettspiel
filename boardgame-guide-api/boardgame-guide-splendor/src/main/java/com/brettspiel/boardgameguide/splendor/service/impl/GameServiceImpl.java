@@ -16,8 +16,8 @@ import com.brettspiel.boardgameguide.splendor.utils.GameUtils;
 import com.brettspiel.boardgameguide.splendor.vo.config.SplendorGameConfig;
 import com.brettspiel.utils.IdGenerator;
 import com.brettspiel.utils.R;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -29,22 +29,18 @@ import java.util.stream.IntStream;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GameServiceImpl implements IGameService {
 
-    @Autowired
-    private ISplendorTableRepository splendorTableRepository;
+    private final ISplendorTableRepository splendorTableRepository;
 
-    @Autowired
-    private ISplendorGameRepository splendorGameRepository;
+    private final ISplendorGameRepository splendorGameRepository;
 
-    @Autowired
-    private IGameMapper gameMapper;
+    private final IGameMapper gameMapper;
 
-    @Autowired
-    private SocketAssist socketAssist;
+    private final SocketAssist socketAssist;
 
-    @Autowired
-    private GameUtils gameUtils;
+    private final GameUtils gameUtils;
 
 
 
@@ -316,7 +312,7 @@ public class GameServiceImpl implements IGameService {
         List<String> fieldCard3 = cardIdDeck3 == null ? new ArrayList<>() : List.of(cardIdDeck3);
         socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
             {
-                put("event", GameConstants.EVENT_START_GAME);
+                put("event", GameConstants.EVENT_START_TURN);
                 put("game_id", finalSplendorGame.getGameId());
                 put("table_id", finalSplendorGame.getTableId());
                 put("player_ids", finalSplendorGame.getPlayerIds());

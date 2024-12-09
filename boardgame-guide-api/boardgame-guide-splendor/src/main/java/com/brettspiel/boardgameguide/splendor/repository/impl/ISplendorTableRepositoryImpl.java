@@ -3,7 +3,7 @@ package com.brettspiel.boardgameguide.splendor.repository.impl;
 import com.brettspiel.boardgameguide.splendor.constant.TableConstants;
 import com.brettspiel.boardgameguide.splendor.entity.SplendorTable;
 import com.brettspiel.boardgameguide.splendor.repository.custom.ICustomSplendorTableRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -18,10 +18,10 @@ import java.util.List;
  * On 11/17/2024 - 5:47 PM
  */
 @Repository
+@RequiredArgsConstructor
 public class ISplendorTableRepositoryImpl implements ICustomSplendorTableRepository {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
 
     @Override

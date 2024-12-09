@@ -6,8 +6,8 @@ import com.brettspiel.boardgameguide.splendor.entity.SplendorGame;
 import com.brettspiel.boardgameguide.splendor.entity.vo.Card;
 import com.brettspiel.boardgameguide.splendor.entity.vo.Noble;
 import com.brettspiel.boardgameguide.splendor.repository.custom.ICustomSplendorGameRepository;
+import lombok.RequiredArgsConstructor;
 import org.bson.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
@@ -25,10 +25,10 @@ import java.util.stream.IntStream;
  * On 11/13/2024 - 5:18 PM
  */
 @Repository
+@RequiredArgsConstructor
 public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepository {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
 
     @Override
@@ -121,12 +121,23 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
                 .and("ingame_data.field_card_1").elemMatch(Criteria.where("card").is(null)));
         UpdateDefinition update = AggregationUpdate.update()
                 .set(SetOperation
+                        .set("tmp.index_field_first_null").toValueOf(ArrayOperators.IndexOfArray
+                                .arrayOf(VariableOperators.Map
+                                        .itemsOf("ingame_data.field_card_1")
+                                        .as("field_card")
+                                        .andApply(ConditionalOperators.Cond
+                                                .when(ConditionalOperators.IfNull
+                                                        .ifNull("field_card.card").then(false))
+                                                .then(false)
+                                                .otherwise(true)))
+                                .indexOf(true)))
+                .set(SetOperation
                         .set("ingame_data.field_card_1").toValueOf(VariableOperators.Map
                                 .itemsOf("ingame_data.field_card_1")
                                 .as("field_card")
                                 .andApply(ConditionalOperators.Cond
-                                        .when(ConditionalOperators.IfNull
-                                                .ifNull("field_card.card").then(true))
+                                        .when(ComparisonOperators.Eq
+                                                .valueOf("field_card.position").equalTo("tmp.index_field_first_null"))
                                         .thenValueOf(ObjectOperators.MergeObjects
                                                 .mergeValuesOf("field_card")
                                                 .mergeWith(new Document()
@@ -142,7 +153,8 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
                         .set("ingame_data.deck_card_1").toValueOf(ArrayOperators.Filter
                                 .filter("ingame_data.deck_card_1")
                                 .as("deck_card")
-                                .by(ComparisonOperators.Ne.valueOf("deck_card.id").notEqualToValue(cardId))));
+                                .by(ComparisonOperators.Ne.valueOf("deck_card.id").notEqualToValue(cardId))))
+                .unset(UnsetOperation.unset("tmp.index_field_first_null"));
         FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
                 .returnNew(true);
         return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);

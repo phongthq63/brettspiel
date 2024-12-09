@@ -4,7 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.brettspiel.boardgameguide.splendor.vo.config.SplendorConfig;
 import com.brettspiel.boardgameguide.splendor.vo.config.SplendorGameConfig;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
@@ -18,13 +18,13 @@ import java.util.List;
  * On 11/21/2024 - 11:11 AM
  */
 @Component
+@RequiredArgsConstructor
 public class GameUtils {
 
     private SplendorConfig splendorConfig;
 
 
-    @Autowired
-    private ResourceLoader resourceLoader;
+    private final ResourceLoader resourceLoader;
 
 
 

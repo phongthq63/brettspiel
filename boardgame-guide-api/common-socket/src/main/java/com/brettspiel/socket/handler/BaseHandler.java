@@ -9,6 +9,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import java.util.Locale;
  */
 @Component
 @ConditionalOnBean(SocketIOServer.class)
+@RequiredArgsConstructor
 public abstract class BaseHandler<T> implements ConnectListener, DisconnectListener, DataListener<T> {
 
     protected final ISocketIOMessageService socketIOMessageService;
@@ -28,12 +30,6 @@ public abstract class BaseHandler<T> implements ConnectListener, DisconnectListe
     protected final ISocketIOPubSubService socketIOPubSubService;
 
 
-
-    public BaseHandler(ISocketIOMessageService socketIOMessageService,
-                       ISocketIOPubSubService socketIOPubSubService) {
-        this.socketIOMessageService = socketIOMessageService;
-        this.socketIOPubSubService = socketIOPubSubService;
-    }
 
     protected final String getUidByClient(SocketIOClient socketIOClient) {
         return ClientHelper.getClientId(socketIOClient);

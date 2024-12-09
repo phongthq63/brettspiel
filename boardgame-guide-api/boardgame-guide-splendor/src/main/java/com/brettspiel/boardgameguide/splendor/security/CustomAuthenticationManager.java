@@ -3,6 +3,7 @@ package com.brettspiel.boardgameguide.splendor.security;
 import com.brettspiel.security.JwtHandler;
 import com.brettspiel.security.UnauthorizedException;
 import com.brettspiel.security.VerificationResult;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,10 +20,10 @@ import java.util.ArrayList;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CustomAuthenticationManager implements AuthenticationManager {
 
-    @Autowired
-    private JwtHandler jwtHandler;
+    private final JwtHandler jwtHandler;
 
 
 

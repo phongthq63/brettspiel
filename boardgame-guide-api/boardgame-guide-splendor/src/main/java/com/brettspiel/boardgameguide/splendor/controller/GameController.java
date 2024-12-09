@@ -8,7 +8,7 @@ import com.brettspiel.utils.R;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Game")
 @RestController
 @RequestMapping(value = "/game")
+@RequiredArgsConstructor
 public class GameController {
 
-    @Autowired
-    private IGameService gameService;
+    private final IGameService gameService;
 
 
 

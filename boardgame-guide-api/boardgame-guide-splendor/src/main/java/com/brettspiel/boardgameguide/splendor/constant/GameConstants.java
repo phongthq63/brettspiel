@@ -15,6 +15,7 @@ public class GameConstants {
     public final static String EVENT_START_GAME = "START_GAME";
 
 
+    public final static String EVENT_START_TURN = "START_TURN";
     public final static String EVENT_END_TURN = "EVENT_END_TURN";
 
 

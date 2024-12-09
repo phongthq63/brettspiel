@@ -5,6 +5,7 @@ import com.brettspiel.socket.service.ISocketIOClientService;
 import com.brettspiel.socket.service.ISocketIOMessageService;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @ConditionalOnBean(SocketIOServer.class)
+@RequiredArgsConstructor
 public class SocketIOMessageServiceImpl implements ISocketIOMessageService {
 
     private final SocketIOServer socketIOServer;
@@ -26,11 +28,6 @@ public class SocketIOMessageServiceImpl implements ISocketIOMessageService {
     private final ISocketIOClientService socketIOClientService;
 
 
-    public SocketIOMessageServiceImpl(SocketIOServer socketIOServer,
-                                      ISocketIOClientService socketIOClientService) {
-        this.socketIOServer = socketIOServer;
-        this.socketIOClientService = socketIOClientService;
-    }
 
     @Override
     public void sendMessageToUser(SocketIOClient client, String eventId, Object socketModel) {

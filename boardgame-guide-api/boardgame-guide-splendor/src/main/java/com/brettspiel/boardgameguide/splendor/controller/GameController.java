@@ -27,8 +27,8 @@ public class GameController {
 
 
     @PostMapping("/init")
-    public R<?> initGame(@Parameter(hidden = true) Authentication authentication,
-                         @Valid @RequestBody StartGameRequest body) {
+    public R<SplendorGameDTO> initGame(@Parameter(hidden = true) Authentication authentication,
+                         @Valid @RequestBody InitGameRequest body) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         String userId = userPrincipal.getId();
 

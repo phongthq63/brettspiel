@@ -10,7 +10,7 @@ import com.brettspiel.utils.R;
  */
 public interface IGameService {
 
-    R<?> initGame(String userId, StartGameRequest body);
+    R<SplendorGameDTO> initGame(String userId, InitGameRequest body);
 
     R<SplendorGameDTO> getGameInfo(String userId, String gameId);
 

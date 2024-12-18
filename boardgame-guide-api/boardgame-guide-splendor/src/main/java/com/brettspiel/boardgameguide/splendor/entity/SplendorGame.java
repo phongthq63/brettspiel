@@ -3,6 +3,7 @@ package com.brettspiel.boardgameguide.splendor.entity;
 import com.brettspiel.boardgameguide.splendor.entity.vo.Card;
 import com.brettspiel.boardgameguide.splendor.entity.vo.IngameData;
 import com.brettspiel.boardgameguide.splendor.entity.vo.Noble;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;

@@ -1,8 +1,7 @@
 import React from "react";
-import Ingame from "../games/splendor/pages/ingame";
+import {redirect} from "next/navigation";
 
 export default function Home() {
-  return (
-      <Ingame/>
-  );
+  redirect("/game/splendor/1")
+  return <></>;
 }

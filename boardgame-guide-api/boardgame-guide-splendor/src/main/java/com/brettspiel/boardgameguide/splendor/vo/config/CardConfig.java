@@ -17,6 +17,8 @@ public class CardConfig {
 
     private Integer score;
 
+    private CardCostConfig cost;
+
     private String imageFrontUrl;
 
     private String imageBackUrl;

@@ -121,7 +121,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
                 .and("ingame_data.field_card_1").elemMatch(Criteria.where("card").is(null)));
         UpdateDefinition update = AggregationUpdate.update()
                 .set(SetOperation
-                        .set("tmp.index_field_first_null").toValueOf(ArrayOperators.IndexOfArray
+                        .set("tmp_index_field_first_null").toValueOf(ArrayOperators.IndexOfArray
                                 .arrayOf(VariableOperators.Map
                                         .itemsOf("ingame_data.field_card_1")
                                         .as("field_card")
@@ -137,7 +137,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
                                 .as("field_card")
                                 .andApply(ConditionalOperators.Cond
                                         .when(ComparisonOperators.Eq
-                                                .valueOf("field_card.position").equalTo("tmp.index_field_first_null"))
+                                                .valueOf("field_card.position").equalTo("tmp_index_field_first_null"))
                                         .thenValueOf(ObjectOperators.MergeObjects
                                                 .mergeValuesOf("field_card")
                                                 .mergeWith(new Document()
@@ -154,7 +154,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
                                 .filter("ingame_data.deck_card_1")
                                 .as("deck_card")
                                 .by(ComparisonOperators.Ne.valueOf("deck_card.id").notEqualToValue(cardId))))
-                .unset(UnsetOperation.unset("tmp.index_field_first_null"));
+                .unset(UnsetOperation.unset("tmp_index_field_first_null"));
         FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
                 .returnNew(true);
         return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);

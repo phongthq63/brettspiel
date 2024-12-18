@@ -35,31 +35,31 @@ public class IngamePlayerDataVO extends BaseVO {
     private Integer gold;
 
     @Schema(description = "Mã não nền", example = "5")
-    private Integer floorOnyx;
+    private Integer cardOnyx;
 
     @Schema(description = "Mã não", example = "5")
     private Integer onyx;
 
     @Schema(description = "Hồng ngọc nền", example = "5")
-    private Integer floorRuby;
+    private Integer cardRuby;
 
     @Schema(description = "Hồng ngọc", example = "5")
     private Integer ruby;
 
     @Schema(description = "Ngọc lục bảo nền", example = "5")
-    private Integer floorEmerald;
+    private Integer cardEmerald;
 
     @Schema(description = "Ngọc lục bảo", example = "5")
     private Integer emerald;
 
     @Schema(description = "Đá saphia nền", example = "5")
-    private Integer floorSapphire;
+    private Integer cardSapphire;
 
     @Schema(description = "Đá saphia", example = "5")
     private Integer sapphire;
 
     @Schema(description = "Kim cương nền", example = "5")
-    private Integer floorDiamond;
+    private Integer cardDiamond;
 
     @Schema(description = "Kim cương", example = "5")
     private Integer diamond;

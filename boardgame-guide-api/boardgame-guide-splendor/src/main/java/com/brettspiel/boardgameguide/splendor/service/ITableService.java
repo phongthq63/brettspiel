@@ -1,6 +1,6 @@
 package com.brettspiel.boardgameguide.splendor.service;
 
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.CreateNewGameRequest;
+import com.brettspiel.boardgameguide.splendor.controller.dto.request.CreateNewTableRequest;
 import com.brettspiel.boardgameguide.splendor.dto.SplendorTableDTO;
 import com.brettspiel.service.dto.PageDTO;
 import com.brettspiel.utils.R;
@@ -11,7 +11,7 @@ import com.brettspiel.utils.R;
  */
 public interface ITableService {
 
-    R<SplendorTableDTO> createNewGame(String userId, CreateNewGameRequest body);
+    R<SplendorTableDTO> createNewTable(String userId, CreateNewTableRequest body);
 
     R<PageDTO<SplendorTableDTO>> getListTableInfo(String userId, Integer page, Integer size);
 

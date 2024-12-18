@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CreateNewGameRequest extends BaseRequest {
+public class CreateNewTableRequest extends BaseRequest {
 
     @Positive
     @Schema(description = "Số lượng người chơi", requiredMode = Schema.RequiredMode.REQUIRED, example = "4")

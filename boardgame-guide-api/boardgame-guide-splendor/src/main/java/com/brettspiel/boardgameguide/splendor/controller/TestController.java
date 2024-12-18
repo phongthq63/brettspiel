@@ -2,6 +2,7 @@ package com.brettspiel.boardgameguide.splendor.controller;
 
 import com.brettspiel.assist.SocketAssist;
 import com.brettspiel.boardgameguide.splendor.entity.SplendorGame;
+import com.brettspiel.constants.SocketConstants;
 import com.brettspiel.security.JwtHandler;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,11 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.UpdateDefinition;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.retrytopic.SameIntervalTopicReuseStrategy;
+import org.springframework.kafka.retrytopic.TopicSuffixingStrategy;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Quach Thanh Phong
@@ -104,5 +111,18 @@ public class TestController {
         FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
                 .returnNew(true);
         return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);
+    }
+
+    @RetryableTopic(
+            attempts = "${spring.kafka.consumer.retry}",
+            backoff = @Backoff(delay = 60000),
+            topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
+            sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC)
+    @KafkaListener(
+            topics = { SocketConstants.TOPIC_PUBLISH_MESSAGE_ALL },
+            groupId = "${spring.kafka.consumer.groupId:common}.SocketAssist",
+            autoStartup = "#{!socketAssist.socketMessageAllHandlers.isEmpty()}")
+    public void processMessageAll(Map<String, Object> data) throws Exception {
+//        socketMessageAllHandlers.forEach(socketMessageAllHandler -> socketMessageAllHandler.handlerMessage(data));
     }
 }

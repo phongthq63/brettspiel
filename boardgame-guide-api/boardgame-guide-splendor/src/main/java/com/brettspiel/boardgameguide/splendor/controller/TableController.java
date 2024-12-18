@@ -1,6 +1,6 @@
 package com.brettspiel.boardgameguide.splendor.controller;
 
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.CreateNewGameRequest;
+import com.brettspiel.boardgameguide.splendor.controller.dto.request.CreateNewTableRequest;
 import com.brettspiel.boardgameguide.splendor.dto.SplendorTableDTO;
 import com.brettspiel.boardgameguide.splendor.security.UserPrincipal;
 import com.brettspiel.boardgameguide.splendor.service.ITableService;
@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
@@ -30,17 +31,17 @@ public class TableController {
 
 
     @PostMapping("")
-    public R<SplendorTableDTO> createNewGame(@Parameter(hidden = true) Authentication authentication,
-                                             @Valid @RequestBody CreateNewGameRequest body) {
+    public R<SplendorTableDTO> createNewTable(@Parameter(hidden = true) Authentication authentication,
+                                              @Valid @RequestBody CreateNewTableRequest body) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         String userId = userPrincipal.getId();
 
-        return tableService.createNewGame(userId, body);
+        return tableService.createNewTable(userId, body);
     }
 
     @GetMapping("")
     public R<PageDTO<SplendorTableDTO>> getListTableInfo(@Parameter(hidden = true) Authentication authentication,
-                                                         @Positive @Parameter(description = "Trang") @RequestParam(defaultValue = "0") Integer page,
+                                                         @PositiveOrZero @Parameter(description = "Trang") @RequestParam(defaultValue = "0") Integer page,
                                                          @Positive @Parameter(description = "Số lượng") @RequestParam(defaultValue = "10") Integer size) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         String userId = userPrincipal.getId();

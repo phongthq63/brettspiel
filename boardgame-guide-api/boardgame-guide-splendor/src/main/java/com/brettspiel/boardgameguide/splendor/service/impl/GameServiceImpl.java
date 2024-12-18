@@ -46,7 +46,7 @@ public class GameServiceImpl implements IGameService {
 
 
     @Override
-    public R<?> initGame(String userId, StartGameRequest body) {
+    public R<SplendorGameDTO> initGame(String userId, InitGameRequest body) {
         // Get from db
         SplendorTable splendorTable = splendorTableRepository.getByIdAndHost(body.getTableId(), userId);
         if (!Objects.equals(splendorTable.getHostId(), userId)) {
@@ -70,17 +70,31 @@ public class GameServiceImpl implements IGameService {
             return R.failed(StrUtil.format("Can't init game with {} player", numberPlayer));
         }
         List<Card> cardsIngame =  splendorGameConfig.getCards().stream()
-                .map(card -> Card.builder()
-                        .id(card.getId())
-                        .type(card.getType())
-                        .level(card.getLevel())
-                        .score(card.getScore())
+                .map(cardConfig -> Card.builder()
+                        .id(cardConfig.getId())
+                        .type(cardConfig.getType())
+                        .level(cardConfig.getLevel())
+                        .score(cardConfig.getScore())
+                        .cost(CardCost.builder()
+                                .onyx(cardConfig.getCost().getOnyx())
+                                .ruby(cardConfig.getCost().getRuby())
+                                .emerald(cardConfig.getCost().getEmerald())
+                                .sapphire(cardConfig.getCost().getSapphire())
+                                .diamond(cardConfig.getCost().getDiamond())
+                                .build())
                         .build())
                 .toList();
         List<Noble> noblesIngame = splendorGameConfig.getNobles().stream()
-                .map(noble -> Noble.builder()
-                        .id(noble.getId())
-                        .score(noble.getScore())
+                .map(nobleConfig -> Noble.builder()
+                        .id(nobleConfig.getId())
+                        .score(nobleConfig.getScore())
+                        .cost(NobleCost.builder()
+                                .card0nyx(nobleConfig.getCost().getCardOnyx())
+                                .cardRuby(nobleConfig.getCost().getCardRuby())
+                                .cardEmerald(nobleConfig.getCost().getCardEmerald())
+                                .cardSapphire(nobleConfig.getCost().getCardSapphire())
+                                .cardDiamond(nobleConfig.getCost().getCardDiamond())
+                                .build())
                         .build())
                 .toList();
 
@@ -835,10 +849,29 @@ public class GameServiceImpl implements IGameService {
             log.error("turnBonusActionTakeNoble - Invalid noble - {} {} {}", gameId, userId, body.getNobleId());
             return R.failed("Invalid noble");
         }
+
+        // Player data ingame
+        IngamePlayerData playerData = splendorGame.getIngameData().getPlayers().stream()
+                .filter(ingamePlayerData -> Objects.equals(ingamePlayerData.getPlayerId(), userId))
+                .findFirst()
+                .orElse(null);
+        if (playerData == null) {
+            log.error("turnActionReserveCard - System error - {} {}", gameId, userId);
+            return R.failed("System error");
+        }
+
         if (splendorGame.getIngameData().getFieldNoble().stream()
                 .noneMatch(fieldNoble -> fieldNoble.getNoble() != null && Objects.equals(fieldNoble.getNoble().getId(), body.getNobleId()))) {
             log.error("turnBonusActionTakeNoble - Noble not found - {} {} {} {}", gameId, userId, body.getNobleId(), splendorGame.getIngameData());
             return R.failed("Noble not found");
+        }
+        if (playerData.getCardOnyx() < nobleData.getCost().getCard0nyx() ||
+                playerData.getCardRuby() < nobleData.getCost().getCardRuby() ||
+                playerData.getCardEmerald() < nobleData.getCost().getCardEmerald() ||
+                playerData.getCardSapphire() < nobleData.getCost().getCardSapphire() ||
+                playerData.getCardDiamond() < nobleData.getCost().getCardDiamond()) {
+            log.error("turnBonusActionTakeNoble - Not enough condition take noble - {} {} {} {}", gameId, userId, body.getNobleId(), playerData);
+            return R.failed("Not enough condition take noble");
         }
 
         //

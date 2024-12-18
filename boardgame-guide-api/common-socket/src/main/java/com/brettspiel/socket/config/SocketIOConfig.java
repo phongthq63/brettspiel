@@ -81,8 +81,12 @@ public class SocketIOConfig {
         config.setMaxHttpContentLength(maxHttpContentLength);
         config.setMaxFramePayloadLength(maxFramePayloadLength);
 //        config.setStoreFactory(new RedissonStoreFactory(redissonClient));
-        config.setExceptionListener(exceptionListener);
-        config.setAuthorizationListener(authorizationListener);
+        if (exceptionListener != null) {
+            config.setExceptionListener(exceptionListener);
+        }
+        if (authorizationListener != null) {
+            config.setAuthorizationListener(authorizationListener);
+        }
         config.setAddVersionHeader(true);
         config.setHttpCompression(true);
         config.setWebsocketCompression(true);

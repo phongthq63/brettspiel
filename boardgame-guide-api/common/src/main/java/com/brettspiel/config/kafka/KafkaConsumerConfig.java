@@ -1,6 +1,7 @@
 package com.brettspiel.config.kafka;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.confluent.kafka.serializers.json.KafkaJsonSchemaDeserializerConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -91,10 +92,10 @@ public class KafkaConsumerConfig {
         props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
 //        props.put(KafkaJsonSchemaDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
-//        props.put(KafkaJsonSchemaDeserializerConfig.AUTO_REGISTER_SCHEMAS, false);
-//        props.put(KafkaJsonSchemaDeserializerConfig.JSON_VALUE_TYPE, JsonNode.class.getName());
-//        props.put(KafkaJsonSchemaDeserializerConfig.FAIL_INVALID_SCHEMA, true);
-//        props.put(KafkaJsonSchemaDeserializerConfig.FAIL_UNKNOWN_PROPERTIES, false);
+        props.put(KafkaJsonSchemaDeserializerConfig.AUTO_REGISTER_SCHEMAS, false);
+        props.put(KafkaJsonSchemaDeserializerConfig.JSON_VALUE_TYPE, JsonNode.class.getName());
+        props.put(KafkaJsonSchemaDeserializerConfig.FAIL_INVALID_SCHEMA, true);
+        props.put(KafkaJsonSchemaDeserializerConfig.FAIL_UNKNOWN_PROPERTIES, false);
 
         return new DefaultKafkaConsumerFactory<>(props);
     }

@@ -1,8 +1,8 @@
-import React, {createContext, useContext, useState} from "react";
+import React, {createContext, useContext} from "react";
 
-const IngameContext = createContext(undefined);
+const IngameContext = createContext<any>(undefined);
 
-export const IngameSplendorProvider = ({children}) => {
+export const IngameSplendorProvider = ({children}: any) => {
     return (
         <IngameContext.Provider value={{}}>
             {children}

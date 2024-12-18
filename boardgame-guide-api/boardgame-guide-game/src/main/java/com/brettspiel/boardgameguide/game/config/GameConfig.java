@@ -1,7 +1,7 @@
 package com.brettspiel.boardgameguide.game.config;
 
 import cn.hutool.json.JSONUtil;
-import com.brettspiel.boardgameguide.game.entity.config.Game;
+import com.brettspiel.boardgameguide.game.vo.Game;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

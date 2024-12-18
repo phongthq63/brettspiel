@@ -8,6 +8,7 @@ import {CARDS} from "../constants/card";
 import {NOBLES} from "../constants/noble";
 import {OrbitControls} from "@react-three/drei";
 import {Floor} from "./Floor";
+import {TableService} from "@/games/splendor/service/splendor.service";
 
 
 const CARD_POSITION = {
@@ -163,11 +164,11 @@ const GEM_POSITION = {
 interface INoble {
     id: string,
     url: string,
-    position: number[3]
+    position: [number, number, number]
 }
 
 interface IFieldNoble {
-    position: number[]
+    position: [number, number, number]
     noble?: INoble
 }
 
@@ -175,12 +176,12 @@ interface ICard {
     id: string,
     type: string,
     level: number
-    url: number[3]
-    position: number[3]
+    url: string
+    position: [number, number, number]
 }
 
 interface IFieldCard {
-    position: number[3]
+    position: [number, number, number]
     card?: ICard
 }
 
@@ -201,7 +202,7 @@ interface IIngameData {
     diamond: number
 }
 
-let ingameData : IIngameData = {
+const ingameData : IIngameData = {
     deskNoble: [],
     fieldNoble: Array.from({ length: 5 }, (_, i) => i)
         .map(index => {
@@ -231,6 +232,10 @@ let ingameData : IIngameData = {
                         position: [NOBLE_POSITION.position5.x, NOBLE_POSITION.position5.y, NOBLE_POSITION.position5.z],
                         noble: undefined
                     };
+                default:
+                    return {
+                        position: [0, 0, 0]
+                    };
             }
         }),
     deskCardLevel1: [],
@@ -256,6 +261,10 @@ let ingameData : IIngameData = {
                     return {
                         position: [CARD_POSITION.level1.position4.x, CARD_POSITION.level1.position4.y, CARD_POSITION.level1.position4.z],
                         card: undefined
+                    };
+                default:
+                    return {
+                        position: [0, 0, 0]
                     };
             }
         }),
@@ -283,6 +292,10 @@ let ingameData : IIngameData = {
                         position: [CARD_POSITION.level2.position4.x, CARD_POSITION.level2.position4.y, CARD_POSITION.level2.position4.z],
                         card: undefined
                     };
+                default:
+                    return {
+                        position: [0, 0, 0]
+                    };
             }
         }),
     deskCardLevel3: [],
@@ -309,6 +322,10 @@ let ingameData : IIngameData = {
                         position: [CARD_POSITION.level3.position4.x, CARD_POSITION.level3.position4.y, CARD_POSITION.level3.position4.z],
                         card: undefined
                     };
+                default:
+                    return {
+                        position: [0, 0, 0]
+                    };
             }
         }),
     gold: 0,
@@ -320,15 +337,19 @@ let ingameData : IIngameData = {
 };
 
 export function IngameScene() {
-    const [serverData, setServerData] = useState({});
+    const [, setServerData] = useState({});
     const [gameStatus, setGameStatus] = useState<string>("init");
 
-    const cardRefs = useRef({});
-    const nobleRefs = useRef({});
+    const cardRefs = useRef<any>({});
+    const nobleRefs = useRef<any>({});
 
 
     useEffect(() => {
         // Call server to get data
+        TableService.getListTableInfo()
+            .then(r => {
+                console.log(r.data);
+            })
         setServerData({
             deskNoble: NOBLES,
             deskCardLevel1: CARDS.filter(card => card.level == 1),
@@ -481,20 +502,20 @@ export function IngameScene() {
         ingameData.deskCardLevel3 = ingameData.deskCardLevel3.filter(card => !card3Opens.some(cardOpen => cardOpen.id == card.id));
     };
 
-    const shuffleDeckNoble = (): AnimationTimeline => {
+    const shuffleDeckNoble = () => {
         const timelineDesk = gsap.timeline();
 
         ingameData.deskNoble.forEach((item, index) => {
             timelineDesk.add(gsap.timeline()
-                .to(nobleRefs.current[item.id].position, {
+                .to(nobleRefs.current[item.id]?.position, {
                     z: 0.5 + index * CARD_NOBLE_SIZE.depth,
                     duration: 0.5
                 }, 0)
-                .to(nobleRefs.current[item.id].rotation, {
+                .to(nobleRefs.current[item.id]?.rotation, {
                     y: Math.PI,
                     duration: 0.25
                 }, 0)
-                .to(nobleRefs.current[item.id].position, {
+                .to(nobleRefs.current[item.id]?.position, {
                     z: (ingameData.deskNoble.length - index) * CARD_NOBLE_SIZE.depth,
                     duration: 0.35
                 }), 0)
@@ -502,19 +523,19 @@ export function IngameScene() {
         return timelineDesk
     };
 
-    const shuffleDeckCard = (deskCard: ICard[]): AnimationTimeline | undefined => {
+    const shuffleDeckCard = (deskCard: ICard[]) => {
         const timelineDesk = gsap.timeline();
         deskCard.forEach((item, index) => {
             timelineDesk.add(gsap.timeline()
-                .to(cardRefs.current[item.id].position, {
+                .to(cardRefs.current[item.id]?.position, {
                     z: 0.5 + index * CARD_GEM_SIZE.depth,
                     duration: 0.5
                 }, 0)
-                .to(cardRefs.current[item.id].rotation, {
+                .to(cardRefs.current[item.id]?.rotation, {
                     y: Math.PI,
                     duration: 0.25
                 }, 0)
-                .to(cardRefs.current[item.id].position, {
+                .to(cardRefs.current[item.id]?.position, {
                     z: deskCard.length * CARD_GEM_SIZE.depth - index * CARD_GEM_SIZE.depth,
                     duration: 0.35
                 }), 0);
@@ -522,7 +543,7 @@ export function IngameScene() {
         return timelineDesk;
     };
 
-    const openNoble = (nobleId, position: number[3]): AnimationTimeline => {
+    const openNoble = (nobleId: string, position: [number, number, number]) => {
         const endX = position[0];
         const startY = nobleRefs.current[nobleId].position.y;
         const endY = position[1];
@@ -552,7 +573,7 @@ export function IngameScene() {
             })
     };
 
-    const openCard = (cardId: string, position: number[3]): AnimationTimeline | undefined => {
+    const openCard = (cardId: string, position: [number, number, number]) => {
         const startX = cardRefs.current[cardId].position.x;
         const endX = position[0];
         const endY = position[1];
@@ -591,22 +612,22 @@ export function IngameScene() {
             <GameBoard position={[0, 0, -BoardSize.depth/2]} />
             <group>
                 {
-                    ingameData.deskCardLevel3.map((item, index) => {
-                        return <CardGemLevel3 key={item.id} cardRef={(element) => (cardRefs.current[item.id] = element)} url={item.url} position={item.position} />
+                    ingameData.deskCardLevel3.map((item) => {
+                        return <CardGemLevel3 key={item.id} cardRef={(element: any) => (cardRefs.current[item.id] = element)} url={item.url} position={item.position} />
                     })
                 }
             </group>
             <group>
                 {
-                    ingameData.deskCardLevel2.map((item, index) => {
-                        return <CardGemLevel2 key={item.id} cardRef={(element) => (cardRefs.current[item.id] = element)} url={item.url} position={item.position} />
+                    ingameData.deskCardLevel2.map((item) => {
+                        return <CardGemLevel2 key={item.id} cardRef={(element: any) => (cardRefs.current[item.id] = element)} url={item.url} position={item.position} />
                     })
                 }
             </group>
             <group>
                 {
-                    ingameData.deskCardLevel1.map((item, index) => {
-                        return <CardGemLevel1 key={item.id} cardRef={(element) => (cardRefs.current[item.id] = element)} url={item.url} position={item.position} />
+                    ingameData.deskCardLevel1.map((item) => {
+                        return <CardGemLevel1 key={item.id} cardRef={(element: any) => (cardRefs.current[item.id] = element)} url={item.url} position={item.position} />
                     })
                 }
             </group>
@@ -651,8 +672,8 @@ export function IngameScene() {
 
             <group>
                 {
-                    ingameData.deskNoble.map((item, index) => {
-                        return <CardNoble key={item.id} cardRef={(element) => (nobleRefs.current[item.id] = element)} url={item.url} position={item.position}/>
+                    ingameData.deskNoble.map((item) => {
+                        return <CardNoble key={item.id} cardRef={(element: any) => nobleRefs.current[item.id] = element} url={item.url} position={item.position}/>
                     })
                 }
             </group>

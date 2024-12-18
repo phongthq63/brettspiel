@@ -1,7 +1,7 @@
 package com.brettspiel.boardgameguide.splendor.service.impl;
 
 import com.brettspiel.boardgameguide.splendor.constant.TableConstants;
-import com.brettspiel.boardgameguide.splendor.controller.dto.request.CreateNewGameRequest;
+import com.brettspiel.boardgameguide.splendor.controller.dto.request.CreateNewTableRequest;
 import com.brettspiel.boardgameguide.splendor.dto.SplendorTableDTO;
 import com.brettspiel.boardgameguide.splendor.entity.SplendorTable;
 import com.brettspiel.boardgameguide.splendor.mapper.ITableMapper;
@@ -35,7 +35,7 @@ public class TableServiceImpl implements ITableService {
 
 
     @Override
-    public R<SplendorTableDTO> createNewGame(String userId, CreateNewGameRequest body) {
+    public R<SplendorTableDTO> createNewTable(String userId, CreateNewTableRequest body) {
         if (!gameUtils.getNumberPlayerAvailable().contains(body.getNumberPlayer())) {
             return R.ok("Number player invalid");
         }

@@ -13,6 +13,8 @@ public class NobleConfig {
 
     private Integer score;
 
+    private NobleCostConfig cost;
+
     private String imageFrontUrl;
 
     private String imageBackUrl;

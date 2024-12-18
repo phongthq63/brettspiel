@@ -39,36 +39,36 @@ public class IngamePlayerData {
     private int gold = 0;
 
     @Builder.Default
-    @Field("floor_onyx")
-    private int floorOnyx = 0;
+    @Field("card_onyx")
+    private int cardOnyx = 0;
 
     @Builder.Default
     private int onyx = 0;
 
     @Builder.Default
-    @Field("floor_ruby")
-    private int floorRuby = 0;
+    @Field("card_ruby")
+    private int cardRuby = 0;
 
     @Builder.Default
     private int ruby = 0;
 
     @Builder.Default
-    @Field("floor_emerald")
-    private int floorEmerald = 0;
+    @Field("card_emerald")
+    private int cardEmerald = 0;
 
     @Builder.Default
     private int emerald = 0;
 
     @Builder.Default
-    @Field("floor_sapphire")
-    private int floorSapphire = 0;
+    @Field("card_sapphire")
+    private int cardSapphire = 0;
 
     @Builder.Default
     private int sapphire = 0;
 
     @Builder.Default
-    @Field("floor_diamond")
-    private int floorDiamond = 0;
+    @Field("card_diamond")
+    private int cardDiamond = 0;
 
     @Builder.Default
     private int diamond = 0;

@@ -17,4 +17,6 @@ public class Noble {
 
     private Integer score;
 
+    private NobleCost cost;
+
 }

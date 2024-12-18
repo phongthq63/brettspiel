@@ -42,7 +42,7 @@ public class ISplendorTableRepositoryImpl implements ICustomSplendorTableReposit
     @Override
     public List<SplendorTable> getList(Integer page, Integer size) {
         Query query = new Query();
-        query.skip((long) (page - 1) * size);
+        query.skip((long) page * size);
         query.limit(size);
 
         return mongoTemplate.find(query, SplendorTable.class);

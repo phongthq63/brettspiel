@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class StartGameRequest extends BaseRequest {
+public class InitGameRequest extends BaseRequest {
 
     @NotBlank
     @Schema(description = "Id bàn chơi", requiredMode = Schema.RequiredMode.REQUIRED, example = "6a83v1ac1a68sgva03cs0a3sc1")

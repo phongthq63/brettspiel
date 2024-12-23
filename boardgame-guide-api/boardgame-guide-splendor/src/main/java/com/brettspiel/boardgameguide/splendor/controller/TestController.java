@@ -113,16 +113,4 @@ public class TestController {
         return mongoTemplate.findAndModify(query, update, findAndModifyOptions, SplendorGame.class);
     }
 
-    @RetryableTopic(
-            attempts = "${spring.kafka.consumer.retry}",
-            backoff = @Backoff(delay = 60000),
-            topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
-            sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC)
-    @KafkaListener(
-            topics = { SocketConstants.TOPIC_PUBLISH_MESSAGE_ALL },
-            groupId = "${spring.kafka.consumer.groupId:common}.SocketAssist",
-            autoStartup = "#{!socketAssist.socketMessageAllHandlers.isEmpty()}")
-    public void processMessageAll(Map<String, Object> data) throws Exception {
-//        socketMessageAllHandlers.forEach(socketMessageAllHandler -> socketMessageAllHandler.handlerMessage(data));
-    }
 }

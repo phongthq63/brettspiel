@@ -29,42 +29,43 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response) => response,
     async (error) => {
-        const requestConfig = error.config
-        if (error.response && error.response.status === 401 && !requestConfig._retry) {
-            requestConfig._retry = true
-
-            await wait(1000)
-
-            return instance(requestConfig)
-
-            // location.replace('/login')
-            // return axios
-            //   .post('/auth/refresh-token', {
-            //     refreshToken: getRefeshToken()
-            //   })
-            //   .then((res) => {
-            //     // console.log('res', res.status, res.data);
-            //     if (res.status === 201 || res.status === 200) {
-            //       // 1) put token to LocalStorage
-            //       const { token } = res.data
-            //       setAccessToken(token)
-
-            //       // 2) Change Authorization header
-            //       axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
-
-            //       // 3) return originalRequest object with Axios.
-            //       return axios(originalRequest)
-            //     }
-            //     throw new Error("Can't refesh token.")
-            //   })
-            //   .catch((err) => {
-            //     clearAuth()
-            //     location.replace('/login')
-            //     console.error('err', err)
-            //   })
-        } else {
-            return Promise.reject(error)
-        }
+        // const requestConfig = error.config
+        // if (error.response && error.response.status === 401 && !requestConfig._retry) {
+        //     requestConfig._retry = true
+        //
+        //     await wait(1000)
+        //
+        //     return instance(requestConfig)
+        //
+        //     // location.replace('/login')
+        //     // return axios
+        //     //   .post('/auth/refresh-token', {
+        //     //     refreshToken: getRefeshToken()
+        //     //   })
+        //     //   .then((res) => {
+        //     //     // console.log('res', res.status, res.data);
+        //     //     if (res.status === 201 || res.status === 200) {
+        //     //       // 1) put token to LocalStorage
+        //     //       const { token } = res.data
+        //     //       setAccessToken(token)
+        //
+        //     //       // 2) Change Authorization header
+        //     //       axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+        //
+        //     //       // 3) return originalRequest object with Axios.
+        //     //       return axios(originalRequest)
+        //     //     }
+        //     //     throw new Error("Can't refesh token.")
+        //     //   })
+        //     //   .catch((err) => {
+        //     //     clearAuth()
+        //     //     location.replace('/login')
+        //     //     console.error('err', err)
+        //     //   })
+        // } else {
+        //     return Promise.reject(error)
+        // }
+        return Promise.reject(error)
     }
 )
 

@@ -35,17 +35,17 @@ public class CustomSecurityContextRepository implements SecurityContextRepositor
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
         String token;
         // Check in cookie
-        if (requestResponseHolder.getRequest().getCookies() != null) {
-            token = Arrays.stream(requestResponseHolder.getRequest().getCookies())
-                    .filter(cookie -> cookie.getName().equals("access-token"))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .orElse(null);
-            if (token != null) {
-                Authentication auth = new UsernamePasswordAuthenticationToken(token, token);
-                return new SecurityContextImpl(this.authenticationManager.authenticate(auth));
-            }
-        }
+//        if (requestResponseHolder.getRequest().getCookies() != null) {
+//            token = Arrays.stream(requestResponseHolder.getRequest().getCookies())
+//                    .filter(cookie -> cookie.getName().equals("access-token"))
+//                    .findFirst()
+//                    .map(Cookie::getValue)
+//                    .orElse(null);
+//            if (token != null && !token.isBlank()) {
+//                Authentication auth = new UsernamePasswordAuthenticationToken(token, token);
+//                return new SecurityContextImpl(this.authenticationManager.authenticate(auth));
+//            }
+//        }
 
         // Check in header
         token = requestResponseHolder.getRequest().getHeader(HttpHeaders.AUTHORIZATION);

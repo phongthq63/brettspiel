@@ -346,10 +346,6 @@ export function IngameScene() {
 
     useEffect(() => {
         // Call server to get data
-        TableService.getListTableInfo()
-            .then(r => {
-                console.log(r.data);
-            })
         setServerData({
             deskNoble: NOBLES,
             deskCardLevel1: CARDS.filter(card => card.level == 1),
@@ -545,9 +541,9 @@ export function IngameScene() {
 
     const openNoble = (nobleId: string, position: [number, number, number]) => {
         const endX = position[0];
-        const startY = nobleRefs.current[nobleId].position.y;
+        const startY = nobleRefs.current[nobleId]?.position.y;
         const endY = position[1];
-        const startZ = nobleRefs.current[nobleId].position.z;
+        const startZ = nobleRefs.current[nobleId]?.position.z;
         const endZ = position[2];
         const peakHeight = 1.2;
 
@@ -558,7 +554,7 @@ export function IngameScene() {
                 duration: 0.6,
                 ease: "power1.out",
                 onUpdate: () => {
-                    const currentY = nobleRefs.current[nobleId].position.y;
+                    const currentY = nobleRefs.current[nobleId]?.position.y;
                     nobleRefs.current[nobleId].position.z = (startZ - peakHeight) / Math.pow((startY + endY) / 2 - startY, 2) * Math.pow(currentY - (startY + endY) / 2, 2) + peakHeight;
                 }
             })
@@ -588,7 +584,7 @@ export function IngameScene() {
                 duration: 0.5,
                 ease: "power1.out",
                 onUpdate: () => {
-                    const currentX = cardRefs.current[cardId].position.x;
+                    const currentX = cardRefs.current[cardId]?.position.x;
                     cardRefs.current[cardId].position.z = (startZ - peakHeight) / Math.pow((startX + endX) / 2 - startX, 2) * Math.pow(currentX - (startX + endX) / 2, 2) + peakHeight
                 }
             }, 0)

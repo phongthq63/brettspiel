@@ -2,8 +2,6 @@ package com.brettspiel.boardgameguide.socket.handler;
 
 import com.brettspiel.socket.handler.BaseHandler;
 import com.brettspiel.socket.model.SocketModel;
-import com.brettspiel.socket.service.ISocketIOMessageService;
-import com.brettspiel.socket.service.ISocketIOPubSubService;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.annotation.OnConnect;
@@ -19,10 +17,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class TestHandler extends BaseHandler<SocketModel<?>> {
-
-    public TestHandler(ISocketIOMessageService socketIOMessageService, ISocketIOPubSubService socketIOPubSubService) {
-        super(socketIOMessageService, socketIOPubSubService);
-    }
 
     @OnEvent("test")
     @Override

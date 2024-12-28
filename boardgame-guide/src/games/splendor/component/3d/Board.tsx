@@ -8,12 +8,13 @@ export const BoardSize = {
     depth: 0.25
 };
 
-interface IGameBoard {
+interface IBoard {
     position?: [number, number, number]
 }
 
-export function GameBoard({...props}: IGameBoard) {
+function Board({...props}: IBoard) {
     const texture = useLoader(THREE.TextureLoader, "/game/splendor/board.jpg");
+
     return (
         <group>
             <mesh {...props}>
@@ -34,3 +35,5 @@ export function GameBoard({...props}: IGameBoard) {
         </group>
     )
 }
+
+export default Board;

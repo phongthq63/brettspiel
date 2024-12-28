@@ -5,11 +5,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by Quach Thanh Phong
  * On 7/3/2023 - 4:27 PM
  */
+@Slf4j
 public class JsonHelper {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -21,15 +23,25 @@ public class JsonHelper {
     }
 
 
-    public static String toJson(Object object) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(object);
+    public static String toJson(Object object) {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            log.error("JsonHelper - toJson - Error", e);
+            return null;
+        }
     }
 
-    public static <T> T toObject(String json, Class<T> tClass) throws JsonProcessingException {
-        return objectMapper.readValue(json, tClass);
+    public static <T> T toObject(String json, Class<T> tClass) {
+        try {
+            return objectMapper.readValue(json, tClass);
+        } catch (JsonProcessingException e) {
+            log.error("JsonHelper - toObject - Error", e);
+            return null;
+        }
     }
 
-    public static <T> T convertObject(Object object, Class<T> tClass) throws JsonProcessingException {
+    public static <T> T convertObject(Object object, Class<T> tClass) {
         return objectMapper.convertValue(object, tClass);
     }
 

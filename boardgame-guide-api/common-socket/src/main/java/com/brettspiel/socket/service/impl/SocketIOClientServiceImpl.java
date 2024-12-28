@@ -31,7 +31,7 @@ public class SocketIOClientServiceImpl implements ISocketIOClientService {
     @Override
     public void onConnect(SocketIOClient socketIOClient) {
         String id = ClientHelper.getClientId(socketIOClient);
-        log.info("SocketIO[{}] - OnConnect - ID: {} - Session: {}", id, id, socketIOClient.getSessionId());
+        log.info("SocketIO - OnConnect - ID: {} - Session: {}", id, socketIOClient.getSessionId());
 
         if (id != null && !id.isEmpty()) {
             //Group client connect by id
@@ -45,13 +45,13 @@ public class SocketIOClientServiceImpl implements ISocketIOClientService {
             clientMap.put(id, socketIOClients);
         }
 
-        log.info("SocketIO[{}] - OnConnect - Connect Success - ID: {} - Session: {} - {}", id, id, socketIOClient.getSessionId(), clientMap.size());
+        log.info("SocketIO - OnConnect - Connect Success - ID: {} - Session: {} - {}", id, socketIOClient.getSessionId(), clientMap.size());
     }
 
     @Override
     public void onDisconnect(SocketIOClient socketIOClient) {
         String id = ClientHelper.getClientId(socketIOClient);
-        log.info("SocketIO[{}] - OnDisconnect - ID: {} - Session: {}", id, id, socketIOClient.getSessionId());
+        log.info("SocketIO - OnDisconnect - ID: {} - Session: {}", id, socketIOClient.getSessionId());
 
         if (id != null && !id.isEmpty()) {
             Map<UUID, SocketIOClient> socketIOClients = clientMap.get(id);

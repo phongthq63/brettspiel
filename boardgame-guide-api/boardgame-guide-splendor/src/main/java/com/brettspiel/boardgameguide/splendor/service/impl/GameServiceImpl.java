@@ -2,6 +2,7 @@ package com.brettspiel.boardgameguide.splendor.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.brettspiel.assist.SocketAssist;
+import com.brettspiel.boardgameguide.constant.ServiceConstants;
 import com.brettspiel.boardgameguide.splendor.constant.GameConstants;
 import com.brettspiel.boardgameguide.splendor.controller.dto.request.*;
 import com.brettspiel.boardgameguide.splendor.dto.SplendorGameDTO;
@@ -49,6 +50,9 @@ public class GameServiceImpl implements IGameService {
     public R<SplendorGameDTO> initGame(String userId, InitGameRequest body) {
         // Get from db
         SplendorTable splendorTable = splendorTableRepository.getByIdAndHost(body.getTableId(), userId);
+        if (splendorTable == null) {
+            return R.failed("Table not found");
+        }
         if (!Objects.equals(splendorTable.getHostId(), userId)) {
             log.error("initGame - You is not host - {} {} | {}", body.getTableId(), userId, splendorTable.getHostId());
             return R.failed("You is not host");
@@ -170,9 +174,10 @@ public class GameServiceImpl implements IGameService {
         // Notify to all user in table
         SplendorTable finalSplendorTable = splendorTable;
         SplendorGame finalSplendorGame = splendorGame;
-        socketAssist.sendMessageToUsers(splendorTable.getUserIds(), new HashMap<>() {
+        socketAssist.broadcastMessageToRoom(splendorTable.getTableId(), new HashMap<>() {
             {
-                put("event", GameConstants.EVENT_INIT_GAME);
+                put("service_type", ServiceConstants.SERVICE_GAME_SPLENDOR);
+                put("event_type", GameConstants.EVENT_INIT_GAME);
                 put("game_id", finalSplendorGame.getGameId());
                 put("table_id", finalSplendorTable.getTableId());
                 put("player_ids", finalSplendorGame.getPlayerIds());
@@ -248,7 +253,8 @@ public class GameServiceImpl implements IGameService {
         SplendorGame finalSplendorGame = splendorGame;
         socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
             {
-                put("event", GameConstants.EVENT_START_GAME);
+                put("service_type", ServiceConstants.SERVICE_GAME_SPLENDOR);
+                put("event_type", GameConstants.EVENT_START_GAME);
                 put("game_id", finalSplendorGame.getGameId());
                 put("table_id", finalSplendorGame.getTableId());
                 put("player_ids", finalSplendorGame.getPlayerIds());
@@ -326,7 +332,8 @@ public class GameServiceImpl implements IGameService {
         List<String> fieldCard3 = cardIdDeck3 == null ? new ArrayList<>() : List.of(cardIdDeck3);
         socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
             {
-                put("event", GameConstants.EVENT_START_TURN);
+                put("service_type", ServiceConstants.SERVICE_GAME_SPLENDOR);
+                put("event_type", GameConstants.EVENT_START_TURN);
                 put("game_id", finalSplendorGame.getGameId());
                 put("table_id", finalSplendorGame.getTableId());
                 put("player_ids", finalSplendorGame.getPlayerIds());
@@ -371,7 +378,8 @@ public class GameServiceImpl implements IGameService {
         SplendorGame finalSplendorGame = splendorGame;
         socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
             {
-                put("event", GameConstants.EVENT_END_TURN);
+                put("service_type", ServiceConstants.SERVICE_GAME_SPLENDOR);
+                put("event_type", GameConstants.EVENT_END_TURN);
                 put("game_id", finalSplendorGame.getGameId());
                 put("table_id", finalSplendorGame.getTableId());
                 put("player_id", userId);
@@ -406,7 +414,8 @@ public class GameServiceImpl implements IGameService {
         // Notify all user in game
         socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
             {
-                put("event", GameConstants.EVENT_TURN_ACTION_SKIP);
+                put("service_type", ServiceConstants.SERVICE_GAME_SPLENDOR);
+                put("event_type", GameConstants.EVENT_TURN_ACTION_SKIP);
                 put("game_id", splendorGame.getGameId());
                 put("table_id", splendorGame.getTableId());
                 put("player_id", userId);
@@ -499,7 +508,8 @@ public class GameServiceImpl implements IGameService {
         SplendorGame finalSplendorGame = splendorGame;
         socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
             {
-                put("event", GameConstants.EVENT_TURN_ACTION_GATHER_GEM);
+                put("service_type", ServiceConstants.SERVICE_GAME_SPLENDOR);
+                put("event_type", GameConstants.EVENT_TURN_ACTION_GATHER_GEM);
                 put("game_id", finalSplendorGame.getGameId());
                 put("table_id", finalSplendorGame.getTableId());
                 put("player_id", userId);
@@ -629,7 +639,8 @@ public class GameServiceImpl implements IGameService {
         SplendorGame finalSplendorGame = splendorGame;
         socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
             {
-                put("event", GameConstants.EVENT_TURN_ACTION_BUY_CARD);
+                put("service_type", ServiceConstants.SERVICE_GAME_SPLENDOR);
+                put("event_type", GameConstants.EVENT_TURN_ACTION_BUY_CARD);
                 put("game_id", finalSplendorGame.getGameId());
                 put("table_id", finalSplendorGame.getTableId());
                 put("player_id", userId);
@@ -802,7 +813,8 @@ public class GameServiceImpl implements IGameService {
         List<String> fieldCard3 = cardIdField3 == null ? new ArrayList<>() : List.of(cardIdField3);
         socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
             {
-                put("event", GameConstants.EVENT_TURN_ACTION_RESERVE_CARD);
+                put("service_type", ServiceConstants.SERVICE_GAME_SPLENDOR);
+                put("event_type", GameConstants.EVENT_TURN_ACTION_RESERVE_CARD);
                 put("game_id", finalSplendorGame.getGameId());
                 put("table_id", finalSplendorGame.getTableId());
                 put("player_id", userId);
@@ -885,7 +897,8 @@ public class GameServiceImpl implements IGameService {
         SplendorGame finalSplendorGame = splendorGame;
         socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
             {
-                put("event", GameConstants.EVENT_TURN_BONUS_ACTION_TAKE_NOBLE);
+                put("service_type", ServiceConstants.SERVICE_GAME_SPLENDOR);
+                put("event_type", GameConstants.EVENT_TURN_BONUS_ACTION_TAKE_NOBLE);
                 put("game_id", finalSplendorGame.getGameId());
                 put("table_id", finalSplendorGame.getTableId());
                 put("player_id", userId);

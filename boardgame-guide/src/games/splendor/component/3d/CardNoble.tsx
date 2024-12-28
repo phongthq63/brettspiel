@@ -9,16 +9,28 @@ export const CARD_NOBLE_SIZE = {
 };
 
 interface ICardNoble {
-    url: string,
-    cardRef?: React.Ref<any>,
+    cardRef?: React.Ref<any>
+    url: string
+    onClick?: () => void
+    onClickNotThis?: () => void
     position?: any
+    rotation?: any
 }
 
-export function CardNoble({url, cardRef, ...props}: ICardNoble) {
+export function CardNoble({cardRef, url, onClick, onClickNotThis, ...props}: ICardNoble) {
     const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, "/game/splendor/noble/noble-back.jpg"]);
 
     return (
-        <mesh ref={cardRef} {...props}>
+        <mesh ref={cardRef}
+              onClick={(event) => {
+                  event.stopPropagation();
+                  onClick && onClick();
+              }}
+              onPointerMissed={(event) => {
+                  event.stopPropagation();
+                  onClickNotThis && onClickNotThis();
+              }}
+              {...props}>
             <boxGeometry args={[CARD_NOBLE_SIZE.width, CARD_NOBLE_SIZE.height, CARD_NOBLE_SIZE.depth]}/>
             <meshBasicMaterial attach="material-0" color={"gray"}/>
             {/*right*/}

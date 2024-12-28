@@ -16,4 +16,7 @@ public class NobleVO extends BaseVO {
     @Schema(description = "Id quý tộc", example = "6739e14204ef47479a814e5b")
     private String id;
 
+    @Schema(description = "Giá")
+    private NobleCostVO cost;
+
 }

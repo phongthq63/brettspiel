@@ -1,4 +1,4 @@
-package com.brettspiel.boardgameguide.socket.handler.servicemessage;
+package com.brettspiel.boardgameguide.socket.consumer.servicemessage;
 
 import com.brettspiel.assist.SocketAssist;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +12,11 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class ServiceMessageUserHandler implements SocketAssist.ISocketMessageUserHandler {
+public class ServiceMessageUsersConsumer implements SocketAssist.ISocketMessageUsersHandler {
 
     @Override
     public void handlerMessage(Map<String, Object> data) {
-        log.info("ServiceMessageUserHandler - handlerMessage - {}", data);
+        log.info("ServiceMessageUsersHandler - handlerMessage - {}", data);
     }
 
 }

@@ -22,4 +22,7 @@ public class CardVO extends BaseVO {
     @Schema(description = "Cấp", example = "1")
     private Integer level;
 
+    @Schema(description = "Giá")
+    private CardCostVO cost;
+
 }

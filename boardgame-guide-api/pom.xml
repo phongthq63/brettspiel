@@ -6,11 +6,12 @@
     <packaging>pom</packaging>
     <modules>
         <module>common</module>
+        <module>common-socket</module>
         <module>boardgame-guide-gateway</module>
         <module>boardgame-guide-socket</module>
-        <module>common-socket</module>
         <module>boardgame-guide-splendor</module>
         <module>boardgame-guide-game</module>
+        <module>boardgame-guide-base</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

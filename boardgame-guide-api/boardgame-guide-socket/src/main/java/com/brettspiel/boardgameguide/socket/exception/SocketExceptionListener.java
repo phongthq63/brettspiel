@@ -1,4 +1,4 @@
-package com.brettspiel.boardgameguide.socket.excaption;
+package com.brettspiel.boardgameguide.socket.exception;
 
 import com.brettspiel.socket.helper.ClientHelper;
 import com.corundumstudio.socketio.SocketIOClient;

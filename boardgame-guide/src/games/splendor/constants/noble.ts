@@ -45,3 +45,8 @@ export const NOBLES : ICardNobleProps[] = [
         url: "/game/splendor/noble/noble_4w4b.jpg"
     }
 ];
+
+export const DICT_NOBLE = NOBLES.reduce((dict: { [id: string] : ICardNobleProps }, item) => {
+    dict[item.id] = item;
+    return dict
+}, {})

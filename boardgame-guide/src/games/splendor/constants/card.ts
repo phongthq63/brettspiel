@@ -11,7 +11,6 @@ interface ICardGemProps {
     type: CardGemType
     level: number
     url: string
-    position?: []
 }
 
 export const CARDS : ICardGemProps[] = [
@@ -551,6 +550,11 @@ export const CARDS : ICardGemProps[] = [
         url: '/game/splendor/card/3/sapphire_3335.jpg'
     }
 ];
+
+export const DICT_CARD = CARDS.reduce((dict: { [id: string] : ICardGemProps }, item) => {
+    dict[item.id] = item;
+    return dict
+}, {})
 
 export const CARD_BACKSIDE_LEVEL_1 = '/game/splendor/card/1/card1-back.jpg';
 export const CARD_BACKSIDE_LEVEL_2 = '/game/splendor/card/2/card2-back.jpg';

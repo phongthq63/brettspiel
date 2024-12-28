@@ -34,7 +34,7 @@ public class SocketAssist {
 
 
 
-    public void sendMessageToUser(String userId, Map<String, Object> data) {
+    public void broadcastMessageToUser(String userId, Map<String, Object> data) {
         Map<String, Object> socketData = new HashMap<>();
         socketData.put("user_id", userId);
         socketData.put("data", data);
@@ -42,7 +42,7 @@ public class SocketAssist {
         kafkaTemplate.send(SocketConstants.TOPIC_PUBLISH_MESSAGE_USER, IdGenerator.nextUUID(), socketData);
     }
 
-    public void sendMessageToUsers(List<String> userIds, Map<String, Object> data) {
+    public void broadcastMessageToUsers(List<String> userIds, Map<String, Object> data) {
         Map<String, Object> socketData = new HashMap<>();
         socketData.put("user_ids", userIds);
         socketData.put("data", data);

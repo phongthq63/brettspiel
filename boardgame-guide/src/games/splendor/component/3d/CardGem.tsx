@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import React from "react";
 import {useLoader} from "@react-three/fiber";
-import {CARD_BACKSIDE_LEVEL_1, CARD_BACKSIDE_LEVEL_2, CARD_BACKSIDE_LEVEL_3} from "../constants/card";
+import {CARD_BACKSIDE_LEVEL_1, CARD_BACKSIDE_LEVEL_2, CARD_BACKSIDE_LEVEL_3} from "../../constants/card";
 
 const CardRealSize = {
     width: 63.5,
@@ -15,16 +15,23 @@ export const CARD_GEM_SIZE = {
 };
 
 interface ICardGem {
-    url: string,
-    cardRef?: React.Ref<any>,
+    cardRef?: React.Ref<any>
+    url: string
+    onClick?: () => void
     position?: any
+    rotation?: any
 }
 
-export function CardGemLevel1({url, cardRef, ...props}: ICardGem) {
+export function CardGemLevel1({cardRef, url, onClick, ...props}: ICardGem) {
     const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, CARD_BACKSIDE_LEVEL_1]);
 
     return (
-        <mesh ref={cardRef} {...props}>
+        <mesh ref={cardRef}
+              onClick={(event) => {
+                  event.stopPropagation();
+                  onClick && onClick();
+              }}
+              {...props}>
             <boxGeometry args={[CARD_GEM_SIZE.width, CARD_GEM_SIZE.height, CARD_GEM_SIZE.depth]}/>
             <meshBasicMaterial attach="material-0" color={"gray"}/>
             {/*right*/}
@@ -42,11 +49,16 @@ export function CardGemLevel1({url, cardRef, ...props}: ICardGem) {
     )
 }
 
-export function CardGemLevel2({url, cardRef, ...props}: ICardGem) {
+export function CardGemLevel2({url, cardRef, onClick, ...props}: ICardGem) {
     const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, CARD_BACKSIDE_LEVEL_2]);
 
     return (
-        <mesh ref={cardRef} {...props}>
+        <mesh ref={cardRef}
+              onClick={(event) => {
+                  event.stopPropagation();
+                  onClick && onClick();
+              }}
+              {...props}>
             <boxGeometry args={[CARD_GEM_SIZE.width, CARD_GEM_SIZE.height, CARD_GEM_SIZE.depth]}/>
             <meshBasicMaterial attach="material-0" color={"gray"}/>
             {/*right*/}
@@ -64,11 +76,16 @@ export function CardGemLevel2({url, cardRef, ...props}: ICardGem) {
     )
 }
 
-export function CardGemLevel3({url, cardRef, ...props}: ICardGem) {
+export function CardGemLevel3({url, cardRef, onClick, ...props}: ICardGem) {
     const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, CARD_BACKSIDE_LEVEL_3]);
 
     return (
-        <mesh ref={cardRef} {...props}>
+        <mesh ref={cardRef}
+              onClick={(event) => {
+                  event.stopPropagation();
+                  onClick && onClick();
+              }}
+              {...props} >
             <boxGeometry args={[CARD_GEM_SIZE.width, CARD_GEM_SIZE.height, CARD_GEM_SIZE.depth]}/>
             <meshBasicMaterial attach="material-0" color={"gray"}/>
             {/*right*/}

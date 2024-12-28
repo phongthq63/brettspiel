@@ -1,5 +1,4 @@
-import {IRequestOptions, serviceOptions} from "@/service/axios.service";
-import {SplendorTableDTO} from "../../../../generate";
+import {instanceSplendor, IRequestOptions, ServiceOptions} from "@/service/axios.service";
 
 
 export const basePath = '';
@@ -11,6 +10,11 @@ export interface IRequestConfig {
     data?: any;
     params?: any;
 }
+
+// Add default options
+export const serviceOptions: ServiceOptions = {
+    axios: instanceSplendor
+};
 
 // Instance selector
 export async function axios(configs: IRequestConfig, resolve: (p: any) => void, reject: (p: any) => void): Promise<any> {
@@ -390,7 +394,7 @@ export interface InitGameRequest {
 
 export interface CardVO {
     /** Id bài */
-    id?: string;
+    id: string;
 
     /** Loại */
     type?: string;
@@ -535,7 +539,7 @@ export interface IngamePlayerDataVO {
 
 export interface NobleVO {
     /** Id quý tộc */
-    id?: string;
+    id: string;
 }
 
 export interface RSplendorGameDTO {
@@ -570,6 +574,23 @@ export interface SplendorGameDTO {
 
     /**  */
     ingame_data?: IngameDataVO;
+}
+
+export interface SplendorTableDTO {
+    /** Id bàn */
+    table_id?: string;
+
+    /** Số lượng người chơi */
+    number_player?: number;
+
+    /** Danh sách id người chơi */
+    user_ids?: string[];
+
+    /** Trạng thái (0: chờ; 1: đang tìm người chơi; 2: trong game) */
+    status?: number;
+
+    /** Id chủ phòng */
+    host_id?: string;
 }
 
 export interface PageDTOSplendorTableDTO {

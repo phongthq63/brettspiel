@@ -1,5 +1,6 @@
 package com.brettspiel.socket.helper;
 
+import com.corundumstudio.socketio.HandshakeData;
 import com.corundumstudio.socketio.SocketIOClient;
 import org.springframework.http.HttpHeaders;
 
@@ -9,9 +10,22 @@ import org.springframework.http.HttpHeaders;
  */
 public class ClientHelper {
 
+    private final static String HEADER_CLIENT_ID = "AUTH-ID";
+
+
+
+    public static void setClientId(HandshakeData handshakeData, String clientId) {
+        handshakeData.getHttpHeaders().set(HEADER_CLIENT_ID, clientId);
+    }
+
     public static String getClientId(SocketIOClient client) {
         if (client == null) {
             return "";
+        }
+
+        String token = client.getHandshakeData().getHttpHeaders().get(HEADER_CLIENT_ID);
+        if (token != null) {
+            return token;
         }
         return client.getSessionId().toString();
     }

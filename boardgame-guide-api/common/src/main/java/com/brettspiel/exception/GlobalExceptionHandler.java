@@ -94,4 +94,12 @@ public class GlobalExceptionHandler {
         return R.failed(e.getMessage());
     }
 
+    @ExceptionHandler(value = RuntimeException.class)
+    @ResponseBody
+    public R<?> runtimeError(Exception e) {
+        e.printStackTrace();
+        log.error(e.getMessage());
+        return R.failed(e.getMessage());
+    }
+
 }

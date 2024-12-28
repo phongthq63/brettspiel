@@ -4,7 +4,7 @@ interface IFloor {
     position?: [number, number, number]
 }
 
-export function Floor({...props}: IFloor) {
+function Floor({...props}: IFloor) {
     return (
         <mesh {...props}>
             <planeGeometry args={[100, 100]}/>
@@ -12,3 +12,5 @@ export function Floor({...props}: IFloor) {
         </mesh>
     )
 }
+
+export default Floor;

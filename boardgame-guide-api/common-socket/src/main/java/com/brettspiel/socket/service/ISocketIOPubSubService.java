@@ -12,12 +12,16 @@ public interface ISocketIOPubSubService {
 
     void removePubSubStoreListener();
 
-    void publishUserPacket(String namespace, String event, String id, Object publishData);
+    void publishSystemJoinRoom(String namespace, String clientId, String roomId);
 
-    void publishUsersPacket(String namespace, String event, List<String> ids, Object publishData);
+    void publishSystemLeaveRoom(String namespace, String clientId, String roomId);
 
-    void publishRoomPacket(String namespace, String event, String roomId, Object publishData);
+    void publishUserMessage(String namespace, String event, String id, Object data);
 
-    void publishAllUserPacket(String namespace, String event, Object publishData);
+    void publishUsersMessage(String namespace, String event, List<String> ids, Object data);
+
+    void publishRoomMessage(String namespace, String event, String roomId, Object data);
+
+    void publishAllUserMessage(String namespace, String event, Object data);
 
 }

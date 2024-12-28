@@ -1,8 +1,10 @@
 package com.brettspiel.socket.service.impl;
 
 import com.brettspiel.socket.helper.JsonHelper;
+import com.brettspiel.socket.service.ISocketIOClientService;
 import com.brettspiel.socket.service.ISocketIOMessageService;
 import com.brettspiel.socket.service.ISocketIOPubSubService;
+import com.brettspiel.socket.service.ISocketIORoomService;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.protocol.Packet;
@@ -11,7 +13,6 @@ import com.corundumstudio.socketio.store.pubsub.DispatchMessage;
 import com.corundumstudio.socketio.store.pubsub.PubSubListener;
 import com.corundumstudio.socketio.store.pubsub.PubSubStore;
 import com.corundumstudio.socketio.store.pubsub.PubSubType;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
@@ -34,14 +35,22 @@ public class SocketIOPubSubServiceImpl implements ISocketIOPubSubService, PubSub
 
     private final SocketIOServer socketIOServer;
 
+    private final ISocketIOClientService socketIOClientService;
+
     private final ISocketIOMessageService socketIOMessageService;
+
+    private final ISocketIORoomService socketIORoomService;
 
 
     public SocketIOPubSubServiceImpl(SocketIOServer socketIOServer,
-                                     ISocketIOMessageService socketIOMessageService) {
-        this.socketIOServer = socketIOServer;
-        this.socketIOMessageService = socketIOMessageService;
+                                     ISocketIOClientService socketIOClientService,
+                                     ISocketIOMessageService socketIOMessageService,
+                                     ISocketIORoomService socketIORoomService) {
         this.pubSubStore = socketIOServer.getConfiguration().getStoreFactory().pubSubStore();
+        this.socketIOServer = socketIOServer;
+        this.socketIOClientService = socketIOClientService;
+        this.socketIOMessageService = socketIOMessageService;
+        this.socketIORoomService = socketIORoomService;
     }
 
     @Override
@@ -57,56 +66,88 @@ public class SocketIOPubSubServiceImpl implements ISocketIOPubSubService, PubSub
         pubSubStore.shutdown();
     }
 
-
     @Override
-    public void publishUserPacket(String namespace, String event, String id, Object publishData) {
+    public void publishSystemJoinRoom(String namespace, String clientId, String roomId) {
         Packet packet = new Packet(PacketType.MESSAGE);
         packet.setSubType(PacketType.EVENT);
         packet.setData(new HashMap<>(){
             {
+                put("t", "s-jr");
+                put("c", clientId);
+                put("r", roomId);
+            }
+        });
+        pubSubStore.publish(PubSubType.DISPATCH, new DispatchMessage("", packet, namespace));
+    }
+
+    @Override
+    public void publishSystemLeaveRoom(String namespace, String clientId, String roomId) {
+        Packet packet = new Packet(PacketType.MESSAGE);
+        packet.setSubType(PacketType.EVENT);
+        packet.setData(new HashMap<>(){
+            {
+                put("t", "s-lr");
+                put("c", clientId);
+                put("r", roomId);
+            }
+        });
+        pubSubStore.publish(PubSubType.DISPATCH, new DispatchMessage("", packet, namespace));
+    }
+
+
+    @Override
+    public void publishUserMessage(String namespace, String event, String id, Object data) {
+        Packet packet = new Packet(PacketType.MESSAGE);
+        packet.setSubType(PacketType.EVENT);
+        packet.setData(new HashMap<>(){
+            {
+                put("t", "u-m");
                 put("e", event);
                 put("i", id);
-                put("d", publishData);
+                put("d", data);
             }
         });
         pubSubStore.publish(PubSubType.DISPATCH, new DispatchMessage("", packet, namespace));
     }
 
     @Override
-    public void publishUsersPacket(String namespace, String event, List<String> ids, Object publishData) {
+    public void publishUsersMessage(String namespace, String event, List<String> ids, Object data) {
         Packet packet = new Packet(PacketType.MESSAGE);
         packet.setSubType(PacketType.EVENT);
         packet.setData(new HashMap<>(){
             {
+                put("t", "u-m");
                 put("e", event);
                 put("i", ids);
-                put("d", publishData);
+                put("d", data);
             }
         });
         pubSubStore.publish(PubSubType.DISPATCH, new DispatchMessage("", packet, namespace));
     }
 
     @Override
-    public void publishRoomPacket(String namespace, String event, String roomId, Object publishData) {
+    public void publishRoomMessage(String namespace, String event, String roomId, Object data) {
         Packet packet = new Packet(PacketType.MESSAGE);
         packet.setSubType(PacketType.EVENT);
         packet.setData(new HashMap<>(){
             {
+                put("t", "u-m");
                 put("e", event);
-                put("d", publishData);
+                put("d", data);
             }
         });
         pubSubStore.publish(PubSubType.DISPATCH, new DispatchMessage(roomId, packet, namespace));
     }
 
     @Override
-    public void publishAllUserPacket(String namespace, String event, Object publishData) {
+    public void publishAllUserMessage(String namespace, String event, Object data) {
         Packet packet = new Packet(PacketType.MESSAGE);
         packet.setSubType(PacketType.EVENT);
         packet.setData(new HashMap<>(){
             {
+                put("t", "u-m");
                 put("e", event);
-                put("d", publishData);
+                put("d", data);
             }
         });
         pubSubStore.publish(PubSubType.DISPATCH, new DispatchMessage("", packet, namespace));
@@ -115,15 +156,13 @@ public class SocketIOPubSubServiceImpl implements ISocketIOPubSubService, PubSub
     @Override
     public void onMessage(DispatchMessage dispatchMessage) {
         Packet packet = dispatchMessage.getPacket();
-        Map<String, Object> packetData;
-        try {
-            if (packet.getData() instanceof String) {
-                packetData = JsonHelper.toObject(packet.getData(), Map.class);
-            } else {
-                packetData = JsonHelper.convertObject(packet.getData(), Map.class);
-            }
-        } catch (JsonProcessingException e) {
-            log.info("PubSubStoreListener - Error -" + e);
+        Map packetData;
+        if (packet.getData() instanceof String) {
+            packetData = JsonHelper.toObject(packet.getData(), Map.class);
+        } else {
+            packetData = JsonHelper.convertObject(packet.getData(), Map.class);
+        }
+        if (packetData == null) {
             return;
         }
         log.info("PubSubStoreListener - ParseSuccess - {}", packetData);
@@ -131,30 +170,53 @@ public class SocketIOPubSubServiceImpl implements ISocketIOPubSubService, PubSub
         //Send message
         String namespace = dispatchMessage.getNamespace();
         String room = dispatchMessage.getRoom();
+        String type = packetData.get("t").toString();
         String event = packetData.get("e").toString();
-        Object id = packetData.get("i");
-        Object data = packetData.get("d");
 
-        if (!room.isEmpty()) {
-            //Send event to room
-            socketIOMessageService.sendMessageToRoom(namespace, room, event, data);
-            log.info("PubSubStoreListener - Room - {}: {}", room, socketIOServer.getRoomOperations(room).getClients().stream().map(SocketIOClient::getSessionId).collect(Collectors.toList()));
-        } else if (id != null) {
-            //Send event to user
-            if (id instanceof String) {
-                socketIOMessageService.sendMessageToUser(id.toString(), event, data);
-            } else if (id instanceof List) {
-                socketIOMessageService.sendMessageToUsers((List<String>) id, event, data);
-            } else {
-                throw new RuntimeException("Can't parser client id. ");
+        switch (type) {
+            case "s-jr":
+            {
+                Object clientId = packetData.get("c");
+                Object roomId = packetData.get("r");
+                List<SocketIOClient> socketIOClients = socketIOClientService.getListClientById(clientId.toString());
+                socketIOClients.forEach(socketIOClient -> socketIORoomService.joinRoom(socketIOClient, roomId.toString()));
+                break;
             }
-            log.info("PubSubStoreListener - User - {}", id);
-        } else {
-            //Send event to all user
-            socketIOMessageService.sendMessageToAllUsers(namespace, event, data);
-            log.info("PubSubStoreListener - ALL");
-        }
+            case "s-lr":
+            {
+                Object clientId = packetData.get("c");
+                Object roomId = packetData.get("r");
+                List<SocketIOClient> socketIOClients = socketIOClientService.getListClientById(clientId.toString());
+                socketIOClients.forEach(socketIOClient -> socketIORoomService.leaveRoom(socketIOClient, roomId.toString()));
+                break;
+            }
+            case "u-m":
+            {
+                Object id = packetData.get("i");
+                Object data = packetData.get("d");
 
+                if (!room.isEmpty()) {
+                    //Send event to room
+                    socketIOMessageService.sendMessageToRoom(namespace, room, event, data);
+                    log.info("PubSubStoreListener - Room - {}: {}", room, socketIOServer.getRoomOperations(room).getClients().stream().map(SocketIOClient::getSessionId).collect(Collectors.toList()));
+                } else if (id != null) {
+                    //Send event to user
+                    if (id instanceof String) {
+                        socketIOMessageService.sendMessageToUser(id.toString(), event, data);
+                    } else if (id instanceof List ids) {
+                        socketIOMessageService.sendMessageToUsers(ids, event, data);
+                    } else {
+                        throw new RuntimeException("Can't parser client id. ");
+                    }
+                    log.info("PubSubStoreListener - User - {}", id);
+                } else {
+                    //Send event to all user
+                    socketIOMessageService.sendMessageToAllUsers(namespace, event, data);
+                    log.info("PubSubStoreListener - ALL");
+                }
+                break;
+            }
+        }
     }
 
 }

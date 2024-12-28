@@ -13,6 +13,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+
 /**
  * Created by Quách Thanh Phong
  * On 7/3/2023 - 12:26 AM
@@ -92,7 +94,12 @@ public class SocketIOConfig {
         config.setWebsocketCompression(true);
         config.setSocketConfig(socketConfig);
 
-        return new SocketIOServer(config);
+        SocketIOServer socketIOServer = new SocketIOServer(config);
+        socketIOServer.addEventListener("binary-message", byte[].class, (client, data, ackRequest) -> {
+            System.out.println("Binary data received: " + Arrays.toString(data));
+            client.sendEvent("binary-response", data);
+        });
+        return socketIOServer;
     }
 
     @Bean

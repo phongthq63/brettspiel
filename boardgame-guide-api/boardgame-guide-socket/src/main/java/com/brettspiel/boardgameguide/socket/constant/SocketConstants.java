@@ -11,5 +11,9 @@ public class SocketConstants {
 
 
     public final static String NotifyGameSplendorInit = "NotifyGameSplendorInit";
+    public final static String NotifyGameSplendorStart = "NotifyGameSplendorStart";
+    public final static String NotifyGameSplendorTurnStart = "NotifyGameSplendorTurnStart";
+    public final static String NotifyGameSplendorTurnEnd = "NotifyGameSplendorTurnEnd";
+    public final static String NotifyGameSplendorActionGatherGem = "NotifyGameSplendorActionGatherGem";
 
 }

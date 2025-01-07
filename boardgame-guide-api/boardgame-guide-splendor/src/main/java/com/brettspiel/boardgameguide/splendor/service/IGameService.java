@@ -20,8 +20,6 @@ public interface IGameService {
 
     R<?> endTurn(String userId, String gameId);
 
-    R<?> turnActionSkip(String userId, String gameId);
-
     R<?> turnActionGatherGem(String userId, String gameId, TurnActionGatherGemRequest body);
 
     R<?> turnActionBuyCard(String userId, String gameId, TurnActionBuyCardRequest body);

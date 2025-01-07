@@ -209,7 +209,7 @@ public class GameServiceImpl implements IGameService {
         switch (splendorGame.getStatus()) {
             case GameConstants.STATUS_INIT:
                 break;
-            case GameConstants.STATUS_START:
+            case GameConstants.STATUS_PLAY:
                 log.error("startGame - Game have started - {} {}", gameId, userId);
                 return R.ok();
             case GameConstants.STATUS_END:
@@ -284,7 +284,7 @@ public class GameServiceImpl implements IGameService {
             case GameConstants.STATUS_INIT:
                 log.error("startTurn - Game not start - {} {}", gameId, userId);
                 return R.failed("Game not start");
-            case GameConstants.STATUS_START:
+            case GameConstants.STATUS_PLAY:
                 break;
             case GameConstants.STATUS_END:
                 return R.failed("Game have ended");
@@ -361,7 +361,7 @@ public class GameServiceImpl implements IGameService {
             case GameConstants.STATUS_INIT:
                 log.error("endTurn - Game not start - {} {}", gameId, userId);
                 return R.failed("Game not start");
-            case GameConstants.STATUS_START:
+            case GameConstants.STATUS_PLAY:
                 break;
             case GameConstants.STATUS_END:
                 return R.failed("Game have ended");
@@ -371,7 +371,7 @@ public class GameServiceImpl implements IGameService {
         splendorGame = splendorGameRepository.endTurn(gameId, userId);
         if (splendorGame == null) {
             log.error("endTurn - End turn error - {} {}", gameId, userId);
-            return R.failed("End turn error");
+            return R.failed("This is not your turn");
         }
 
         // Notify all user in game
@@ -387,42 +387,6 @@ public class GameServiceImpl implements IGameService {
                 put("turn", finalSplendorGame.getIngameData().getTurn());
                 put("current_player", finalSplendorGame.getIngameData().getCurrentPlayer());
                 put("next_player", finalSplendorGame.getIngameData().getNextPlayer());
-            }
-        });
-
-        return R.ok();
-    }
-
-    @Override
-    public R<?> turnActionSkip(String userId, String gameId) {
-        // Get from db
-        SplendorGame splendorGame = splendorGameRepository.findGameUserIn(gameId, userId);
-        if (splendorGame == null) {
-            log.error("turnActionSkip - User not in game - {} {}", gameId, userId);
-            return R.failed("User not in game");
-        }
-        switch (splendorGame.getStatus()) {
-            case GameConstants.STATUS_INIT:
-                log.error("turnActionSkip - Game not start - {} {}", gameId, userId);
-                return R.failed("Game not start");
-            case GameConstants.STATUS_START:
-                break;
-            case GameConstants.STATUS_END:
-                return R.failed("Game have ended");
-        }
-
-        // Notify all user in game
-        socketAssist.broadcastMessageToRoom(splendorGame.getGameId(), new HashMap<>() {
-            {
-                put("service_type", ServiceConstants.SERVICE_GAME_SPLENDOR);
-                put("event_type", GameConstants.EVENT_TURN_ACTION_SKIP);
-                put("game_id", splendorGame.getGameId());
-                put("table_id", splendorGame.getTableId());
-                put("player_id", userId);
-                put("round", splendorGame.getIngameData().getRound());
-                put("turn", splendorGame.getIngameData().getTurn());
-                put("current_player", splendorGame.getIngameData().getCurrentPlayer());
-                put("next_player", splendorGame.getIngameData().getNextPlayer());
             }
         });
 
@@ -465,7 +429,7 @@ public class GameServiceImpl implements IGameService {
             case GameConstants.STATUS_INIT:
                 log.error("turnActionGatherGem - Game not start - {} {}", gameId, userId);
                 return R.failed("Game not start");
-            case GameConstants.STATUS_START:
+            case GameConstants.STATUS_PLAY:
                 break;
             case GameConstants.STATUS_END:
                 return R.failed("Game have ended");
@@ -540,7 +504,7 @@ public class GameServiceImpl implements IGameService {
             case GameConstants.STATUS_INIT:
                 log.error("turnActionBuyCard - Game not start - {} {}", gameId, userId);
                 return R.failed("Game not start");
-            case GameConstants.STATUS_START:
+            case GameConstants.STATUS_PLAY:
                 break;
             case GameConstants.STATUS_END:
                 return R.failed("Game have ended");
@@ -681,7 +645,7 @@ public class GameServiceImpl implements IGameService {
             case GameConstants.STATUS_INIT:
                 log.error("turnActionReserveCard - Game not start - {} {}", gameId, userId);
                 return R.failed("Game not start");
-            case GameConstants.STATUS_START:
+            case GameConstants.STATUS_PLAY:
                 break;
             case GameConstants.STATUS_END:
                 return R.failed("Game have ended");
@@ -846,7 +810,7 @@ public class GameServiceImpl implements IGameService {
             case GameConstants.STATUS_INIT:
                 log.error("turnBonusActionTakeNoble - Game not start - {} {}", gameId, userId);
                 return R.failed("Game not start");
-            case GameConstants.STATUS_START:
+            case GameConstants.STATUS_PLAY:
                 break;
             case GameConstants.STATUS_END:
                 return R.failed("Game have ended");
@@ -877,11 +841,11 @@ public class GameServiceImpl implements IGameService {
             log.error("turnBonusActionTakeNoble - Noble not found - {} {} {} {}", gameId, userId, body.getNobleId(), splendorGame.getIngameData());
             return R.failed("Noble not found");
         }
-        if (playerData.getCardOnyx() < nobleData.getCost().getCard0nyx() ||
-                playerData.getCardRuby() < nobleData.getCost().getCardRuby() ||
-                playerData.getCardEmerald() < nobleData.getCost().getCardEmerald() ||
-                playerData.getCardSapphire() < nobleData.getCost().getCardSapphire() ||
-                playerData.getCardDiamond() < nobleData.getCost().getCardDiamond()) {
+        if (playerData.getCardOnyx().size() < nobleData.getCost().getCard0nyx() ||
+                playerData.getCardRuby().size() < nobleData.getCost().getCardRuby() ||
+                playerData.getCardEmerald().size() < nobleData.getCost().getCardEmerald() ||
+                playerData.getCardSapphire().size() < nobleData.getCost().getCardSapphire() ||
+                playerData.getCardDiamond().size() < nobleData.getCost().getCardDiamond()) {
             log.error("turnBonusActionTakeNoble - Not enough condition take noble - {} {} {} {}", gameId, userId, body.getNobleId(), playerData);
             return R.failed("Not enough condition take noble");
         }

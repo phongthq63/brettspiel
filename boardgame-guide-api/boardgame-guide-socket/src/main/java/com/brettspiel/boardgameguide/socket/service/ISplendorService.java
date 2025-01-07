@@ -12,4 +12,10 @@ public interface ISplendorService {
 
     void handlerGameStart(String gameId, Map<String, Object> data);
 
+    void handlerTurnStart(String gameId, Map<String, Object> data);
+
+    void handlerTurnEnd(String gameId, Map<String, Object> data);
+
+    void handlerTurnActionGatherGem(String gameId, Map<String, Object> data);
+
 }

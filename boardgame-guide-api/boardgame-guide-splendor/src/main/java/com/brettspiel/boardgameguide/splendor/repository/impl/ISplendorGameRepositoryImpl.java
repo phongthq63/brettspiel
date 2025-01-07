@@ -51,7 +51,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
         Query query = Query.query(Criteria.where("game_id").is(gameId)
                 .and("status").is(GameConstants.STATUS_INIT));
         Update update = new Update();
-        update.set("status", GameConstants.STATUS_START);
+        update.set("status", GameConstants.STATUS_PLAY);
         update.set("ingame_data.deck_noble", deckNoble);
         update.set("ingame_data.deck_card_1", deckCard1);
         update.set("ingame_data.deck_card_2", deckCard2);
@@ -81,7 +81,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame endTurn(String gameId, String playerId) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId));
         UpdateDefinition update = AggregationUpdate.update()
                 .set(SetOperation
@@ -115,7 +115,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame fillFieldLevel1(String gameId, String playerId, String cardId) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.deck_card_1").elemMatch(Criteria.where("id").is(cardId))
                 .and("ingame_data.field_card_1").elemMatch(Criteria.where("card").is(null)));
@@ -163,7 +163,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame fillFieldLevel2(String gameId, String playerId, String cardId) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.deck_card_2").elemMatch(Criteria.where("id").is(cardId))
                 .and("ingame_data.field_card_2").elemMatch(Criteria.where("card").is(null)));
@@ -199,7 +199,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame fillFieldLevel3(String gameId, String playerId, String cardId) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.deck_card_3").elemMatch(Criteria.where("id").is(cardId))
                 .and("ingame_data.field_card_3").elemMatch(Criteria.where("card").is(null)));
@@ -235,7 +235,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame gatherGem(String gameId, String playerId, int gold, int onyx, int ruby, int emerald, int sapphire, int diamond) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.onyx").gte(onyx)
                 .and("ingame_data.ruby").gte(ruby)
@@ -272,7 +272,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame buyCardInHand(String gameId, String playerId, String cardId, int gold, int onyx, int ruby, int emerald, int sapphire, int diamond) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.players").elemMatch(Criteria.where("player_id").is(playerId)
                         .and("gold").gte(-gold)
@@ -332,7 +332,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame buyCardFieldLevel1(String gameId, String playerId, String cardId, int gold, int onyx, int ruby, int emerald, int sapphire, int diamond) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.players").elemMatch(Criteria.where("player_id").is(playerId)
                         .and("gold").gte(-gold)
@@ -402,7 +402,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame buyCardFieldLevel2(String gameId, String playerId, String cardId, int gold, int onyx, int ruby, int emerald, int sapphire, int diamond) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.players").elemMatch(Criteria.where("player_id").is(playerId)
                         .and("gold").gte(-gold)
@@ -472,7 +472,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame buyCardFieldLevel3(String gameId, String playerId, String cardId, int gold, int onyx, int ruby, int emerald, int sapphire, int diamond) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.players").elemMatch(Criteria.where("player_id").is(playerId)
                         .and("gold").gte(-gold)
@@ -542,7 +542,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame reserveCardDeck1(String gameId, String playerId, String cardId, int gold) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.gold").gte(gold)
                 .and("ingame_data.deck_card_1").elemMatch(Criteria.where("id").is(cardId)));
@@ -580,7 +580,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame reserveCardDeck2(String gameId, String playerId, String cardId, int gold) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.gold").gte(gold)
                 .and("ingame_data.deck_card_2").elemMatch(Criteria.where("id").is(cardId)));
@@ -618,7 +618,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame reserveCardDeck3(String gameId, String playerId, String cardId, int gold) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.gold").gte(gold)
                 .and("ingame_data.deck_card_3").elemMatch(Criteria.where("id").is(cardId)));
@@ -656,7 +656,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame reserveCardField1(String gameId, String playerId, String cardId, int gold) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.gold").gte(gold)
                 .and("ingame_data.field_card_1").elemMatch(Criteria.where("card.id").is(cardId)));
@@ -704,7 +704,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame reserveCardField2(String gameId, String playerId, String cardId, int gold) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.gold").gte(gold)
                 .and("ingame_data.field_card_2").elemMatch(Criteria.where("card.id").is(cardId)));
@@ -752,7 +752,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame reserveCardField3(String gameId, String playerId, String cardId, int gold) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId)
                 .and("ingame_data.gold").gte(gold)
                 .and("ingame_data.field_card_3").elemMatch(Criteria.where("card.id").is(cardId)));
@@ -800,7 +800,7 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame takeNoble(String gameId, String playerId, String nobleId) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                .and("status").is(GameConstants.STATUS_START)
+                .and("status").is(GameConstants.STATUS_PLAY)
                 .and("ingame_data.current_player").is(playerId));
         UpdateDefinition update = AggregationUpdate.update()
                 .set(SetOperation

@@ -18,11 +18,12 @@ interface ICardGem {
     cardRef?: React.Ref<any>
     url: string
     onClick?: () => void
+    onClickNotThis?: () => void
     position?: any
     rotation?: any
 }
 
-export function CardGemLevel1({cardRef, url, onClick, ...props}: ICardGem) {
+export function CardGemLevel1({cardRef, url, onClick, onClickNotThis, ...props}: ICardGem) {
     const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, CARD_BACKSIDE_LEVEL_1]);
 
     return (
@@ -31,32 +32,9 @@ export function CardGemLevel1({cardRef, url, onClick, ...props}: ICardGem) {
                   event.stopPropagation();
                   onClick && onClick();
               }}
-              {...props}>
-            <boxGeometry args={[CARD_GEM_SIZE.width, CARD_GEM_SIZE.height, CARD_GEM_SIZE.depth]}/>
-            <meshBasicMaterial attach="material-0" color={"gray"}/>
-            {/*right*/}
-            <meshBasicMaterial attach="material-1" color={"gray"}/>
-            {/*left*/}
-            <meshBasicMaterial attach="material-2" color={"gray"}/>
-            {/*top*/}
-            <meshBasicMaterial attach="material-3" color={"gray"}/>
-            {/*bottom*/}
-            <meshBasicMaterial attach="material-4" map={textureFront}/>
-            {/*front*/}
-            <meshBasicMaterial attach="material-5" map={textureBack}/>
-            {/*back*/}
-        </mesh>
-    )
-}
-
-export function CardGemLevel2({url, cardRef, onClick, ...props}: ICardGem) {
-    const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, CARD_BACKSIDE_LEVEL_2]);
-
-    return (
-        <mesh ref={cardRef}
-              onClick={(event) => {
+              onPointerMissed={(event) => {
                   event.stopPropagation();
-                  onClick && onClick();
+                  onClickNotThis && onClickNotThis();
               }}
               {...props}>
             <boxGeometry args={[CARD_GEM_SIZE.width, CARD_GEM_SIZE.height, CARD_GEM_SIZE.depth]}/>
@@ -76,7 +54,38 @@ export function CardGemLevel2({url, cardRef, onClick, ...props}: ICardGem) {
     )
 }
 
-export function CardGemLevel3({url, cardRef, onClick, ...props}: ICardGem) {
+export function CardGemLevel2({url, cardRef, onClick, onClickNotThis, ...props}: ICardGem) {
+    const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, CARD_BACKSIDE_LEVEL_2]);
+
+    return (
+        <mesh ref={cardRef}
+              onClick={(event) => {
+                  event.stopPropagation();
+                  onClick && onClick();
+              }}
+              onPointerMissed={(event) => {
+                  event.stopPropagation();
+                  onClickNotThis && onClickNotThis();
+              }}
+              {...props}>
+            <boxGeometry args={[CARD_GEM_SIZE.width, CARD_GEM_SIZE.height, CARD_GEM_SIZE.depth]}/>
+            <meshBasicMaterial attach="material-0" color={"gray"}/>
+            {/*right*/}
+            <meshBasicMaterial attach="material-1" color={"gray"}/>
+            {/*left*/}
+            <meshBasicMaterial attach="material-2" color={"gray"}/>
+            {/*top*/}
+            <meshBasicMaterial attach="material-3" color={"gray"}/>
+            {/*bottom*/}
+            <meshBasicMaterial attach="material-4" map={textureFront}/>
+            {/*front*/}
+            <meshBasicMaterial attach="material-5" map={textureBack}/>
+            {/*back*/}
+        </mesh>
+    )
+}
+
+export function CardGemLevel3({url, cardRef, onClick, onClickNotThis, ...props}: ICardGem) {
     const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, CARD_BACKSIDE_LEVEL_3]);
 
     return (
@@ -84,6 +93,10 @@ export function CardGemLevel3({url, cardRef, onClick, ...props}: ICardGem) {
               onClick={(event) => {
                   event.stopPropagation();
                   onClick && onClick();
+              }}
+              onPointerMissed={(event) => {
+                  event.stopPropagation();
+                  onClickNotThis && onClickNotThis();
               }}
               {...props} >
             <boxGeometry args={[CARD_GEM_SIZE.width, CARD_GEM_SIZE.height, CARD_GEM_SIZE.depth]}/>

@@ -71,15 +71,6 @@ public class GameController {
         return gameService.endTurn(userId, gameId);
     }
 
-    @PostMapping("/{gameId}/turn/action/skip")
-    public R<?> turnActionSkip(@Parameter(hidden = true) Authentication authentication,
-                               @PathVariable String gameId) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        String userId = userPrincipal.getId();
-
-        return gameService.turnActionSkip(userId, gameId);
-    }
-
     @PostMapping("/{gameId}/turn/action/gather-gem")
     public R<?> turnActionGatherGem(@Parameter(hidden = true) Authentication authentication,
                                     @PathVariable String gameId,

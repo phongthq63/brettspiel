@@ -9,11 +9,11 @@ interface IPlayerGameInfoBox {
     emerald?: number
     ruby?: number
     onyx?: number
-    card_diamond?: number
-    card_sapphire?: number
-    card_emerald?: number
-    card_ruby?: number
-    card_onyx?: number
+    card_diamond?: object[]
+    card_sapphire?: object[]
+    card_emerald?: object[]
+    card_ruby?: object[]
+    card_onyx?: object[]
     gold?: number
     reserve_cards?: IReserveCardPlayerGameInfoBox[]
     nobles?: INoblePlayerGameInfoBox[]
@@ -39,7 +39,7 @@ export function PlayerGameInfoBox({ playerId, playerGameData }: { playerId: stri
                     <Image src="/test.jpg" alt="Avatar player" fill sizes={"100%"}/>
                 </div>
                 <div>
-                    <h4 className="italic font-medium">Quách Thanh Phong</h4>
+                    <h4 className="italic font-medium">{playerId}</h4>
                 </div>
                 <div></div>
                 <div
@@ -55,7 +55,7 @@ export function PlayerGameInfoBox({ playerId, playerGameData }: { playerId: stri
                                 className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-gray-200 overflow-hidden">
                                 <div
                                     className="block absolute bottom-1 left-1 rounded-md bg-white border border-white shadow pl-0.5 pr-1">
-                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_diamond ?? 0 }</p>
+                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_diamond?.length ?? 0 }</p>
                                 </div>
                                 <div className="absolute top-0.5 right-0.5">
                                     <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.diamond ?? 0 }</p>
@@ -70,7 +70,7 @@ export function PlayerGameInfoBox({ playerId, playerGameData }: { playerId: stri
                                 className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-blue-800 overflow-hidden">
                                 <div
                                     className="block absolute bottom-1 left-1 rounded-md bg-blue-600 border border-white shadow pl-0.5 pr-1">
-                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_sapphire ?? 0 }</p>
+                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_sapphire?.length ?? 0 }</p>
                                 </div>
                                 <div className="absolute top-0.5 right-0.5">
                                     <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.sapphire ?? 0 }</p>
@@ -85,7 +85,7 @@ export function PlayerGameInfoBox({ playerId, playerGameData }: { playerId: stri
                                 className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-green-800 overflow-hidden">
                                 <div
                                     className="block absolute bottom-1 left-1 rounded-md bg-green-600 border border-white shadow pl-0.5 pr-1">
-                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_emerald ?? 0 }</p>
+                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_emerald?.length ?? 0 }</p>
                                 </div>
                                 <div className="absolute top-0.5 right-0.5">
                                     <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.emerald ?? 0 }</p>
@@ -100,7 +100,7 @@ export function PlayerGameInfoBox({ playerId, playerGameData }: { playerId: stri
                                 className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-red-800 overflow-hidden">
                                 <div
                                     className="block absolute bottom-1 left-1 rounded-md bg-red-600 border border-white shadow pl-0.5 pr-1">
-                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_ruby ?? 0 }</p>
+                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_ruby?.length ?? 0 }</p>
                                 </div>
                                 <div className="absolute top-0.5 right-0.5">
                                     <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.ruby ?? 0 }</p>
@@ -115,7 +115,7 @@ export function PlayerGameInfoBox({ playerId, playerGameData }: { playerId: stri
                                 className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-gray-800 overflow-hidden">
                                 <div
                                     className="block absolute bottom-1 left-1 rounded-md bg-gray-600 border border-white shadow pl-0.5 pr-1">
-                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_onyx ?? 0 }</p>
+                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_onyx?.length ?? 0 }</p>
                                 </div>
                                 <div className="absolute top-0.5 right-0.5">
                                     <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.onyx ?? 0 }</p>

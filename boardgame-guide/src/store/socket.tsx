@@ -10,7 +10,7 @@ const SocketContext = createContext<any>(undefined);
 
 export const SocketProvider = ({children}: any) => {
     const [socket, setSocket] = useState<Socket>();
-    const [connected, setConnected] = useState<boolean>(false);
+    const [connected, setConnected] = useState(false);
 
 
     useEffect(() => {

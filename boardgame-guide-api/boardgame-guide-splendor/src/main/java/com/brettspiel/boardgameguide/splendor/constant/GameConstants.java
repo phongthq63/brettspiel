@@ -7,7 +7,7 @@ package com.brettspiel.boardgameguide.splendor.constant;
 public class GameConstants {
 
     public final static int STATUS_INIT = 0;
-    public final static int STATUS_START = 1;
+    public final static int STATUS_PLAY = 1;
     public final static int STATUS_END = 2;
 
 
@@ -19,7 +19,6 @@ public class GameConstants {
     public final static String EVENT_END_TURN = "EVENT_END_TURN";
 
 
-    public final static String EVENT_TURN_ACTION_SKIP = "TURN_ACTION_SKIP";
     public final static String EVENT_TURN_ACTION_GATHER_GEM = "TURN_ACTION_GATHER_GEM";
     public final static String EVENT_TURN_ACTION_BUY_CARD = "TURN_ACTION_BUY_CARD";
     public final static String EVENT_TURN_ACTION_RESERVE_CARD = "TURN_ACTION_RESERVE_CARD";

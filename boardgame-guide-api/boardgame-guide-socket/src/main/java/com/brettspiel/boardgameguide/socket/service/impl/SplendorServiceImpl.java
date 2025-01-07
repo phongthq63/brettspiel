@@ -35,7 +35,34 @@ public class SplendorServiceImpl implements ISplendorService {
     public void handlerGameStart(String gameId, Map<String, Object> data) {
         // Send notify to room
         SocketModel<Object> socketModel = new SocketModel<>();
-        socketModel.setCmd(SocketConstants.NotifyGameSplendorInit);
+        socketModel.setCmd(SocketConstants.NotifyGameSplendorStart);
+        socketModel.setData(data);
+        socketIOService.broadcastMessageToRoom(gameId, SocketConstants.EVENT_GAME_SPLENDOR, socketModel);
+    }
+
+    @Override
+    public void handlerTurnStart(String gameId, Map<String, Object> data) {
+        // Send notify to room
+        SocketModel<Object> socketModel = new SocketModel<>();
+        socketModel.setCmd(SocketConstants.NotifyGameSplendorTurnStart);
+        socketModel.setData(data);
+        socketIOService.broadcastMessageToRoom(gameId, SocketConstants.EVENT_GAME_SPLENDOR, socketModel);
+    }
+
+    @Override
+    public void handlerTurnEnd(String gameId, Map<String, Object> data) {
+        // Send notify to room
+        SocketModel<Object> socketModel = new SocketModel<>();
+        socketModel.setCmd(SocketConstants.NotifyGameSplendorTurnEnd);
+        socketModel.setData(data);
+        socketIOService.broadcastMessageToRoom(gameId, SocketConstants.EVENT_GAME_SPLENDOR, socketModel);
+    }
+
+    @Override
+    public void handlerTurnActionGatherGem(String gameId, Map<String, Object> data) {
+        // Send notify to room
+        SocketModel<Object> socketModel = new SocketModel<>();
+        socketModel.setCmd(SocketConstants.NotifyGameSplendorActionGatherGem);
         socketModel.setData(data);
         socketIOService.broadcastMessageToRoom(gameId, SocketConstants.EVENT_GAME_SPLENDOR, socketModel);
     }

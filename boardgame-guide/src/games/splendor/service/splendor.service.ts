@@ -435,6 +435,9 @@ export interface IngameDataVO {
     /** Lượt */
     turn?: number;
 
+    /** Trạng thái lượt */
+    turn_status?: number;
+
     /** Người chơi hiện tại */
     current_player?: string;
 
@@ -507,31 +510,31 @@ export interface IngamePlayerDataVO {
     gold?: number;
 
     /** Mã não nền */
-    card_onyx?: number;
+    card_onyx?: CardVO[];
 
     /** Mã não */
     onyx?: number;
 
     /** Hồng ngọc nền */
-    card_ruby?: number;
+    card_ruby?: CardVO[];
 
     /** Hồng ngọc */
     ruby?: number;
 
     /** Ngọc lục bảo nền */
-    card_emerald?: number;
+    card_emerald?: CardVO[];
 
     /** Ngọc lục bảo */
     emerald?: number;
 
     /** Đá saphia nền */
-    card_sapphire?: number;
+    card_sapphire?: CardVO[];
 
     /** Đá saphia */
     sapphire?: number;
 
     /** Kim cương nền */
-    card_diamond?: number;
+    card_diamond?: CardVO[];
 
     /** Kim cương */
     diamond?: number;

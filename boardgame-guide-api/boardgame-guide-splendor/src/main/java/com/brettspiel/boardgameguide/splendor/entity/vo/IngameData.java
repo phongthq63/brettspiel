@@ -35,6 +35,9 @@ public class IngameData {
     @Builder.Default
     private int turn = 0;
 
+    @Field("turn_status")
+    private int turnStatus;
+
     @Field("current_player")
     private String currentPlayer;
 

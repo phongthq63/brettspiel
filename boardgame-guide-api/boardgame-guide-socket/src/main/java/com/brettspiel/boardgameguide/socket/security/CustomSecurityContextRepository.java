@@ -50,8 +50,12 @@ public class CustomSecurityContextRepository implements SecurityContextRepositor
         token = requestResponseHolder.getRequest().getHeader(HttpHeaders.AUTHORIZATION);
         if (token != null && token.startsWith("Bearer ")) {
             String authToken = token.substring(7);
-            Authentication auth = new UsernamePasswordAuthenticationToken(authToken, authToken);
-            return new SecurityContextImpl(this.authenticationManager.authenticate(auth));
+            try {
+                Authentication auth = new UsernamePasswordAuthenticationToken(authToken, authToken);
+                return new SecurityContextImpl(this.authenticationManager.authenticate(auth));
+            } catch (Exception e) {
+                return new SecurityContextImpl();
+            }
         }
         return new SecurityContextImpl();
     }

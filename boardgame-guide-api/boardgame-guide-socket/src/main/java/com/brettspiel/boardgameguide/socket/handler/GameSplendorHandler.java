@@ -35,6 +35,15 @@ public class GameSplendorHandler {
             case GameSplendorConstants.EVENT_START_GAME:
                 splendorService.handlerGameStart(roomId, data);
                 break;
+            case GameSplendorConstants.EVENT_START_TURN:
+                splendorService.handlerTurnStart(roomId, data);
+                break;
+            case GameSplendorConstants.EVENT_END_TURN:
+                splendorService.handlerTurnEnd(roomId, data);
+                break;
+            case GameSplendorConstants.EVENT_TURN_ACTION_GATHER_GEM:
+                splendorService.handlerTurnActionGatherGem(roomId, data);
+                break;
         }
     }
 

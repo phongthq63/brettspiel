@@ -1,9 +1,12 @@
 package com.brettspiel.exception;
 
+import com.brettspiel.security.UnauthorizedException;
 import com.brettspiel.utils.R;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -89,14 +92,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public R<?> error(Exception e) {
-        e.printStackTrace();
-        log.error(e.getMessage());
-        return R.failed(e.getMessage());
-    }
-
-    @ExceptionHandler(value = RuntimeException.class)
-    @ResponseBody
-    public R<?> runtimeError(Exception e) {
         e.printStackTrace();
         log.error(e.getMessage());
         return R.failed(e.getMessage());

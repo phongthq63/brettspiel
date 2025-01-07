@@ -30,6 +30,9 @@ public class IngameDataVO extends BaseVO {
     @Schema(description = "Lượt", example = "2")
     private Integer turn;
 
+    @Schema(description = "Trạng thái", example = "0")
+    private Integer turnStatus;
+
     @Schema(description = "Người chơi hiện tại", example = "6739e185aa6d4921172c3ca2")
     private String currentPlayer;
 

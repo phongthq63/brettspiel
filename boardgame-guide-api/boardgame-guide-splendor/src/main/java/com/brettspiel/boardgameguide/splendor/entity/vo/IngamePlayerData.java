@@ -40,35 +40,35 @@ public class IngamePlayerData {
 
     @Builder.Default
     @Field("card_onyx")
-    private List<Card> cardOnyx = new ArrayList<>();
+    private int cardOnyx = 0;
 
     @Builder.Default
     private int onyx = 0;
 
     @Builder.Default
     @Field("card_ruby")
-    private List<Card> cardRuby = new ArrayList<>();
+    private int cardRuby = 0;
 
     @Builder.Default
     private int ruby = 0;
 
     @Builder.Default
     @Field("card_emerald")
-    private List<Card> cardEmerald = new ArrayList<>();
+    private int cardEmerald = 0;
 
     @Builder.Default
     private int emerald = 0;
 
     @Builder.Default
     @Field("card_sapphire")
-    private List<Card> cardSapphire = new ArrayList<>();
+    private int cardSapphire = 0;
 
     @Builder.Default
     private int sapphire = 0;
 
     @Builder.Default
     @Field("card_diamond")
-    private List<Card> cardDiamond = new ArrayList<>();
+    private int cardDiamond = 0;
 
     @Builder.Default
     private int diamond = 0;

@@ -20,8 +20,6 @@ function GameManager() {
         if (!socket) return
 
         function onEventGameSplendor(data: any) {
-            console.log("onEventGameSplendor", data);
-
             const cmdSocket = data?.cmd
             const dataSocket = data.data
             switch (cmdSocket) {
@@ -72,7 +70,7 @@ function GameManager() {
                     })
             }
 
-            startGame()
+            // startGame()
         }
     }, [connected, isDataReady])
 

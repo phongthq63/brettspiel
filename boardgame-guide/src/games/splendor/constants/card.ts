@@ -13,7 +13,7 @@ interface ICardGemProps {
     url: string
 }
 
-export const CARDS : ICardGemProps[] = [
+export const Cards : ICardGemProps[] = [
     {
         id: 'diamond_3',
         type: CardGemType.DIAMOND,
@@ -551,12 +551,8 @@ export const CARDS : ICardGemProps[] = [
     }
 ];
 
-export const DICT_CARD = CARDS.reduce((dict: { [id: string] : ICardGemProps }, item) => {
+export const DICT_CARD = Cards.reduce((dict: { [id: string] : ICardGemProps }, item) => {
     dict[item.id] = item;
     return dict
 }, {})
-
-export const CARD_BACKSIDE_LEVEL_1 = '/game/splendor/card/1/card1-back.jpg';
-export const CARD_BACKSIDE_LEVEL_2 = '/game/splendor/card/2/card2-back.jpg';
-export const CARD_BACKSIDE_LEVEL_3 = '/game/splendor/card/3/card3-back.jpg';
 

@@ -101,7 +101,7 @@ export const GameSplendorProvider = ({children}: any) => {
             gameData, setGameData,
             isDataReady, setIsDataReady,
             isMyTurn,
-            currentAction, setCurrentAction
+            currentAction, setCurrentAction,
         }}>
             {children}
         </GameContext.Provider>

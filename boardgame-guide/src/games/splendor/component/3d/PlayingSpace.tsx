@@ -1,8 +1,8 @@
-import {CARD_GEM_SIZE, CardGemLevel1, CardGemLevel2, CardGemLevel3} from "@/games/splendor/component/3d/CardGem";
+import {CardGemSize, CardGem} from "@/games/splendor/component/3d/CardGem";
 import {
+    TokenGemSize,
     TokenDiamond,
     TokenEmerald,
-    TOKEN_GEM_SIZE,
     TokenGold,
     TokenOnyx,
     TokenRuby,
@@ -10,21 +10,23 @@ import {
 } from "@/games/splendor/component/3d/TokenGem";
 import {
     CARD_POSITION,
-    GEM_POSITION,
     NOBLE_POSITION,
-    NotifyGameSplendorStart, PLAYER_CARD_POSITION, PLAYER_NOBLE_POSITION
+    NotifyGameSplendorStart
 } from "@/games/splendor/constants/game";
-import {CARD_NOBLE_SIZE, CardNoble} from "@/games/splendor/component/3d/CardNoble";
-import React, {useEffect, useRef} from "react";
+import CardNoble, {CardNobleSize} from "@/games/splendor/component/3d/CardNoble";
+import React, {useEffect, useRef, useState} from "react";
 import {useThree} from "@react-three/fiber";
 import {ICard, ingameData, INoble, useGameSplendor} from "@/games/splendor/store/game";
 import gsap from "gsap";
 import {Euler, Quaternion, Vector3} from "three";
 import {DICT_NOBLE } from "../../constants/noble";
-import {CardVO, FieldCardVO, FieldNobleVO, IngamePlayerDataVO, NobleVO} from "../../service/splendor.service";
+import {CardVO, FieldCardVO, FieldNobleVO, NobleVO} from "../../service/splendor.service";
 import { DICT_CARD } from "../../constants/card";
 import {useSocket} from "@/store/socket";
-import {ListPlayerSpace} from "@/games/splendor/component/3d/PlayerField";
+import Plane from "@/games/splendor/component/3d/Plane";
+import Board, {BoardSize} from "@/games/splendor/component/3d/Board";
+import {OrbitControls} from "@react-three/drei";
+import {useSprings} from "@react-spring/core";
 
 
 let objectActionSelects: any[] = []
@@ -37,9 +39,30 @@ function PlayingSpace() {
         currentAction, setCurrentAction
     } = useGameSplendor();
     const { socket } = useSocket();
+    const [deckNoble, setDeckNoble] = useState<INoble[]>([]);
+
+
+
+    const [toggle, setToggle] = useState(false);
+    const [springs, api] = useSprings(deckNoble.length, (index) => ({
+        position: deckNoble[index].position,
+        config: { duration: 5000, tension: 100, friction: 30 },
+        onChange: () => {
+            nobleRefs.current[deckNoble[index].id].api.position.set(nobleRefs.current[deckNoble[index].id].position.x, nobleRefs.current[deckNoble[index].id].position.y, nobleRefs.current[deckNoble[index].id].position.z);
+        }
+    }));
+    const moveCards = () => {
+        api.start((index) => ({
+            position: toggle
+                ? deckNoble[index].position
+                : [deckNoble[index].position[0], deckNoble[index].position[1], deckNoble[index].position[2] + 2],
+        }));
+        setToggle(!toggle);
+    };
+
 
     const cardRefs = useRef<any>({});
-    const nobleRefs = useRef<any>({});
+    const nobleRefs = useRef<{ [key: string]: any }>({});
     const goldRefs = useRef<any>({field: {}, player: new Map<string, object>()});
     const onyxRefs = useRef<any>({field: {}, player: new Map<string, object>()});
     const rubyRefs = useRef<any>({field: {}, player: new Map<string, object>()});
@@ -47,14 +70,45 @@ function PlayingSpace() {
     const sapphireRefs = useRef<any>({field: {}, player: new Map<string, object>()});
     const diamondRefs = useRef<any>({field: {}, player: new Map<string, object>()});
 
-
-    console.log("AAAAAA")
+    // useEffect(() => {
+    //     console.log("DeckNoble", deckNoble, nobleRefs)
+    //
+    //     // const animation = gsap.timeline();
+    //     // deckNoble.forEach(noble => {
+    //     //     animation.to(nobleRefs.current[noble.id].position, {
+    //     //         x: noble.position[0],
+    //     //         y: noble.position[1],
+    //     //         z: noble.position[2],
+    //     //         duration: 0.1,
+    //     //         onStart: () => {
+    //     //             nobleRefs.current[noble.id].test1()
+    //     //         },
+    //     //         onComplete: () => {
+    //     //             nobleRefs.current[noble.id].test()
+    //     //         }
+    //     //     }, 0)
+    //     // })
+    //     // animation.call(() => {invalidate()})
+    //     deckNoble.forEach(noble => {
+    //         nobleRefs.current[noble.id].position.fromArray(noble.position)
+    //         nobleRefs.current[noble.id].updateMatrixWorld()
+    //     })
+    // }, [deckNoble]);
 
     // Set data to local (threejs engine)
     useEffect(() => {
         if (!gameData) {
             return
         }
+
+        setDeckNoble(gameData.ingame_data.deck_noble.map((noble: NobleVO, index: number) => {
+            return {
+                ...noble,
+                ...DICT_NOBLE[noble.id],
+                position: [NOBLE_POSITION.desk.x, NOBLE_POSITION.desk.y, index * (CardNobleSize.depth * 1) + NOBLE_POSITION.desk.z],
+                rotation: [0, gameData.status == 1 ? Math.PI : 0, 0]
+            };
+        }))
 
         // Set data ingame
         ingameData.gameId = gameData.game_id;
@@ -73,7 +127,7 @@ function PlayingSpace() {
                     return {
                         ...noble,
                         ...DICT_NOBLE[noble.id],
-                        position: [NOBLE_POSITION.desk.x, NOBLE_POSITION.desk.y, index * CARD_NOBLE_SIZE.depth + NOBLE_POSITION.desk.z],
+                        position: [NOBLE_POSITION.desk.x, NOBLE_POSITION.desk.y, index * CardNobleSize.depth + NOBLE_POSITION.desk.z],
                         rotation: [0, 0, 0]
                     };
                 })
@@ -114,7 +168,7 @@ function PlayingSpace() {
                     return {
                         ...card,
                         ...DICT_CARD[card.id],
-                        position: [CARD_POSITION.level1.desk.x, CARD_POSITION.level1.desk.y, index * CARD_GEM_SIZE.depth + CARD_POSITION.level1.desk.z],
+                        position: [CARD_POSITION.level1.desk.x, CARD_POSITION.level1.desk.y, index * CardGemSize.depth + CARD_POSITION.level1.desk.z],
                         rotation: [0, 0, 0]
                     };
                 })
@@ -150,7 +204,7 @@ function PlayingSpace() {
                     return {
                         ...card,
                         ...DICT_CARD[card.id],
-                        position: [CARD_POSITION.level2.desk.x, CARD_POSITION.level2.desk.y, index * CARD_GEM_SIZE.depth + CARD_POSITION.level2.desk.z],
+                        position: [CARD_POSITION.level2.desk.x, CARD_POSITION.level2.desk.y, index * CardGemSize.depth + CARD_POSITION.level2.desk.z],
                         rotation: [0, 0, 0]
                     };
                 })
@@ -186,7 +240,7 @@ function PlayingSpace() {
                     return {
                         ...card,
                         ...DICT_CARD[card.id],
-                        position: [CARD_POSITION.level3.desk.x, CARD_POSITION.level3.desk.y, index * CARD_GEM_SIZE.depth + CARD_POSITION.level3.desk.z],
+                        position: [CARD_POSITION.level3.desk.x, CARD_POSITION.level3.desk.y, index * CardGemSize.depth + CARD_POSITION.level3.desk.z],
                         rotation: [0, 0, 0]
                     };
                 })
@@ -225,7 +279,7 @@ function PlayingSpace() {
                     return {
                         ...noble,
                         ...DICT_NOBLE[noble.id],
-                        position: [NOBLE_POSITION.desk.x, NOBLE_POSITION.desk.y, index * CARD_NOBLE_SIZE.depth + NOBLE_POSITION.desk.z],
+                        position: [NOBLE_POSITION.desk.x, NOBLE_POSITION.desk.y, index * CardNobleSize.depth + NOBLE_POSITION.desk.z],
                         rotation: [0, Math.PI, 0]
                     };
                 }) ?? [];
@@ -326,7 +380,7 @@ function PlayingSpace() {
                     return {
                         ...card,
                         ...DICT_CARD[card.id],
-                        position: [CARD_POSITION.level1.desk.x, CARD_POSITION.level1.desk.y, index * CARD_GEM_SIZE.depth + CARD_POSITION.level1.desk.z],
+                        position: [CARD_POSITION.level1.desk.x, CARD_POSITION.level1.desk.y, index * CardGemSize.depth + CARD_POSITION.level1.desk.z],
                         rotation: [0, Math.PI, 0]
                     };
                 })
@@ -410,7 +464,7 @@ function PlayingSpace() {
                     return {
                         ...card,
                         ...DICT_CARD[card.id],
-                        position: [CARD_POSITION.level2.desk.x, CARD_POSITION.level2.desk.y, index * CARD_GEM_SIZE.depth + CARD_POSITION.level2.desk.z],
+                        position: [CARD_POSITION.level2.desk.x, CARD_POSITION.level2.desk.y, index * CardGemSize.depth + CARD_POSITION.level2.desk.z],
                         rotation: [0, Math.PI, 0]
                     };
                 })
@@ -494,7 +548,7 @@ function PlayingSpace() {
                     return {
                         ...card,
                         ...DICT_CARD[card.id],
-                        position: [CARD_POSITION.level3.desk.x, CARD_POSITION.level3.desk.y, index * CARD_GEM_SIZE.depth + CARD_POSITION.level3.desk.z],
+                        position: [CARD_POSITION.level3.desk.x, CARD_POSITION.level3.desk.y, index * CardGemSize.depth + CARD_POSITION.level3.desk.z],
                         rotation: [0, Math.PI, 0]
                     };
                 })
@@ -578,88 +632,115 @@ function PlayingSpace() {
                 break
         }
 
-        ingameData.player = gameData.ingame_data.players.map((player: IngamePlayerDataVO) => {
-
-            return {
-                player_id: player.player_id,
-                noble: player.nobles?.map((noble, index) => {
-                    return {
-                        ...noble,
-                        ...DICT_NOBLE[noble.id],
-                        position: [PLAYER_NOBLE_POSITION.position.x + index * (CARD_NOBLE_SIZE.width + PLAYER_NOBLE_POSITION.distance), PLAYER_NOBLE_POSITION.position.y, PLAYER_NOBLE_POSITION.position.z],
-                        rotation: [0, 0, 0]
-                    }
-                }),
-                reserve_card: player.reserve_cards?.map((reserve_card, index) => {
-                    return {
-                        ...reserve_card,
-                        ...DICT_CARD[reserve_card.id],
-                        position: [0, 0, 0],
-                        rotation: [0, 0, 0]
-                    }
-                }),
-                gold: player.gold,
-                onyx: player.onyx,
-                ruby: player.ruby,
-                emerald: player.emerald,
-                sapphire: player.sapphire,
-                diamond: player.diamond,
-                card_onyx: player.card_onyx?.map((card, index) => {
-                    return {
-                        ...card,
-                        ...DICT_CARD[card.id],
-                        position: [PLAYER_CARD_POSITION.onyx.x, PLAYER_CARD_POSITION.onyx.y + index * PLAYER_CARD_POSITION.distance, PLAYER_CARD_POSITION.onyx.z],
-                        rotation: [0, 0, 0]
-                    }
-                }),
-                card_ruby: player.card_ruby?.map((card, index) => {
-                    return {
-                        ...card,
-                        ...DICT_CARD[card.id],
-                        position: [PLAYER_CARD_POSITION.onyx.x, PLAYER_CARD_POSITION.onyx.y + index * PLAYER_CARD_POSITION.distance, PLAYER_CARD_POSITION.onyx.z],
-                        rotation: [0, 0, 0]
-                    }
-                }),
-                card_emerald: player.card_emerald?.map((card, index) => {
-                    return {
-                        ...card,
-                        ...DICT_CARD[card.id],
-                        position: [PLAYER_CARD_POSITION.onyx.x, PLAYER_CARD_POSITION.onyx.y + index * PLAYER_CARD_POSITION.distance, PLAYER_CARD_POSITION.onyx.z],
-                        rotation: [0, 0, 0]
-                    }
-                }),
-                card_sapphire: player.card_sapphire?.map((card, index) => {
-                    return {
-                        ...card,
-                        ...DICT_CARD[card.id],
-                        position: [PLAYER_CARD_POSITION.onyx.x, PLAYER_CARD_POSITION.onyx.y + index * PLAYER_CARD_POSITION.distance, PLAYER_CARD_POSITION.onyx.z],
-                        rotation: [0, 0, 0]
-                    }
-                }),
-                card_diamond: player.card_diamond?.map((card, index) => {
-                    return {
-                        ...card,
-                        ...DICT_CARD[card.id],
-                        position: [PLAYER_CARD_POSITION.onyx.x, PLAYER_CARD_POSITION.onyx.y + index * PLAYER_CARD_POSITION.distance, PLAYER_CARD_POSITION.onyx.z],
-                        rotation: [0, 0, 0]
-                    }
-                }),
-            }
-        })
+        // ingameData.player = gameData.ingame_data.players.map((player: IngamePlayerDataVO) => {
+        //
+        //     return {
+        //         player_id: player.player_id,
+        //         noble: player.nobles?.map((noble, index) => {
+        //             return {
+        //                 ...noble,
+        //                 ...DICT_NOBLE[noble.id],
+        //                 position: [PLAYER_NOBLE_POSITION.position.x + index * (CARD_NOBLE_SIZE.width + PLAYER_NOBLE_POSITION.distance), PLAYER_NOBLE_POSITION.position.y, PLAYER_NOBLE_POSITION.position.z],
+        //                 rotation: [0, 0, 0]
+        //             }
+        //         }),
+        //         reserve_card: player.reserve_cards?.map((reserve_card) => {
+        //             return {
+        //                 ...reserve_card,
+        //                 ...DICT_CARD[reserve_card.id],
+        //                 position: [0, 0, 0],
+        //                 rotation: [0, 0, 0]
+        //             }
+        //         }),
+        //         gold: player.gold,
+        //         onyx: player.onyx,
+        //         ruby: player.ruby,
+        //         emerald: player.emerald,
+        //         sapphire: player.sapphire,
+        //         diamond: player.diamond,
+        //         card_onyx: player.card_onyx?.map((card, index) => {
+        //             return {
+        //                 ...card,
+        //                 ...DICT_CARD[card.id],
+        //                 position: [PLAYER_CARD_POSITION.onyx.x, PLAYER_CARD_POSITION.onyx.y + index * PLAYER_CARD_POSITION.distance, PLAYER_CARD_POSITION.onyx.z],
+        //                 rotation: [0, 0, 0]
+        //             }
+        //         }),
+        //         card_ruby: player.card_ruby?.map((card, index) => {
+        //             return {
+        //                 ...card,
+        //                 ...DICT_CARD[card.id],
+        //                 position: [PLAYER_CARD_POSITION.onyx.x, PLAYER_CARD_POSITION.onyx.y + index * PLAYER_CARD_POSITION.distance, PLAYER_CARD_POSITION.onyx.z],
+        //                 rotation: [0, 0, 0]
+        //             }
+        //         }),
+        //         card_emerald: player.card_emerald?.map((card, index) => {
+        //             return {
+        //                 ...card,
+        //                 ...DICT_CARD[card.id],
+        //                 position: [PLAYER_CARD_POSITION.onyx.x, PLAYER_CARD_POSITION.onyx.y + index * PLAYER_CARD_POSITION.distance, PLAYER_CARD_POSITION.onyx.z],
+        //                 rotation: [0, 0, 0]
+        //             }
+        //         }),
+        //         card_sapphire: player.card_sapphire?.map((card, index) => {
+        //             return {
+        //                 ...card,
+        //                 ...DICT_CARD[card.id],
+        //                 position: [PLAYER_CARD_POSITION.onyx.x, PLAYER_CARD_POSITION.onyx.y + index * PLAYER_CARD_POSITION.distance, PLAYER_CARD_POSITION.onyx.z],
+        //                 rotation: [0, 0, 0]
+        //             }
+        //         }),
+        //         card_diamond: player.card_diamond?.map((card, index) => {
+        //             return {
+        //                 ...card,
+        //                 ...DICT_CARD[card.id],
+        //                 position: [PLAYER_CARD_POSITION.onyx.x, PLAYER_CARD_POSITION.onyx.y + index * PLAYER_CARD_POSITION.distance, PLAYER_CARD_POSITION.onyx.z],
+        //                 rotation: [0, 0, 0]
+        //             }
+        //         }),
+        //     }
+        // })
 
         // Update state
         setIsDataReady(true)
 
     }, [gameData]);
 
+    const shuffleDeckNoble = (nobleOpens: any[]) => {
+        const timelineDesk = gsap.timeline();
+
+        console.log(deckNoble, nobleRefs)
+        deckNoble.forEach((noble, index) => {
+            timelineDesk.add(gsap.timeline()
+                .to(nobleRefs.current[noble.id].position, {
+                    z: 0.5 + index * CardNobleSize.depth,
+                    duration: 0.5 * 10
+                }, 0)
+                .to(nobleRefs.current[noble.id].rotation, {
+                    y: Math.PI,
+                    duration: 0.25 * 10
+                }, 0)
+                .to(nobleRefs.current[noble.id].position, {
+                    z: (deckNoble.length - index) * CardNobleSize.depth,
+                    duration: 0.35 * 10
+                }), 0)
+        });
+        return timelineDesk.call(() => {
+            setDeckNoble((prevDeck) => prevDeck.filter(noble => !nobleOpens.some(nobleOpen => noble.id == nobleOpen.id))
+                .map((noble, index) => {
+                    return {
+                        ...noble,
+                        position: [NOBLE_POSITION.desk.x, NOBLE_POSITION.desk.y, index * (CardNobleSize.depth * 3) + NOBLE_POSITION.desk.z],
+                        rotation: [0, Math.PI, 0]
+                    }
+                }))
+            console.log(nobleRefs)
+        })
+    }
+
     // Handler socket event
     useEffect(() => {
-        if (!socket) return
-        console.log("Socket", socket)
-
         function onEventGameSplendor(data: any) {
-            console.log("onEventGameSplendor", data, ingameData);
-
             const cmdSocket = data?.cmd
             const dataSocket = data?.data
             switch (cmdSocket) {
@@ -671,12 +752,134 @@ function PlayingSpace() {
             }
         }
 
-        socket.on("game_splendor", onEventGameSplendor);
+        const handlerStartGame = (data: any) => {
+            console.log("Start game", data);
+
+            const nobleOpens = data.field_noble.filter((field_noble: any) => field_noble.noble)
+                .map((field_noble: any) => field_noble.noble)
+
+            // // Set field noble
+            // const nobleOpens: INoble[] = data.field_noble.map((field_noble: any) => {
+            //     return {
+            //         ...field_noble.noble,
+            //         ...DICT_NOBLE[field_noble.noble.id],
+            //         position: [0, 0, 0],
+            //         rotation: [0, 0, 0]
+            //     }
+            // })
+            // for (let i = 0; i < nobleOpens.length; i++) {
+            //     nobleOpens[i].position = ingameData.fieldNoble[i].position;
+            //     ingameData.fieldNoble[i].noble = nobleOpens[i];
+            // }
+            //
+            // // Set field card level 3
+            // const card3Opens: ICard[] = data.field_card_3.map((field_card: any) => {
+            //     return {
+            //         ...field_card.card,
+            //         ...DICT_CARD[field_card.card.id],
+            //         position: [0, 0, 0],
+            //         rotation: [0, 0, 0]
+            //     }
+            // });
+            // for (let i = 0; i < card3Opens.length; i++) {
+            //     card3Opens[i].position = ingameData.fieldCardLevel3[i].position;
+            //     ingameData.fieldCardLevel3[i].card = card3Opens[i];
+            // }
+            //
+            // // Set field card level 2
+            // const card2Opens: ICard[] = data.field_card_2.map((field_card: any) => {
+            //     return {
+            //         ...field_card.card,
+            //         ...DICT_CARD[field_card.card.id],
+            //         position: [0, 0, 0],
+            //         rotation: [0, 0, 0]
+            //     }
+            // });
+            // for (let i = 0; i < card2Opens.length; i++) {
+            //     card2Opens[i].position = ingameData.fieldCardLevel2[i].position;
+            //     ingameData.fieldCardLevel2[i].card = card2Opens[i];
+            // }
+            //
+            // // Set field card level 1
+            // const card1Opens: ICard[] = data.field_card_1.map((field_card: any) => {
+            //     return {
+            //         ...field_card.card,
+            //         ...DICT_CARD[field_card.card.id],
+            //         position: [0, 0, 0],
+            //         rotation: [0, 0, 0]
+            //     }
+            // });
+            // for (let i = 0; i < card1Opens.length; i++) {
+            //     card1Opens[i].position = ingameData.fieldCardLevel1[i].position;
+            //     ingameData.fieldCardLevel1[i].card = card1Opens[i];
+            // }
+
+            // Play animation
+            const animation = gsap.timeline();
+            animation
+                .add(shuffleDeckNoble(nobleOpens), 0)
+            //     .add(shuffleDeckCard(ingameData.deskCardLevel3), 0)
+            //     .add(shuffleDeckCard(ingameData.deskCardLevel2), 0)
+            //     .add(shuffleDeckCard(ingameData.deskCardLevel1), 0);
+            // let startAnimationDesk = true;
+            // ingameData.fieldNoble.forEach((nobleField) => {
+            //     if (nobleField.noble == undefined) return;
+            //
+            //     if (startAnimationDesk) {
+            //         startAnimationDesk = false;
+            //         animation.add(openNoble(nobleField.noble.id, nobleField.position), "<2")
+            //     } else {
+            //         animation.add(openNoble(nobleField.noble.id, nobleField.position))
+            //     }
+            // });
+            // ingameData.fieldCardLevel3.forEach((cardField) => {
+            //     if (cardField.card == undefined) return;
+            //
+            //     if (startAnimationDesk) {
+            //         startAnimationDesk = false;
+            //         animation.add(openCard(cardField.card.id, cardField.position), "<2")
+            //     } else {
+            //         animation.add(openCard(cardField.card.id, cardField.position))
+            //     }
+            // });
+            // ingameData.fieldCardLevel2.forEach((cardField) => {
+            //     if (cardField.card == undefined) return;
+            //
+            //     if (startAnimationDesk) {
+            //         startAnimationDesk = false;
+            //         animation.add(openCard(cardField.card.id, cardField.position), "<2")
+            //     } else {
+            //         animation.add(openCard(cardField.card.id, cardField.position))
+            //     }
+            // });
+            // ingameData.fieldCardLevel1.forEach((cardField) => {
+            //     if (cardField.card == undefined) return;
+            //
+            //     if (startAnimationDesk) {
+            //         startAnimationDesk = false;
+            //         animation.add(openCard(cardField.card.id, cardField.position), "<2")
+            //     } else {
+            //         animation.add(openCard(cardField.card.id, cardField.position))
+            //     }
+            // });
+            //
+            // // Delete card in desk
+            // ingameData.deskNoble = ingameData.deskNoble.filter(noble => !nobleOpens.some(nobleOpen => nobleOpen.id == noble.id));
+            // ingameData.deskCardLevel1 = ingameData.deskCardLevel1.filter(card => !card1Opens.some(cardOpen => cardOpen.id == card.id));
+            // ingameData.deskCardLevel2 = ingameData.deskCardLevel2.filter(card => !card2Opens.some(cardOpen => cardOpen.id == card.id));
+            // ingameData.deskCardLevel3 = ingameData.deskCardLevel3.filter(card => !card3Opens.some(cardOpen => cardOpen.id == card.id));
+        }
+
+        if (socket) {
+            socket.on("game_splendor", onEventGameSplendor);
+        }
 
         return () => {
-            socket.off("game_splendor", onEventGameSplendor);
+            if (socket) {
+                socket.off("game_splendor", onEventGameSplendor);
+            }
         }
-    }, [socket]);
+    }, [shuffleDeckNoble, socket]);
 
     // Return object action select to first position
     useEffect(() => {
@@ -703,148 +906,12 @@ function PlayingSpace() {
     }, [currentAction]);
 
 
-    const handlerStartGame = (data: any) => {
-        console.log("Start game");
-
-        // Set field noble
-        const nobleOpens: INoble[] = data.field_noble.map((field_noble: any) => {
-            return {
-                ...field_noble.noble,
-                ...DICT_NOBLE[field_noble.noble.id],
-                position: [0, 0, 0],
-                rotation: [0, 0, 0]
-            }
-        })
-        for (let i = 0; i < nobleOpens.length; i++) {
-            nobleOpens[i].position = ingameData.fieldNoble[i].position;
-            ingameData.fieldNoble[i].noble = nobleOpens[i];
-        }
-
-        // Set field card level 3
-        const card3Opens: ICard[] = data.field_card_3.map((field_card: any) => {
-            return {
-                ...field_card.card,
-                ...DICT_CARD[field_card.card.id],
-                position: [0, 0, 0],
-                rotation: [0, 0, 0]
-            }
-        });
-        for (let i = 0; i < card3Opens.length; i++) {
-            card3Opens[i].position = ingameData.fieldCardLevel3[i].position;
-            ingameData.fieldCardLevel3[i].card = card3Opens[i];
-        }
-
-        // Set field card level 2
-        const card2Opens: ICard[] = data.field_card_2.map((field_card: any) => {
-            return {
-                ...field_card.card,
-                ...DICT_CARD[field_card.card.id],
-                position: [0, 0, 0],
-                rotation: [0, 0, 0]
-            }
-        });
-        for (let i = 0; i < card2Opens.length; i++) {
-            card2Opens[i].position = ingameData.fieldCardLevel2[i].position;
-            ingameData.fieldCardLevel2[i].card = card2Opens[i];
-        }
-
-        // Set field card level 1
-        const card1Opens: ICard[] = data.field_card_1.map((field_card: any) => {
-            return {
-                ...field_card.card,
-                ...DICT_CARD[field_card.card.id],
-                position: [0, 0, 0],
-                rotation: [0, 0, 0]
-            }
-        });
-        for (let i = 0; i < card1Opens.length; i++) {
-            card1Opens[i].position = ingameData.fieldCardLevel1[i].position;
-            ingameData.fieldCardLevel1[i].card = card1Opens[i];
-        }
-
-        // Play animation
-        const animation = gsap.timeline();
-        animation
-            .add(shuffleDeckNoble(), 0)
-            .add(shuffleDeckCard(ingameData.deskCardLevel3), 0)
-            .add(shuffleDeckCard(ingameData.deskCardLevel2), 0)
-            .add(shuffleDeckCard(ingameData.deskCardLevel1), 0);
-        let startAnimationDesk = true;
-        ingameData.fieldNoble.forEach((nobleField) => {
-            if (nobleField.noble == undefined) return;
-
-            if (startAnimationDesk) {
-                startAnimationDesk = false;
-                animation.add(openNoble(nobleField.noble.id, nobleField.position), "<2")
-            } else {
-                animation.add(openNoble(nobleField.noble.id, nobleField.position))
-            }
-        });
-        ingameData.fieldCardLevel3.forEach((cardField) => {
-            if (cardField.card == undefined) return;
-
-            if (startAnimationDesk) {
-                startAnimationDesk = false;
-                animation.add(openCard(cardField.card.id, cardField.position), "<2")
-            } else {
-                animation.add(openCard(cardField.card.id, cardField.position))
-            }
-        });
-        ingameData.fieldCardLevel2.forEach((cardField) => {
-            if (cardField.card == undefined) return;
-
-            if (startAnimationDesk) {
-                startAnimationDesk = false;
-                animation.add(openCard(cardField.card.id, cardField.position), "<2")
-            } else {
-                animation.add(openCard(cardField.card.id, cardField.position))
-            }
-        });
-        ingameData.fieldCardLevel1.forEach((cardField) => {
-            if (cardField.card == undefined) return;
-
-            if (startAnimationDesk) {
-                startAnimationDesk = false;
-                animation.add(openCard(cardField.card.id, cardField.position), "<2")
-            } else {
-                animation.add(openCard(cardField.card.id, cardField.position))
-            }
-        });
-
-        // Delete card in desk
-        ingameData.deskNoble = ingameData.deskNoble.filter(noble => !nobleOpens.some(nobleOpen => nobleOpen.id == noble.id));
-        ingameData.deskCardLevel1 = ingameData.deskCardLevel1.filter(card => !card1Opens.some(cardOpen => cardOpen.id == card.id));
-        ingameData.deskCardLevel2 = ingameData.deskCardLevel2.filter(card => !card2Opens.some(cardOpen => cardOpen.id == card.id));
-        ingameData.deskCardLevel3 = ingameData.deskCardLevel3.filter(card => !card3Opens.some(cardOpen => cardOpen.id == card.id));
-    };
-
-    const shuffleDeckNoble = () => {
-        const timelineDesk = gsap.timeline();
-
-        ingameData.deskNoble.forEach((item, index) => {
-            timelineDesk.add(gsap.timeline()
-                .to(nobleRefs.current[item.id]?.position, {
-                    z: 0.5 + index * CARD_NOBLE_SIZE.depth,
-                    duration: 0.5
-                }, 0)
-                .to(nobleRefs.current[item.id]?.rotation, {
-                    y: Math.PI,
-                    duration: 0.25
-                }, 0)
-                .to(nobleRefs.current[item.id]?.position, {
-                    z: (ingameData.deskNoble.length - index) * CARD_NOBLE_SIZE.depth,
-                    duration: 0.35
-                }), 0)
-        });
-        return timelineDesk
-    };
-
     const shuffleDeckCard = (deskCard: ICard[]) => {
         const timelineDesk = gsap.timeline();
         deskCard.forEach((item, index) => {
             timelineDesk.add(gsap.timeline()
                 .to(cardRefs.current[item.id]?.position, {
-                    z: 0.5 + index * CARD_GEM_SIZE.depth,
+                    z: 0.5 + index * CardGemSize.depth,
                     duration: 0.5
                 }, 0)
                 .to(cardRefs.current[item.id]?.rotation, {
@@ -852,7 +919,7 @@ function PlayingSpace() {
                     duration: 0.25
                 }, 0)
                 .to(cardRefs.current[item.id]?.position, {
-                    z: deskCard.length * CARD_GEM_SIZE.depth - index * CARD_GEM_SIZE.depth,
+                    z: deskCard.length * CardGemSize.depth - index * CardGemSize.depth,
                     duration: 0.35
                 }), 0);
         });
@@ -983,7 +1050,7 @@ function PlayingSpace() {
         const targetLookAt = camera.position.clone()  // The object will look at the camera's position
         gsap.timeline()
             .to(instance.position, {
-                x: targetPosition.x + (currentGem.length - 1) * TOKEN_GEM_SIZE.size,
+                x: targetPosition.x + (currentGem.length - 1) * TokenGemSize.size,
                 y: targetPosition.y,
                 z: targetPosition.z,
                 duration: 0.3
@@ -1065,7 +1132,7 @@ function PlayingSpace() {
         const targetLookAt = camera.position.clone()  // The object will look at the camera's position
         gsap.timeline()
             .to(instance.position, {
-                x: targetPosition.x + (currentGem.length - 1) * TOKEN_GEM_SIZE.size,
+                x: targetPosition.x + (currentGem.length - 1) * TokenGemSize.size,
                 y: targetPosition.y,
                 z: targetPosition.z,
                 duration: 0.3
@@ -1147,7 +1214,7 @@ function PlayingSpace() {
         const targetLookAt = camera.position.clone()  // The object will look at the camera's position
         gsap.timeline()
             .to(instance.position, {
-                x: targetPosition.x + (currentGem.length - 1) * TOKEN_GEM_SIZE.size,
+                x: targetPosition.x + (currentGem.length - 1) * TokenGemSize.size,
                 y: targetPosition.y,
                 z: targetPosition.z,
                 duration: 0.3
@@ -1229,7 +1296,7 @@ function PlayingSpace() {
         const targetLookAt = camera.position.clone()  // The object will look at the camera's position
         gsap.timeline()
             .to(instance.position, {
-                x: targetPosition.x + (currentGem.length - 1) * TOKEN_GEM_SIZE.size,
+                x: targetPosition.x + (currentGem.length - 1) * TokenGemSize.size,
                 y: targetPosition.y,
                 z: targetPosition.z,
                 duration: 0.3
@@ -1311,7 +1378,7 @@ function PlayingSpace() {
         const targetLookAt = camera.position.clone()  // The object will look at the camera's position
         gsap.timeline()
             .to(instance.position, {
-                x: targetPosition.x + (currentGem.length - 1) * TOKEN_GEM_SIZE.size,
+                x: targetPosition.x + (currentGem.length - 1) * TokenGemSize.size,
                 y: targetPosition.y,
                 z: targetPosition.z,
                 duration: 0.3
@@ -1427,6 +1494,8 @@ function PlayingSpace() {
     }
 
     const onClickNoble = (id: string) => {
+        moveCards()
+
         if (currentAction.type) {
             return;
         }
@@ -1492,168 +1561,197 @@ function PlayingSpace() {
     }
 
 
+    // useFrame(() => {
+    //     deckNoble.forEach(noble => {
+    //         nobleRefs.current[noble.id].position.fromArray(noble.position)
+    //         nobleRefs.current[noble.id].updateMatrixWorld()
+    //     })
+    // })
+
+
+    const ref = useRef()
+    const a = () => {
+        gsap.to(ref.current.position, {
+            z: ref.current.position.z + 1,
+            duration: 2,
+            onStart: () => {
+                ref.current.handlerStartAnimation()
+            },
+            onComplete: () => {
+                ref.current.handlerEndAnimation()
+            }
+        })
+    }
+
     return (
         <>
+            <OrbitControls enabled={true}/>
+            <Plane position={[0, 0, -5]}/>
+            <Board position={[0, 0, -BoardSize.depth / 2]}/>
             <group>
+                {/*<group>*/}
+                {/*    {*/}
+                {/*        ingameData.deskCardLevel3.map((item) => {*/}
+                {/*            return <CardGem key={item.id}*/}
+                {/*                            cardRef={(element: any) => (cardRefs.current[item.id] = element)}*/}
+                {/*                            level={3}*/}
+                {/*                            url={item.url}*/}
+                {/*                            onClick={() => onClickCard(item.id)}*/}
+                {/*                            onClickNotThis={() => onClickNotCurrent(item.id)}*/}
+                {/*                            position={item.position}*/}
+                {/*                            rotation={item.rotation}/>*/}
+                {/*        })*/}
+                {/*    }*/}
+                {/*    {*/}
+                {/*        ingameData.deskCardLevel2.map((item) => {*/}
+                {/*            return <CardGem key={item.id}*/}
+                {/*                            cardRef={(element: any) => (cardRefs.current[item.id] = element)}*/}
+                {/*                            level={2}*/}
+                {/*                            url={item.url}*/}
+                {/*                            onClick={() => onClickCard(item.id)}*/}
+                {/*                            onClickNotThis={() => onClickNotCurrent(item.id)}*/}
+                {/*                            position={item.position}*/}
+                {/*                            rotation={item.rotation}/>*/}
+                {/*        })*/}
+                {/*    }*/}
+                {/*    {*/}
+                {/*        ingameData.deskCardLevel1.map((item) => {*/}
+                {/*            return <CardGem key={item.id}*/}
+                {/*                            cardRef={(element: any) => (cardRefs.current[item.id] = element)}*/}
+                {/*                            level={1}*/}
+                {/*                            url={item.url}*/}
+                {/*                            onClick={() => onClickCard(item.id)}*/}
+                {/*                            onClickNotThis={() => onClickNotCurrent(item.id)}*/}
+                {/*                            position={item.position}*/}
+                {/*                            rotation={item.rotation}/>*/}
+                {/*        })*/}
+                {/*    }*/}
+                {/*</group>*/}
+                {/*<group>*/}
+                {/*    {*/}
+                {/*        ingameData.fieldCardLevel3.filter(item => item.card)*/}
+                {/*            .map((item: any) => {*/}
+                {/*                return <CardGem key={item.card.id}*/}
+                {/*                                cardRef={(element: any) => (cardRefs.current[item.card.id] = element)}*/}
+                {/*                                level={3}*/}
+                {/*                                url={item.card.url}*/}
+                {/*                                onClick={() => onClickCard(item.card.id)}*/}
+                {/*                                onClickNotThis={() => onClickNotCurrent(item.card.id)}*/}
+                {/*                                position={item.position}*/}
+                {/*                                rotation={item.card.rotation}/>*/}
+                {/*            })*/}
+                {/*    }*/}
+                {/*    {*/}
+                {/*        ingameData.fieldCardLevel2.filter(item => item.card)*/}
+                {/*            .map((item: any) => {*/}
+                {/*                return <CardGem key={item.card.id}*/}
+                {/*                                cardRef={(element: any) => (cardRefs.current[item.card.id] = element)}*/}
+                {/*                                level={2}*/}
+                {/*                                url={item.card.url}*/}
+                {/*                                onClick={() => onClickCard(item.card.id)}*/}
+                {/*                                onClickNotThis={() => onClickNotCurrent(item.card.id)}*/}
+                {/*                                position={item.position}*/}
+                {/*                                rotation={item.card.rotation}/>*/}
+                {/*            })*/}
+                {/*    }*/}
+                {/*    {*/}
+                {/*        ingameData.fieldCardLevel1.filter(item => item.card)*/}
+                {/*            .map((item: any) => {*/}
+                {/*                return <CardGem key={item.card.id}*/}
+                {/*                                cardRef={(element: any) => cardRefs.current[item.card.id] = element}*/}
+                {/*                                level={1}*/}
+                {/*                                url={item.card.url}*/}
+                {/*                                onClick={() => onClickCard(item.card.id)}*/}
+                {/*                                onClickNotThis={() => onClickNotCurrent(item.card.id)}*/}
+                {/*                                position={item.position}*/}
+                {/*                                rotation={item.card.rotation}/>*/}
+                {/*            })*/}
+                {/*    }*/}
+                {/*</group>*/}
+                {/*<group>*/}
+                {/*    {*/}
+                {/*        Array.from({length: ingameData.gold}, (_, i) => i)*/}
+                {/*            .map(index => {*/}
+                {/*                return (<TokenGold key={`gold-${index}`}*/}
+                {/*                                   tokenRef={(element: any) => goldRefs.current.field[`gold-${index}`] = element}*/}
+                {/*                                   position={[GEM_POSITION.gold.x, GEM_POSITION.gold.y, GEM_POSITION.gold.z + index * TokenGemSize.depth]}/>)*/}
+                {/*            })*/}
+                {/*    }*/}
+                {/*    {*/}
+                {/*        Array.from({length: ingameData.onyx}, (_, i) => i)*/}
+                {/*            .map(index => {*/}
+                {/*                return (<TokenOnyx key={`onyx-${index}`}*/}
+                {/*                                   tokenRef={(element: any) => onyxRefs.current.field[`onyx-${index}`] = element}*/}
+                {/*                                   onClick={() => onClickOnyx("field", `onyx-${index}`)}*/}
+                {/*                                   position={[GEM_POSITION.onyx.x, GEM_POSITION.onyx.y, GEM_POSITION.onyx.z + index * TokenGemSize.depth]}/>)*/}
+                {/*            })*/}
+                {/*    }*/}
+                {/*    {*/}
+                {/*        Array.from({length: ingameData.ruby}, (_, i) => i)*/}
+                {/*            .map(index => {*/}
+                {/*                return (<TokenRuby key={`ruby-${index}`}*/}
+                {/*                                   tokenRef={(element: any) => rubyRefs.current.field[`ruby-${index}`] = element}*/}
+                {/*                                   onClick={() => onClickRuby("field", `ruby-${index}`)}*/}
+                {/*                                   position={[GEM_POSITION.ruby.x, GEM_POSITION.ruby.y, GEM_POSITION.ruby.z + index * TokenGemSize.depth]}/>)*/}
+                {/*            })*/}
+                {/*    }*/}
+                {/*    {*/}
+                {/*        Array.from({length: ingameData.emerald}, (_, i) => i)*/}
+                {/*            .map(index => {*/}
+                {/*                return (<TokenEmerald key={`emerald-${index}`}*/}
+                {/*                                      tokenRef={(element: any) => emeraldRefs.current.field[`emerald-${index}`] = element}*/}
+                {/*                                      onClick={() => onClickEmerald("field", `emerald-${index}`)}*/}
+                {/*                                      position={[GEM_POSITION.emerald.x, GEM_POSITION.emerald.y, GEM_POSITION.emerald.z + index * TokenGemSize.depth]}/>)*/}
+                {/*            })*/}
+                {/*    }*/}
+                {/*    {*/}
+                {/*        Array.from({length: ingameData.sapphire}, (_, i) => i)*/}
+                {/*            .map(index => {*/}
+                {/*                return (<TokenSapphire key={`sapphire-${index}`}*/}
+                {/*                                       tokenRef={(element: any) => sapphireRefs.current.field[`sapphire-${index}`] = element}*/}
+                {/*                                       onClick={() => onClickSapphire("field", `sapphire-${index}`)}*/}
+                {/*                                       position={[GEM_POSITION.sapphire.x, GEM_POSITION.sapphire.y, GEM_POSITION.sapphire.z + index * TokenGemSize.depth]}/>)*/}
+                {/*            })*/}
+                {/*    }*/}
+                {/*    {*/}
+                {/*        Array.from({length: ingameData.diamond}, (_, i) => i)*/}
+                {/*            .map(index => {*/}
+                {/*                return (<TokenDiamond key={`diamond-${index}`}*/}
+                {/*                                      tokenRef={(element: any) => diamondRefs.current.field[`diamond-${index}`] = element}*/}
+                {/*                                      onClick={() => onClickDiamond("field", `diamond-${index}`)}*/}
+                {/*                                      position={[GEM_POSITION.diamond.x, GEM_POSITION.diamond.y, GEM_POSITION.diamond.z + index * TokenGemSize.depth]}/>)*/}
+                {/*            })*/}
+                {/*    }*/}
+                {/*</group>*/}
                 <group>
                     {
-                        ingameData.deskCardLevel3.map((item) => {
-                            return <CardGemLevel3 key={item.id}
-                                                  cardRef={(element: any) => (cardRefs.current[item.id] = element)}
-                                                  url={item.url}
-                                                  onClick={() => onClickCard(item.id)}
-                                                  onClickNotThis={() => onClickNotCurrent(item.id)}
-                                                  position={item.position}
-                                                  rotation={item.rotation}/>
-                        })
-                    }
-                    {
-                        ingameData.fieldCardLevel3.filter(item => item.card)
-                            .map((item: any) => {
-                                return <CardGemLevel3 key={item.card.id}
-                                                      cardRef={(element: any) => (cardRefs.current[item.card.id] = element)}
-                                                      url={item.card.url}
-                                                      onClick={() => onClickCard(item.card.id)}
-                                                      onClickNotThis={() => onClickNotCurrent(item.card.id)}
-                                                      position={item.position}
-                                                      rotation={item.card.rotation}/>
-                            })
-                    }
-                </group>
-                <group>
-                    {
-                        ingameData.deskCardLevel2.map((item) => {
-                            return <CardGemLevel2 key={item.id}
-                                                  cardRef={(element: any) => (cardRefs.current[item.id] = element)}
-                                                  url={item.url}
-                                                  onClick={() => onClickCard(item.id)}
-                                                  onClickNotThis={() => onClickNotCurrent(item.id)}
-                                                  position={item.position}
-                                                  rotation={item.rotation}/>
-                        })
-                    }
-                    {
-                        ingameData.fieldCardLevel2.filter(item => item.card)
-                            .map((item: any) => {
-                                return <CardGemLevel2 key={item.card.id}
-                                                      cardRef={(element: any) => (cardRefs.current[item.card.id] = element)}
-                                                      url={item.card.url}
-                                                      onClick={() => onClickCard(item.card.id)}
-                                                      onClickNotThis={() => onClickNotCurrent(item.card.id)}
-                                                      position={item.position}
-                                                      rotation={item.card.rotation}/>
-                            })
-                    }
-                </group>
-                <group>
-                    {
-                        ingameData.deskCardLevel1.map((item) => {
-                            return <CardGemLevel1 key={item.id}
-                                                  cardRef={(element: any) => (cardRefs.current[item.id] = element)}
-                                                  url={item.url}
-                                                  onClick={() => onClickCard(item.id)}
-                                                  onClickNotThis={() => onClickNotCurrent(item.id)}
-                                                  position={item.position}
-                                                  rotation={item.rotation}/>
-                        })
-                    }
-                    {
-                        ingameData.fieldCardLevel1.filter(item => item.card)
-                            .map((item: any) => {
-                                return <CardGemLevel1 key={item.card.id}
-                                                      cardRef={(element: any) => cardRefs.current[item.card.id] = element}
-                                                      url={item.card.url}
-                                                      onClick={() => onClickCard(item.card.id)}
-                                                      onClickNotThis={() => onClickNotCurrent(item.card.id)}
-                                                      position={item.position}
-                                                      rotation={item.card.rotation}/>
-                            })
-                    }
-                </group>
-                <group>
-                    {
-                        Array.from({length: ingameData.gold}, (_, i) => i)
-                            .map(index => {
-                                return (<TokenGold key={`gold-${index}`}
-                                                   tokenRef={(element: any) => goldRefs.current.field[`gold-${index}`] = element}
-                                                   position={[GEM_POSITION.gold.x, GEM_POSITION.gold.y, GEM_POSITION.gold.z + index * TOKEN_GEM_SIZE.depth]}/>)
-                            })
-                    }
-                    {
-                        Array.from({length: ingameData.onyx}, (_, i) => i)
-                            .map(index => {
-                                return (<TokenOnyx key={`onyx-${index}`}
-                                                   tokenRef={(element: any) => onyxRefs.current.field[`onyx-${index}`] = element}
-                                                   onClick={() => onClickOnyx("field", `onyx-${index}`)}
-                                                   position={[GEM_POSITION.onyx.x, GEM_POSITION.onyx.y, GEM_POSITION.onyx.z + index * TOKEN_GEM_SIZE.depth]}/>)
-                            })
-                    }
-                    {
-                        Array.from({length: ingameData.ruby}, (_, i) => i)
-                            .map(index => {
-                                return (<TokenRuby key={`ruby-${index}`}
-                                                   tokenRef={(element: any) => rubyRefs.current.field[`ruby-${index}`] = element}
-                                                   onClick={() => onClickRuby("field", `ruby-${index}`)}
-                                                   position={[GEM_POSITION.ruby.x, GEM_POSITION.ruby.y, GEM_POSITION.ruby.z + index * TOKEN_GEM_SIZE.depth]}/>)
-                            })
-                    }
-                    {
-                        Array.from({length: ingameData.emerald}, (_, i) => i)
-                            .map(index => {
-                                return (<TokenEmerald key={`emerald-${index}`}
-                                                      tokenRef={(element: any) => emeraldRefs.current.field[`emerald-${index}`] = element}
-                                                      onClick={() => onClickEmerald("field", `emerald-${index}`)}
-                                                      position={[GEM_POSITION.emerald.x, GEM_POSITION.emerald.y, GEM_POSITION.emerald.z + index * TOKEN_GEM_SIZE.depth]}/>)
-                            })
-                    }
-                    {
-                        Array.from({length: ingameData.sapphire}, (_, i) => i)
-                            .map(index => {
-                                return (<TokenSapphire key={`sapphire-${index}`}
-                                                       tokenRef={(element: any) => sapphireRefs.current.field[`sapphire-${index}`] = element}
-                                                       onClick={() => onClickSapphire("field", `sapphire-${index}`)}
-                                                       position={[GEM_POSITION.sapphire.x, GEM_POSITION.sapphire.y, GEM_POSITION.sapphire.z + index * TOKEN_GEM_SIZE.depth]}/>)
-                            })
-                    }
-                    {
-                        Array.from({length: ingameData.diamond}, (_, i) => i)
-                            .map(index => {
-                                return (<TokenDiamond key={`diamond-${index}`}
-                                                      tokenRef={(element: any) => diamondRefs.current.field[`diamond-${index}`] = element}
-                                                      onClick={() => onClickDiamond("field", `diamond-${index}`)}
-                                                      position={[GEM_POSITION.diamond.x, GEM_POSITION.diamond.y, GEM_POSITION.diamond.z + index * TOKEN_GEM_SIZE.depth]}/>)
-                            })
-                    }
-                </group>
-
-                <group>
-                    {
-                        ingameData.deskNoble.map((item) => {
-                            return <CardNoble key={item.id}
-                                              cardRef={(element: any) => nobleRefs.current[item.id] = element}
-                                              url={item.url}
-                                              onClick={() => onClickNoble(item.id)}
-                                              onClickNotThis={() => onClickNotCurrent(item.id)}
-                                              position={item.position}
-                                              rotation={item.rotation}/>
-                        })
+                        deckNoble.map((item, index) => (
+                            <CardNoble key={item.id}
+                                       id={item.id}
+                                       url={item.url}
+                                       onClick={() => onClickNoble(item.id)}
+                                       onClickNotThis={() => onClickNotCurrent(item.id)}
+                                       position={item.position}
+                                       rotation={item.rotation}
+                                       spring={springs[index]}
+                                       ref={(element: any) => nobleRefs.current[item.id] = element}/>
+                        ))
                     }
                     {
                         ingameData.fieldNoble.filter(item => item.noble)
                             .map((item: any) => {
                                 return <CardNoble key={item.noble.id}
-                                                  cardRef={(element: any) => (nobleRefs.current[item.noble.id] = element)}
+                                                  id={item.noble.id}
                                                   url={item.noble.url}
                                                   onClick={() => onClickNoble(item.noble.id)}
                                                   onClickNotThis={() => onClickNotCurrent(item.noble.id)}
                                                   position={item.position}
-                                                  rotation={item.noble.rotation}/>
+                                                  rotation={item.noble.rotation}
+                                                  ref={(element: any) => nobleRefs.current[item.noble.id] = element}/>
                             })
                     }
                 </group>
             </group>
-
-            <ListPlayerSpace playersData={[...ingameData.player]} />
         </>
     )
 }

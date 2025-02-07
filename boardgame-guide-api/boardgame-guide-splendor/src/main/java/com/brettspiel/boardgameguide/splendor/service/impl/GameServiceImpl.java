@@ -841,11 +841,11 @@ public class GameServiceImpl implements IGameService {
             log.error("turnBonusActionTakeNoble - Noble not found - {} {} {} {}", gameId, userId, body.getNobleId(), splendorGame.getIngameData());
             return R.failed("Noble not found");
         }
-        if (playerData.getCardOnyx().size() < nobleData.getCost().getCard0nyx() ||
-                playerData.getCardRuby().size() < nobleData.getCost().getCardRuby() ||
-                playerData.getCardEmerald().size() < nobleData.getCost().getCardEmerald() ||
-                playerData.getCardSapphire().size() < nobleData.getCost().getCardSapphire() ||
-                playerData.getCardDiamond().size() < nobleData.getCost().getCardDiamond()) {
+        if (playerData.getCardOnyx() < nobleData.getCost().getCard0nyx() ||
+                playerData.getCardRuby() < nobleData.getCost().getCardRuby() ||
+                playerData.getCardEmerald() < nobleData.getCost().getCardEmerald() ||
+                playerData.getCardSapphire() < nobleData.getCost().getCardSapphire() ||
+                playerData.getCardDiamond() < nobleData.getCost().getCardDiamond()) {
             log.error("turnBonusActionTakeNoble - Not enough condition take noble - {} {} {} {}", gameId, userId, body.getNobleId(), playerData);
             return R.failed("Not enough condition take noble");
         }

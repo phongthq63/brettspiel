@@ -10,13 +10,12 @@ import {Button} from "@mui/material";
 function GameContainer({gameId}: {gameId: string}) {
     const { gameData, setGameData, isMyTurn, currentAction, setCurrentAction } = useGameSplendor()
 
-
     // Get data + update data to state
     useEffect(() => {
         GameService.getGameInfo({ gameId: gameId })
             .then(response => {
                 if (response.code == 0 && response.data) {
-                    setGameData(() => response.data);
+                    setGameData(response.data);
                 } else {
                     console.log("Get game info false", response);
                 }

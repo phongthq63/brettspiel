@@ -1,6 +1,9 @@
 import * as THREE from 'three'
-import React from "react";
-import {useLoader} from "@react-three/fiber";
+import React, {forwardRef, Ref, useImperativeHandle, useRef, useState} from "react";
+import {useFrame, useLoader} from "@react-three/fiber";
+import {RapierRigidBody, RigidBody} from "@react-three/rapier";
+import {Group, Mesh, Quaternion, Vector3} from "three";
+import {RigidBodyType} from "@dimforge/rapier3d-compat";
 
 
 const CardRealSize = {
@@ -15,7 +18,7 @@ export const CardGemSize = {
 };
 
 interface CardGemProps {
-    cardRef?: React.Ref<any>
+    id: string
     level: number
     url: string
     onClick?: () => void
@@ -24,7 +27,7 @@ interface CardGemProps {
     rotation?: any
 }
 
-export function CardGem({cardRef, level, url, onClick, onClickNotThis, ...props}: CardGemProps) {
+const CardGem = forwardRef(({id, level, url, onClick, onClickNotThis, ...props}: CardGemProps, ref: Ref<any>) => {
     let urlBack;
     switch (level) {
         case 1:
@@ -40,31 +43,113 @@ export function CardGem({cardRef, level, url, onClick, onClickNotThis, ...props}
             throw Error("Invalid level number")
     }
     const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, urlBack]);
+    const [onPhysics, setOnPhysics] = useState(true);
+    const groupRef = useRef<Group>(null);
+    const rigidBodyRef = useRef<RapierRigidBody>(null);
+    const meshRef = useRef<Mesh>(null);
+
+
+    useImperativeHandle(ref, () => {
+        if (!groupRef.current) return null;
+
+        return Object.assign(groupRef.current, {
+            setPosition(position: [number, number, number]) {
+                if (groupRef.current && rigidBodyRef.current) {
+                    const worldPosition = new Vector3()
+                    groupRef.current.position.fromArray(position);
+                    groupRef.current.getWorldPosition(worldPosition);
+                    rigidBodyRef.current.setTranslation(worldPosition, true)
+                }
+            },
+            setRotation(rotation: [number, number, number]) {
+                if (groupRef.current && rigidBodyRef.current) {
+                    const worldRotation = new Quaternion()
+                    groupRef.current.rotation.fromArray(rotation);
+                    groupRef.current.getWorldQuaternion(worldRotation);
+                    rigidBodyRef.current.setRotation(worldRotation, true)
+                }
+            },
+            stopPhysics() {
+                setOnPhysics(false)
+                if (rigidBodyRef.current) {
+                    rigidBodyRef.current.setBodyType(RigidBodyType.KinematicPositionBased, true);
+                }
+            },
+            startPhysics() {
+                setOnPhysics(true)
+                if (rigidBodyRef.current) {
+                    rigidBodyRef.current.setBodyType(RigidBodyType.Dynamic, true);
+                }
+            }
+        })
+    });
+
+    useFrame(() => {
+        if (!groupRef.current || !meshRef.current || !rigidBodyRef.current) return;
+
+        // Update rigid body theo position mesh interactive
+        if (!onPhysics) {
+            const position = new Vector3()
+            groupRef.current.getWorldPosition(position)
+            rigidBodyRef.current.setTranslation(position, false)
+
+            const rotation = new Quaternion()
+            groupRef.current.getWorldQuaternion(rotation)
+            rigidBodyRef.current.setRotation(rotation, false)
+        }
+
+        /**
+         * ? this code syncs the invisible mesh to the visible one
+         * ? when it's moving without user input (after user stops
+         * ? dragging or RigidBody is moving)
+         */
+        if (onPhysics && rigidBodyRef.current.bodyType() !== 2 && !rigidBodyRef.current.isSleeping()) {
+            const physicsPosition = rigidBodyRef.current.translation()
+            groupRef.current.position.set(physicsPosition.x, physicsPosition.y, physicsPosition.z);
+
+            const physicsRotation = rigidBodyRef.current.rotation()
+            groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z));
+        }
+    })
 
     return (
-        <mesh ref={cardRef}
-              onClick={(event) => {
-                  event.stopPropagation();
-                  onClick && onClick();
-              }}
-              onPointerMissed={(event) => {
-                  event.stopPropagation();
-                  onClickNotThis && onClickNotThis();
-              }}
-              {...props}>
-            <boxGeometry args={[CardGemSize.width, CardGemSize.height, CardGemSize.depth]}/>
-            <meshBasicMaterial attach="material-0" color={"gray"}/>
-            {/*right*/}
-            <meshBasicMaterial attach="material-1" color={"gray"}/>
-            {/*left*/}
-            <meshBasicMaterial attach="material-2" color={"gray"}/>
-            {/*top*/}
-            <meshBasicMaterial attach="material-3" color={"gray"}/>
-            {/*bottom*/}
-            <meshBasicMaterial attach="material-4" map={textureFront}/>
-            {/*front*/}
-            <meshBasicMaterial attach="material-5" map={textureBack}/>
-            {/*back*/}
-        </mesh>
+        <group ref={groupRef} {...props}>
+            <mesh key={id}
+                  ref={meshRef}
+                  onClick={(event) => {
+                      event.stopPropagation();
+                      onClick && onClick();
+                  }}
+                  onPointerMissed={(event) => {
+                      event.stopPropagation();
+                      onClickNotThis && onClickNotThis();
+                  }}
+            >
+                <boxGeometry args={[CardGemSize.width, CardGemSize.height, CardGemSize.depth]}/>
+                <meshBasicMaterial attach="material-0" color={"gray"}/>
+                {/*right*/}
+                <meshBasicMaterial attach="material-1" color={"gray"}/>
+                {/*left*/}
+                <meshBasicMaterial attach="material-2" color={"gray"}/>
+                {/*top*/}
+                <meshBasicMaterial attach="material-3" color={"gray"}/>
+                {/*bottom*/}
+                <meshBasicMaterial attach="material-4" map={textureFront}/>
+                {/*front*/}
+                <meshBasicMaterial attach="material-5" map={textureBack}/>
+                {/*back*/}
+            </mesh>
+
+            <RigidBody ref={rigidBodyRef}>
+                <mesh>
+                    <boxGeometry args={[CardGemSize.width, CardGemSize.height, CardGemSize.depth]}/>
+                    <meshBasicMaterial visible={false}/>
+                </mesh>
+            </RigidBody>
+        </group>
     )
-}
+})
+
+CardGem.displayName = "CardGem";
+
+export default CardGem;

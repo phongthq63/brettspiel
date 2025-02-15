@@ -13,41 +13,41 @@ export const SocketProvider = ({children}: any) => {
     const [connected, setConnected] = useState(false);
 
 
-    // useEffect(() => {
-    //     const socketInstance = io("http://localhost:8699", {
-    //         transports: ["websocket", "polling"],
-    //         auth: {
-    //             token: "123"
-    //         },
-    //         query: {
-    //             "token": getItem('access-token')
-    //         },
-    //         extraHeaders: {
-    //             "Authentication": "TTTTTTTTTTTTTTTTTT"
-    //         }
-    //     });
-    //
-    //     function onConnect() {
-    //         console.log("Connected to Socket");
-    //         setConnected(true);
-    //     }
-    //
-    //     function onDisconnect() {
-    //         console.log("Disconnected to Socket");
-    //         setConnected(false);
-    //     }
-    //
-    //     socketInstance.on("connect", onConnect);
-    //     socketInstance.on("disconnect", onDisconnect);
-    //
-    //     setSocket(socketInstance)
-    //
-    //     return () => {
-    //         socketInstance.off("connect", onConnect);
-    //         socketInstance.off("disconnect", onDisconnect);
-    //         socketInstance.disconnect();
-    //     }
-    // }, [])
+    useEffect(() => {
+        const socketInstance = io("http://localhost:8699", {
+            transports: ["websocket", "polling"],
+            auth: {
+                token: "123"
+            },
+            query: {
+                "token": getItem('access-token')
+            },
+            extraHeaders: {
+                "Authentication": "TTTTTTTTTTTTTTTTTT"
+            }
+        });
+
+        function onConnect() {
+            console.log("Connected to Socket");
+            setConnected(true);
+        }
+
+        function onDisconnect() {
+            console.log("Disconnected to Socket");
+            setConnected(false);
+        }
+
+        socketInstance.on("connect", onConnect);
+        socketInstance.on("disconnect", onDisconnect);
+
+        setSocket(socketInstance)
+
+        return () => {
+            socketInstance.off("connect", onConnect);
+            socketInstance.off("disconnect", onDisconnect);
+            socketInstance.disconnect();
+        }
+    }, [])
 
     return (
         <SocketContext.Provider value={{ socket, connected }}>

@@ -1,97 +1,33 @@
 import React, {createContext, useContext, useState} from "react";
 import {SplendorGameDTO} from "@/games/splendor/service/splendor.service";
 import {useUser} from "@/store/user";
-
-
-export interface INoble {
-    id: string,
-    url: string,
-    position: [number, number, number]
-    rotation: [number, number, number]
-}
-
-export interface IFieldNoble {
-    position: [number, number, number]
-    noble?: INoble
-}
-
-export interface ICard {
-    id: string,
-    type: string,
-    level: number
-    url: string
-    position: [number, number, number]
-    rotation: [number, number, number]
-}
-
-export interface IFieldCard {
-    position: [number, number, number]
-    card?: ICard
-}
-
-export interface IPlayer {
-    player_id: string,
-    noble: INoble[],
-    reserve_card: ICard[],
-    gold: number,
-    onyx: number,
-    ruby: number,
-    emerald: number,
-    sapphire: number,
-    diamond: number,
-    card_onyx: ICard[],
-    card_ruby: ICard[],
-    card_emerald: ICard[],
-    card_sapphire: ICard[],
-    card_diamond: ICard[],
-}
-
-export interface IIngameData {
-    gameId: string,
-    status: number
-    deskNoble: INoble[],
-    fieldNoble: IFieldNoble[],
-    deskCardLevel1: ICard[],
-    fieldCardLevel1: IFieldCard[],
-    deskCardLevel2: ICard[],
-    fieldCardLevel2: IFieldCard[],
-    deskCardLevel3: ICard[],
-    fieldCardLevel3: IFieldCard[],
-    gold: number,
-    onyx: number,
-    ruby: number,
-    emerald: number,
-    sapphire: number,
-    diamond: number,
-    player: IPlayer[]
-}
-
-export const ingameData : IIngameData = {
-    gameId: "",
-    status: -1,
-    deskNoble: [],
-    fieldNoble: [],
-    deskCardLevel1: [],
-    fieldCardLevel1: [],
-    deskCardLevel2: [],
-    fieldCardLevel2: [],
-    deskCardLevel3: [],
-    fieldCardLevel3: [],
-    gold: 0,
-    onyx: 0,
-    ruby: 0,
-    emerald: 0,
-    sapphire: 0,
-    diamond: 0,
-    player: []
-};
+import {
+    Card, Gem,
+    Noble
+} from "@/games/splendor/constants/game";
 
 const GameContext = createContext<any>(undefined);
 
 export const GameSplendorProvider = ({children}: any) => {
     const { user } = useUser()
     const [gameData, setGameData] = useState<SplendorGameDTO>();
-    const [isDataReady, setIsDataReady] = useState(false);
+    const [status, setStatus] = useState<number>();
+    const [currentPlayer, setCurrentPlayer] = useState<string>();
+    const [nextPlayer, setNextPlayer] = useState<string>();
+    const [deckCard3, setDeckCard3] = useState<Card[]>([]);
+    const [deckCard2, setDeckCard2] = useState<Card[]>([]);
+    const [deckCard1, setDeckCard1] = useState<Card[]>([]);
+    const [fieldCard3, setFieldCard3] = useState<Card[]>([]);
+    const [fieldCard2, setFieldCard2] = useState<Card[]>([]);
+    const [fieldCard1, setFieldCard1] = useState<Card[]>([]);
+    const [golds, setGolds] = useState<Gem[]>([]);
+    const [onyxes, setOnyxes] = useState<Gem[]>([]);
+    const [rubies, setRubies] = useState<Gem[]>([]);
+    const [emeralds, setEmeralds] = useState<Gem[]>([]);
+    const [sapphires, setSapphires] = useState<Gem[]>([]);
+    const [diamonds, setDiamonds] = useState<Gem[]>([]);
+    const [deckNoble, setDeckNoble] = useState<Noble[]>([]);
+    const [fieldNoble, setFieldNoble] = useState<Noble[]>([]);
     const [currentAction, setCurrentAction] = useState({type: "", data: {id: "", gem: [], option: []}});
 
     const isMyTurn = user?.user_id == gameData?.ingame_data?.current_player
@@ -99,7 +35,23 @@ export const GameSplendorProvider = ({children}: any) => {
     return (
         <GameContext.Provider value={{
             gameData, setGameData,
-            isDataReady, setIsDataReady,
+            status, setStatus,
+            currentPlayer, setCurrentPlayer,
+            nextPlayer, setNextPlayer,
+            deckCard3, setDeckCard3,
+            deckCard2, setDeckCard2,
+            deckCard1, setDeckCard1,
+            fieldCard3, setFieldCard3,
+            fieldCard2, setFieldCard2,
+            fieldCard1, setFieldCard1,
+            deckNoble, setDeckNoble,
+            fieldNoble, setFieldNoble,
+            golds, setGolds,
+            onyxes , setOnyxes ,
+            rubies , setRubies,
+            emeralds, setEmeralds,
+            sapphires, setSapphires,
+            diamonds, setDiamonds,
             isMyTurn,
             currentAction, setCurrentAction,
         }}>

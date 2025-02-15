@@ -551,7 +551,7 @@ export const Cards : ICardGemProps[] = [
     }
 ];
 
-export const DICT_CARD = Cards.reduce((dict: { [id: string] : ICardGemProps }, item) => {
+export const CardDictionary = Cards.reduce((dict: { [id: string] : ICardGemProps }, item) => {
     dict[item.id] = item;
     return dict
 }, {})

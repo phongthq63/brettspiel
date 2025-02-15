@@ -3,7 +3,7 @@ import * as THREE from "three";
 import React, {forwardRef, Ref, useImperativeHandle, useRef, useState} from "react";
 import {RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
-import {Mesh, Vector3} from "three";
+import {Group, Mesh, Quaternion, Vector3} from "three";
 
 
 export const CardNobleSize = {
@@ -21,44 +21,61 @@ interface CardNobleProps {
     rotation?: any
 }
 
-let startAnimatedPosition: Vector3 = new Vector3();
-
 const CardNoble = forwardRef(({id, url, onClick, onClickNotThis, ...props}: CardNobleProps, ref: Ref<any>) => {
     const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, "/game/splendor/noble/noble-back.jpg"]);
-    const [isAnimated, setIsAnimated] = useState(false);
+    const [onPhysics, setOnPhysics] = useState(true);
+    const groupRef = useRef<Group>(null);
     const rigidBodyRef = useRef<RapierRigidBody>(null);
     const meshRef = useRef<Mesh>(null);
-    const interactiveMeshRef = useRef<Mesh>(null);
 
 
     useImperativeHandle(ref, () => {
-        return {
-            ...interactiveMeshRef.current,
-            handlerStartAnimation() {
-                setIsAnimated(true)
-                if (meshRef.current && rigidBodyRef.current) {
-                    startAnimatedPosition = meshRef.current.position
-                    rigidBodyRef.current.setBodyType(RigidBodyType.KinematicPositionBased, true);
-                    rigidBodyRef.current.wakeUp()
+        if (!groupRef.current) return null;
+
+        return Object.assign(groupRef.current, {
+            setPosition(position: [number, number, number]) {
+                if (groupRef.current && rigidBodyRef.current) {
+                    const worldPosition = new Vector3()
+                    groupRef.current.position.fromArray(position);
+                    groupRef.current.getWorldPosition(worldPosition);
+                    rigidBodyRef.current.setTranslation(worldPosition, true)
                 }
             },
-            handlerEndAnimation() {
-                setIsAnimated(false)
+            setRotation(rotation: [number, number, number]) {
+                if (groupRef.current && rigidBodyRef.current) {
+                    const worldRotation = new Quaternion()
+                    groupRef.current.rotation.fromArray(rotation);
+                    groupRef.current.getWorldQuaternion(worldRotation);
+                    rigidBodyRef.current.setRotation(worldRotation, true)
+                }
+            },
+            stopPhysics() {
+                setOnPhysics(false)
+                if (rigidBodyRef.current) {
+                    rigidBodyRef.current.setBodyType(RigidBodyType.KinematicPositionBased, true);
+                }
+            },
+            startPhysics() {
+                setOnPhysics(true)
                 if (rigidBodyRef.current) {
                     rigidBodyRef.current.setBodyType(RigidBodyType.Dynamic, true);
                 }
             }
-        }
+        })
     });
 
     useFrame(() => {
-        if (!interactiveMeshRef.current || !meshRef.current || !rigidBodyRef.current) return;
+        if (!groupRef.current || !meshRef.current || !rigidBodyRef.current) return;
 
         // Update rigid body theo position mesh interactive
-        if (isAnimated) {
+        if (!onPhysics) {
             const position = new Vector3()
-            interactiveMeshRef.current.getWorldPosition(position)
-            rigidBodyRef.current.setNextKinematicTranslation(position.sub(startAnimatedPosition))
+            groupRef.current.getWorldPosition(position)
+            rigidBodyRef.current.setTranslation(position, false)
+
+            const rotation = new Quaternion()
+            groupRef.current.getWorldQuaternion(rotation)
+            rigidBodyRef.current.setRotation(rotation, false)
         }
 
         /**
@@ -66,53 +83,49 @@ const CardNoble = forwardRef(({id, url, onClick, onClickNotThis, ...props}: Card
          * ? when it's moving without user input (after user stops
          * ? dragging or RigidBody is moving)
          */
-        if (!isAnimated && rigidBodyRef.current.bodyType() !== 2 && !rigidBodyRef.current.isSleeping() && meshRef.current.parent) {
-            // updates position and rotation without influence from parent objects
-            const position = meshRef.current.position;
-            const physicsPosition = meshRef.current.parent.position;
-            interactiveMeshRef.current.position.set(position.x + physicsPosition.x, position.y + physicsPosition.y, position.z + physicsPosition.z);
-            interactiveMeshRef.current.setRotationFromEuler(meshRef.current.rotation);
+        if (onPhysics && rigidBodyRef.current.bodyType() !== 2 && !rigidBodyRef.current.isSleeping()) {
+            const physicsPosition = rigidBodyRef.current.translation()
+            groupRef.current.position.set(physicsPosition.x, physicsPosition.y, physicsPosition.z);
+
+            const physicsRotation = rigidBodyRef.current.rotation()
+            groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z));
         }
     })
 
     return (
-        <group>
+        <group ref={groupRef} {...props}>
+            <mesh key={id}
+                  ref={meshRef}
+                  onClick={(event) => {
+                      event.stopPropagation();
+                      onClick && onClick();
+                  }}
+                  onPointerMissed={(event) => {
+                      event.stopPropagation();
+                      onClickNotThis && onClickNotThis();
+                  }}
+            >
+                <boxGeometry args={[CardNobleSize.width, CardNobleSize.height, CardNobleSize.depth]}/>
+                <meshBasicMaterial attach="material-0" color={"gray"}/>
+                {/*right*/}
+                <meshBasicMaterial attach="material-1" color={"gray"}/>
+                {/*left*/}
+                <meshBasicMaterial attach="material-2" color={"gray"}/>
+                {/*top*/}
+                <meshBasicMaterial attach="material-3" color={"gray"}/>
+                {/*bottom*/}
+                <meshBasicMaterial attach="material-4" map={textureFront}/>
+                {/*front*/}
+                <meshBasicMaterial attach="material-5" map={textureBack}/>
+                {/*back*/}
+            </mesh>
+
             <RigidBody ref={rigidBodyRef}>
-                <mesh key={id}
-                      ref={meshRef}
-                      onClick={(event) => {
-                          event.stopPropagation();
-                          onClick && onClick();
-                      }}
-                      onPointerMissed={(event) => {
-                          event.stopPropagation();
-                          onClickNotThis && onClickNotThis();
-                      }}
-                      {...props}>
+                <mesh>
                     <boxGeometry args={[CardNobleSize.width, CardNobleSize.height, CardNobleSize.depth]}/>
-                    <meshBasicMaterial attach="material-0" color={"gray"}/>
-                    {/*right*/}
-                    <meshBasicMaterial attach="material-1" color={"gray"}/>
-                    {/*left*/}
-                    <meshBasicMaterial attach="material-2" color={"gray"}/>
-                    {/*top*/}
-                    <meshBasicMaterial attach="material-3" color={"gray"}/>
-                    {/*bottom*/}
-                    <meshBasicMaterial attach="material-4" map={textureFront}/>
-                    {/*front*/}
-                    <meshBasicMaterial attach="material-5" map={textureBack}/>
-                    {/*back*/}
+                    <meshBasicMaterial visible={false}/>
                 </mesh>
             </RigidBody>
-
-            <group>
-                <mesh ref={interactiveMeshRef}
-                      visible={false}
-                      {...props} >
-                    <boxGeometry args={[CardNobleSize.width, CardNobleSize.height, CardNobleSize.depth]}/>
-                    <meshBasicMaterial color={"red"}/>
-                </mesh>
-            </group>
         </group>
     )
 })

@@ -1,155 +1,67 @@
 import {CardGemSize} from "@/games/splendor/component/3d/CardGem";
 import {CardNobleSize} from "@/games/splendor/component/3d/CardNoble";
-import {TokenGemSize} from "@/games/splendor/component/3d/TokenGem";
+import {TokenGoldSize} from "@/games/splendor/component/3d/TokenGold";
+import {TokenOnyxSize} from "@/games/splendor/component/3d/TokenOnyx";
+import {TokenRubySize} from "@/games/splendor/component/3d/TokenRuby";
+import {TokenEmeraldSize} from "@/games/splendor/component/3d/TokenEmerald";
+import {TokenSapphireSize} from "@/games/splendor/component/3d/TokenSapphire";
+import {TokenDiamondSize} from "@/games/splendor/component/3d/TokenDiamond";
 
-export const CARD_POSITION = {
+export const CardPosition = {
     level1: {
-        desk: {
-            x: -2.2,
-            y: -1.2,
-            z: 0.5 * CardGemSize.depth
-        },
-        position1: {
-            x: -1.2,
-            y: -1.2,
-            z: 0.5 * CardGemSize.depth
-        },
-        position2: {
-            x: -0.4,
-            y: -1.2,
-            z: 0.5 * CardGemSize.depth
-        },
-        position3: {
-            x: 0.4,
-            y: -1.2,
-            z: 0.5 * CardGemSize.depth
-        },
-        position4: {
-            x: 1.2,
-            y: -1.2,
-            z: 0.5 * CardGemSize.depth
-        }
+        desk: [-2.2, -1.2, 0.5 * CardGemSize.depth],
+        position1: [-1.2, -1.2, 0.5 * CardGemSize.depth],
+        position2: [-0.4, -1.2, 0.5 * CardGemSize.depth],
+        position3: [0.4, -1.2, 0.5 * CardGemSize.depth],
+        position4: [1.2, -1.2, 0.5 * CardGemSize.depth]
     },
     level2: {
-        desk: {
-            x: -2.2,
-            y: 0,
-            z: 0.5 * CardGemSize.depth
-        },
-        position1: {
-            x: -1.2,
-            y: 0,
-            z: 0.5 * CardGemSize.depth
-        },
-        position2: {
-            x: -0.4,
-            y: 0,
-            z: 0.5 * CardGemSize.depth
-        },
-        position3: {
-            x: 0.4,
-            y: 0,
-            z: 0.5 * CardGemSize.depth
-        },
-        position4: {
-            x: 1.2,
-            y: 0,
-            z: 0.5 * CardGemSize.depth
-        }
+        desk: [-2.2, 0, 0.5 * CardGemSize.depth],
+        position1: [-1.2, 0, 0.5 * CardGemSize.depth],
+        position2: [-0.4, 0, 0.5 * CardGemSize.depth],
+        position3: [0.4, 0, 0.5 * CardGemSize.depth],
+        position4: [1.2, 0, 0.5 * CardGemSize.depth]
     },
     level3: {
-        desk: {
-            x: -2.2,
-            y: 1.2,
-            z: 0.5 * CardGemSize.depth
-        },
-        position1: {
-            x: -1.2,
-            y: 1.2,
-            z: 0.5 * CardGemSize.depth
-        },
-        position2: {
-            x: -0.4,
-            y: 1.2,
-            z: 0.5 * CardGemSize.depth
-        },
-        position3: {
-            x: 0.4,
-            y: 1.2,
-            z: 0.5 * CardGemSize.depth
-        },
-        position4: {
-            x: 1.2,
-            y: 1.2,
-            z: 0.5 * CardGemSize.depth
-        }
+        desk: [-2.2, 1.2, 0.5 * CardGemSize.depth],
+        position1: [-1.2, 1.2, 0.5 * CardGemSize.depth],
+        position2: [-0.4, 1.2, 0.5 * CardGemSize.depth],
+        position3: [0.4, 1.2, 0.5 * CardGemSize.depth],
+        position4: [1.2, 1.2, 0.5 * CardGemSize.depth]
     }
 };
 
-export const NOBLE_POSITION = {
-    desk: {
-        x: 3.5,
-        y: 2.2,
-        z: 0.5 * CardNobleSize.depth
-    },
-    position1: {
-        x: 3.5,
-        y: 1.4,
-        z: 0.5 * CardNobleSize.depth
-    },
-    position2: {
-        x: 3.5,
-        y: 0.7,
-        z: 0.5 * CardNobleSize.depth
-    },
-    position3: {
-        x: 3.5,
-        y: 0,
-        z: 0.5 * CardNobleSize.depth
-    },
-    position4: {
-        x: 3.5,
-        y: -0.7,
-        z: 0.5 * CardNobleSize.depth
-    },
-    position5: {
-        x: 3.5,
-        y: -1.4,
-        z: 0.5 * CardNobleSize.depth
-    }
+export const NoblePosition = {
+    desk: [3.5, 2.2, 0.5 * CardNobleSize.depth],
+    position1: [3.5, 1.4, 0.5 * CardNobleSize.depth],
+    position2: [3.5, 0.7, 0.5 * CardNobleSize.depth],
+    position3: [3.5, 0, 0.5 * CardNobleSize.depth],
+    position4: [3.5, -0.7, 0.5 * CardNobleSize.depth],
+    position5: [3.5, -1.4, 0.5 * CardNobleSize.depth]
 };
 
-export const GEM_POSITION = {
-    gold: {
-        x: 2.2,
-        y: 1.5,
-        z: 0.5 * TokenGemSize.depth
-    },
-    onyx: {
-        x: 2.2,
-        y: 0.9,
-        z: 0.5 * TokenGemSize.depth
-    },
-    ruby: {
-        x: 2.2,
-        y: 0.3,
-        z: 0.5 * TokenGemSize.depth
-    },
-    emerald: {
-        x: 2.2,
-        y: -0.3,
-        z: 0.5 * TokenGemSize.depth
-    },
-    sapphire: {
-        x: 2.2,
-        y: -0.9,
-        z: 0.5 * TokenGemSize.depth
-    },
-    diamond: {
-        x: 2.2,
-        y: -1.5,
-        z: 0.5 * TokenGemSize.depth
-    }
+export const GoldPosition = {
+    desk: [2.2, 1.5, 0.5 * TokenGoldSize.depth],
+};
+
+export const OnyxPosition = {
+    desk: [2.2, 0.9, 0.5 * TokenOnyxSize.depth],
+};
+
+export const RubyPosition = {
+    desk: [2.2, 0.3, 0.5 * TokenRubySize.depth],
+};
+
+export const EmeraldPosition = {
+    desk: [2.2, -0.3, 0.5 * TokenEmeraldSize.depth],
+};
+
+export const SapphirePosition = {
+    desk: [2.2, -0.9, 0.5 * TokenSapphireSize.depth],
+};
+
+export const DiamondPosition = {
+    desk: [2.2, -1.5, 0.5 * TokenDiamondSize.depth],
 };
 
 export const PLAYER_POSITION = {
@@ -241,39 +153,60 @@ export const PLAYER_NOBLE_POSITION = {
     distance: 0.2
 }
 
-export const PLAYER_GEM_POSITION = {
-    gold: {
-        x: -2.4,
-        y: -3.2,
-        z: 0.5 * TokenGemSize.depth
-    },
-    diamond: {
-        x: -1.6,
-        y: -3.2,
-        z: 0.5 * TokenGemSize.depth
-    },
-    sapphire: {
-        x: -0.8,
-        y: -3.2,
-        z: 0.5 * TokenGemSize.depth
-    },
-    emerald: {
-        x: 0,
-        y: -3.2,
-        z: 0.5 * TokenGemSize.depth
-    },
-    ruby: {
-        x: 0.8,
-        y: -3.2,
-        z: 0.5 * TokenGemSize.depth
-    },
-    onyx: {
-        x: 1.6,
-        y: -3.2,
-        z: 0.5 * TokenGemSize.depth
-    }
+// export const PLAYER_GEM_POSITION = {
+//     gold: {
+//         x: -2.4,
+//         y: -3.2,
+//         z: 0.5 * TokenGemSize.depth
+//     },
+//     diamond: {
+//         x: -1.6,
+//         y: -3.2,
+//         z: 0.5 * TokenGemSize.depth
+//     },
+//     sapphire: {
+//         x: -0.8,
+//         y: -3.2,
+//         z: 0.5 * TokenGemSize.depth
+//     },
+//     emerald: {
+//         x: 0,
+//         y: -3.2,
+//         z: 0.5 * TokenGemSize.depth
+//     },
+//     ruby: {
+//         x: 0.8,
+//         y: -3.2,
+//         z: 0.5 * TokenGemSize.depth
+//     },
+//     onyx: {
+//         x: 1.6,
+//         y: -3.2,
+//         z: 0.5 * TokenGemSize.depth
+//     }
+// }
+
+export interface Noble {
+    id: string,
+    url: string,
+    position: number[]
+    rotation: number[]
 }
 
-export const NotifyGameSplendorInit = 'NotifyGameSplendorInit';
+export interface Card {
+    id: string,
+    type: string,
+    level: number
+    url: string
+    position: number[]
+    rotation: number[]
+}
+export interface Gem {
+    id: string,
+    owner: string,
+    position: number[]
+    rotation: number[]
+}
+
 export const NotifyGameSplendorStart = 'NotifyGameSplendorStart';
 export const NotifyGameSplendorTurnEnd = 'NotifyGameSplendorTurnEnd'

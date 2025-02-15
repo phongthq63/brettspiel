@@ -258,6 +258,7 @@ public class GameServiceImpl implements IGameService {
                 put("game_id", finalSplendorGame.getGameId());
                 put("table_id", finalSplendorGame.getTableId());
                 put("player_ids", finalSplendorGame.getPlayerIds());
+                put("status", finalSplendorGame.getStatus());
                 put("round", finalSplendorGame.getIngameData().getRound());
                 put("turn", finalSplendorGame.getIngameData().getTurn());
                 put("current_player", finalSplendorGame.getIngameData().getCurrentPlayer());

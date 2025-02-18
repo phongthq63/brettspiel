@@ -4,7 +4,9 @@ import React, {createContext, useContext, useEffect, useState} from "react";
 import {getItem} from "@/hook/useCookie";
 import {decodeJWT} from "@/utils";
 
-const UserContext = createContext<any>(undefined);
+const UserContext = createContext<{
+    user: User | undefined
+} | undefined>(undefined);
 
 class User {
     user_id: string;

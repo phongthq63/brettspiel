@@ -28,25 +28,24 @@ interface CardGemProps {
 }
 
 const CardGem = forwardRef(({id, level, url, onClick, onClickNotThis, ...props}: CardGemProps, ref: Ref<any>) => {
-    let urlBack;
-    switch (level) {
-        case 1:
-            urlBack = '/game/splendor/card/1/card1-back.jpg'
-            break
-        case 2:
-            urlBack = '/game/splendor/card/2/card2-back.jpg'
-            break
-        case 3:
-            urlBack = '/game/splendor/card/3/card3-back.jpg'
-            break
-        default:
-            throw Error("Invalid level number")
-    }
-    const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, urlBack]);
+    const [textureFront, textureBackLevel1, textureBackLevel2, textureBackLevel3] = useLoader(THREE.TextureLoader, [url, '/game/splendor/card/1/card1-back.jpg', '/game/splendor/card/2/card2-back.jpg', '/game/splendor/card/3/card3-back.jpg']);
     const [onPhysics, setOnPhysics] = useState(true);
     const groupRef = useRef<Group>(null);
     const rigidBodyRef = useRef<RapierRigidBody>(null);
     const meshRef = useRef<Mesh>(null);
+
+    const textureBack = () => {
+        switch (level) {
+            case 1:
+                return textureBackLevel1
+            case 2:
+                return textureBackLevel2
+            case 3:
+                return textureBackLevel3
+            default:
+                throw Error(`Level ${level} not supported`)
+        }
+    }
 
 
     useImperativeHandle(ref, () => {
@@ -136,7 +135,7 @@ const CardGem = forwardRef(({id, level, url, onClick, onClickNotThis, ...props}:
                 {/*bottom*/}
                 <meshBasicMaterial attach="material-4" map={textureFront}/>
                 {/*front*/}
-                <meshBasicMaterial attach="material-5" map={textureBack}/>
+                <meshBasicMaterial attach="material-5" map={textureBack()}/>
                 {/*back*/}
             </mesh>
 

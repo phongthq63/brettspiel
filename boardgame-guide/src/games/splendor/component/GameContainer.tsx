@@ -26,20 +26,20 @@ function GameContainer({gameId}: {gameId: string}) {
 
     return (
         <>
-            <GameActionDescriptionBox/>
+            {gameData && (
+                <GameActionDescriptionBox/>
+            )}
             <div className="w-full">
                 <div className="flex flex-col md:flex-row space-y-1 md:space-y-0 md:space-x-1">
                     <div className="md:basis-4/5 h-[40vh] md:h-[80vh]">
                         <GameCanvas/>
                     </div>
                     <div className="relative md:basis-1/5 flex flex-row md:flex-col flex-wrap md:space-y-1">
-                        {
-                            gameData?.ingame_data.players.map((player: IngamePlayerDataVO) => {
-                                return <PlayerGameInfoBox key={player.player_id}
-                                                          playerId={player.player_id as string}
-                                                          playerGameData={{...player}}/>
-                            })
-                        }
+                        {gameData?.ingame_data?.players?.map((player: IngamePlayerDataVO) => (
+                            <PlayerGameInfoBox key={player.player_id}
+                                               playerId={player.player_id as string}
+                                               playerGameData={{...player}}/>
+                        ))}
                     </div>
                 </div>
             </div>

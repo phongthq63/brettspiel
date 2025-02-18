@@ -1,7 +1,10 @@
-import React, {forwardRef, Ref} from "react";
-import {useLoader} from "@react-three/fiber";
+import React, {forwardRef, Ref, useImperativeHandle, useRef, useState} from "react";
+import {useFrame, useLoader} from "@react-three/fiber";
 import * as THREE from "three";
 import {GemGold} from "@/games/splendor/constants/gem";
+import {Group, Mesh, Quaternion, Vector3} from "three";
+import {CylinderCollider, RapierRigidBody, RigidBody} from "@react-three/rapier";
+import {RigidBodyType} from "@dimforge/rapier3d-compat";
 
 
 export const TokenGoldSize = {
@@ -17,21 +20,101 @@ interface TokenGoldProps {
 
 const TokenGold = forwardRef(({id, onClick, ...props}: TokenGoldProps, ref: Ref<any>) => {
     const textureFront = useLoader(THREE.TextureLoader, GemGold.url);
+    const [onPhysics, setOnPhysics] = useState(true);
+    const groupRef = useRef<Group>(null);
+    const rigidBodyRef = useRef<RapierRigidBody>(null);
+    const meshRef = useRef<Mesh>(null);
+
+
+    useImperativeHandle(ref, () => {
+        if (!groupRef.current) return null;
+
+        return Object.assign(groupRef.current, {
+            setPosition(position: [number, number, number]) {
+                if (groupRef.current && rigidBodyRef.current) {
+                    const worldPosition = new Vector3()
+                    groupRef.current.position.fromArray(position);
+                    groupRef.current.getWorldPosition(worldPosition);
+                    rigidBodyRef.current.setTranslation(worldPosition, true)
+                }
+            },
+            setRotation(rotation: [number, number, number]) {
+                if (groupRef.current && rigidBodyRef.current) {
+                    const worldRotation = new Quaternion()
+                    groupRef.current.rotation.fromArray(rotation);
+                    groupRef.current.getWorldQuaternion(worldRotation);
+                    rigidBodyRef.current.setRotation(worldRotation, true)
+                }
+            },
+            stopPhysics() {
+                setOnPhysics(false)
+                if (rigidBodyRef.current) {
+                    rigidBodyRef.current.setBodyType(RigidBodyType.KinematicPositionBased, true);
+                }
+            },
+            startPhysics() {
+                setOnPhysics(true)
+                if (rigidBodyRef.current) {
+                    rigidBodyRef.current.setBodyType(RigidBodyType.Dynamic, true);
+                }
+            }
+        })
+    });
+
+    useFrame(() => {
+        if (!groupRef.current || !meshRef.current || !rigidBodyRef.current) return;
+
+        // Update rigid body theo position mesh interactive
+        if (!onPhysics) {
+            const position = new Vector3()
+            groupRef.current.getWorldPosition(position)
+            rigidBodyRef.current.setTranslation(position, false)
+
+            const rotation = new Quaternion()
+            groupRef.current.getWorldQuaternion(rotation)
+            rigidBodyRef.current.setRotation(rotation, false)
+        }
+
+        /**
+         * ? this code syncs the invisible mesh to the visible one
+         * ? when it's moving without user input (after user stops
+         * ? dragging or RigidBody is moving)
+         */
+        if (onPhysics && rigidBodyRef.current.bodyType() !== 2 && !rigidBodyRef.current.isSleeping()) {
+            const physicsPosition = rigidBodyRef.current.translation()
+            groupRef.current.position.set(physicsPosition.x, physicsPosition.y, physicsPosition.z);
+
+            const physicsRotation = rigidBodyRef.current.rotation()
+            groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z));
+        }
+    })
 
     return (
-        <mesh key={id}
-              ref={ref}
-              onClick={(event) => {
-                  event.stopPropagation();
-                  onClick && onClick();
-              }}
-              rotation={[Math.PI / 2, 0, 0]}
-              {...props}>
-            <cylinderGeometry args={[TokenGoldSize.size, TokenGoldSize.size, TokenGoldSize.depth, 32]}/>
-            <meshBasicMaterial attach="material-0" color={GemGold.color}/>
-            <meshBasicMaterial attach="material-1" map={textureFront}/>
-            <meshBasicMaterial attach="material-2" color={GemGold.color}/>
-        </mesh>
+        <group ref={groupRef} {...props}>
+            <mesh key={id}
+                  ref={meshRef}
+                  onClick={(event) => {
+                      event.stopPropagation();
+                      onClick && onClick();
+                  }}
+                  rotation={[Math.PI / 2, 0, 0]}
+            >
+                <cylinderGeometry args={[TokenGoldSize.size, TokenGoldSize.size, TokenGoldSize.depth, 32]}/>
+                <meshBasicMaterial attach="material-0" color={GemGold.color}/>
+                <meshBasicMaterial attach="material-1" map={textureFront}/>
+                <meshBasicMaterial attach="material-2" color={GemGold.color}/>
+            </mesh>
+
+            <RigidBody ref={rigidBodyRef} colliders={false}>
+                <CylinderCollider args={[TokenGoldSize.depth / 2, TokenGoldSize.size]}
+                                  rotation={[Math.PI / 2, 0, 0]}>
+                    <mesh rotation={[Math.PI / 2, 0, 0]}>
+                        <cylinderGeometry args={[TokenGoldSize.size, TokenGoldSize.size, TokenGoldSize.depth, 32]}/>
+                        <meshBasicMaterial visible={false}/>
+                    </mesh>
+                </CylinderCollider>
+            </RigidBody>
+        </group>
     )
 })
 TokenGold.displayName = "TokenGem";

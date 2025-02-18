@@ -7,6 +7,7 @@ import {TokenEmeraldSize} from "@/games/splendor/component/3d/TokenEmerald";
 import {TokenSapphireSize} from "@/games/splendor/component/3d/TokenSapphire";
 import {TokenDiamondSize} from "@/games/splendor/component/3d/TokenDiamond";
 
+
 export const CardPosition = {
     level1: {
         desk: [-2.2, -1.2, 0.5 * CardGemSize.depth],
@@ -185,28 +186,6 @@ export const PLAYER_NOBLE_POSITION = {
 //         z: 0.5 * TokenGemSize.depth
 //     }
 // }
-
-export interface Noble {
-    id: string,
-    url: string,
-    position: number[]
-    rotation: number[]
-}
-
-export interface Card {
-    id: string,
-    type: string,
-    level: number
-    url: string
-    position: number[]
-    rotation: number[]
-}
-export interface Gem {
-    id: string,
-    owner: string,
-    position: number[]
-    rotation: number[]
-}
 
 export const NotifyGameSplendorStart = 'NotifyGameSplendorStart';
 export const NotifyGameSplendorTurnEnd = 'NotifyGameSplendorTurnEnd'

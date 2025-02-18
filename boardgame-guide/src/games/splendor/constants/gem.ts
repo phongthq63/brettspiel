@@ -1,4 +1,4 @@
-enum TokenGemType {
+export enum TokenGemType {
     GOLD = "gold",
     DIAMOND = 'diamond',
     EMERALD = 'emerald',

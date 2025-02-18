@@ -5,7 +5,10 @@ import {io, Socket} from "socket.io-client";
 import {getItem} from "@/hook/useCookie";
 
 
-const SocketContext = createContext<any>(undefined);
+const SocketContext = createContext<{
+    socket: Socket | undefined
+    connected: boolean
+} | undefined>(undefined);
 
 
 export const SocketProvider = ({children}: any) => {

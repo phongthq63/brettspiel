@@ -5,11 +5,11 @@ import React, {useEffect} from "react";
 import {GameSplendorProvider} from "@/games/splendor/store/game";
 
 
-export default function Page({params}: {params: {id: string}}) {
-    const { id } = params;
+export default function Page({ params } : { params: Promise<{ id: string }>}) {
+    const { id } = React.use(params);
 
     useEffect(() => {
-        window.scrollTo(0, 0)
+        setTimeout(() => window.scrollTo(0, 0), 0)
     }, [])
 
     return <>

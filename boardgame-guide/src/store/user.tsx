@@ -8,7 +8,7 @@ const UserContext = createContext<{
     user: User | undefined
 } | undefined>(undefined);
 
-class User {
+export class User {
     user_id: string;
 
     constructor(user_id: string) {
@@ -19,8 +19,10 @@ class User {
 export const UserProvider = ({children}: any) => {
     const [user, setUser] = useState<User>();
 
+
     useEffect(() => {
         const token = getItem('access-token')
+        const userId = getItem('user-id')
         if (!token) {
             return;
         }
@@ -31,7 +33,7 @@ export const UserProvider = ({children}: any) => {
             return;
         }
 
-        setUser({user_id: jwtData.sub})
+        setUser({user_id: userId})
     }, [])
 
     return (

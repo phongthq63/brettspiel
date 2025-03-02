@@ -5,6 +5,13 @@ package com.brettspiel.boardgameguide.splendor.constant;
  * On 11/16/2024 - 11:53 PM
  */
 public class GameConstants {
+    public final static String GEM_TYPE_GOLD = "gold";
+    public final static String GEM_TYPE_ONYX = "onyx";
+    public final static String GEM_TYPE_RUBY = "ruby";
+    public final static String GEM_TYPE_EMERALD = "emerald";
+    public final static String GEM_TYPE_SAPPHIRE = "sapphire";
+    public final static String GEM_TYPE_DIAMOND = "diamond";
+
 
     public final static int STATUS_INIT = 0;
     public final static int STATUS_PLAY = 1;

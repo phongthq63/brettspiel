@@ -4,7 +4,7 @@ import * as THREE from "three";
 import {RigidBody} from "@react-three/rapier";
 
 export const BoardSize = {
-    width: 14,
+    width: 18,
     height: 10,
     depth: 0.25
 };
@@ -14,14 +14,14 @@ interface BoardProps {
     onClick?: () => void
 }
 
-function Board({onClick, ...props}: BoardProps) {
+function Table({onClick, ...props}: BoardProps) {
     const texture = useLoader(THREE.TextureLoader, "/game/splendor/board.jpg");
 
     return (
         <RigidBody type={"fixed"}>
             <mesh onClick={(event) => {
                 event.stopPropagation();
-                onClick && onClick();
+                onClick?.();
             }}
                   {...props}>
                 <boxGeometry args={[BoardSize.width, BoardSize.height, BoardSize.depth]}/>
@@ -42,4 +42,4 @@ function Board({onClick, ...props}: BoardProps) {
     )
 }
 
-export default Board;
+export default Table;

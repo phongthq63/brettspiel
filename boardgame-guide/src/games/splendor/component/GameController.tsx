@@ -1,33 +1,27 @@
-import React, {memo, useEffect} from "react";
+import React, {memo, useCallback, useEffect} from "react";
 import {RoomService} from "@/service/socket.service";
 import {Card, Noble, useGameSplendor} from "@/games/splendor/store/game";
 import {useSocket} from "@/store/socket";
 import {useUser} from "@/store/user";
 import {
-    CardPosition, DiamondPosition, EmeraldPosition, GoldPosition,
-    NoblePosition,
+    CardPosition, NoblePosition,
     NotifyGameSplendorStart,
-    NotifyGameSplendorTurnEnd, OnyxPosition, RubyPosition, SapphirePosition
+    NotifyGameSplendorTurnEnd
 } from "@/games/splendor/constants/game";
-import {CardVO, FieldCardVO, FieldNobleVO, NobleVO} from "@/games/splendor/service/splendor.service";
 import {NobleDictionary} from "@/games/splendor/constants/noble";
 import {CardNobleSize} from "@/games/splendor/component/3d/CardNoble";
 import {CardDictionary} from "@/games/splendor/constants/card";
 import {CardGemSize} from "@/games/splendor/component/3d/CardGem";
 import gsap from "gsap";
 import {useSharedRef} from "@/games/splendor/store/ref";
-import {TokenGoldSize} from "@/games/splendor/component/3d/TokenGold";
-import {TokenOnyxSize} from "@/games/splendor/component/3d/TokenOnyx";
-import {TokenRubySize} from "@/games/splendor/component/3d/TokenRuby";
-import {TokenEmeraldSize} from "@/games/splendor/component/3d/TokenEmerald";
-import {TokenSapphireSize} from "@/games/splendor/component/3d/TokenSapphire";
-import {TokenDiamondSize} from "@/games/splendor/component/3d/TokenDiamond";
+import {MathUtils} from "three";
+
 
 function GameController() {
     const { user } = useUser()
     const { socket, connected } = useSocket()
     const { cardRefs, nobleRefs } = useSharedRef()
-    const { gameData,
+    const { gameId,
         setStatus,
         setCurrentPlayer,
         setNextPlayer,
@@ -37,331 +31,30 @@ function GameController() {
         setFieldCard3,
         setFieldCard2,
         setFieldCard1,
-        setGolds,
-        setOnyxes,
-        setRubies,
-        setEmeralds,
-        setSapphires,
-        setDiamonds,
         deckNoble, setDeckNoble,
-        setFieldNoble
+        setFieldNoble,
     } = useGameSplendor()
-
 
 
     // Socket join room game
     useEffect(() => {
-        if (user && gameData && connected) {
-            RoomService.joinRoom({ body: { user_id: user.user_id, room_id: gameData.game_id } })
+        if (user && gameId && connected) {
+            RoomService.joinRoom({ body: { user_id: user.user_id, room_id: gameId } })
                 .then(response => {
                     if (response.code == 0) {
-                        console.log("Join room successfully", user.user_id, gameData.game_id)
+                        console.log("Join room successfully", user.user_id, gameId)
                     } else {
-                        console.log("Join room fail", user.user_id, gameData.game_id)
+                        console.log("Join room fail", user.user_id, gameId)
                     }
                 })
                 .catch(error => {
                     console.log("Join room error", error);
                 });
         }
-    }, [connected, gameData, user]);
-
-    // Update game state
-    useEffect(() => {
-        if (!gameData || !gameData.ingame_data) return
-
-        // Deck card
-        {
-            if (gameData.ingame_data.deck_card3) {
-                const deckCard = gameData.ingame_data.deck_card3
-                setDeckCard3(deckCard.map((card: CardVO, index: number) => {
-                    if (gameData.status == 0) {
-                        return {
-                            ...card,
-                            ...CardDictionary[card.id],
-                            position: [CardPosition.level3.desk[0], CardPosition.level3.desk[1], index * CardGemSize.depth + CardPosition.level3.desk[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        };
-                    } else {
-                        return {
-                            ...card,
-                            ...CardDictionary[card.id],
-                            position: [CardPosition.level3.desk[0], CardPosition.level3.desk[1], (deckCard.length - 1 - index) * CardGemSize.depth + CardPosition.level3.desk[2] + 0.2],
-                            rotation: [0, Math.PI, 0]
-                        };
-                    }
-                }))
-            }
-            if (gameData.ingame_data.deck_card2) {
-                const deckCard = gameData.ingame_data.deck_card2
-                setDeckCard2(deckCard.map((card: CardVO, index: number) => {
-                    if (gameData.status == 0) {
-                        return {
-                            ...card,
-                            ...CardDictionary[card.id],
-                            position: [CardPosition.level2.desk[0], CardPosition.level2.desk[1], index * CardGemSize.depth + CardPosition.level2.desk[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        };
-                    } else {
-                        return {
-                            ...card,
-                            ...CardDictionary[card.id],
-                            position: [CardPosition.level2.desk[0], CardPosition.level2.desk[1], (deckCard.length - 1 - index) * CardGemSize.depth + CardPosition.level2.desk[2] + 0.2],
-                            rotation: [0, Math.PI, 0]
-                        };
-                    }
-                }))
-            }
-            if (gameData.ingame_data.deck_card1) {
-                const deckCard = gameData.ingame_data.deck_card1
-                setDeckCard1(deckCard.map((card: CardVO, index: number) => {
-                    if (gameData.status == 0) {
-                        return {
-                            ...card,
-                            ...CardDictionary[card.id],
-                            position: [CardPosition.level1.desk[0], CardPosition.level1.desk[1], index * CardGemSize.depth + CardPosition.level1.desk[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        };
-                    } else {
-                        return {
-                            ...card,
-                            ...CardDictionary[card.id],
-                            position: [CardPosition.level1.desk[0], CardPosition.level1.desk[1], (deckCard.length - 1 - index) * CardGemSize.depth + CardPosition.level1.desk[2] + 0.2],
-                            rotation: [0, Math.PI, 0]
-                        };
-                    }
-                }));
-            }
-        }
-        // Card open
-        {
-            if (gameData.ingame_data.field_card3) {
-                setFieldCard3(gameData.ingame_data.field_card3.filter((fieldCard: FieldCardVO) => fieldCard.card)
-                    .map((fieldCard: FieldCardVO) => {
-                        let position;
-                        switch (fieldCard.position) {
-                            case 0:
-                                position = CardPosition.level3.position1
-                                break
-                            case 1:
-                                position = CardPosition.level3.position2
-                                break
-                            case 2:
-                                position = CardPosition.level3.position3
-                                break
-                            case 3:
-                                position = CardPosition.level3.position4
-                                break
-                            default:
-                                throw Error("Invalid card position")
-                        }
-                        return {
-                            ...fieldCard.card,
-                            ...CardDictionary[fieldCard.card?.id || ''],
-                            position: [position[0], position[1], position[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        }
-                    }))
-            }
-            if (gameData.ingame_data.field_card2) {
-                setFieldCard2(gameData.ingame_data.field_card2.filter((fieldCard: FieldCardVO) => fieldCard.card)
-                    .map((fieldCard: FieldCardVO) => {
-                        let position;
-                        switch (fieldCard.position) {
-                            case 0:
-                                position = CardPosition.level2.position1
-                                break
-                            case 1:
-                                position = CardPosition.level2.position2
-                                break
-                            case 2:
-                                position = CardPosition.level2.position3
-                                break
-                            case 3:
-                                position = CardPosition.level2.position4
-                                break
-                            default:
-                                throw Error("Invalid card position")
-                        }
-                        return {
-                            ...fieldCard.card,
-                            ...CardDictionary[fieldCard.card?.id || ''],
-                            position: [position[0], position[1], position[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        }
-                    }))
-            }
-            if (gameData.ingame_data.field_card1) {
-                setFieldCard1(gameData.ingame_data.field_card1.filter((fieldCard: FieldCardVO) => fieldCard.card)
-                    .map((fieldCard: FieldCardVO) => {
-                        let position;
-                        switch (fieldCard.position) {
-                            case 0:
-                                position = CardPosition.level1.position1
-                                break
-                            case 1:
-                                position = CardPosition.level1.position2
-                                break
-                            case 2:
-                                position = CardPosition.level1.position3
-                                break
-                            case 3:
-                                position = CardPosition.level1.position4
-                                break
-                            default:
-                                throw Error("Invalid card position")
-                        }
-                        return {
-                            ...fieldCard.card,
-                            ...CardDictionary[fieldCard.card?.id || ''],
-                            position: [position[0], position[1], position[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        }
-                    }))
-            }
-        }
-        // Gem
-        {
-            if (gameData.ingame_data.gold) {
-                setGolds(Array.from({length: gameData.ingame_data.gold}, (_, i) => i)
-                    .map((index) => {
-                        return {
-                            id: crypto.randomUUID(),
-                            owner: "",
-                            position: [GoldPosition.desk[0], GoldPosition.desk[1], index * TokenGoldSize.depth + GoldPosition.desk[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        }
-                    }))
-            }
-            if (gameData.ingame_data.onyx) {
-                setOnyxes(Array.from({length: gameData.ingame_data.onyx}, (_, i) => i)
-                    .map((index) => {
-                        return {
-                            id: crypto.randomUUID(),
-                            owner: "",
-                            position: [OnyxPosition.desk[0], OnyxPosition.desk[1], index * TokenOnyxSize.depth + OnyxPosition.desk[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        }
-                    }))
-            }
-            if (gameData.ingame_data.ruby) {
-                setRubies(Array.from({length: gameData.ingame_data.ruby}, (_, i) => i)
-                    .map((index) => {
-                        return {
-                            id: crypto.randomUUID(),
-                            owner: "",
-                            position: [RubyPosition.desk[0], RubyPosition.desk[1], index * TokenRubySize.depth + RubyPosition.desk[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        }
-                    }))
-            }
-            if (gameData.ingame_data.emerald) {
-                setEmeralds(Array.from({length: gameData.ingame_data.emerald}, (_, i) => i)
-                    .map((index) => {
-                        return {
-                            id: crypto.randomUUID(),
-                            owner: "",
-                            position: [EmeraldPosition.desk[0], EmeraldPosition.desk[1], index * TokenEmeraldSize.depth + EmeraldPosition.desk[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        }
-                    }))
-            }
-            if (gameData.ingame_data.sapphire) {
-                setSapphires(Array.from({length: gameData.ingame_data.sapphire}, (_, i) => i)
-                    .map((index) => {
-                        return {
-                            id: crypto.randomUUID(),
-                            owner: "",
-                            position: [SapphirePosition.desk[0], SapphirePosition.desk[1], index * TokenSapphireSize.depth + SapphirePosition.desk[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        }
-                    }))
-            }
-            if (gameData.ingame_data.diamond) {
-                setDiamonds(Array.from({length: gameData.ingame_data.diamond}, (_, i) => i)
-                    .map((index) => {
-                        return {
-                            id: crypto.randomUUID(),
-                            owner: "",
-                            position: [DiamondPosition.desk[0], DiamondPosition.desk[1], index * TokenDiamondSize.depth + DiamondPosition.desk[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        }
-                    }))
-            }
-        }
-        // Noble
-        {
-            if (gameData.ingame_data.deck_noble) {
-                const deckNoble = gameData.ingame_data.deck_noble;
-                setDeckNoble(deckNoble.map((noble: NobleVO, index: number) => {
-                    if (gameData.status == 0) {
-                        return {
-                            ...noble,
-                            ...NobleDictionary[noble.id],
-                            position: [NoblePosition.desk[0], NoblePosition.desk[1], index * CardNobleSize.depth + NoblePosition.desk[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        };
-                    } else {
-                        return {
-                            ...noble,
-                            ...NobleDictionary[noble.id],
-                            position: [NoblePosition.desk[0], NoblePosition.desk[1], (deckNoble.length - 1 - index) * CardNobleSize.depth + NoblePosition.desk[2] + 0.2],
-                            rotation: [0, Math.PI, 0]
-                        };
-                    }
-                }))
-            }
-        }
-        // Noble open
-        {
-            if (gameData.ingame_data.field_noble) {
-                setFieldNoble(gameData.ingame_data.field_noble.filter((fieldNoble: FieldNobleVO) => fieldNoble.noble)
-                    .map((fieldNoble) => {
-                        let position;
-                        switch (fieldNoble.position) {
-                            case 0:
-                                position = NoblePosition.position1
-                                break
-                            case 1:
-                                position = NoblePosition.position2
-                                break
-                            case 2:
-                                position = NoblePosition.position3
-                                break
-                            case 3:
-                                position = NoblePosition.position4
-                                break
-                            case 4:
-                                position = NoblePosition.position5
-                                break
-                            default:
-                                throw Error("Invalid noble position")
-                        }
-                        return {
-                            ...fieldNoble.noble,
-                            ...NobleDictionary[fieldNoble.noble?.id || ''],
-                            position: [position[0], position[1], position[2] + 0.2],
-                            rotation: [0, 0, 0]
-                        }
-                    }))
-            }
-        }
-
-        //
-        if (gameData.status) {
-            setStatus(gameData.status)
-        }
-        if (gameData.ingame_data.current_player) {
-            setCurrentPlayer(gameData.ingame_data.current_player)
-        }
-        if (gameData.ingame_data.next_player) {
-            setNextPlayer(gameData.ingame_data.next_player)
-        }
-
-    }, [gameData]);
+    }, [connected, gameId, user]);
 
 
-    const handlerStartGame = (data: any) => {
+    const handlerStartGame = useCallback((data: any) => {
         console.log(data)
         const fieldCard3 = data.field_card_3.filter((field_card: any) => field_card.card)
             .sort((a: any, b: any) => a.position - b.position)
@@ -385,105 +78,32 @@ function GameController() {
 
 
         const card3Opens: Card[] = fieldCard3.map((field: any) => {
-            let position;
-            switch (field.position) {
-                case 0:
-                    position = CardPosition.level3.position1;
-                    break
-                case 1:
-                    position = CardPosition.level3.position2;
-                    break
-                case 2:
-                    position = CardPosition.level3.position3;
-                    break
-                case 3:
-                    position = CardPosition.level3.position4;
-                    break
-                default:
-                    throw new Error(`Invalid open card position ${field.position}`)
-            }
             return {
                 ...field.card,
                 ...CardDictionary[field.card.id],
-                position: position,
+                position: CardPosition.level[3].field[field.position],
                 rotation: [0, 0, 0]
             }
         })
         const card2Opens: Card[] = fieldCard2.map((field: any) => {
-            let position;
-            switch (field.position) {
-                case 0:
-                    position = CardPosition.level2.position1;
-                    break
-                case 1:
-                    position = CardPosition.level2.position2;
-                    break
-                case 2:
-                    position = CardPosition.level2.position3;
-                    break
-                case 3:
-                    position = CardPosition.level2.position4;
-                    break
-                default:
-                    throw new Error(`Invalid open card position ${field.position}`)
-            }
             return {
                 ...field.card,
                 ...CardDictionary[field.card.id],
-                position: position,
+                position: CardPosition.level[2].field[field.position],
                 rotation: [0, 0, 0]
             }
         })
-        const card1Opens: Card[] = fieldCard1.map((field: any) => {
-            let position;
-            switch (field.position) {
-                case 0:
-                    position = CardPosition.level1.position1;
-                    break
-                case 1:
-                    position = CardPosition.level1.position2;
-                    break
-                case 2:
-                    position = CardPosition.level1.position3;
-                    break
-                case 3:
-                    position = CardPosition.level1.position4;
-                    break
-                default:
-                    throw new Error(`Invalid open card position ${field.position}`)
-            }
-            return {
-                ...field.card,
-                ...CardDictionary[field.card.id],
-                position: position,
-                rotation: [0, 0, 0]
-            }
-        })
+        const card1Opens: Card[] = fieldCard1.map((field: any) => ({
+            ...field.card,
+            ...CardDictionary[field.card.id],
+            position: CardPosition.level[1].field[field.position],
+            rotation: [0, 0, 0]
+        }))
         const nobleOpens: Noble[] = fieldNoble.map((field: any) => {
-            let position;
-            switch (field.position) {
-                case 0:
-                    position = NoblePosition.position1;
-                    break
-                case 1:
-                    position = NoblePosition.position2;
-                    break
-                case 2:
-                    position = NoblePosition.position3;
-                    break
-                case 3:
-                    position = NoblePosition.position4;
-                    break
-                case 4:
-                    position = NoblePosition.position5;
-                    break
-                default:
-                    throw new Error(`Invalid open card position ${field.position}`)
-            }
             return {
                 ...field.noble,
                 ...NobleDictionary[field.noble.id],
-                position: position,
+                position: NoblePosition.field[field.position],
                 rotation: [0, 0, 0]
             }
         })
@@ -494,11 +114,10 @@ function GameController() {
             {
                 deckCard3.forEach((card: Card, index: number) => {
                     const instance = cardRefs.current[card.id];
-
                     const height = 0.8
                     timelineDeckCard3.add(gsap.timeline()
                             .to(instance.position, {
-                                z: index * CardGemSize.depth + height + CardPosition.level3.desk[2],
+                                z: index * CardGemSize.depth + height + CardPosition.level[card.level].desk[2],
                                 duration: 0.35
                             })
                             .to(instance.position, {
@@ -510,7 +129,7 @@ function GameController() {
                                 duration: 0.2
                             }, "<")
                             .to(instance.position, {
-                                z: (deckCard3.length - 1 - index) * CardGemSize.depth + CardPosition.level3.desk[2],
+                                z: (deckCard3.length - 1 - index) * CardGemSize.depth + CardPosition.level[card.level].desk[2],
                                 duration: 0.25
                             })
                         , 0);
@@ -521,7 +140,7 @@ function GameController() {
                         .map((card: Card, index: number) => {
                             return {
                                 ...card,
-                                position: [CardPosition.level3.desk[0], CardPosition.level3.desk[1], (deckCard3.length - 1 - index) * CardGemSize.depth + CardPosition.level3.desk[2]],
+                                position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (deckCard3.length - 1 - index) * CardGemSize.depth + CardPosition.level[card.level].desk[2]],
                                 rotation: [0, Math.PI, 0]
                             }
                         }) as Card[]
@@ -541,7 +160,7 @@ function GameController() {
                     const height = 0.8
                     timelineDeckCard2.add(gsap.timeline()
                             .to(instance.position, {
-                                z: index * CardGemSize.depth + height + CardPosition.level2.desk[2],
+                                z: index * CardGemSize.depth + height + CardPosition.level[card.level].desk[2],
                                 duration: 0.35
                             })
                             .to(instance.position, {
@@ -553,7 +172,7 @@ function GameController() {
                                 duration: 0.2
                             }, "<")
                             .to(instance.position, {
-                                z: (deckCard2.length - 1 - index) * CardGemSize.depth + CardPosition.level2.desk[2],
+                                z: (deckCard2.length - 1 - index) * CardGemSize.depth + CardPosition.level[card.level].desk[2],
                                 duration: 0.25
                             })
                         , 0);
@@ -564,7 +183,7 @@ function GameController() {
                         .map((card: Card, index: any) => {
                             return {
                                 ...card,
-                                position: [CardPosition.level2.desk[0], CardPosition.level2.desk[1], (deckCard2.length - 1 - index) * CardGemSize.depth + CardPosition.level2.desk[2]],
+                                position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (deckCard2.length - 1 - index) * CardGemSize.depth + CardPosition.level[card.level].desk[2]],
                                 rotation: [0, Math.PI, 0]
                             }
                         }) as Card[]
@@ -584,7 +203,7 @@ function GameController() {
                     const height = 0.8
                     timelineDeckCard1.add(gsap.timeline()
                             .to(instance.position, {
-                                z: index * CardGemSize.depth + height + CardPosition.level1.desk[2],
+                                z: index * CardGemSize.depth + height + CardPosition.level[card.level].desk[2],
                                 duration: 0.35
                             })
                             .to(instance.position, {
@@ -596,7 +215,7 @@ function GameController() {
                                 duration: 0.2
                             }, "<")
                             .to(instance.position, {
-                                z: (deckCard1.length - 1 - index) * CardGemSize.depth + CardPosition.level1.desk[2],
+                                z: (deckCard1.length - 1 - index) * CardGemSize.depth + CardPosition.level[card.level].desk[2],
                                 duration: 0.25
                             })
                         , 0);
@@ -607,7 +226,7 @@ function GameController() {
                         .map((card: Card, index: number) => {
                             return {
                                 ...card,
-                                position: [CardPosition.level1.desk[0], CardPosition.level1.desk[1], (deckCard1.length - 1 - index) * CardGemSize.depth + CardPosition.level1.desk[2]],
+                                position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (deckCard1.length - 1 - index) * CardGemSize.depth + CardPosition.level[card.level].desk[2]],
                                 rotation: [0, Math.PI, 0]
                             }
                         }) as Card[]
@@ -666,39 +285,18 @@ function GameController() {
             {
                 fieldCard3.forEach((field: any) => {
                     const instance = cardRefs.current[field.card.id]
-                    let position;
-                    switch (field.position) {
-                        case 0:
-                            position = CardPosition.level3.position1;
-                            break
-                        case 1:
-                            position = CardPosition.level3.position2;
-                            break
-                        case 2:
-                            position = CardPosition.level3.position3;
-                            break
-                        case 3:
-                            position = CardPosition.level3.position4;
-                            break
-                        default:
-                            throw new Error(`Invalid open card position ${field.position}`)
-                    }
-
-                    const startX = instance.position.x;
-                    const endX = position[0];
-                    const endY = position[1];
-                    const startZ = instance.position.z;
-                    const endZ = position[2];
-                    const peakHeight = 0.8;
+                    const startPosition = instance.position
+                    const targetPosition = CardPosition.level[3].field[field.position]
+                    const arcHeight = 0.4
                     timelineOpenField3.add(gsap.timeline()
                         .to(instance.position, {
-                            x: endX,
-                            y: endY,
+                            x: targetPosition[0],
+                            y: targetPosition[1],
                             duration: 0.3,
                             ease: "power1.out",
-                            onUpdate: () => {
-                                const currentX = instance.position.x;
-                                instance.position.z = (startZ - peakHeight) / Math.pow((startX + endX) / 2 - startX, 2) * Math.pow(currentX - (startX + endX) / 2, 2) + peakHeight
+                            onUpdate: function () {
+                                const progress = this.progress() // Progress from 0 → 1
+                                instance.position.z = MathUtils.lerp(startPosition.z, targetPosition[2], progress) + arcHeight * Math.sin(progress * Math.PI)
                             }
                         })
                         .to(instance.rotation, {
@@ -706,9 +304,9 @@ function GameController() {
                             duration: 0.3,
                         }, "<")
                         .to(instance.position, {
-                            x: endX,
-                            y: endY,
-                            z: endZ,
+                            x: targetPosition[0],
+                            y: targetPosition[1],
+                            z: targetPosition[2],
                             duration: 0.1,
                         }))
                 })
@@ -724,39 +322,18 @@ function GameController() {
             {
                 fieldCard2.forEach((field: any) => {
                     const instance = cardRefs.current[field.card.id]
-                    let position;
-                    switch (field.position) {
-                        case 0:
-                            position = CardPosition.level2.position1;
-                            break
-                        case 1:
-                            position = CardPosition.level2.position2;
-                            break
-                        case 2:
-                            position = CardPosition.level2.position3;
-                            break
-                        case 3:
-                            position = CardPosition.level2.position4;
-                            break
-                        default:
-                            throw new Error(`Invalid open card position ${field.position}`)
-                    }
-
-                    const startX = instance.position.x;
-                    const endX = position[0];
-                    const endY = position[1];
-                    const startZ = instance.position.z;
-                    const endZ = position[2];
-                    const peakHeight = 0.8;
+                    const startPosition = instance.position
+                    const targetPosition = CardPosition.level[2].field[field.position]
+                    const arcHeight = 0.4
                     timelineOpenField2.add(gsap.timeline()
                         .to(instance.position, {
-                            x: endX,
-                            y: endY,
+                            x: targetPosition[0],
+                            y: targetPosition[1],
                             duration: 0.3,
                             ease: "power1.out",
-                            onUpdate: () => {
-                                const currentX = instance.position.x;
-                                instance.position.z = (startZ - peakHeight) / Math.pow((startX + endX) / 2 - startX, 2) * Math.pow(currentX - (startX + endX) / 2, 2) + peakHeight
+                            onUpdate: function () {
+                                const progress = this.progress() // Progress from 0 → 1
+                                instance.position.z = MathUtils.lerp(startPosition.z, targetPosition[2], progress) + arcHeight * Math.sin(progress * Math.PI)
                             }
                         })
                         .to(instance.rotation, {
@@ -764,9 +341,9 @@ function GameController() {
                             duration: 0.3,
                         }, "<")
                         .to(instance.position, {
-                            x: endX,
-                            y: endY,
-                            z: endZ,
+                            x: targetPosition[0],
+                            y: targetPosition[1],
+                            z: targetPosition[2],
                             duration: 0.1,
                         }))
                 })
@@ -782,39 +359,18 @@ function GameController() {
             {
                 fieldCard1.forEach((field: any) => {
                     const instance = cardRefs.current[field.card.id]
-                    let position;
-                    switch (field.position) {
-                        case 0:
-                            position = CardPosition.level1.position1;
-                            break
-                        case 1:
-                            position = CardPosition.level1.position2;
-                            break
-                        case 2:
-                            position = CardPosition.level1.position3;
-                            break
-                        case 3:
-                            position = CardPosition.level1.position4;
-                            break
-                        default:
-                            throw new Error(`Invalid open card position ${field.position}`)
-                    }
-
-                    const startX = instance.position.x;
-                    const endX = position[0];
-                    const endY = position[1];
-                    const startZ = instance.position.z;
-                    const endZ = position[2];
-                    const peakHeight = 0.8;
+                    const startPosition = instance.position
+                    const targetPosition = CardPosition.level[1].field[field.position]
+                    const arcHeight = 0.4
                     timelineOpenField1.add(gsap.timeline()
                         .to(instance.position, {
-                            x: endX,
-                            y: endY,
+                            x: targetPosition[0],
+                            y: targetPosition[1],
                             duration: 0.3,
                             ease: "power1.out",
-                            onUpdate: () => {
-                                const currentX = instance.position.x;
-                                instance.position.z = (startZ - peakHeight) / Math.pow((startX + endX) / 2 - startX, 2) * Math.pow(currentX - (startX + endX) / 2, 2) + peakHeight
+                            onUpdate: function () {
+                                const progress = this.progress() // Progress from 0 → 1
+                                instance.position.z = MathUtils.lerp(startPosition.z, targetPosition[2], progress) + arcHeight * Math.sin(progress * Math.PI)
                             }
                         })
                         .to(instance.rotation, {
@@ -822,9 +378,9 @@ function GameController() {
                             duration: 0.3,
                         }, "<")
                         .to(instance.position, {
-                            x: endX,
-                            y: endY,
-                            z: endZ,
+                            x: targetPosition[0],
+                            y: targetPosition[1],
+                            z: targetPosition[2],
                             duration: 0.1,
                         }))
                 })
@@ -840,41 +396,17 @@ function GameController() {
             {
                 fieldNoble.forEach((field: any) => {
                     const instance = nobleRefs.current[field.noble.id]
-                    let position;
-                    switch (field.position) {
-                        case 0:
-                            position = NoblePosition.position1;
-                            break
-                        case 1:
-                            position = NoblePosition.position2;
-                            break
-                        case 2:
-                            position = NoblePosition.position3;
-                            break
-                        case 3:
-                            position = NoblePosition.position4;
-                            break
-                        case 4:
-                            position = NoblePosition.position5;
-                            break
-                        default:
-                            throw new Error(`Invalid open card position ${field.position}`)
-                    }
-
-                    const endX = position[0];
-                    const startY = instance.position.y;
-                    const endY = position[1];
-                    const startZ = instance.position.z;
-                    const endZ = position[2];
-                    const peakHeight = 0.8;
+                    const startPosition = instance.position
+                    const targetPosition = NoblePosition.field[field.position];
+                    const arcHeight = 0.8
                     timelineOpenNoble.to(instance.position, {
-                        x: endX,
-                        y: endY,
+                        x: targetPosition[0],
+                        y: targetPosition[1],
                         duration: 0.3,
                         ease: "power1.out",
-                        onUpdate: () => {
-                            const currentY = instance.position.y;
-                            instance.position.z = (startZ - peakHeight) / Math.pow((startY + endY) / 2 - startY, 2) * Math.pow(currentY - (startY + endY) / 2, 2) + peakHeight;
+                        onUpdate: function() {
+                            const progress = this.progress() // Progress from 0 → 1
+                            instance.position.z = MathUtils.lerp(startPosition.z, targetPosition[2], progress) + arcHeight * Math.sin(progress * Math.PI)
                         }
                     })
                         .to(instance.rotation, {
@@ -882,9 +414,9 @@ function GameController() {
                             duration: 0.3,
                         }, "<")
                         .to(instance.position, {
-                            x: endX,
-                            y: endY,
-                            z: endZ,
+                            x: targetPosition[0],
+                            y: targetPosition[1],
+                            z: targetPosition[2],
                             duration: 0.1,
                         })
                 })
@@ -943,7 +475,7 @@ function GameController() {
                     return newDeck.map((card: Card, index: number) => {
                         return {
                             ...card,
-                            position: [CardPosition.level3.desk[0], CardPosition.level3.desk[1], (newDeck.length - 1 - index) * CardGemSize.depth + CardPosition.level3.desk[2]],
+                            position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeck.length - 1 - index) * CardGemSize.depth + CardPosition.level[card.level].desk[2]],
                             rotation: [0, Math.PI, 0]
                         }
                     })
@@ -953,7 +485,7 @@ function GameController() {
                     return newDeck.map((card: Card, index: number) => {
                         return {
                             ...card,
-                            position: [CardPosition.level2.desk[0], CardPosition.level2.desk[1], (newDeck.length - 1 - index) * CardGemSize.depth + CardPosition.level2.desk[2]],
+                            position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeck.length - 1 - index) * CardGemSize.depth + CardPosition.level[card.level].desk[2]],
                             rotation: [0, Math.PI, 0]
                         }
                     })
@@ -963,7 +495,7 @@ function GameController() {
                     return newDeck.map((card: Card, index: number) => {
                         return {
                             ...card,
-                            position: [CardPosition.level1.desk[0], CardPosition.level1.desk[1], (newDeck.length - 1 - index) * CardGemSize.depth + CardPosition.level1.desk[2]],
+                            position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeck.length - 1 - index) * CardGemSize.depth + CardPosition.level[card.level].desk[2]],
                             rotation: [0, Math.PI, 0]
                         }
                     })
@@ -989,7 +521,11 @@ function GameController() {
                 setCurrentPlayer(data.current_player)
                 setNextPlayer(data.next_player)
             })
-    }
+    }, [deckCard1, deckCard2, deckCard3, deckNoble])
+    const handlerTurnEnd = useCallback((data: any) => {
+        setCurrentPlayer(data.current_player)
+        setNextPlayer(data.next_player)
+    }, [])
 
     // Handler socket event
     useEffect(() => {
@@ -1006,14 +542,6 @@ function GameController() {
             }
         }
 
-        const handlerTurnEnd = (data: any) => {
-            // setGameData((stateData: any) => {
-            //     const ingameData = {...stateData.ingame_data, current_player: data.current_player, next_player: data.next_player}
-            //     return {...stateData, ingame_data: ingameData}
-            // })
-        }
-
-
         if (socket) {
             socket.on("game_splendor", onEventGameSplendor);
         }
@@ -1023,7 +551,7 @@ function GameController() {
                 socket.off("game_splendor", onEventGameSplendor);
             }
         }
-    }, [socket, handlerStartGame]);
+    }, [socket, handlerStartGame, handlerTurnEnd]);
 
     return <></>
 }

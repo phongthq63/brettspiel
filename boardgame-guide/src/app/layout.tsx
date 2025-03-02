@@ -4,6 +4,7 @@ import "./globals.css";
 import {UserProvider} from "@/store/user";
 import {SocketProvider} from "@/store/socket";
 import {StyledEngineProvider} from "@mui/material";
+import {ToastContainer} from "react-toastify";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,6 +37,9 @@ export default function RootLayout({
             </UserProvider>
           </SocketProvider>
         </StyledEngineProvider>
+        <ToastContainer autoClose={2000}
+                        theme="light"
+                        stacked />
       </body>
     </html>
   );

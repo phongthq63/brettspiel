@@ -1,125 +1,178 @@
 import Image from "next/image";
-import React from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {useUser} from "@/store/user";
+import {Card, Noble} from "@/games/splendor/store/game";
+import {CardGemType} from "@/games/splendor/constants/card";
 
-interface IPlayerGameInfoBox {
-    score?: number
-    diamond?: number
-    sapphire?: number
-    emerald?: number
-    ruby?: number
-    onyx?: number
-    card_diamond?: object[]
-    card_sapphire?: object[]
-    card_emerald?: object[]
-    card_ruby?: object[]
-    card_onyx?: object[]
-    gold?: number
-    reserve_cards?: IReserveCardPlayerGameInfoBox[]
-    nobles?: INoblePlayerGameInfoBox[]
+
+interface PlayerGameInfoBoxProps {
+    id: string
+    data: {
+        id: string
+        name: string
+        avatar: string
+        score: number
+        cards: Card[]
+        reserveCards: Card[]
+        nobles: Noble[]
+        gold: number
+        onyx: number
+        ruby: number
+        emerald: number
+        sapphire: number
+        diamond: number
+    }
 }
 
-interface IReserveCardPlayerGameInfoBox {
-    id?: string;
-    level?: number;
-}
+export function PlayerGameInfoBox({ id, data }: PlayerGameInfoBoxProps) {
+    const {user} = useUser()
+    const [cardDiamond, setCardDiamond] = useState(0)
+    const [diamond, setDiamond] = useState(0)
+    const [cardSapphire, setCardSapphire] = useState(0)
+    const [sapphire, setSapphire] = useState(0)
+    const [cardEmerald, setCardEmerald] = useState(0)
+    const [emerald, setEmerald] = useState(0)
+    const [cardRuby, setCardRuby] = useState(0)
+    const [ruby, setRuby] = useState(0)
+    const [cardOnyx, setCardOnyx] = useState(0)
+    const [onyx, setOnyx] = useState(0)
 
-interface INoblePlayerGameInfoBox {
-    id?: string;
-}
 
-export function PlayerGameInfoBox({ playerId, playerGameData }: { playerId: string, playerGameData: IPlayerGameInfoBox }) {
-    const { user } = useUser()
+    const imageCardReserveUrl = useMemo(() => (card: Card) => {
+        if (user?.user_id == id) {
+            return card.url
+        }
+        
+        switch (card.level) {
+            case 1:
+                return '/game/splendor/card/1/card1-back.jpg'
+            case 2:
+                return '/game/splendor/card/2/card2-back.jpg'
+            case 3:
+                return '/game/splendor/card/3/card3-back.jpg'
+            default:
+                throw new Error(`Level ${card.level} not supported`)
+        }
+    }, [id, user])
 
+
+    useEffect(() => {
+        setCardDiamond(data.cards.filter(card => card.type == CardGemType.DIAMOND).length)
+        setDiamond(data.diamond)
+        setCardSapphire(data.cards.filter(card => card.type == CardGemType.SAPPHIRE).length)
+        setSapphire(data.sapphire)
+        setCardEmerald(data.cards.filter(card => card.type == CardGemType.EMERALD).length)
+        setEmerald(data.emerald)
+        setCardRuby(data.cards.filter(card => card.type == CardGemType.RUBY).length)
+        setRuby(data.ruby)
+        setCardOnyx(data.cards.filter(card => card.type == CardGemType.ONYX).length)
+        setOnyx(data.onyx)
+    }, [data])
+    
     return (
         <div className="basis-1/2 md:basis-auto md:shrink p-2 bg-stone-400 rounded-3xl md:rounded-l-3xl">
             <div className="flex flex-wrap justify-between items-start space-y-1">
                 <div
                     className="relative shrink w-8 h-8 rounded-lg drop-shadow-lg overflow-hidden">
-                    <Image src="/test.jpg" alt="Avatar player" fill sizes={"100%"}/>
+                    <Image src="/game/splendor/card/3/card3-back.jpg"
+                           alt="Avatar player"
+                           fill
+                           sizes={"100%"}
+                           priority/>
                 </div>
                 <div>
-                    <h4 className="italic font-medium">{playerId}</h4>
+                    <h4 className="italic font-medium">{data.name}</h4>
                 </div>
                 <div></div>
                 <div
                     className="self-end w-10 h-10 flex justify-center items-center bg-amber-800 border-4 border-yellow-400 rounded-full overflow-hidden">
-                    <p className="text-3xl text-yellow-400 italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.score ?? 0 }</p>
+                    <p className="text-3xl text-yellow-400 italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ data.score }</p>
                 </div>
             </div>
             <div className="relative flex flex-col space-y-3 my-2">
                 <div className="flex flex-row">
                     <div className="flex-auto grid grid-cols-5 gap-1 max-w-48">
                         <div className="relative">
-                            <div
-                                className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-gray-200 overflow-hidden">
-                                <div
-                                    className="block absolute bottom-1 left-1 rounded-md bg-white border border-white shadow pl-0.5 pr-1">
-                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_diamond?.length ?? 0 }</p>
-                                </div>
-                                <div className="absolute top-0.5 right-0.5">
-                                    <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.diamond ?? 0 }</p>
-                                </div>
+                            <div className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-gray-200 overflow-hidden">
+                                {cardDiamond > 0 && (
+                                    <div
+                                        className="block absolute bottom-1 left-1 rounded-md bg-white border border-white shadow pl-0.5 pr-1">
+                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{cardDiamond}</p>
+                                    </div>
+                                )}
+                                {diamond > 0 && (
+                                    <div className="absolute top-0.5 right-0.5">
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{diamond}</p>
+                                    </div>
+                                )}
                             </div>
                             <div className="absolute w-5 h-4 -bottom-2 -right-1.5">
                                 <Image src="/game/splendor/gem/diamond.png" alt="Diamond gem" fill sizes={"100%"}/>
                             </div>
                         </div>
                         <div className="relative">
-                            <div
-                                className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-blue-800 overflow-hidden">
-                                <div
-                                    className="block absolute bottom-1 left-1 rounded-md bg-blue-600 border border-white shadow pl-0.5 pr-1">
-                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_sapphire?.length ?? 0 }</p>
-                                </div>
-                                <div className="absolute top-0.5 right-0.5">
-                                    <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.sapphire ?? 0 }</p>
-                                </div>
+                            <div className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-blue-800 overflow-hidden">
+                                {cardSapphire > 0 && (
+                                    <div className="block absolute bottom-1 left-1 rounded-md bg-blue-600 border border-white shadow pl-0.5 pr-1">
+                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{cardSapphire}</p>
+                                    </div>
+                                )}
+                                {sapphire > 0 && (
+                                    <div className="absolute top-0.5 right-0.5">
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{sapphire}</p>
+                                    </div>
+                                )}
                             </div>
                             <div className="absolute w-5 h-4 -bottom-2 -right-1.5">
                                 <Image src="/game/splendor/gem/sapphire.png" alt="Sapphire gem" fill sizes={"100%"}/>
                             </div>
                         </div>
                         <div className="relative">
-                            <div
-                                className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-green-800 overflow-hidden">
-                                <div
-                                    className="block absolute bottom-1 left-1 rounded-md bg-green-600 border border-white shadow pl-0.5 pr-1">
-                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_emerald?.length ?? 0 }</p>
-                                </div>
-                                <div className="absolute top-0.5 right-0.5">
-                                    <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.emerald ?? 0 }</p>
-                                </div>
+                            <div className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-green-800 overflow-hidden">
+                                {cardEmerald > 0 && (
+                                    <div className="block absolute bottom-1 left-1 rounded-md bg-green-600 border border-white shadow pl-0.5 pr-1">
+                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{cardEmerald}</p>
+                                    </div>
+                                )}
+                                {emerald > 0 && (
+                                    <div className="absolute top-0.5 right-0.5">
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{emerald}</p>
+                                    </div>
+                                )}
                             </div>
                             <div className="absolute w-5 h-4 -bottom-2 -right-1.5">
                                 <Image src="/game/splendor/gem/emerald.png" alt="Emerald gem" fill sizes={"100%"}/>
                             </div>
                         </div>
                         <div className="relative">
-                            <div
-                                className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-red-800 overflow-hidden">
-                                <div
-                                    className="block absolute bottom-1 left-1 rounded-md bg-red-600 border border-white shadow pl-0.5 pr-1">
-                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_ruby?.length ?? 0 }</p>
-                                </div>
-                                <div className="absolute top-0.5 right-0.5">
-                                    <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.ruby ?? 0 }</p>
-                                </div>
+                            <div className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-red-800 overflow-hidden">
+                                {cardRuby > 0 && (
+                                    <div className="block absolute bottom-1 left-1 rounded-md bg-red-600 border border-white shadow pl-0.5 pr-1">
+                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{cardRuby}</p>
+                                    </div>
+                                )}
+                                {ruby > 0 && (
+                                    <div className="absolute top-0.5 right-0.5">
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ruby}</p>
+                                    </div>
+                                )}
                             </div>
                             <div className="absolute w-5 h-4 -bottom-2 -right-1.5">
                                 <Image src="/game/splendor/gem/ruby.png" alt="Ruby gem" fill sizes={"100%"}/>
                             </div>
                         </div>
                         <div className="relative">
-                            <div
-                                className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-gray-800 overflow-hidden">
-                                <div
-                                    className="block absolute bottom-1 left-1 rounded-md bg-gray-600 border border-white shadow pl-0.5 pr-1">
-                                    <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.card_onyx?.length ?? 0 }</p>
-                                </div>
-                                <div className="absolute top-0.5 right-0.5">
-                                    <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.onyx ?? 0 }</p>
-                                </div>
+                            <div className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-gray-800 overflow-hidden">
+                                {cardOnyx > 0 && (
+                                    <div className="block absolute bottom-1 left-1 rounded-md bg-gray-600 border border-white shadow pl-0.5 pr-1">
+                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{cardOnyx}</p>
+                                    </div>
+                                )}
+                                {onyx > 0 && (
+                                    <div className="absolute top-0.5 right-0.5">
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{onyx}</p>
+                                    </div>
+                                )}
                             </div>
                             <div className="absolute w-5 h-4 -bottom-2 -right-1.5">
                                 <Image src="/game/splendor/gem/onyx.png" alt="Onyx gem" fill sizes={"100%"}/>
@@ -127,7 +180,7 @@ export function PlayerGameInfoBox({ playerId, playerGameData }: { playerId: stri
                         </div>
                     </div>
                     <div className="relative flex items-center mx-5">
-                        <p className="text-3xl text-yellow-300 italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ playerGameData.gold ?? 0 }</p>
+                        <p className="text-3xl text-yellow-300 italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ data.gold }</p>
                         <div className="absolute w-5 h-4 -bottom-2 -right-2">
                             <Image src="/game/splendor/gem/gold.png" alt="Gold" fill sizes={"100%"}/>
                         </div>
@@ -135,28 +188,18 @@ export function PlayerGameInfoBox({ playerId, playerGameData }: { playerId: stri
                 </div>
                 <div className="flex flex-wrap justify-start space-x-1 md:space-x-0">
                     <div className="flex justify-start space-x-1 md:basis-1/2">
-                        {
-                            playerGameData?.reserve_cards?.map(reserve_card => {
-                                const imageFrontUrl = `/game/splendor/card/${reserve_card.level}/${reserve_card.id}.jpg`
-                                const imageBackUrl = `/game/splendor/card/${reserve_card.level}/card${reserve_card.level}-back.jpg`
-                                return (
-                                    <div key={reserve_card.id} className="relative w-7 h-10 rounded overflow-hidden">
-                                        <Image src={user.user_id == playerId ? imageFrontUrl : imageBackUrl} alt="Reserve card" fill sizes={"100%"}/>
-                                    </div>
-                                )
-                            })
-                        }
+                        {data.reserveCards.map(reserve_card => (
+                            <div key={reserve_card.id} className="relative w-7 h-10 rounded overflow-hidden">
+                                <Image src={imageCardReserveUrl(reserve_card)} alt="Reserve card" fill sizes={"100%"}/>
+                            </div>
+                        ))}
                     </div>
                     <div className="flex flex-wrap justify-start md:basis-1/2">
-                        {
-                            playerGameData?.nobles?.map(noble => {
-                                return (
-                                    <div key={noble.id} className="relative w-8 h-8 flex-none m-0.5 rounded overflow-hidden">
-                                        <Image src={`/game/splendor/noble/${noble.id}.jpg`} alt="Noble" fill sizes={"100%"}/>
-                                    </div>
-                                )
-                            })
-                        }
+                        {data.nobles.map(noble => (
+                            <div key={noble.id} className="relative w-8 h-8 flex-none m-0.5 rounded overflow-hidden">
+                                <Image src={noble.url} alt="Noble" fill sizes={"100%"}/>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-enum CardGemType {
+export enum CardGemType {
     DIAMOND = 'diamond',
     EMERALD = 'emerald',
     ONYX = 'onyx',

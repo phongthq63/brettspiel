@@ -1,29 +1,82 @@
-import React, {forwardRef, Ref, useImperativeHandle, useRef, useState} from "react";
+import React, {forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState} from "react";
 import {useFrame, useLoader} from "@react-three/fiber";
 import * as THREE from "three";
-import {GemDiamond} from "@/games/splendor/constants/gem";
-import {Group, Mesh, Quaternion, Vector3} from "three";
+import {
+    TokenGemType,
+    GemGold,
+    GemDiamond,
+    GemEmerald,
+    GemOnyx,
+    GemRuby,
+    GemSapphire
+} from "@/games/splendor/constants/gem";
+import {Euler, Group, Mesh, Quaternion, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
 import {CylinderCollider, RapierRigidBody, RigidBody} from "@react-three/rapier";
 
 
-export const TokenDiamondSize = {
+export const TokenGemSize = {
     size: 0.25,
     depth: 0.07
 };
 
-interface TokenDiamondProps {
+interface TokenGemProps {
     id: string
+    type: TokenGemType
     onClick?: () => void
     position?: any
+    parentRotation?: [number, number, number]
 }
 
-const TokenDiamond = forwardRef(({id, onClick, ...props}: TokenDiamondProps, ref: Ref<any>) => {
-    const textureFront = useLoader(THREE.TextureLoader, GemDiamond.url);
+const TokenGem = forwardRef(({id, type, onClick, parentRotation, ...props}: TokenGemProps, ref: Ref<any>) => {
+    const [textureGold,
+        textureDiamond,
+        textureEmerald,
+        textureOnyx,
+        textureRuby,
+        textureSapphire
+    ] = useLoader(THREE.TextureLoader, [GemGold.url, GemDiamond.url, GemEmerald.url, GemOnyx.url, GemRuby.url, GemSapphire.url]);
     const [onPhysics, setOnPhysics] = useState(true);
     const groupRef = useRef<Group>(null);
     const rigidBodyRef = useRef<RapierRigidBody>(null);
     const meshRef = useRef<Mesh>(null);
+
+    const textureFront = useMemo(() => {
+        switch (type) {
+            case TokenGemType.GOLD:
+                return textureGold
+            case TokenGemType.DIAMOND:
+                return textureDiamond
+            case TokenGemType.EMERALD:
+                return textureEmerald
+            case TokenGemType.ONYX:
+                return textureOnyx
+            case TokenGemType.RUBY:
+                return textureRuby
+            case TokenGemType.SAPPHIRE:
+                return textureSapphire
+            default:
+                throw Error(`Type ${type} not supported`)
+        }
+    }, [type])
+    const color = useMemo(() => {
+        switch (type) {
+            case TokenGemType.GOLD:
+                return GemGold.color
+            case TokenGemType.DIAMOND:
+                return GemDiamond.color
+            case TokenGemType.EMERALD:
+                return GemEmerald.color
+            case TokenGemType.ONYX:
+                return GemOnyx.color
+            case TokenGemType.RUBY:
+                return GemRuby.color
+            case TokenGemType.SAPPHIRE:
+                return GemSapphire.color
+            default:
+                throw Error(`Type ${type} not supported`)
+        }
+    }, [type])
 
 
     useImperativeHandle(ref, () => {
@@ -82,10 +135,21 @@ const TokenDiamond = forwardRef(({id, onClick, ...props}: TokenDiamondProps, ref
          */
         if (onPhysics && rigidBodyRef.current.bodyType() !== 2 && !rigidBodyRef.current.isSleeping()) {
             const physicsPosition = rigidBodyRef.current.translation()
-            groupRef.current.position.set(physicsPosition.x, physicsPosition.y, physicsPosition.z);
-
             const physicsRotation = rigidBodyRef.current.rotation()
-            groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z));
+            if (parentRotation) {
+                // Position
+                const localPosition = new Vector3().copy(physicsPosition)
+                groupRef.current.parent?.worldToLocal(localPosition)
+                groupRef.current.position.copy(localPosition)
+                // Rotation
+                const physicsQuaternion = new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z)
+                groupRef.current.setRotationFromEuler(new Euler().setFromQuaternion(physicsQuaternion))
+            } else {
+                // Position
+                groupRef.current.position.copy(physicsPosition)
+                // Rotation
+                groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z))
+            }
         }
     })
 
@@ -95,21 +159,21 @@ const TokenDiamond = forwardRef(({id, onClick, ...props}: TokenDiamondProps, ref
                   ref={meshRef}
                   onClick={(event) => {
                       event.stopPropagation();
-                      onClick && onClick();
+                      onClick?.();
                   }}
                   rotation={[Math.PI / 2, 0, 0]}
             >
-                <cylinderGeometry args={[TokenDiamondSize.size, TokenDiamondSize.size, TokenDiamondSize.depth, 32]}/>
-                <meshBasicMaterial attach="material-0" color={GemDiamond.color}/>
+                <cylinderGeometry args={[TokenGemSize.size, TokenGemSize.size, TokenGemSize.depth, 32]}/>
+                <meshBasicMaterial attach="material-0" color={color}/>
                 <meshBasicMaterial attach="material-1" map={textureFront}/>
-                <meshBasicMaterial attach="material-2" color={GemDiamond.color}/>
+                <meshBasicMaterial attach="material-2" color={color}/>
             </mesh>
 
             <RigidBody ref={rigidBodyRef} colliders={false}>
-                <CylinderCollider args={[TokenDiamondSize.depth / 2, TokenDiamondSize.size]}
+                <CylinderCollider args={[TokenGemSize.depth / 2, TokenGemSize.size]}
                                   rotation={[Math.PI / 2, 0, 0]}>
                     <mesh rotation={[Math.PI / 2, 0, 0]}>
-                        <cylinderGeometry args={[TokenDiamondSize.size, TokenDiamondSize.size, TokenDiamondSize.depth, 32]}/>
+                        <cylinderGeometry args={[TokenGemSize.size, TokenGemSize.size, TokenGemSize.depth, 32]}/>
                         <meshBasicMaterial visible={false}/>
                     </mesh>
                 </CylinderCollider>
@@ -117,6 +181,6 @@ const TokenDiamond = forwardRef(({id, onClick, ...props}: TokenDiamondProps, ref
         </group>
     )
 })
-TokenDiamond.displayName = "TokenDiamond";
+TokenGem.displayName = "TokenGem";
 
-export default TokenDiamond;
+export default TokenGem;

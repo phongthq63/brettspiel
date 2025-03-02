@@ -1,7 +1,7 @@
 import {instanceSplendor, IRequestOptions, ServiceOptions} from "@/service/axios.service";
 
 
-export const basePath = '';
+export const basePath = ''
 
 export interface IRequestConfig {
     method?: any;

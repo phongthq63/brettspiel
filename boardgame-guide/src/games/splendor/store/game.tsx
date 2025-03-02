@@ -1,34 +1,45 @@
 import React, {createContext, Dispatch, SetStateAction, useContext, useState} from "react";
-import {SplendorGameDTO} from "@/games/splendor/service/splendor.service";
-import {useUser} from "@/store/user";
 import {TokenGemType} from "@/games/splendor/constants/gem";
+import {useUser} from "@/store/user";
+import {CardGemType} from "@/games/splendor/constants/card";
 
 
 export interface Noble {
     id: string
     url: string
-    position: number[]
-    rotation: number[]
+    position: [number, number, number]
+    rotation: [number, number, number]
 }
 
 export interface Card {
     id: string
-    type: string
-    level: number
+    type: CardGemType
+    level: 1 | 2 | 3 | number
     url: string
-    position: number[]
-    rotation: number[]
+    position: [number, number, number]
+    rotation: [number, number, number]
 }
 export interface Gem {
     id: string
-    owner: string
-    position: number[]
-    rotation: number[]
+    owner?: string
+    position: [number, number, number]
+    rotation: [number, number, number]
+}
+
+export interface Player {
+    id: string
+    name: string
+    avatar: string
+    score: number
 }
 
 export interface Action {
-    type: "gather-gem" | "reserve-card" | "buy-card" | "option-action" | "take-noble"
-    card?: {id: string}
+    type: "gather-gem" | "reserve-card" | "buy-card" | "option-action" | "take-noble" | string
+    card?: {
+        id: string,
+        level: number,
+        deck: boolean
+    }
     noble?: {id: string}
     gem?: {
         id: string
@@ -39,8 +50,8 @@ export interface Action {
 }
 
 const GameContext = createContext<{
-    gameData: SplendorGameDTO | undefined
-    setGameData: Dispatch<SetStateAction<SplendorGameDTO | undefined>>
+    gameId: string
+    setGameId: Dispatch<SetStateAction<string>>
     status: number
     setStatus: Dispatch<SetStateAction<number>>
     currentPlayer: string
@@ -75,6 +86,26 @@ const GameContext = createContext<{
     setDeckNoble: Dispatch<SetStateAction<Noble[]>>
     fieldNoble: Noble[]
     setFieldNoble: Dispatch<SetStateAction<Noble[]>>
+    players: {[key: string]: Player}
+    setPlayers: Dispatch<SetStateAction<{[key: string]: Player}>>
+    playerCards: {[key: string]: Card[]}
+    setPlayerCards: Dispatch<SetStateAction<{[key: string]: Card[]}>>
+    playerReserveCards: {[key: string]: Card[]}
+    setPlayerReserveCards: Dispatch<SetStateAction<{[key: string]: Card[]}>>
+    playerNobles: {[key: string]: Noble[]}
+    setPlayerNobles: Dispatch<SetStateAction<{[key: string]: Noble[]}>>
+    playerGolds: {[key: string]: Gem[]},
+    setPlayerGolds: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
+    playerOnyxes: {[key: string]: Gem[]},
+    setPlayerOnyxes: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
+    playerRubies: {[key: string]: Gem[]},
+    setPlayerRubies: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
+    playerEmeralds: {[key: string]: Gem[]},
+    setPlayerEmeralds: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
+    playerSapphires: {[key: string]: Gem[]},
+    setPlayerSapphires: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
+    playerDiamonds: {[key: string]: Gem[]},
+    setPlayerDiamonds: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
     currentAction: Action | undefined
     setCurrentAction: Dispatch<SetStateAction<Action | undefined>>
 
@@ -82,32 +113,43 @@ const GameContext = createContext<{
 } | undefined>(undefined);
 
 export const GameSplendorProvider = ({children}: any) => {
-    const { user } = useUser()
-    const [gameData, setGameData] = useState<SplendorGameDTO>();
-    const [status, setStatus] = useState<number>(0);
-    const [currentPlayer, setCurrentPlayer] = useState<string>("");
-    const [nextPlayer, setNextPlayer] = useState<string>("");
-    const [deckCard3, setDeckCard3] = useState<Card[]>([]);
-    const [deckCard2, setDeckCard2] = useState<Card[]>([]);
-    const [deckCard1, setDeckCard1] = useState<Card[]>([]);
-    const [fieldCard3, setFieldCard3] = useState<Card[]>([]);
-    const [fieldCard2, setFieldCard2] = useState<Card[]>([]);
-    const [fieldCard1, setFieldCard1] = useState<Card[]>([]);
-    const [golds, setGolds] = useState<Gem[]>([]);
-    const [onyxes, setOnyxes] = useState<Gem[]>([]);
-    const [rubies, setRubies] = useState<Gem[]>([]);
-    const [emeralds, setEmeralds] = useState<Gem[]>([]);
-    const [sapphires, setSapphires] = useState<Gem[]>([]);
-    const [diamonds, setDiamonds] = useState<Gem[]>([]);
-    const [deckNoble, setDeckNoble] = useState<Noble[]>([]);
-    const [fieldNoble, setFieldNoble] = useState<Noble[]>([]);
-    const [currentAction, setCurrentAction] = useState<Action>();
+    const {user} = useUser()
+    const [gameId, setGameId] = useState<string>("")
+    const [status, setStatus] = useState<number>(0)
+    const [currentPlayer, setCurrentPlayer] = useState<string>("")
+    const [nextPlayer, setNextPlayer] = useState<string>("")
+    const [deckCard3, setDeckCard3] = useState<Card[]>([])
+    const [deckCard2, setDeckCard2] = useState<Card[]>([])
+    const [deckCard1, setDeckCard1] = useState<Card[]>([])
+    const [fieldCard3, setFieldCard3] = useState<Card[]>([])
+    const [fieldCard2, setFieldCard2] = useState<Card[]>([])
+    const [fieldCard1, setFieldCard1] = useState<Card[]>([])
+    const [golds, setGolds] = useState<Gem[]>([])
+    const [onyxes, setOnyxes] = useState<Gem[]>([])
+    const [rubies, setRubies] = useState<Gem[]>([])
+    const [emeralds, setEmeralds] = useState<Gem[]>([])
+    const [sapphires, setSapphires] = useState<Gem[]>([])
+    const [diamonds, setDiamonds] = useState<Gem[]>([])
+    const [deckNoble, setDeckNoble] = useState<Noble[]>([])
+    const [fieldNoble, setFieldNoble] = useState<Noble[]>([])
+    const [players, setPlayers] = useState<{[key: string]: Player}>({})
+    const [playerCards, setPlayerCards] = useState<{[key: string]: Card[]}>({})
+    const [playerReserveCards, setPlayerReserveCards] = useState<{[key: string]: Card[]}>({})
+    const [playerNobles, setPlayerNobles] = useState<{[key: string]: Noble[]}>({})
+    const [playerGolds, setPlayerGolds] = useState<{[key: string]: Gem[]}>({})
+    const [playerOnyxes, setPlayerOnyxes] = useState<{[key: string]: Gem[]}>({})
+    const [playerRubies, setPlayerRubies] = useState<{[key: string]: Gem[]}>({})
+    const [playerEmeralds, setPlayerEmeralds] = useState<{[key: string]: Gem[]}>({})
+    const [playerSapphires, setPlayerSapphires] = useState<{[key: string]: Gem[]}>({})
+    const [playerDiamonds, setPlayerDiamonds] = useState<{[key: string]: Gem[]}>({})
+    const [currentAction, setCurrentAction] = useState<Action>()
 
-    const isMyTurn = user?.user_id == gameData?.ingame_data?.current_player
+
+    const isMyTurn = user?.user_id == currentPlayer
 
     return (
         <GameContext.Provider value={{
-            gameData, setGameData,
+            gameId, setGameId,
             status, setStatus,
             currentPlayer, setCurrentPlayer,
             nextPlayer, setNextPlayer,
@@ -125,6 +167,16 @@ export const GameSplendorProvider = ({children}: any) => {
             emeralds, setEmeralds,
             sapphires, setSapphires,
             diamonds, setDiamonds,
+            players, setPlayers,
+            playerCards, setPlayerCards,
+            playerReserveCards, setPlayerReserveCards,
+            playerNobles, setPlayerNobles,
+            playerGolds, setPlayerGolds,
+            playerOnyxes, setPlayerOnyxes,
+            playerRubies, setPlayerRubies,
+            playerEmeralds, setPlayerEmeralds,
+            playerSapphires, setPlayerSapphires,
+            playerDiamonds, setPlayerDiamonds,
             currentAction, setCurrentAction,
             isMyTurn,
         }}>

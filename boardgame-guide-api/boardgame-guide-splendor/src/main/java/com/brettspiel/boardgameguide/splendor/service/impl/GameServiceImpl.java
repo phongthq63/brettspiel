@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -842,11 +843,13 @@ public class GameServiceImpl implements IGameService {
             log.error("turnBonusActionTakeNoble - Noble not found - {} {} {} {}", gameId, userId, body.getNobleId(), splendorGame.getIngameData());
             return R.failed("Noble not found");
         }
-        if (playerData.getCardOnyx() < nobleData.getCost().getCard0nyx() ||
-                playerData.getCardRuby() < nobleData.getCost().getCardRuby() ||
-                playerData.getCardEmerald() < nobleData.getCost().getCardEmerald() ||
-                playerData.getCardSapphire() < nobleData.getCost().getCardSapphire() ||
-                playerData.getCardDiamond() < nobleData.getCost().getCardDiamond()) {
+
+        Map<String, Long> mapCardCount = playerData.getCards().stream().collect(Collectors.groupingBy(Card::getType, Collectors.counting()));
+        if (mapCardCount.get(GameConstants.GEM_TYPE_ONYX) < nobleData.getCost().getCard0nyx() ||
+                mapCardCount.get(GameConstants.GEM_TYPE_RUBY) < nobleData.getCost().getCardRuby() ||
+                mapCardCount.get(GameConstants.GEM_TYPE_EMERALD) < nobleData.getCost().getCardEmerald() ||
+                mapCardCount.get(GameConstants.GEM_TYPE_SAPPHIRE) < nobleData.getCost().getCardSapphire() ||
+                mapCardCount.get(GameConstants.GEM_TYPE_DIAMOND) < nobleData.getCost().getCardDiamond()) {
             log.error("turnBonusActionTakeNoble - Not enough condition take noble - {} {} {} {}", gameId, userId, body.getNobleId(), playerData);
             return R.failed("Not enough condition take noble");
         }

@@ -3,7 +3,7 @@ import * as THREE from "three";
 import React, {forwardRef, Ref, useImperativeHandle, useRef, useState} from "react";
 import {RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
-import {Group, Mesh, Quaternion, Vector3} from "three";
+import {Euler, Group, Mesh, Quaternion, Vector3} from "three";
 
 
 export const CardNobleSize = {
@@ -19,9 +19,10 @@ interface CardNobleProps {
     onClickNotThis?: () => void
     position?: any
     rotation?: any
+    parentRotation?: [number, number, number]
 }
 
-const CardNoble = forwardRef(({id, url, onClick, onClickNotThis, ...props}: CardNobleProps, ref: Ref<any>) => {
+const CardNoble = forwardRef(({id, url, onClick, onClickNotThis, parentRotation, ...props}: CardNobleProps, ref: Ref<any>) => {
     const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, "/game/splendor/noble/noble-back.jpg"]);
     const [onPhysics, setOnPhysics] = useState(true);
     const groupRef = useRef<Group>(null);
@@ -85,24 +86,36 @@ const CardNoble = forwardRef(({id, url, onClick, onClickNotThis, ...props}: Card
          */
         if (onPhysics && rigidBodyRef.current.bodyType() !== 2 && !rigidBodyRef.current.isSleeping()) {
             const physicsPosition = rigidBodyRef.current.translation()
-            groupRef.current.position.set(physicsPosition.x, physicsPosition.y, physicsPosition.z);
-
             const physicsRotation = rigidBodyRef.current.rotation()
-            groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z));
+            if (parentRotation) {
+                // Position
+                const localPosition = new Vector3().copy(physicsPosition)
+                groupRef.current.parent?.worldToLocal(localPosition)
+                groupRef.current.position.copy(localPosition)
+                // Rotation
+                const physicsQuaternion = new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z)
+                groupRef.current.setRotationFromEuler(new Euler().setFromQuaternion(physicsQuaternion))
+            } else {
+                // Position
+                groupRef.current.position.copy(physicsPosition)
+                // Rotation
+                groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z))
+            }
         }
     })
 
     return (
-        <group ref={groupRef} {...props}>
-            <mesh key={id}
-                  ref={meshRef}
+        <group key={id}
+               ref={groupRef}
+               {...props}>
+            <mesh ref={meshRef}
                   onClick={(event) => {
                       event.stopPropagation();
-                      onClick && onClick();
+                      onClick?.()
                   }}
                   onPointerMissed={(event) => {
                       event.stopPropagation();
-                      onClickNotThis && onClickNotThis();
+                      onClickNotThis?.();
                   }}
             >
                 <boxGeometry args={[CardNobleSize.width, CardNobleSize.height, CardNobleSize.depth]}/>

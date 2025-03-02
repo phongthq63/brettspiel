@@ -8,7 +8,7 @@ function Plane({...props}: PlaneProps) {
     return (
         <mesh {...props}>
             <planeGeometry args={[500, 500]}/>
-            <meshBasicMaterial color="lightblue"/>
+            <meshStandardMaterial color="lightblue"/>
         </mesh>
     )
 }

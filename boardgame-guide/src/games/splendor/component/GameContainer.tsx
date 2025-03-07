@@ -3,6 +3,7 @@ import {useGameSplendor} from "@/games/splendor/store/game";
 import {PlayerGameInfoBox} from "@/games/splendor/component/PlayerGameInfoBox";
 import GameCanvas from "@/games/splendor/component/3d/GameCanvas";
 import GameActionDescriptionBox from "@/games/splendor/component/GameActionDescriptionBox";
+import {TokenGemType} from "@/games/splendor/constants/gem";
 
 
 function GameContainer({gameId}: {gameId: string}) {
@@ -10,7 +11,7 @@ function GameContainer({gameId}: {gameId: string}) {
         players,
         playerCards, playerReserveCards,
         playerNobles,
-        playerGolds, playerOnyxes, playerRubies, playerEmeralds, playerSapphires, playerDiamonds
+        playerGems,
     } = useGameSplendor()
 
     // Get data + update data to state
@@ -35,12 +36,12 @@ function GameContainer({gameId}: {gameId: string}) {
                                                    cards: playerCards[playerId] ?? [],
                                                    reserveCards: playerReserveCards[playerId] ?? [],
                                                    nobles: playerNobles[playerId] ?? [],
-                                                   gold: playerGolds[playerId]?.length ?? 0,
-                                                   onyx: playerOnyxes[playerId]?.length ?? 0,
-                                                   ruby: playerRubies[playerId]?.length ?? 0,
-                                                   emerald: playerEmeralds[playerId]?.length ?? 0,
-                                                   sapphire: playerSapphires[playerId]?.length ?? 0,
-                                                   diamond: playerDiamonds[playerId]?.length ?? 0}}/>
+                                                   gold: playerGems[playerId]?.[TokenGemType.GOLD].length ?? 0,
+                                                   onyx: playerGems[playerId]?.[TokenGemType.ONYX].length ?? 0,
+                                                   ruby: playerGems[playerId]?.[TokenGemType.RUBY].length ?? 0,
+                                                   emerald: playerGems[playerId]?.[TokenGemType.EMERALD].length ?? 0,
+                                                   sapphire: playerGems[playerId]?.[TokenGemType.SAPPHIRE].length ?? 0,
+                                                   diamond: playerGems[playerId]?.[TokenGemType.DIAMOND].length ?? 0}}/>
                         ))}
                     </div>
                 </div>

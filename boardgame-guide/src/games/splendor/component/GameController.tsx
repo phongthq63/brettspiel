@@ -1,12 +1,15 @@
 import React, {memo, useCallback, useEffect} from "react";
 import {RoomService} from "@/service/socket.service";
-import {Card, Noble, useGameSplendor} from "@/games/splendor/store/game";
+import {Card, Gem, Noble, useGameSplendor} from "@/games/splendor/store/game";
 import {useSocket} from "@/store/socket";
 import {useUser} from "@/store/user";
 import {
-    CardPosition, NoblePosition,
+    CardPosition, DiamondPosition, EmeraldPosition,
+    NoblePosition,
+    NotifyGameSplendorActionGatherGem,
     NotifyGameSplendorStart,
-    NotifyGameSplendorTurnEnd
+    NotifyGameSplendorTurnEnd, OnyxPosition,
+    PlayerPosition, RubyPosition, SapphirePosition
 } from "@/games/splendor/constants/game";
 import {NobleDictionary} from "@/games/splendor/constants/noble";
 import {CardNobleSize} from "@/games/splendor/component/3d/CardNoble";
@@ -14,15 +17,19 @@ import {CardDictionary} from "@/games/splendor/constants/card";
 import {CardGemSize} from "@/games/splendor/component/3d/CardGem";
 import gsap from "gsap";
 import {useSharedRef} from "@/games/splendor/store/ref";
-import {MathUtils} from "three";
+import {Euler, MathUtils, Vector3} from "three";
+import {TokenGemType} from "@/games/splendor/constants/gem";
+import {TokenGemSize} from "@/games/splendor/component/3d/TokenGem";
 
 
 function GameController() {
-    const { user } = useUser()
-    const { socket, connected } = useSocket()
-    const { cardRefs, nobleRefs } = useSharedRef()
-    const { gameId,
+    const {user} = useUser()
+    const {socket, connected} = useSocket()
+    const {cardRefs, nobleRefs, gemRefs} = useSharedRef()
+    const {
+        gameId,
         setStatus,
+        playerIds,
         setCurrentPlayer,
         setNextPlayer,
         deckCard3, setDeckCard3,
@@ -31,8 +38,11 @@ function GameController() {
         setFieldCard3,
         setFieldCard2,
         setFieldCard1,
+        gems, setGems,
         deckNoble, setDeckNoble,
         setFieldNoble,
+        playerGems, setPlayerGems,
+        isMyTurn,
     } = useGameSplendor()
 
 
@@ -55,7 +65,6 @@ function GameController() {
 
 
     const handlerStartGame = useCallback((data: any) => {
-        console.log(data)
         const fieldCard3 = data.field_card_3.filter((field_card: any) => field_card.card)
             .sort((a: any, b: any) => a.position - b.position)
         const fieldCard2 = data.field_card_2.filter((field_card: any) => field_card.card)
@@ -526,19 +535,232 @@ function GameController() {
         setCurrentPlayer(data.current_player)
         setNextPlayer(data.next_player)
     }, [])
+    const handlerPlayerGatherGem = useCallback((data: any) => {
+        const currentPlayer: string = data.current_player
+        const onyxCount: number = data.onyx
+        const rubyCount: number = data.ruby
+        const emeraldCount: number = data.emerald
+        const sapphireCount: number = data.sapphire
+        const diamondCount: number = data.diamond
+
+        if (!isMyTurn) return
+        const player = (playerIds.indexOf(currentPlayer) ?? 0) + 1
+        if (player == 0) return         // Không phải người chơi
+        const playerLocate = PlayerPosition.total[playerIds.length ?? 0]?.player[player]
+        if (!playerLocate) return       // Ko tim thay config vi tri player
+
+        function takeGem(type: TokenGemType) {
+            const deckGems: Gem[] = gems[type]
+            const playerDeckGems: Gem[] = playerGems[currentPlayer][type]
+            let gemPosition: Vector3
+            switch (type) {
+                case TokenGemType.DIAMOND:
+                    gemPosition = new Vector3().fromArray(PlayerPosition.diamond)
+                    break
+                case TokenGemType.SAPPHIRE:
+                    gemPosition = new Vector3().fromArray(PlayerPosition.sapphire)
+                    break
+                case TokenGemType.EMERALD:
+                    gemPosition = new Vector3().fromArray(PlayerPosition.emerald)
+                    break
+                case TokenGemType.RUBY:
+                    gemPosition = new Vector3().fromArray(PlayerPosition.ruby)
+                    break
+                case TokenGemType.ONYX:
+                    gemPosition = new Vector3().fromArray(PlayerPosition.onyx)
+                    break
+                default:
+                    return
+            }
+            if (!gemPosition) return
+            if (deckGems.length <= 0) return
+            const gemTake: Gem = deckGems[deckGems.length - 1]
+            const instance = gemRefs.current[gemTake.id]
+
+            // Stop physics
+            instance.stopPhysics()
+
+            // Animation
+            const startPosition: Vector3 = instance.position.clone()
+            const playerPosition = new Vector3().fromArray(playerLocate.position)
+            const targetPosition = gemPosition
+                .add(playerPosition)
+                .applyEuler(new Euler(playerLocate.rotation[0], playerLocate.rotation[1], playerLocate.rotation[2]))
+                .setZ((playerDeckGems.length - 1 + 0.5) * TokenGemSize.depth)
+            const arcHeight = 1.5 // Adjust this value for a bigger/smaller arc
+            const animation = gsap.timeline()
+                .to(instance.position, {
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    duration: 0.4,
+                    onUpdate: function () {
+                        const progress = this.progress() // Progress from 0 → 1
+                        instance.position.z = MathUtils.lerp(startPosition.z, targetPosition.z, progress) + arcHeight * Math.sin(progress * Math.PI)
+                    }
+                }, "0.1")
+            animation
+                .then(() => {
+                    // Start physics
+                    instance.startPhysics()
+
+                    // Update state
+                    setGems((prevState) => ({
+                        ...prevState,
+                        [type]: prevState[type].filter(gem => gem.id != gemTake.id)
+                    }))
+                    setPlayerGems((prevState) => ({
+                        ...prevState,
+                        [currentPlayer]: ({
+                            ...prevState[currentPlayer],
+                            [type]: [
+                                ...prevState[currentPlayer][type],
+                                {
+                                    id: gemTake.id,
+                                    position: targetPosition.toArray(),
+                                    rotation: gemTake.rotation
+                                }
+                            ]
+                        })
+                    }))
+                })
+        }
+        function returnGem(type: TokenGemType) {
+            const deckGems: Gem[] = gems[type]
+            const playerDeckGems: Gem[] = playerGems[currentPlayer][type]
+            let gemPosition: Vector3
+            switch (type) {
+                case TokenGemType.DIAMOND:
+                    gemPosition = new Vector3().fromArray(DiamondPosition.desk)
+                    break
+                case TokenGemType.SAPPHIRE:
+                    gemPosition = new Vector3().fromArray(SapphirePosition.desk)
+                    break
+                case TokenGemType.EMERALD:
+                    gemPosition = new Vector3().fromArray(EmeraldPosition.desk)
+                    break
+                case TokenGemType.RUBY:
+                    gemPosition = new Vector3().fromArray(RubyPosition.desk)
+                    break
+                case TokenGemType.ONYX:
+                    gemPosition = new Vector3().fromArray(OnyxPosition.desk)
+                    break
+                default:
+                    return
+            }
+            if (playerDeckGems.length <= 0) return
+            const gemReturn: Gem = playerDeckGems[playerDeckGems.length - 1]
+            const instance = gemRefs.current[gemReturn.id]
+
+            // Stop physics
+            instance.stopPhysics()
+
+            // Animation
+            const startPosition = instance.position.clone()
+            const targetPosition = gemPosition
+                .setZ((deckGems.length - 1 + 0.5) * TokenGemSize.depth)
+            const arcHeight = 1.5 // Adjust this value for a bigger/smaller arc
+            const animation = gsap.timeline()
+                .to(instance.position, {
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    duration: 0.4,
+                    onUpdate: function () {
+                        const progress = this.progress() // Progress from 0 → 1
+                        instance.position.z = MathUtils.lerp(startPosition.z, targetPosition.z, progress) + arcHeight * Math.sin(progress * Math.PI)
+                    }
+                }, "0.1")
+            animation
+                .then(() => {
+                    // Start physics
+                    instance.startPhysics()
+
+                    // Update state
+                    setGems((prevState) => ({
+                        ...prevState,
+                        [type]: [
+                            ...prevState[type],
+                            {
+                                id: gemReturn.id,
+                                position: targetPosition.toArray(),
+                                rotation: gemReturn.rotation
+                            }
+                        ]
+                    }))
+                    setPlayerGems((prevState) => ({
+                        ...prevState,
+                        [currentPlayer]: ({
+                            ...prevState[currentPlayer],
+                            [type]: prevState[currentPlayer][type].filter(gem => gem.id != gemReturn.id)
+                        })
+                    }))
+                })
+        }
+
+        if (onyxCount > 0) {
+            for (let i = 0; i < onyxCount; i++) {
+                takeGem(TokenGemType.ONYX)
+            }
+        } else if (onyxCount < 0) {
+            for (let i = onyxCount; i >= 0; i++) {
+                returnGem(TokenGemType.ONYX)
+            }
+        }
+        if (rubyCount > 0) {
+            for (let i = 0; i < rubyCount; i++) {
+                takeGem(TokenGemType.RUBY)
+            }
+        } else if (rubyCount < 0) {
+            for (let i = rubyCount; i >= 0; i++) {
+                returnGem(TokenGemType.RUBY)
+            }
+        }
+        if (emeraldCount > 0) {
+            for (let i = 0; i < emeraldCount; i++) {
+                takeGem(TokenGemType.EMERALD)
+            }
+        } else if (emeraldCount < 0) {
+            for (let i = emeraldCount; i >= 0; i++) {
+                returnGem(TokenGemType.EMERALD)
+            }
+        }
+        if (sapphireCount > 0) {
+            for (let i = 0; i < sapphireCount; i++) {
+                takeGem(TokenGemType.SAPPHIRE)
+            }
+        } else if (sapphireCount < 0) {
+            for (let i = sapphireCount; i >= 0; i++) {
+                returnGem(TokenGemType.SAPPHIRE)
+            }
+        }
+        if (diamondCount > 0) {
+            for (let i = 0; i < diamondCount; i++) {
+                takeGem(TokenGemType.DIAMOND)
+            }
+        } else if (diamondCount < 0) {
+            for (let i = diamondCount; i >= 0; i++) {
+                returnGem(TokenGemType.DIAMOND)
+            }
+        }
+
+    }, [playerIds, gems, playerGems])
 
     // Handler socket event
     useEffect(() => {
         function onEventGameSplendor(data: any) {
+            console.log(data)
+
             const cmdSocket = data?.cmd
             const dataSocket = data.data
             switch (cmdSocket) {
                 case NotifyGameSplendorStart:
                     handlerStartGame(dataSocket)
-                    break;
+                    break
                 case NotifyGameSplendorTurnEnd:
                     handlerTurnEnd(dataSocket)
-                    break;
+                    break
+                case NotifyGameSplendorActionGatherGem:
+                    handlerPlayerGatherGem(dataSocket)
+                    break
             }
         }
 
@@ -551,7 +773,7 @@ function GameController() {
                 socket.off("game_splendor", onEventGameSplendor);
             }
         }
-    }, [socket, handlerStartGame, handlerTurnEnd]);
+    }, [socket, handlerStartGame, handlerTurnEnd, handlerPlayerGatherGem]);
 
     return <></>
 }

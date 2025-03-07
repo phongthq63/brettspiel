@@ -3,15 +3,16 @@ import React, {useMemo} from "react";
 import {useGameSplendor} from "@/games/splendor/store/game";
 import {useSocket} from "@/store/socket";
 import {GameService} from "@/games/splendor/service/splendor.service";
+import {useGameAction} from "@/games/splendor/store/action";
 
 
 export default function GameActionDescriptionBox() {
     const { connected } = useSocket()
     const { gameId, status,
         currentPlayer,
-        currentAction, setCurrentAction,
         isMyTurn
     } = useGameSplendor()
+    const {currentAction, setCurrentAction} = useGameAction()
 
 
     const playerName = useMemo(() => {
@@ -21,7 +22,13 @@ export default function GameActionDescriptionBox() {
     const textAction = useMemo(() => {
         switch (currentAction?.type) {
             case "gather-gem":
-                return "Gather gem: " + currentAction?.gem?.map((gem) => gem.type).toString()
+                const text = `Gather gem: ${currentAction?.gem?.filter(gem => gem.count > 0).map((gem) => gem.type).toString()}`
+                const gemReturn = currentAction?.gem?.filter(gem => gem.count < 0)
+                if (gemReturn && gemReturn.length > 0) {
+                    return `${text} \nReturn: ${gemReturn.map((gem) => gem.type).toString()}`
+                } else {
+                    return text
+                }
             case "buy-card":
                 return "Buy card: "
             case "reserve-card":
@@ -67,7 +74,7 @@ export default function GameActionDescriptionBox() {
     }
 
     return (
-        <div className="flex sticky top-0 z-50 min-h-20 bg-cyan-100 rounded-xl space-y-2 p-2">
+        <div className="flex sticky top-0 z-50 min-h-24 bg-cyan-100 rounded-xl space-y-2 p-2">
             {status == 0 && connected && (
                 <div className="w-full flex justify-center items-center">
                     <Button variant="contained"
@@ -90,7 +97,9 @@ export default function GameActionDescriptionBox() {
                                     style={{position: "absolute"}}>End turn</Button>
                         )}
                     </div>
-                    <h3 className="text-center">{textAction}</h3>
+                    <p className="text-center">
+                        {textAction.split("\n").flatMap((line, index) => [line, <br key={index} />])}
+                    </p>
                 </div>
             )}
         </div>

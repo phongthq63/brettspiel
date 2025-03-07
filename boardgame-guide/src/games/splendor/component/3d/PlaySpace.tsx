@@ -1,8 +1,8 @@
 import CardGem, {CardGemSize} from "@/games/splendor/component/3d/CardGem";
 import CardNoble, {CardNobleSize} from "@/games/splendor/component/3d/CardNoble";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useThree} from "@react-three/fiber";
-import {Card, Gem, Noble, Player, useGameSplendor} from "@/games/splendor/store/game";
+import {Card, Gem, Noble, useGameSplendor} from "@/games/splendor/store/game";
 import gsap from "gsap";
 import {Euler, MathUtils, Quaternion, Vector3} from "three";
 import Plane from "@/games/splendor/component/3d/Plane";
@@ -22,7 +22,7 @@ import {
     NobleVO,
     SplendorGameDTO
 } from "@/games/splendor/service/splendor.service";
-import { CardDictionary } from "@/games/splendor/constants/card";
+import {CardDictionary, CardGemType} from "@/games/splendor/constants/card";
 import {
     CardPosition,
     DiamondPosition,
@@ -33,17 +33,17 @@ import {
     SapphirePosition
 } from "@/games/splendor/constants/game";
 import {NobleDictionary} from "@/games/splendor/constants/noble";
-import {useUser} from "@/store/user";
+import {useGameAction} from "@/games/splendor/store/action";
 
 
 function PlaySpace() {
-    const {user} = useUser()
-    const {camera} = useThree();
+    const {camera} = useThree()
     const {cardRefs, nobleRefs, gemRefs} = useSharedRef()
     const {
         gameId,
         status, setStatus,
-        setCurrentPlayer,
+        playerIds, setPlayerIds,
+        currentPlayer, setCurrentPlayer,
         setNextPlayer,
         deckCard3, setDeckCard3,
         deckCard2, setDeckCard2,
@@ -51,26 +51,21 @@ function PlaySpace() {
         fieldCard3, setFieldCard3,
         fieldCard2, setFieldCard2,
         fieldCard1, setFieldCard1,
-        golds, setGolds,
-        onyxes, setOnyxes,
-        rubies, setRubies,
-        emeralds, setEmeralds,
-        sapphires, setSapphires,
-        diamonds, setDiamonds,
+        gems, setGems,
         deckNoble, setDeckNoble,
         fieldNoble, setFieldNoble,
-        setPlayers,
-        playerOnyxes, playerRubies, playerEmeralds, playerSapphires, playerDiamonds,
+        players,
+        playerCards, setPlayerCards,
+        playerGems, setPlayerGems,
         isMyTurn,
-        currentAction, setCurrentAction
-    } = useGameSplendor();
+    } = useGameSplendor()
+    const {
+        currentAction, setCurrentAction,
+        selectedObjects, setSelectedObjects,
+        selectedGems, setSelectedGems,
+    } = useGameAction()
     const [gameData, setGameData] = useState<SplendorGameDTO>()
-    const [selectedObjects, setSelectedObjects] = useState<{
-        id: string
-        ref: { [key: string]: any }
-        animation: gsap.core.Timeline
-    }[]>([]);
-    const [actionBoard, setActionBoard] = useState({enable: false, position: new Vector3(), rotation: new Euler()});
+    const [actionBoard, setActionBoard] = useState({enable: false, position: new Vector3(), rotation: new Euler()})
 
 
     //
@@ -86,7 +81,7 @@ function PlaySpace() {
             .catch(error => {
                 console.log("Get game info error", error);
             });
-    }, [gameId]);
+    }, [gameId])
 
     // Update state
     useEffect(() => {
@@ -95,6 +90,9 @@ function PlaySpace() {
         //
         if (gameData.status) {
             setStatus(gameData.status)
+        }
+        if (gameData.ingame_data.player_ids) {
+            setPlayerIds(gameData.ingame_data.player_ids)
         }
         if (gameData.ingame_data.current_player) {
             setCurrentPlayer(gameData.ingame_data.current_player)
@@ -207,8 +205,8 @@ function PlaySpace() {
         }
         // Gem
         {
-            if (gameData.ingame_data.gold) {
-                setGolds(Array.from({length: gameData.ingame_data.gold}, (_, i) => i)
+            setGems({
+                [TokenGemType.GOLD]: Array.from({length: gameData.ingame_data?.gold ?? 0}, (_, i) => i)
                     .map((index) => {
                         return {
                             id: crypto.randomUUID(),
@@ -216,10 +214,8 @@ function PlaySpace() {
                             position: [GoldPosition.desk[0], GoldPosition.desk[1], index * TokenGemSize.depth + GoldPosition.desk[2] + 0.2],
                             rotation: [0, 0, 0]
                         }
-                    }))
-            }
-            if (gameData.ingame_data.onyx) {
-                setOnyxes(Array.from({length: gameData.ingame_data.onyx}, (_, i) => i)
+                    }),
+                [TokenGemType.ONYX]: Array.from({length: gameData.ingame_data?.onyx ?? 0}, (_, i) => i)
                     .map((index) => {
                         return {
                             id: crypto.randomUUID(),
@@ -227,10 +223,8 @@ function PlaySpace() {
                             position: [OnyxPosition.desk[0], OnyxPosition.desk[1], index * TokenGemSize.depth + OnyxPosition.desk[2] + 0.2],
                             rotation: [0, 0, 0]
                         }
-                    }))
-            }
-            if (gameData.ingame_data.ruby) {
-                setRubies(Array.from({length: gameData.ingame_data.ruby}, (_, i) => i)
+                    }),
+                [TokenGemType.RUBY]: Array.from({length: gameData.ingame_data?.ruby ?? 0}, (_, i) => i)
                     .map((index) => {
                         return {
                             id: crypto.randomUUID(),
@@ -238,10 +232,8 @@ function PlaySpace() {
                             position: [RubyPosition.desk[0], RubyPosition.desk[1], index * TokenGemSize.depth + RubyPosition.desk[2] + 0.2],
                             rotation: [0, 0, 0]
                         }
-                    }))
-            }
-            if (gameData.ingame_data.emerald) {
-                setEmeralds(Array.from({length: gameData.ingame_data.emerald}, (_, i) => i)
+                    }),
+                [TokenGemType.EMERALD]: Array.from({length: gameData.ingame_data?.emerald ?? 0}, (_, i) => i)
                     .map((index) => {
                         return {
                             id: crypto.randomUUID(),
@@ -249,10 +241,8 @@ function PlaySpace() {
                             position: [EmeraldPosition.desk[0], EmeraldPosition.desk[1], index * TokenGemSize.depth + EmeraldPosition.desk[2] + 0.2],
                             rotation: [0, 0, 0]
                         }
-                    }))
-            }
-            if (gameData.ingame_data.sapphire) {
-                setSapphires(Array.from({length: gameData.ingame_data.sapphire}, (_, i) => i)
+                    }),
+                [TokenGemType.SAPPHIRE]: Array.from({length: gameData.ingame_data?.sapphire ?? 0}, (_, i) => i)
                     .map((index) => {
                         return {
                             id: crypto.randomUUID(),
@@ -260,10 +250,8 @@ function PlaySpace() {
                             position: [SapphirePosition.desk[0], SapphirePosition.desk[1], index * TokenGemSize.depth + SapphirePosition.desk[2] + 0.2],
                             rotation: [0, 0, 0]
                         }
-                    }))
-            }
-            if (gameData.ingame_data.diamond) {
-                setDiamonds(Array.from({length: gameData.ingame_data.diamond}, (_, i) => i)
+                    }),
+                [TokenGemType.DIAMOND]: Array.from({length: gameData.ingame_data?.diamond ?? 0}, (_, i) => i)
                     .map((index) => {
                         return {
                             id: crypto.randomUUID(),
@@ -271,8 +259,8 @@ function PlaySpace() {
                             position: [DiamondPosition.desk[0], DiamondPosition.desk[1], index * TokenGemSize.depth + DiamondPosition.desk[2] + 0.2],
                             rotation: [0, 0, 0]
                         }
-                    }))
-            }
+                    })
+            })
         }
         // Noble
         {
@@ -313,33 +301,30 @@ function PlaySpace() {
             }
         }
 
-        // Player
-        if (gameData.ingame_data.players) {
-            setPlayers(gameData.ingame_data.players?.reduce((dict: { [id: string] : Player }, player) => {
-                if (player.player_id) {
-                    dict[player.player_id] = {
-                        id: player.player_id,
-                        name: player.player_id,
-                        avatar: player.player_id,
-                        score: player.score ?? 0
-                    }
-                }
-                return dict
-            }, {}))
-        }
-
-    }, [gameData]);
+    }, [gameData])
 
     // Return object action select to first position
     useEffect(() => {
         if (currentAction) return
-        if (selectedObjects.length <= 0) return
 
-        let currentAnimation: gsap.core.Timeline
-        selectedObjects.reverse().forEach(selectedObject => {
+        if (selectedObjects.length > 0) {
             // Reverse animation
-            if (currentAnimation) {
-                currentAnimation.eventCallback("onReverseComplete", () => {
+            let currentAnimation: gsap.core.Timeline
+            selectedObjects.reverse().forEach(selectedObject => {
+                if (currentAnimation) {
+                    currentAnimation.eventCallback("onReverseComplete", () => {
+                        selectedObject.animation
+                            .call(() => {
+                                // Stop physics
+                                selectedObject.ref.stopPhysics()
+                            })
+                            .reverse()
+                            .then(() => {
+                                // Start physics
+                                selectedObject.ref.startPhysics()
+                            })
+                    })
+                } else {
                     selectedObject.animation
                         .call(() => {
                             // Stop physics
@@ -350,27 +335,93 @@ function PlaySpace() {
                             // Start physics
                             selectedObject.ref.startPhysics()
                         })
-                })
-            } else {
-                selectedObject.animation
-                        .call(() => {
-                        // Stop physics
-                        selectedObject.ref.stopPhysics()
+                }
+
+                currentAnimation = selectedObject.animation
+            })
+
+            setSelectedObjects([])
+        }
+        if (selectedGems.length > 0) {
+            const animation = gsap.timeline()
+            selectedGems.reverse().forEach(selectedGem => {
+                const instance = gemRefs.current[selectedGem.id]
+
+                // Stop physics
+                instance.stopPhysics()
+
+                // Animation
+                const startPosition = gemRefs.current[selectedGem.id].position.clone()
+                const targetPosition = selectedGem.oldPosition
+                const targetRotation = selectedGem.oldRotation
+                const arcHeight = 1.5
+                animation.add(gsap.timeline()
+                    .to(instance.position, {
+                        x: targetPosition.x,
+                        y: targetPosition.y,
+                        duration: 0.3,
+                        onUpdate: function () {
+                            const progress = this.progress() // Progress from 0 → 1
+                            instance.position.z = MathUtils.lerp(startPosition.z, targetPosition.z, progress) + arcHeight * Math.sin(progress * Math.PI)
+                        }
                     })
-                    .reverse()
-                    .then(() => {
+                    .to(instance.rotation, {
+                        x: targetRotation.x,
+                        y: targetRotation.y,
+                        z: targetRotation.z,
+                        duration: 0.3
+                    }, "<")
+                    .call(() => {
                         // Start physics
-                        selectedObject.ref.startPhysics()
-                    })
-            }
+                        gemRefs.current[selectedGem.id].startPhysics()
 
-            currentAnimation = selectedObject.animation
-        })
+                        // Update state
+                        if (selectedGem.owner) {
+                            setGems((prevState) => ({
+                                ...prevState,
+                                [selectedGem.type]: prevState[selectedGem.type].filter(gem => gem.id != selectedGem.id)
+                            }))
+                            setPlayerGems((prevState) => ({
+                                ...prevState,
+                                [currentPlayer]: ({
+                                    ...prevState[currentPlayer],
+                                    [selectedGem.type]: [
+                                        ...prevState[currentPlayer][selectedGem.type],
+                                        {
+                                            id: selectedGem.id,
+                                            position: targetPosition.toArray(),
+                                            rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
+                                        }
+                                    ]
+                                })
+                            }))
+                        } else {
+                            setGems((prevState) => ({
+                                ...prevState,
+                                [selectedGem.type]: [
+                                    ...(prevState[selectedGem.type]),
+                                    {
+                                        id: selectedGem.id,
+                                        position: targetPosition.toArray(),
+                                        rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
+                                    }
+                                ],
+                            }))
+                            setPlayerGems((prevState) => ({
+                                ...prevState,
+                                [currentPlayer]: ({
+                                    ...prevState[currentPlayer],
+                                    [selectedGem.type]: prevState[currentPlayer][selectedGem.type].filter(gem => gem.id != selectedGem.id)
+                                })
+                            }))
+                        }
+                    }))
+            })
 
-        setSelectedObjects([])
-        setActionBoard({enable: false, position: new Vector3(), rotation: new Euler()})
+            setSelectedGems([])
+        }
 
-    }, [currentAction]);
+    }, [currentAction])
 
     const onClickCardDeck = useCallback((id: string, level: number) => {
         if (status != 1 || !isMyTurn || currentAction) return
@@ -491,6 +542,122 @@ function PlaySpace() {
 
     }, [currentAction, isMyTurn, selectedObjects])
 
+    const test = (id: string) => {
+        const player = (playerIds.indexOf(currentPlayer) ?? 0) + 1
+        if (player == 0) return         // Không phải người chơi
+        const playerLocate = PlayerPosition.total[playerIds.length ?? 0]?.player[player]
+        if (!playerLocate) return       // Ko tim thay config vi tri player
+
+        const cardConfig = CardDictionary[id]
+        if (!cardConfig) return
+
+        const cards: Card[] = playerCards[currentPlayer].filter(card => card.type == cardConfig.type)
+        let cardPosition: Vector3
+        switch (cardConfig.type) {
+            case CardGemType.DIAMOND:
+                cardPosition = new Vector3().fromArray(PlayerPosition.diamond)
+                break
+            case CardGemType.SAPPHIRE:
+                cardPosition = new Vector3().fromArray(PlayerPosition.sapphire)
+                break
+            case CardGemType.EMERALD:
+                cardPosition = new Vector3().fromArray(PlayerPosition.emerald)
+                break
+            case CardGemType.RUBY:
+                cardPosition = new Vector3().fromArray(PlayerPosition.ruby)
+                break
+            case CardGemType.ONYX:
+                cardPosition = new Vector3().fromArray(PlayerPosition.onyx)
+                break
+        }
+
+        //
+        const instance = cardRefs.current[id]
+
+        // Stop physics
+        instance.stopPhysics()
+
+        // Animation
+        const startPosition: Vector3 = instance.position.clone()
+        const startRotation: Euler = instance.rotation.clone()
+        const playerPosition = new Vector3().fromArray(playerLocate.position)
+        const targetPosition = cardPosition
+            .setY(cardPosition.y + cards.length * PlayerPosition.distance)
+            .add(playerPosition)
+            .applyEuler(new Euler(playerLocate.rotation[0], playerLocate.rotation[1], playerLocate.rotation[2]))
+            .setZ(0.5 * CardGemSize.depth)
+        const targetRotation = new Euler().setFromQuaternion(new Quaternion().setFromEuler(startRotation)
+            .multiply(new Quaternion().setFromEuler(new Euler(playerLocate.rotation[0], playerLocate.rotation[1], playerLocate.rotation[2]))))
+        const arcHeight = 1 // Adjust this value for a bigger/smaller arc
+        const animation = gsap.timeline()
+            .to(instance.position, {
+                x: targetPosition.x,
+                y: targetPosition.y - CardGemSize.height,
+                duration: 0.4,
+                onUpdate: function () {
+                    const progress = this.progress() // Progress from 0 → 1
+                    instance.position.z = MathUtils.lerp(startPosition.z, targetPosition.z, progress) + arcHeight * Math.sin(progress * Math.PI)
+                }
+            }, "0.1")
+            .to(instance.position, {
+                x: targetPosition.x,
+                y: targetPosition.y,
+                z: targetPosition.z,
+                duration: 0.4,
+            }, "<")
+        animation
+            .then(() => {
+                // Start physics
+                instance.startPhysics()
+
+                // Update state
+                switch (cardConfig.level) {
+                    case 1:
+                        setFieldCard1((prevState) => prevState.filter(card => card.id != id))
+                        setPlayerCards((prevState) => ({
+                            ...prevState,
+                            [currentPlayer]: [
+                                ...prevState[currentPlayer],
+                                {
+                                    ...cardConfig,
+                                    id: id,
+                                    position: targetPosition.toArray(),
+                                    rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
+                                }]
+                        }))
+                        break
+                    case 2:
+                        setFieldCard2((prevState) => prevState.filter(card => card.id != id))
+                        setPlayerCards((prevState) => ({
+                            ...prevState,
+                            [currentPlayer]: [
+                                ...prevState[currentPlayer],
+                                {
+                                    ...cardConfig,
+                                    id: id,
+                                    position: targetPosition.toArray(),
+                                    rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
+                                }]
+                        }))
+                        break
+                    case 3:
+                        setFieldCard3((prevState) => prevState.filter(card => card.id != id))
+                        setPlayerCards((prevState) => ({
+                            ...prevState,
+                            [currentPlayer]: [
+                                ...prevState[currentPlayer],
+                                {
+                                    ...cardConfig,
+                                    id: id,
+                                    position: targetPosition.toArray(),
+                                    rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
+                                }]
+                        }))
+                        break
+                }
+            })
+    }
+
     const onClickNoble = useCallback((id: string) => {
         if (currentAction) return
 
@@ -548,91 +715,90 @@ function PlaySpace() {
         }
 
     }, [currentAction, selectedObjects])
-    
-    const onClickGem = useCallback((id: string, type: TokenGemType) => {
-        if (!user) return
+
+    const onClickGem = useCallback((type: TokenGemType) => {
         if (status != 1) return
+        if (!isMyTurn) return
         if (currentAction && currentAction.type != "gather-gem") return
-
-        //
-        const player = (gameData?.ingame_data?.player_ids?.indexOf(user.user_id) ?? 0) + 1
-        if (player == 0) return         // Không phải người chơi
-        const playerLocate = PlayerPosition.total[gameData?.ingame_data?.players?.length ?? 0]?.player[player]
-        if (!playerLocate) return
-
-        // Update action if in turn
-        if (isMyTurn) {
-            setCurrentAction((prevState) => ({
-                type: "gather-gem",
-                gem: [...(prevState?.gem || []), {
-                    id: id,
-                    type: type,
-                    count: 1
-                }]
-            }))
-        } else {
-            return
-        }
 
         // Verify rule game
         const gemsTake = currentAction?.gem?.filter(gem => gem.count > 0) || []
         if (gemsTake.length >= 3) return
-        if (gemsTake.length == 2 && gemsTake[0].type == gemsTake[1].type) return
+        if (gemsTake.length == 2 && (gemsTake[0].type == gemsTake[1].type || gemsTake[0].type == type || gemsTake[1].type == type)) return
 
         //
-        let playerGems
-        let gems
-        let gemPosition
+        const player = (playerIds.indexOf(currentPlayer) ?? 0) + 1
+        if (player == 0) return         // Không phải người chơi
+        const playerLocate = PlayerPosition.total[playerIds.length ?? 0]?.player[player]
+        if (!playerLocate) return       // Ko tim thay config vi tri player
+
+        //
+        const deckGems: Gem[] = gems[type]
+        const playerDeckGems: Gem[] = playerGems[currentPlayer][type]
+        let gemPosition: Vector3
         switch (type) {
             case TokenGemType.DIAMOND:
-                playerGems = playerDiamonds[user.user_id]
-                gems = diamonds
-                gemPosition = PlayerPosition.diamond
-                break
-            case TokenGemType.EMERALD:
-                playerGems = playerEmeralds[user.user_id]
-                gems = emeralds
-                gemPosition = PlayerPosition.emerald
-                break
-            case TokenGemType.ONYX:
-                playerGems = playerOnyxes[user.user_id]
-                gems = onyxes
-                gemPosition = PlayerPosition.onyx
-                break
-            case TokenGemType.RUBY:
-                playerGems = playerRubies[user.user_id]
-                gems = rubies
-                gemPosition = PlayerPosition.ruby
+                gemPosition = new Vector3().fromArray(PlayerPosition.diamond)
                 break
             case TokenGemType.SAPPHIRE:
-                playerGems = playerSapphires[user.user_id]
-                gems = sapphires
-                gemPosition = PlayerPosition.sapphire
+                gemPosition = new Vector3().fromArray(PlayerPosition.sapphire)
+                break
+            case TokenGemType.EMERALD:
+                gemPosition = new Vector3().fromArray(PlayerPosition.emerald)
+                break
+            case TokenGemType.RUBY:
+                gemPosition = new Vector3().fromArray(PlayerPosition.ruby)
+                break
+            case TokenGemType.ONYX:
+                gemPosition = new Vector3().fromArray(PlayerPosition.onyx)
                 break
             default:
                 return
         }
-        gemPosition = new Vector3().fromArray(gemPosition)
-        let idTake: string | undefined
-        for (let i = gems.length - 1; i >= 0; i--) {
-            idTake = gems[i].id
-            if (!currentAction?.gem?.some(gem => gem.id == idTake)) {
+        if (!gemPosition) return
+        if (deckGems.length <= 0) return
+        let gemTake: Gem = deckGems[deckGems.length - 1]
+        for (let i = deckGems.length - 1; i >= 0; i--) {
+            if (!currentAction?.gem?.some(gem => gem.id == gemTake.id && gem.count > 0)) {
                 break
             }
-        }
-        if (!idTake) return
 
-        //
-        const instance = gemRefs.current[idTake]
+            gemTake = deckGems[i]
+        }
+
+        // Update action if in turn
+        if (currentAction?.gem?.some(gem => gem.id == gemTake.id)) {
+            setCurrentAction((prevState) => ({
+                type: "gather-gem",
+                gem: prevState?.gem?.filter(gem => gem.id != gemTake?.id)
+            }))
+        } else {
+            setCurrentAction((prevState) => ({
+                type: "gather-gem",
+                gem: [...(prevState?.gem || []), {
+                    id: gemTake.id,
+                    type: type,
+                    count: 1
+                }]
+            }))
+        }
+
+        const instance = gemRefs.current[gemTake.id]
 
         // Stop physics
         instance.stopPhysics()
 
         // Animation
-        const startPosition = instance.position.clone()
-        const targetPosition = new Vector3().fromArray(playerLocate.position).add(gemPosition)
-        targetPosition.setZ((playerGems.length - 1 + 1) * TokenGemSize.depth)
-        const arcHeight = 1.5; // Adjust this value for a bigger/smaller arc
+        const startPosition: Vector3 = instance.position.clone()
+        const startRotation: Euler = instance.rotation.clone()
+        const playerPosition = new Vector3().fromArray(playerLocate.position)
+        const targetPosition = gemPosition
+            .add(playerPosition)
+            .applyEuler(new Euler(playerLocate.rotation[0], playerLocate.rotation[1], playerLocate.rotation[2]))
+            .setZ((playerDeckGems.length - 1 + 0.5) * TokenGemSize.depth)
+        const targetRotation = new Euler().setFromQuaternion(new Quaternion().setFromEuler(startRotation)
+            .multiply(new Quaternion().setFromEuler(new Euler(playerLocate.rotation[0], playerLocate.rotation[1], playerLocate.rotation[2]))))
+        const arcHeight = 1.5 // Adjust this value for a bigger/smaller arc
         const animation = gsap.timeline()
             .to(instance.position, {
                 x: targetPosition.x,
@@ -643,20 +809,52 @@ function PlaySpace() {
                     instance.position.z = MathUtils.lerp(startPosition.z, targetPosition.z, progress) + arcHeight * Math.sin(progress * Math.PI)
                 }
             }, "0.1")
-        animation.then(() => {
-            // Start physics
-            instance.startPhysics()
-        })
-        if (!selectedObjects.some(selectedObject => selectedObject.id == idTake)) {
-            setSelectedObjects([...selectedObjects, {
-                id: id,
-                ref: instance,
-                animation: animation
-            }])
+            .to(instance.rotation, {
+                x: targetRotation.x,
+                y: targetRotation.y,
+                z: targetRotation.z,
+                duration: 0.4,
+            }, "<")
+        animation
+            .then(() => {
+                // Start physics
+                instance.startPhysics()
+
+                // Update state
+                setGems((prevState) => ({
+                    ...prevState,
+                    [type]: prevState[type].filter(gem => gem.id != gemTake.id)
+                }))
+                setPlayerGems((prevState) => ({
+                    ...prevState,
+                    [currentPlayer]: ({
+                        ...prevState[currentPlayer],
+                        [type]: [
+                            ...prevState[currentPlayer][type],
+                            {
+                                id: gemTake.id,
+                                position: targetPosition.toArray(),
+                                rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
+                            }
+                        ]
+                    })
+                }))
+            })
+        if (selectedGems.some(selectedGem => selectedGem.id == gemTake.id)) {
+            setSelectedGems((prevState) => prevState.filter(gem => gem.id != gemTake.id))
+        } else {
+            setSelectedGems((prevState) => [
+                ...prevState,
+                {
+                    id: gemTake.id,
+                    type: type,
+                    oldPosition: startPosition,
+                    oldRotation: startRotation
+                }])
         }
 
         // Show action board
-        if (selectedObjects.length == 0) {
+        if (selectedGems.length == 0) {
             const direction = new Vector3()
             camera.getWorldDirection(direction) // Get the camera's forward direction
             direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
@@ -667,8 +865,12 @@ function PlaySpace() {
                 rotation: camera.rotation.clone()
             })
         }
+    }, [gameData, status, playerIds, currentPlayer, players, gems, playerGems, selectedGems, currentAction])
 
-    }, [user, status, gameData, currentAction, selectedObjects, playerDiamonds, diamonds, playerEmeralds, emeralds, playerOnyxes, onyxes, playerRubies, rubies, playerSapphires, sapphires])
+    const onCancelAction = () => {
+        setCurrentAction(undefined)
+        setActionBoard({enable: false, position: new Vector3(), rotation: new Euler()})
+    }
 
     const onClickNotCurrent = useCallback((id: string) => {
         if (currentAction) return
@@ -706,7 +908,7 @@ function PlaySpace() {
                                      id={card.id}
                                      level={card.level}
                                      url={card.url}
-                                     onClick={() => onClickCardDeck(card.id, card.level)}
+                                     onClick={() => test(card.id)}
                                      position={card.position}
                                      rotation={card.rotation}
                                      ref={(element: any) => (cardRefs.current[card.id] = element)}/>
@@ -779,50 +981,50 @@ function PlaySpace() {
                     }
                 </group>
                 <group>
-                    {golds.map((gold: Gem) => (
+                    {gems.gold.map((gold: Gem) => (
                         <TokenGem key={gold.id}
                                   id={gold.id}
                                   type={TokenGemType.GOLD}
                                   position={gold.position}
                                   ref={(element: any) => (gemRefs.current[gold.id] = element)}/>
                     ))}
-                    {onyxes.map((onyx: Gem) => (
+                    {gems.onyx.map((onyx: Gem) => (
                         <TokenGem key={onyx.id}
                                   id={onyx.id}
                                   type={TokenGemType.ONYX}
-                                  onClick={() => onClickGem(onyx.id, TokenGemType.ONYX)}
+                                  onClick={() => onClickGem(TokenGemType.ONYX)}
                                   position={onyx.position}
                                   ref={(element: any) => (gemRefs.current[onyx.id] = element)}/>
                     ))}
-                    {rubies.map((ruby: Gem) => (
+                    {gems.ruby.map((ruby: Gem) => (
                         <TokenGem key={ruby.id}
                                   id={ruby.id}
                                   type={TokenGemType.RUBY}
-                                  onClick={() => onClickGem(ruby.id, TokenGemType.RUBY)}
+                                  onClick={() => onClickGem(TokenGemType.RUBY)}
                                   position={ruby.position}
                                   ref={(element: any) => (gemRefs.current[ruby.id] = element)}/>
                     ))}
-                    {emeralds.map((emerald: Gem) => (
+                    {gems.emerald.map((emerald: Gem) => (
                         <TokenGem key={emerald.id}
                                   id={emerald.id}
                                   type={TokenGemType.EMERALD}
-                                  onClick={() => onClickGem(emerald.id, TokenGemType.EMERALD)}
+                                  onClick={() => onClickGem(TokenGemType.EMERALD)}
                                   position={emerald.position}
                                   ref={(element: any) => (gemRefs.current[emerald.id] = element)}/>
                     ))}
-                    {sapphires.map((sapphire: Gem) => (
+                    {gems.sapphire.map((sapphire: Gem) => (
                         <TokenGem key={sapphire.id}
                                   id={sapphire.id}
                                   type={TokenGemType.SAPPHIRE}
-                                  onClick={() => onClickGem(sapphire.id, TokenGemType.SAPPHIRE)}
+                                  onClick={() => onClickGem(TokenGemType.SAPPHIRE)}
                                   position={sapphire.position}
                                   ref={(element: any) => (gemRefs.current[sapphire.id] = element)}/>
                     ))}
-                    {diamonds.map((diamond: Gem) => (
+                    {gems.diamond.map((diamond: Gem) => (
                         <TokenGem key={diamond.id}
                                   id={diamond.id}
                                   type={TokenGemType.DIAMOND}
-                                  onClick={() => onClickGem(diamond.id, TokenGemType.DIAMOND)}
+                                  onClick={() => onClickGem(TokenGemType.DIAMOND)}
                                   position={diamond.position}
                                   ref={(element: any) => (gemRefs.current[diamond.id] = element)}/>
                     ))}
@@ -853,8 +1055,8 @@ function PlaySpace() {
                     const locate = PlayerPosition.total[gameData?.ingame_data?.players?.length ?? 0].player[index + 1]
                     return (
                         <PlayerField key={player.player_id}
-                                     id={player.player_id as string}
-                                     data={{...player}}
+                                     playerId={player.player_id as string}
+                                     playerData={player}
                                      position={locate.position}
                                      rotation={locate.rotation}/>
                     )
@@ -863,7 +1065,8 @@ function PlaySpace() {
 
             {actionBoard?.enable && (
                 <ActionBoard position={actionBoard.position}
-                             rotation={actionBoard.rotation}/>
+                             rotation={actionBoard.rotation}
+                             onCancelAction={onCancelAction}/>
             )}
         </>
     )

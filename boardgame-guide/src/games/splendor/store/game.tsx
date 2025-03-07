@@ -1,7 +1,7 @@
 import React, {createContext, Dispatch, SetStateAction, useContext, useState} from "react";
-import {TokenGemType} from "@/games/splendor/constants/gem";
 import {useUser} from "@/store/user";
 import {CardGemType} from "@/games/splendor/constants/card";
+import {TokenGemType} from "@/games/splendor/constants/gem";
 
 
 export interface Noble {
@@ -33,27 +33,13 @@ export interface Player {
     score: number
 }
 
-export interface Action {
-    type: "gather-gem" | "reserve-card" | "buy-card" | "option-action" | "take-noble" | string
-    card?: {
-        id: string,
-        level: number,
-        deck: boolean
-    }
-    noble?: {id: string}
-    gem?: {
-        id: string
-        type: TokenGemType
-        count: number
-    }[]
-    option?: string[]
-}
-
 const GameContext = createContext<{
     gameId: string
     setGameId: Dispatch<SetStateAction<string>>
     status: number
     setStatus: Dispatch<SetStateAction<number>>
+    playerIds: string[]
+    setPlayerIds: Dispatch<SetStateAction<string[]>>
     currentPlayer: string
     setCurrentPlayer: Dispatch<SetStateAction<string>>
     nextPlayer: string
@@ -70,18 +56,8 @@ const GameContext = createContext<{
     setFieldCard2: Dispatch<SetStateAction<Card[]>>
     fieldCard1: Card[]
     setFieldCard1: Dispatch<SetStateAction<Card[]>>
-    golds: Gem[]
-    setGolds: Dispatch<SetStateAction<Gem[]>>
-    onyxes: Gem[]
-    setOnyxes: Dispatch<SetStateAction<Gem[]>>
-    rubies: Gem[]
-    setRubies: Dispatch<SetStateAction<Gem[]>>
-    emeralds: Gem[]
-    setEmeralds: Dispatch<SetStateAction<Gem[]>>
-    sapphires: Gem[]
-    setSapphires: Dispatch<SetStateAction<Gem[]>>
-    diamonds: Gem[]
-    setDiamonds: Dispatch<SetStateAction<Gem[]>>
+    gems: {[key in TokenGemType]: Gem[]}
+    setGems: Dispatch<SetStateAction<{[key in TokenGemType]: Gem[]}>>
     deckNoble: Noble[]
     setDeckNoble: Dispatch<SetStateAction<Noble[]>>
     fieldNoble: Noble[]
@@ -94,20 +70,8 @@ const GameContext = createContext<{
     setPlayerReserveCards: Dispatch<SetStateAction<{[key: string]: Card[]}>>
     playerNobles: {[key: string]: Noble[]}
     setPlayerNobles: Dispatch<SetStateAction<{[key: string]: Noble[]}>>
-    playerGolds: {[key: string]: Gem[]},
-    setPlayerGolds: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
-    playerOnyxes: {[key: string]: Gem[]},
-    setPlayerOnyxes: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
-    playerRubies: {[key: string]: Gem[]},
-    setPlayerRubies: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
-    playerEmeralds: {[key: string]: Gem[]},
-    setPlayerEmeralds: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
-    playerSapphires: {[key: string]: Gem[]},
-    setPlayerSapphires: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
-    playerDiamonds: {[key: string]: Gem[]},
-    setPlayerDiamonds: Dispatch<SetStateAction<{[key: string]: Gem[]}>>
-    currentAction: Action | undefined
-    setCurrentAction: Dispatch<SetStateAction<Action | undefined>>
+    playerGems: {[key: string]: {[key in TokenGemType]: Gem[]}}
+    setPlayerGems: Dispatch<SetStateAction<{[key: string]: {[key in TokenGemType]: Gem[]}}>>
 
     [key: string]: any;
 } | undefined>(undefined);
@@ -116,6 +80,7 @@ export const GameSplendorProvider = ({children}: any) => {
     const {user} = useUser()
     const [gameId, setGameId] = useState<string>("")
     const [status, setStatus] = useState<number>(0)
+    const [playerIds, setPlayerIds] = useState<string[]>([])
     const [currentPlayer, setCurrentPlayer] = useState<string>("")
     const [nextPlayer, setNextPlayer] = useState<string>("")
     const [deckCard3, setDeckCard3] = useState<Card[]>([])
@@ -124,25 +89,21 @@ export const GameSplendorProvider = ({children}: any) => {
     const [fieldCard3, setFieldCard3] = useState<Card[]>([])
     const [fieldCard2, setFieldCard2] = useState<Card[]>([])
     const [fieldCard1, setFieldCard1] = useState<Card[]>([])
-    const [golds, setGolds] = useState<Gem[]>([])
-    const [onyxes, setOnyxes] = useState<Gem[]>([])
-    const [rubies, setRubies] = useState<Gem[]>([])
-    const [emeralds, setEmeralds] = useState<Gem[]>([])
-    const [sapphires, setSapphires] = useState<Gem[]>([])
-    const [diamonds, setDiamonds] = useState<Gem[]>([])
+    const [gems, setGems] = useState<{[key in TokenGemType]: Gem[]}>({
+        diamond: [],
+        emerald: [],
+        gold: [],
+        onyx: [],
+        ruby: [],
+        sapphire: []
+    })
     const [deckNoble, setDeckNoble] = useState<Noble[]>([])
     const [fieldNoble, setFieldNoble] = useState<Noble[]>([])
     const [players, setPlayers] = useState<{[key: string]: Player}>({})
     const [playerCards, setPlayerCards] = useState<{[key: string]: Card[]}>({})
     const [playerReserveCards, setPlayerReserveCards] = useState<{[key: string]: Card[]}>({})
     const [playerNobles, setPlayerNobles] = useState<{[key: string]: Noble[]}>({})
-    const [playerGolds, setPlayerGolds] = useState<{[key: string]: Gem[]}>({})
-    const [playerOnyxes, setPlayerOnyxes] = useState<{[key: string]: Gem[]}>({})
-    const [playerRubies, setPlayerRubies] = useState<{[key: string]: Gem[]}>({})
-    const [playerEmeralds, setPlayerEmeralds] = useState<{[key: string]: Gem[]}>({})
-    const [playerSapphires, setPlayerSapphires] = useState<{[key: string]: Gem[]}>({})
-    const [playerDiamonds, setPlayerDiamonds] = useState<{[key: string]: Gem[]}>({})
-    const [currentAction, setCurrentAction] = useState<Action>()
+    const [playerGems, setPlayerGems] = useState<{[key: string]: {[key in TokenGemType]: Gem[]}}>({})
 
 
     const isMyTurn = user?.user_id == currentPlayer
@@ -151,6 +112,7 @@ export const GameSplendorProvider = ({children}: any) => {
         <GameContext.Provider value={{
             gameId, setGameId,
             status, setStatus,
+            playerIds, setPlayerIds,
             currentPlayer, setCurrentPlayer,
             nextPlayer, setNextPlayer,
             deckCard3, setDeckCard3,
@@ -161,29 +123,18 @@ export const GameSplendorProvider = ({children}: any) => {
             fieldCard1, setFieldCard1,
             deckNoble, setDeckNoble,
             fieldNoble, setFieldNoble,
-            golds, setGolds,
-            onyxes , setOnyxes,
-            rubies , setRubies,
-            emeralds, setEmeralds,
-            sapphires, setSapphires,
-            diamonds, setDiamonds,
+            gems, setGems,
             players, setPlayers,
             playerCards, setPlayerCards,
             playerReserveCards, setPlayerReserveCards,
             playerNobles, setPlayerNobles,
-            playerGolds, setPlayerGolds,
-            playerOnyxes, setPlayerOnyxes,
-            playerRubies, setPlayerRubies,
-            playerEmeralds, setPlayerEmeralds,
-            playerSapphires, setPlayerSapphires,
-            playerDiamonds, setPlayerDiamonds,
-            currentAction, setCurrentAction,
+            playerGems, setPlayerGems,
             isMyTurn,
         }}>
             {children}
         </GameContext.Provider>
     )
-};
+}
 
 export const useGameSplendor = () => {
     const context = useContext(GameContext);
@@ -191,4 +142,4 @@ export const useGameSplendor = () => {
         throw new Error("useGameSplendor must be used within a GameSplendorProvider");
     }
     return context;
-};
+}

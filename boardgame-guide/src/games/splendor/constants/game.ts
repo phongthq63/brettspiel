@@ -134,3 +134,4 @@ export const PlayerPosition = {
 
 export const NotifyGameSplendorStart = 'NotifyGameSplendorStart';
 export const NotifyGameSplendorTurnEnd = 'NotifyGameSplendorTurnEnd'
+export const NotifyGameSplendorActionGatherGem = 'NotifyGameSplendorActionGatherGem'

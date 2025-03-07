@@ -33,7 +33,7 @@ export const UserProvider = ({children}: any) => {
             return;
         }
 
-        setUser({user_id: userId})
+        setUser({user_id: jwtData.sub})
     }, [])
 
     return (

@@ -1,24 +1,26 @@
 import {Html} from "@react-three/drei";
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import {Button} from "@mui/material";
-import {Action, useGameSplendor} from "@/games/splendor/store/game";
+import {useGameSplendor} from "@/games/splendor/store/game";
 import {TokenGemType} from "@/games/splendor/constants/gem";
 import {GameService} from "@/games/splendor/service/splendor.service";
 import {toast} from "react-toastify";
 import {Euler, Vector3} from "three";
 import {useThree} from "@react-three/fiber";
+import {Action, useGameAction} from "@/games/splendor/store/action";
 
 
 interface ActionBoardProps {
     position: Vector3
     rotation: Euler
     onClickNotThis?: () => void
+    onCancelAction?: () => void
 }
 
-const ActionBoard = ({position, rotation, onClickNotThis, ...props}: ActionBoardProps) => {
+const ActionBoard = ({position, rotation, onClickNotThis, onCancelAction, ...props}: ActionBoardProps) => {
     const { gl } = useThree();
-    const {gameId,
-        currentAction, setCurrentAction} = useGameSplendor()
+    const {gameId} = useGameSplendor()
+    const {currentAction, setCurrentAction} = useGameAction()
     const ref = useRef<any>(undefined);
     const [text, setText] = useState("");
 
@@ -221,7 +223,7 @@ const ActionBoard = ({position, rotation, onClickNotThis, ...props}: ActionBoard
         })
     }
 
-    const handlerStartAction = (data: Action) => {
+    const handlerStartAction = useMemo(() => (data: Action) => {
         switch (data.type) {
             case "gather-gem":
                 startActionGatherGem(data)
@@ -236,7 +238,7 @@ const ActionBoard = ({position, rotation, onClickNotThis, ...props}: ActionBoard
                 startActionTakeNoble(data)
                 break
         }
-    }
+    }, [])
 
     return (
         <Html center
@@ -255,7 +257,7 @@ const ActionBoard = ({position, rotation, onClickNotThis, ...props}: ActionBoard
                 <div className="flex justify-center space-x-2">
                     <Button variant="contained"
                             color="error"
-                            onClick={() => setCurrentAction(undefined)}>Cancel</Button>
+                            onClick={onCancelAction}>Cancel</Button>
                     {currentAction.type != "option-action" ? (
                         <Button variant="contained"
                                 color="success"

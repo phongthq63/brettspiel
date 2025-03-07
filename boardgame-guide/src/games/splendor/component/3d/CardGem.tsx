@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import React, {forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState} from "react";
 import {useFrame, useLoader} from "@react-three/fiber";
 import {RapierRigidBody, RigidBody} from "@react-three/rapier";
-import {Euler, Group, Mesh, Quaternion, Vector3} from "three";
+import {Group, Mesh, Quaternion, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
 
 
@@ -25,10 +25,9 @@ interface CardGemProps {
     onClickNotThis?: () => void
     position?: any
     rotation?: any
-    parentRotation?: [number, number, number]
 }
 
-const CardGem = forwardRef(({id, level, url, onClick, onClickNotThis, parentRotation, ...props}: CardGemProps, ref: Ref<any>) => {
+const CardGem = forwardRef(({id, level, url, onClick, onClickNotThis, ...props}: CardGemProps, ref: Ref<any>) => {
     const [textureFront, textureBackLevel1, textureBackLevel2, textureBackLevel3] = useLoader(THREE.TextureLoader, [url, '/game/splendor/card/1/card1-back.jpg', '/game/splendor/card/2/card2-back.jpg', '/game/splendor/card/3/card3-back.jpg']);
     const [onPhysics, setOnPhysics] = useState(true);
     const groupRef = useRef<Group>(null);
@@ -106,20 +105,12 @@ const CardGem = forwardRef(({id, level, url, onClick, onClickNotThis, parentRota
         if (onPhysics && rigidBodyRef.current.bodyType() !== 2 && !rigidBodyRef.current.isSleeping()) {
             const physicsPosition = rigidBodyRef.current.translation()
             const physicsRotation = rigidBodyRef.current.rotation()
-            if (parentRotation) {
-                // Position
-                const localPosition = new Vector3().copy(physicsPosition)
-                groupRef.current.parent?.worldToLocal(localPosition)
-                groupRef.current.position.copy(localPosition)
-                // Rotation
-                const physicsQuaternion = new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z)
-                groupRef.current.setRotationFromEuler(new Euler().setFromQuaternion(physicsQuaternion))
-            } else {
-                // Position
-                groupRef.current.position.copy(physicsPosition)
-                // Rotation
-                groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z))
-            }
+            const physicsQuaternion = new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w)
+
+            // Position
+            groupRef.current.position.copy(physicsPosition)
+            // Rotation
+            groupRef.current.setRotationFromQuaternion(physicsQuaternion)
         }
     })
 

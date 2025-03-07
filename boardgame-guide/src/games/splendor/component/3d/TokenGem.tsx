@@ -10,7 +10,7 @@ import {
     GemRuby,
     GemSapphire
 } from "@/games/splendor/constants/gem";
-import {Euler, Group, Mesh, Quaternion, Vector3} from "three";
+import {Group, Mesh, Quaternion, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
 import {CylinderCollider, RapierRigidBody, RigidBody} from "@react-three/rapier";
 
@@ -25,10 +25,10 @@ interface TokenGemProps {
     type: TokenGemType
     onClick?: () => void
     position?: any
-    parentRotation?: [number, number, number]
+    rotation?: any
 }
 
-const TokenGem = forwardRef(({id, type, onClick, parentRotation, ...props}: TokenGemProps, ref: Ref<any>) => {
+const TokenGem = forwardRef(({id, type, onClick, ...props}: TokenGemProps, ref: Ref<any>) => {
     const [textureGold,
         textureDiamond,
         textureEmerald,
@@ -136,20 +136,12 @@ const TokenGem = forwardRef(({id, type, onClick, parentRotation, ...props}: Toke
         if (onPhysics && rigidBodyRef.current.bodyType() !== 2 && !rigidBodyRef.current.isSleeping()) {
             const physicsPosition = rigidBodyRef.current.translation()
             const physicsRotation = rigidBodyRef.current.rotation()
-            if (parentRotation) {
-                // Position
-                const localPosition = new Vector3().copy(physicsPosition)
-                groupRef.current.parent?.worldToLocal(localPosition)
-                groupRef.current.position.copy(localPosition)
-                // Rotation
-                const physicsQuaternion = new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z)
-                groupRef.current.setRotationFromEuler(new Euler().setFromQuaternion(physicsQuaternion))
-            } else {
-                // Position
-                groupRef.current.position.copy(physicsPosition)
-                // Rotation
-                groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.z))
-            }
+            const physicsQuaternion = new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w)
+
+            // Position
+            groupRef.current.position.copy(physicsPosition)
+            // Rotation
+            groupRef.current.setRotationFromQuaternion(physicsQuaternion)
         }
     })
 

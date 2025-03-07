@@ -3,6 +3,7 @@
 import GameContainer from "@/games/splendor/component/GameContainer";
 import React, {useEffect} from "react";
 import {GameSplendorProvider} from "@/games/splendor/store/game";
+import {GameActionSplendorProvider} from "@/games/splendor/store/action";
 
 
 export default function Page({ params } : { params: Promise<{ id: string }>}) {
@@ -14,7 +15,9 @@ export default function Page({ params } : { params: Promise<{ id: string }>}) {
 
     return <>
         <GameSplendorProvider>
-            <GameContainer gameId={id}/>
+            <GameActionSplendorProvider>
+                <GameContainer gameId={id}/>
+            </GameActionSplendorProvider>
         </GameSplendorProvider>
     </>
 }

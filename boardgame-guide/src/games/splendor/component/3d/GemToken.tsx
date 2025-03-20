@@ -2,7 +2,6 @@ import React, {forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState} 
 import {useFrame, useLoader} from "@react-three/fiber";
 import * as THREE from "three";
 import {
-    TokenGemType,
     GemGold,
     GemDiamond,
     GemEmerald,
@@ -13,14 +12,15 @@ import {
 import {Group, Mesh, Quaternion, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
 import {CylinderCollider, RapierRigidBody, RigidBody} from "@react-three/rapier";
+import {TokenGemType} from "@/games/splendor/types/gem";
 
 
-export const TokenGemSize = {
+export const GemTokenSize = {
     size: 0.25,
     depth: 0.07
-};
+}
 
-interface TokenGemProps {
+interface GemTokenProps {
     id: string
     type: TokenGemType
     onClick?: () => void
@@ -28,7 +28,7 @@ interface TokenGemProps {
     rotation?: any
 }
 
-const TokenGem = forwardRef(({id, type, onClick, ...props}: TokenGemProps, ref: Ref<any>) => {
+const GemToken = forwardRef(({id, type, onClick, ...props}: GemTokenProps, ref: Ref<any>) => {
     const [textureGold,
         textureDiamond,
         textureEmerald,
@@ -121,11 +121,11 @@ const TokenGem = forwardRef(({id, type, onClick, ...props}: TokenGemProps, ref: 
         if (!onPhysics) {
             const position = new Vector3()
             groupRef.current.getWorldPosition(position)
-            rigidBodyRef.current.setTranslation(position, false)
+            rigidBodyRef.current.setNextKinematicTranslation(position)
 
             const rotation = new Quaternion()
             groupRef.current.getWorldQuaternion(rotation)
-            rigidBodyRef.current.setRotation(rotation, false)
+            rigidBodyRef.current.setNextKinematicRotation(rotation)
         }
 
         /**
@@ -155,17 +155,21 @@ const TokenGem = forwardRef(({id, type, onClick, ...props}: TokenGemProps, ref: 
                   }}
                   rotation={[Math.PI / 2, 0, 0]}
             >
-                <cylinderGeometry args={[TokenGemSize.size, TokenGemSize.size, TokenGemSize.depth, 32]}/>
+                <cylinderGeometry args={[GemTokenSize.size, GemTokenSize.size, GemTokenSize.depth, 32]}/>
                 <meshBasicMaterial attach="material-0" color={color}/>
                 <meshBasicMaterial attach="material-1" map={textureFront}/>
                 <meshBasicMaterial attach="material-2" color={color}/>
             </mesh>
 
-            <RigidBody ref={rigidBodyRef} colliders={false}>
-                <CylinderCollider args={[TokenGemSize.depth / 2, TokenGemSize.size]}
+            <RigidBody ref={rigidBodyRef}
+                       colliders={false}
+                       ccd={true}
+                       mass={40}
+            >
+                <CylinderCollider args={[GemTokenSize.depth / 2, GemTokenSize.size]}
                                   rotation={[Math.PI / 2, 0, 0]}>
                     <mesh rotation={[Math.PI / 2, 0, 0]}>
-                        <cylinderGeometry args={[TokenGemSize.size, TokenGemSize.size, TokenGemSize.depth, 32]}/>
+                        <cylinderGeometry args={[GemTokenSize.size, GemTokenSize.size, GemTokenSize.depth, 32]}/>
                         <meshBasicMaterial visible={false}/>
                     </mesh>
                 </CylinderCollider>
@@ -173,6 +177,6 @@ const TokenGem = forwardRef(({id, type, onClick, ...props}: TokenGemProps, ref: 
         </group>
     )
 })
-TokenGem.displayName = "TokenGem";
+GemToken.displayName = "TokenGem";
 
-export default TokenGem;
+export default GemToken;

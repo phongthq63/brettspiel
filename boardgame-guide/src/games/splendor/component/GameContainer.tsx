@@ -1,9 +1,9 @@
 import React, {useEffect} from "react";
 import {useGameSplendor} from "@/games/splendor/store/game";
-import {PlayerGameInfoBox} from "@/games/splendor/component/PlayerGameInfoBox";
-import GameCanvas from "@/games/splendor/component/3d/GameCanvas";
-import GameActionDescriptionBox from "@/games/splendor/component/GameActionDescriptionBox";
-import {TokenGemType} from "@/games/splendor/constants/gem";
+import PlayerGameInfoBox from "@/games/splendor/component/ui/PlayerGameInfo";
+import GameCanvas from "@/games/splendor/component/3d/GameRenderer";
+import ActionDescription from "@/games/splendor/component/ui/ActionDescription";
+import {TokenGemType} from "@/games/splendor/types/gem";
 
 
 function GameContainer({gameId}: {gameId: string}) {
@@ -21,7 +21,10 @@ function GameContainer({gameId}: {gameId: string}) {
 
     return (
         <>
-            <GameActionDescriptionBox/>
+
+            <div className="w-full h-screen fixed z-0">
+                <ActionDescription/>
+            </div>
             <div className="w-full">
                 <div className="flex flex-col md:flex-row space-y-1 md:space-y-0 md:space-x-1">
                     <div className="md:basis-4/5 h-[40vh] md:h-[80vh]">

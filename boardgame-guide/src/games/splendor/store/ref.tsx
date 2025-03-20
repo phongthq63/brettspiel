@@ -4,7 +4,7 @@ const RefContext = createContext<{
     cardRefs: RefObject<{ [key: string]: any }>
     nobleRefs: RefObject<{ [key: string]: any }>
     gemRefs: RefObject<{ [key: string]: any }>
-} | undefined>(undefined);
+} | undefined>(undefined)
 
 export const SharedRefProvider = ({children}: any) => {
     const cardRefs = useRef<{ [key: string]: any }>({});
@@ -21,7 +21,7 @@ export const SharedRefProvider = ({children}: any) => {
             {children}
         </RefContext.Provider>
     )
-};
+}
 
 export const useSharedRef = () => {
     const context = useContext(RefContext);
@@ -29,4 +29,4 @@ export const useSharedRef = () => {
         throw new Error("useSharedRef must be used within a SharedRefProvider");
     }
     return context;
-};
+}

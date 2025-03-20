@@ -1,11 +1,11 @@
 import Image from "next/image";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {memo, useEffect, useMemo, useState} from "react";
 import {useUser} from "@/store/user";
 import {Card, Noble} from "@/games/splendor/store/game";
-import {CardGemType} from "@/games/splendor/constants/card";
+import {CardGemType} from "@/games/splendor/types/card";
 
 
-interface PlayerGameInfoBoxProps {
+interface PlayerGameInfoProps {
     id: string
     data: {
         id: string
@@ -24,7 +24,7 @@ interface PlayerGameInfoBoxProps {
     }
 }
 
-export function PlayerGameInfoBox({ id, data }: PlayerGameInfoBoxProps) {
+const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
     const {user} = useUser()
     const [cardDiamond, setCardDiamond] = useState(0)
     const [diamond, setDiamond] = useState(0)
@@ -206,3 +206,5 @@ export function PlayerGameInfoBox({ id, data }: PlayerGameInfoBoxProps) {
         </div>
     )
 }
+
+export default memo(PlayerGameInfo)

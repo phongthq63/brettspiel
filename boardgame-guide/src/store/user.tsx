@@ -22,7 +22,7 @@ export const UserProvider = ({children}: any) => {
 
     useEffect(() => {
         const token = getItem('access-token')
-        const userId = getItem('user-id')
+        // const userId = getItem('user-id')
         if (!token) {
             return;
         }

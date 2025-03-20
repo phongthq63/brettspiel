@@ -44,6 +44,15 @@ public class GameSplendorHandler {
             case GameSplendorConstants.EVENT_TURN_ACTION_GATHER_GEM:
                 splendorService.handlerTurnActionGatherGem(roomId, data);
                 break;
+            case GameSplendorConstants.EVENT_TURN_ACTION_BUY_CARD:
+                splendorService.handlerTurnActionBuyCard(roomId, data);
+                break;
+            case GameSplendorConstants.EVENT_TURN_ACTION_RESERVE_CARD:
+                splendorService.handlerTurnActionReserveCard(roomId, data);
+                break;
+            case GameSplendorConstants.EVENT_TURN_BONUS_ACTION_TAKE_NOBLE:
+                splendorService.handlerTurnBonusActionTakeNoble(roomId, data);
+                break;
         }
     }
 

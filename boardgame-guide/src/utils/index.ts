@@ -1,3 +1,9 @@
+import {v4} from "uuid"
+
+export const generateUUID = () => {
+    return v4()
+}
+
 export const wait = (ms: number) => {
     return new Promise((r) => setTimeout(r, ms))
 }

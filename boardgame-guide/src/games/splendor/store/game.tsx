@@ -1,30 +1,8 @@
 import React, {createContext, Dispatch, SetStateAction, useContext, useState} from "react";
 import {useUser} from "@/store/user";
-import {CardGemType} from "@/games/splendor/constants/card";
-import {TokenGemType} from "@/games/splendor/constants/gem";
+import {TokenGemType} from "@/games/splendor/types/gem";
+import {Card, Gem, Noble} from "@/games/splendor/types/game";
 
-
-export interface Noble {
-    id: string
-    url: string
-    position: [number, number, number]
-    rotation: [number, number, number]
-}
-
-export interface Card {
-    id: string
-    type: CardGemType
-    level: 1 | 2 | 3 | number
-    url: string
-    position: [number, number, number]
-    rotation: [number, number, number]
-}
-export interface Gem {
-    id: string
-    owner?: string
-    position: [number, number, number]
-    rotation: [number, number, number]
-}
 
 export interface Player {
     id: string
@@ -33,29 +11,40 @@ export interface Player {
     score: number
 }
 
+export interface FocusObject {
+    id: string
+    type: 'card' | 'gem' | 'noble'
+    gem?: {
+        type: TokenGemType
+        owner?: string
+        oldPosition: [number, number, number]
+        oldRotation: [number, number, number]
+    },
+    card?: {
+        ref: { [key: string]: any }
+        animation: gsap.core.Timeline
+    },
+    noble?: {
+        ref: { [key: string]: any }
+        animation: gsap.core.Timeline
+    }
+}
+
 const GameContext = createContext<{
     gameId: string
     setGameId: Dispatch<SetStateAction<string>>
-    status: number
-    setStatus: Dispatch<SetStateAction<number>>
+    status: number | undefined
+    setStatus: Dispatch<SetStateAction<number | undefined>>
     playerIds: string[]
     setPlayerIds: Dispatch<SetStateAction<string[]>>
     currentPlayer: string
     setCurrentPlayer: Dispatch<SetStateAction<string>>
     nextPlayer: string
     setNextPlayer: Dispatch<SetStateAction<string>>
-    deckCard3: Card[]
-    setDeckCard3: Dispatch<SetStateAction<Card[]>>
-    deckCard2: Card[]
-    setDeckCard2: Dispatch<SetStateAction<Card[]>>
-    deckCard1: Card[]
-    setDeckCard1: Dispatch<SetStateAction<Card[]>>
-    fieldCard3: Card[]
-    setFieldCard3: Dispatch<SetStateAction<Card[]>>
-    fieldCard2: Card[]
-    setFieldCard2: Dispatch<SetStateAction<Card[]>>
-    fieldCard1: Card[]
-    setFieldCard1: Dispatch<SetStateAction<Card[]>>
+    deckCard: {[key: number]: Card[]}
+    setDeckCard: Dispatch<SetStateAction<{[key: number]: Card[]}>>
+    fieldCard: {[key: number]: Card[]}
+    setFieldCard: Dispatch<SetStateAction<{[key: number]: Card[]}>>
     gems: {[key in TokenGemType]: Gem[]}
     setGems: Dispatch<SetStateAction<{[key in TokenGemType]: Gem[]}>>
     deckNoble: Noble[]
@@ -73,22 +62,23 @@ const GameContext = createContext<{
     playerGems: {[key: string]: {[key in TokenGemType]: Gem[]}}
     setPlayerGems: Dispatch<SetStateAction<{[key: string]: {[key in TokenGemType]: Gem[]}}>>
 
-    [key: string]: any;
+    focusObjects: FocusObject[]
+    addFocusObjects: (focusObject: FocusObject) => void
+    removeFocusObjects: (id: string) => void
+
+    isMyTurn: boolean
+    // [key: string]: any;
 } | undefined>(undefined);
 
 export const GameSplendorProvider = ({children}: any) => {
     const {user} = useUser()
     const [gameId, setGameId] = useState<string>("")
-    const [status, setStatus] = useState<number>(0)
+    const [status, setStatus] = useState<number>()
     const [playerIds, setPlayerIds] = useState<string[]>([])
     const [currentPlayer, setCurrentPlayer] = useState<string>("")
     const [nextPlayer, setNextPlayer] = useState<string>("")
-    const [deckCard3, setDeckCard3] = useState<Card[]>([])
-    const [deckCard2, setDeckCard2] = useState<Card[]>([])
-    const [deckCard1, setDeckCard1] = useState<Card[]>([])
-    const [fieldCard3, setFieldCard3] = useState<Card[]>([])
-    const [fieldCard2, setFieldCard2] = useState<Card[]>([])
-    const [fieldCard1, setFieldCard1] = useState<Card[]>([])
+    const [deckCard, setDeckCard] = useState<{[key: number]: Card[]}>({})
+    const [fieldCard, setFieldCard] = useState<{[key: number]: Card[]}>({})
     const [gems, setGems] = useState<{[key in TokenGemType]: Gem[]}>({
         diamond: [],
         emerald: [],
@@ -105,6 +95,14 @@ export const GameSplendorProvider = ({children}: any) => {
     const [playerNobles, setPlayerNobles] = useState<{[key: string]: Noble[]}>({})
     const [playerGems, setPlayerGems] = useState<{[key: string]: {[key in TokenGemType]: Gem[]}}>({})
 
+    const [focusObjects, setFocusObjects] = useState<FocusObject[]>([])
+    const addFocusObjects = (focusObject: FocusObject) => {
+        if (focusObjects.some(fo => fo.id == focusObject.id)) return
+        setFocusObjects((prevState) => [...prevState, focusObject])
+    }
+    const removeFocusObjects = (id: string) => {
+        setFocusObjects((prevState) => prevState.filter(object => object.id != id))
+    }
 
     const isMyTurn = user?.user_id == currentPlayer
 
@@ -115,12 +113,8 @@ export const GameSplendorProvider = ({children}: any) => {
             playerIds, setPlayerIds,
             currentPlayer, setCurrentPlayer,
             nextPlayer, setNextPlayer,
-            deckCard3, setDeckCard3,
-            deckCard2, setDeckCard2,
-            deckCard1, setDeckCard1,
-            fieldCard3, setFieldCard3,
-            fieldCard2, setFieldCard2,
-            fieldCard1, setFieldCard1,
+            deckCard, setDeckCard,
+            fieldCard, setFieldCard,
             deckNoble, setDeckNoble,
             fieldNoble, setFieldNoble,
             gems, setGems,
@@ -129,6 +123,9 @@ export const GameSplendorProvider = ({children}: any) => {
             playerReserveCards, setPlayerReserveCards,
             playerNobles, setPlayerNobles,
             playerGems, setPlayerGems,
+
+            focusObjects, addFocusObjects, removeFocusObjects,
+
             isMyTurn,
         }}>
             {children}

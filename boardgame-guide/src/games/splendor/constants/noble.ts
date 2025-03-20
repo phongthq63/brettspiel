@@ -1,9 +1,7 @@
-interface ICardNobleProps {
-    id: string
-    url: string
-}
+import {CardNoble} from "@/games/splendor/types/noble";
 
-export const Nobles : ICardNobleProps[] = [
+
+export const Nobles : CardNoble[] = [
     {
         id: "noble_3b3b3w",
         url: "/game/splendor/noble/noble_3b3b3w.jpg"
@@ -46,7 +44,7 @@ export const Nobles : ICardNobleProps[] = [
     }
 ];
 
-export const NobleDictionary = Nobles.reduce((dict: { [id: string] : ICardNobleProps }, item) => {
+export const NobleDictionary = Nobles.reduce((dict: { [id: string] : CardNoble }, item) => {
     dict[item.id] = item;
     return dict
 }, {})

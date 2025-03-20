@@ -19,27 +19,21 @@ public class TurnActionBuyCardRequest extends BaseRequest {
     @Schema(description = "Id thẻ bài mua", requiredMode = Schema.RequiredMode.REQUIRED, example = "diamond_3")
     private String cardId;
 
-    @NegativeOrZero
     @Schema(description = "Số lượng vàng tương tác (+ lấy, - trả)", example = "1")
     private Integer gold;
 
-    @NegativeOrZero
     @Schema(description = "Số lượng mã não tương tác (+ lấy, - trả)", example = "1")
     private Integer onyx;
 
-    @NegativeOrZero
     @Schema(description = "Số lượng hồng ngọc tương tác (+ lấy, - trả)", example = "1")
     private Integer ruby;
 
-    @NegativeOrZero
     @Schema(description = "Số lượng ngọc lục bảo tương tác (+ lấy, - trả)", example = "1")
     private Integer emerald;
 
-    @NegativeOrZero
     @Schema(description = "Số lượng đá saphia tương tác (+ lấy, - trả)", example = "1")
     private Integer sapphire;
 
-    @NegativeOrZero
     @Schema(description = "Số lượng kim cương tương tác (+ lấy, - trả)", example = "1")
     private Integer diamond;
 

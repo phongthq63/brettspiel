@@ -58,10 +58,6 @@ public class GameServiceImpl implements IGameService {
             log.error("initGame - You is not host - {} {} | {}", body.getTableId(), userId, splendorTable.getHostId());
             return R.failed("You is not host");
         }
-        if (splendorTable.getUserIds().size() < 2) {
-            log.error("initGame - Error system - {} | {}", body.getTableId(), splendorTable.getUserIds());
-            return R.failed("Game have to 2 player or more to play");
-        }
 
         //Shuffle player (Clone list)
         List<String> playerIds = new ArrayList<>(splendorTable.getUserIds());
@@ -397,21 +393,15 @@ public class GameServiceImpl implements IGameService {
 
     @Override
     public R<?> turnActionGatherGem(String userId, String gameId, TurnActionGatherGemRequest body) {
-        // Validate
-        if ((body.getOnyx() == null || body.getOnyx() == 0) &&
-                (body.getRuby() == null || body.getRuby() == 0) &&
-                (body.getEmerald() == null || body.getEmerald() == 0) &&
-                (body.getSapphire() == null || body.getSapphire() == 0) &&
-                (body.getDiamond() == null || body.getDiamond() == 0)) {
-            return R.failed("Invalid request");
-        }
-
         int gold = body.getGold() == null ? 0 : body.getGold();
         int onyx = body.getOnyx() == null ? 0 : body.getOnyx();
         int ruby = body.getRuby() == null ? 0 : body.getRuby();
         int emerald = body.getEmerald() == null ? 0 : body.getEmerald();
         int sapphire = body.getSapphire() == null ? 0 : body.getSapphire();
         int diamond = body.getDiamond() == null ? 0 : body.getDiamond();
+        if (gold > 0) {
+            return R.failed("Can't gather gold");
+        }
         if ((onyx + ruby + emerald + sapphire + diamond > 3) ||
                 onyx > 2 ||
                 ruby > 2 ||
@@ -437,14 +427,14 @@ public class GameServiceImpl implements IGameService {
                 return R.failed("Game have ended");
         }
         if (!Objects.equals(splendorGame.getIngameData().getCurrentPlayer(), userId)) {
-            log.error("turnActionGatherGem - Game not start - {} {}", gameId, userId);
+            log.error("turnActionGatherGem - Current turn isn't player - {} {}", gameId, userId);
             return R.failed("Current turn isn't you");
         }
-        if ((splendorGame.getIngameData().getOnyx() < 4 && onyx == 2 && ruby > 0 && emerald > 0 && sapphire > 0 && diamond > 0) ||
-                (splendorGame.getIngameData().getRuby() < 4 && onyx > 0 && ruby == 2 && emerald > 0 && sapphire > 0 && diamond > 0) ||
-                (splendorGame.getIngameData().getEmerald() < 4 && onyx > 0 && ruby > 0 && emerald == 2 && sapphire > 0 && diamond > 0) ||
-                (splendorGame.getIngameData().getSapphire() < 4 && onyx > 0 && ruby > 0 && emerald > 0 && sapphire == 2 && diamond > 0) ||
-                (splendorGame.getIngameData().getDiamond() < 4 && onyx > 0 && ruby > 0 && emerald > 0 && sapphire > 0 && diamond == 2)) {
+        if ((splendorGame.getIngameData().getOnyx() < 4 && onyx == 2) ||
+                (splendorGame.getIngameData().getRuby() < 4 && ruby == 2) ||
+                (splendorGame.getIngameData().getEmerald() < 4 && emerald == 2) ||
+                (splendorGame.getIngameData().getSapphire() < 4 && sapphire == 2) ||
+                (splendorGame.getIngameData().getDiamond() < 4 && diamond == 2)) {
             return R.failed("Gather gem break rule game");
         }
 
@@ -461,7 +451,6 @@ public class GameServiceImpl implements IGameService {
                 gold + onyx + ruby + emerald + sapphire + diamond > 10) {
             return R.failed("You have more than 10 gem and gold");
         }
-
 
         // Update db
         splendorGame = splendorGameRepository.gatherGem(gameId, userId, gold, onyx, ruby, emerald, sapphire, diamond);
@@ -483,6 +472,7 @@ public class GameServiceImpl implements IGameService {
                 put("turn", finalSplendorGame.getIngameData().getTurn());
                 put("current_player", finalSplendorGame.getIngameData().getCurrentPlayer());
                 put("next_player", finalSplendorGame.getIngameData().getNextPlayer());
+                put("gold", gold);
                 put("onyx", onyx);
                 put("ruby", ruby);
                 put("emerald", emerald);
@@ -496,6 +486,16 @@ public class GameServiceImpl implements IGameService {
 
     @Override
     public R<?> turnActionBuyCard(String userId, String gameId, TurnActionBuyCardRequest body) {
+        int gold = body.getGold() == null ? 0 : body.getGold();
+        int onyx = body.getOnyx() == null ? 0 : body.getOnyx();
+        int ruby = body.getRuby() == null ? 0 : body.getRuby();
+        int emerald = body.getEmerald() == null ? 0 : body.getEmerald();
+        int sapphire = body.getSapphire() == null ? 0 : body.getSapphire();
+        int diamond = body.getDiamond() == null ? 0 : body.getDiamond();
+        if (gold > 0 || onyx > 0 || ruby > 0 || emerald > 0 || sapphire > 0 || diamond > 0) {
+            return R.failed("Have to pay gem to buy card");
+        }
+
         // Get from db
         SplendorGame splendorGame = splendorGameRepository.findGameUserIn(gameId, userId);
         if (splendorGame == null) {
@@ -512,13 +512,6 @@ public class GameServiceImpl implements IGameService {
                 return R.failed("Game have ended");
         }
 
-        int gold = body.getGold() == null ? 0 : body.getGold();
-        int onyx = body.getOnyx() == null ? 0 : body.getOnyx();
-        int ruby = body.getRuby() == null ? 0 : body.getRuby();
-        int emerald = body.getEmerald() == null ? 0 : body.getEmerald();
-        int sapphire = body.getSapphire() == null ? 0 : body.getSapphire();
-        int diamond = body.getDiamond() == null ? 0 : body.getDiamond();
-
         // Player data ingame
         IngamePlayerData playerData = splendorGame.getIngameData().getPlayers().stream()
                 .filter(ingamePlayerData -> Objects.equals(ingamePlayerData.getPlayerId(), userId))
@@ -527,6 +520,15 @@ public class GameServiceImpl implements IGameService {
         if (playerData == null) {
             log.error("turnActionBuyCard - System error - {} {}", gameId, userId);
             return R.failed("System error");
+        }
+        if (playerData.getGold() < -gold ||
+                playerData.getOnyx() < -onyx ||
+                playerData.getRuby() < -ruby ||
+                playerData.getEmerald() < -emerald ||
+                playerData.getSapphire() < -sapphire ||
+                playerData.getDiamond() < -diamond) {
+            log.error("turnActionBuyCard - Resource not enough to buy card - {} {} {} {}", gameId, userId, playerData, body);
+            return R.failed("Resource not enough to buy card");
         }
 
         // Get config in game
@@ -539,17 +541,12 @@ public class GameServiceImpl implements IGameService {
             return R.failed("Invalid card");
         }
         CardCost cardCost = cardData.getCost();
-        if (playerData.getGold() < gold ||
-                playerData.getOnyx() < onyx ||
-                playerData.getRuby() < ruby ||
-                playerData.getEmerald() < emerald ||
-                playerData.getSapphire() < sapphire ||
-                playerData.getDiamond() < diamond ||
-                cardCost.getOnyx() + onyx +
-                cardCost.getRuby() + ruby +
-                cardCost.getEmerald() + emerald +
-                cardCost.getSapphire() + sapphire +
-                cardCost.getDiamond() + diamond > -gold) {
+        Map<String, Integer> mapCardBuy = playerData.getCards().stream().collect(Collectors.toMap(Card::getType, card -> 1, Integer::sum));
+        if ((cardCost.getOnyx() > mapCardBuy.getOrDefault(GameConstants.GEM_TYPE_ONYX, 0) + -onyx + -gold) ||
+                (cardCost.getRuby() > mapCardBuy.getOrDefault(GameConstants.GEM_TYPE_RUBY, 0) + -ruby + -gold ) ||
+                (cardCost.getEmerald() > mapCardBuy.getOrDefault(GameConstants.GEM_TYPE_EMERALD, 0) + -emerald + -gold ) ||
+                (cardCost.getSapphire() > mapCardBuy.getOrDefault(GameConstants.GEM_TYPE_SAPPHIRE, 0) + -sapphire + -gold) ||
+                (cardCost.getDiamond() > mapCardBuy.getOrDefault(GameConstants.GEM_TYPE_DIAMOND, 0) + -diamond + -gold)) {
             log.error("turnActionBuyCard - Resource not enough to buy card - {} {} {} {} {}", gameId, userId, playerData, cardCost, body);
             return R.failed("Resource not enough to buy card");
         }
@@ -558,47 +555,43 @@ public class GameServiceImpl implements IGameService {
         List<Card> reserveCards = playerData.getReserveCards().stream()
                 .filter(card -> Objects.equals(card.getId(), body.getCardId()))
                 .toList();
+        List<FieldCard> fieldCards1 = splendorGame.getIngameData().getFieldCard1().stream()
+                .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
+                .toList();
+        List<FieldCard> fieldCards2 = splendorGame.getIngameData().getFieldCard2().stream()
+                .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
+                .toList();
+        List<FieldCard> fieldCards3 = splendorGame.getIngameData().getFieldCard3().stream()
+                .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
+                .toList();
+        if (reserveCards.isEmpty() && fieldCards1.isEmpty() && fieldCards2.isEmpty() && fieldCards3.isEmpty()) {
+            log.error("turnActionBuyCard - Card buy not found - {} {} {} {}", gameId, userId, body.getCardId(), splendorGame.getIngameData());
+            return R.failed("Card buy not found");
+        }
         if (!reserveCards.isEmpty()) {
             splendorGame = splendorGameRepository.buyCardInHand(gameId, userId, body.getCardId(), gold, onyx, ruby, emerald, sapphire, diamond);
             if (splendorGame == null) {
                 log.error("turnActionBuyCard - Buy reserve card error - {} {} {}", gameId, userId, body);
                 return R.failed("Buy reserve card error");
             }
-        }
-        List<FieldCard> fieldCards1 = splendorGame.getIngameData().getFieldCard1().stream()
-                .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
-                .toList();
-        if (!fieldCards1.isEmpty()) {
+        } else if (!fieldCards1.isEmpty()) {
             splendorGame = splendorGameRepository.buyCardFieldLevel1(gameId, userId, body.getCardId(), gold, onyx, ruby, emerald, sapphire, diamond);
             if (splendorGame == null) {
                 log.error("turnActionBuyCard - Buy field card level 1 error - {} {} {}", gameId, userId, body);
                 return R.failed("Buy field card level 1 error");
             }
-        }
-        List<FieldCard> fieldCards2 = splendorGame.getIngameData().getFieldCard2().stream()
-                .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
-                .toList();
-        if (!fieldCards2.isEmpty()) {
+        } else if (!fieldCards2.isEmpty()) {
             splendorGame = splendorGameRepository.buyCardFieldLevel2(gameId, userId, body.getCardId(), gold, onyx, ruby, emerald, sapphire, diamond);
             if (splendorGame == null) {
                 log.error("turnActionBuyCard - Buy field card level 2 error - {} {} {}", gameId, userId, body);
                 return R.failed("Buy field card level 2 error");
             }
-        }
-        List<FieldCard> fieldCards3 = splendorGame.getIngameData().getFieldCard3().stream()
-                .filter(fieldCard -> fieldCard.getCard() != null && Objects.equals(fieldCard.getCard().getId(), body.getCardId()))
-                .toList();
-        if (!fieldCards3.isEmpty()) {
+        } else {
             splendorGame = splendorGameRepository.buyCardFieldLevel3(gameId, userId, body.getCardId(), gold, onyx, ruby, emerald, sapphire, diamond);
             if (splendorGame == null) {
                 log.error("turnActionBuyCard - Buy field card level 3 error - {} {} {}", gameId, userId, body);
                 return R.failed("Buy field card level 3 error");
             }
-        }
-
-        if (reserveCards.isEmpty() && fieldCards1.isEmpty() && fieldCards2.isEmpty() && fieldCards3.isEmpty()) {
-            log.error("turnActionBuyCard - Card buy not found - {} {} {} {}", gameId, userId, body.getCardId(), splendorGame.getIngameData());
-            return R.failed("Card buy not found");
         }
 
         // Notify all user in game
@@ -614,10 +607,13 @@ public class GameServiceImpl implements IGameService {
                 put("turn", finalSplendorGame.getIngameData().getTurn());
                 put("current_player", finalSplendorGame.getIngameData().getCurrentPlayer());
                 put("next_player", finalSplendorGame.getIngameData().getNextPlayer());
-                put("reserve_cards", reserveCards);
-                put("field_card_1", fieldCards1);
-                put("field_card_2", fieldCards2);
-                put("field_card_3", fieldCards3);
+                put("card_id", body.getCardId());
+                put("gold", gold);
+                put("onyx", onyx);
+                put("ruby", ruby);
+                put("emerald", emerald);
+                put("sapphire", sapphire);
+                put("diamond", diamond);
             }
         });
 
@@ -788,6 +784,7 @@ public class GameServiceImpl implements IGameService {
                 put("turn", finalSplendorGame.getIngameData().getTurn());
                 put("current_player", finalSplendorGame.getIngameData().getCurrentPlayer());
                 put("next_player", finalSplendorGame.getIngameData().getNextPlayer());
+                put("card_id", body.getCardId());
                 put("deck_card_1", deckCard1);
                 put("deck_card_2", deckCard2);
                 put("deck_card_3", deckCard3);

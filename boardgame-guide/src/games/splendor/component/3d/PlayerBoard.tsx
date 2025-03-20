@@ -1,49 +1,41 @@
-import TokenGem, {TokenGemSize} from "@/games/splendor/component/3d/TokenGem";
-import CardGem, {CardGemSize} from "@/games/splendor/component/3d/CardGem";
-import React, {useCallback, useEffect} from "react";
-import {TokenGemType} from "@/games/splendor/constants/gem";
-import {Gem, useGameSplendor} from "@/games/splendor/store/game";
+import GemToken, {GemTokenSize} from "@/games/splendor/component/3d/GemToken";
+import GemCard, {GemCardSize} from "@/games/splendor/component/3d/GemCard";
+import React, {memo, useEffect} from "react";
+import {TokenGemType} from "@/games/splendor/types/gem";
+import {useGameSplendor} from "@/games/splendor/store/game";
 import {CardVO, NobleVO} from "@/games/splendor/service/splendor.service";
-import {CardDictionary, CardGemType} from "@/games/splendor/constants/card";
+import {CardDictionary} from "@/games/splendor/constants/card";
+import {CardGemType} from "@/games/splendor/types/card";
 import {useSharedRef} from "@/games/splendor/store/ref";
-import CardNoble, {CardNobleSize} from "@/games/splendor/component/3d/CardNoble";
-import {useUser} from "@/store/user";
-import {useGameAction} from "@/games/splendor/store/action";
+import NobleCard, {NobleCardSize} from "@/games/splendor/component/3d/NobleCard";
 import {
-    DiamondPosition,
-    EmeraldPosition, GoldPosition, OnyxPosition, PlayerPosition,
-    RubyPosition,
-    SapphirePosition
+    PlayerPosition
 } from "@/games/splendor/constants/game";
-import {Euler, MathUtils, Vector3} from "three";
-import gsap from "gsap";
+import {Euler, Vector3} from "three";
 import {NobleDictionary} from "@/games/splendor/constants/noble";
+import {generateUUID} from "@/utils";
+import {GemDiamond, GemEmerald, GemGold, GemOnyx, GemRuby, GemSapphire} from "@/games/splendor/constants/gem";
+import {Card, Gem} from "@/games/splendor/types/game";
 
 
-interface PlayerFieldProps {
+interface PlayerBoardProps {
     playerId: string
     playerData: {[key: string]: any}
     position: [number, number, number]
     rotation: [number, number, number]
+    onClickGem?: (gem: Gem) => void
+    onClickReserveCard?: (card: Card) => void
 }
 
-const PlayerField = ({playerId, playerData, position, rotation} : PlayerFieldProps) => {
-    const {user} = useUser()
+const PlayerBoard = ({playerId, playerData, position, rotation, onClickGem, onClickReserveCard} : PlayerBoardProps) => {
     const {cardRefs, nobleRefs, gemRefs} = useSharedRef()
     const {
-        playerIds,
-        gems, setGems,
         setPlayers,
         playerCards, setPlayerCards,
         playerReserveCards, setPlayerReserveCards,
         playerNobles, setPlayerNobles,
-        playerGems, setPlayerGems,
-        isMyTurn
+        playerGems, setPlayerGems
     } = useGameSplendor()
-    const {
-        currentAction, setCurrentAction,
-        selectedGems, setSelectedGems
-    } = useGameAction()
 
 
     useEffect(() => {
@@ -89,54 +81,60 @@ const PlayerField = ({playerId, playerData, position, rotation} : PlayerFieldPro
                     [TokenGemType.GOLD]: Array.from({length: playerData.gold ?? 0}, (_, i) => i)
                         .map((index) => {
                             return {
-                                id: crypto.randomUUID(),
+                                ...GemGold,
+                                id: generateUUID(),
                                 owner: playerId,
-                                position: [goldPosition.x, goldPosition.y, index * TokenGemSize.depth + goldPosition.z + 0.2],
+                                position: [goldPosition.x, goldPosition.y, index * GemTokenSize.depth + goldPosition.z + 0.2],
                                 rotation: [euler.x, euler.y, euler.z]
                             }
                         }),
                     [TokenGemType.DIAMOND]: Array.from({length: playerData.diamond ?? 0}, (_, i) => i)
                         .map((index) => {
                             return {
-                                id: crypto.randomUUID(),
+                                ...GemDiamond,
+                                id: generateUUID(),
                                 owner: playerId,
-                                position: [diamondPosition.x, diamondPosition.y, index * TokenGemSize.depth + diamondPosition.z + 0.2],
+                                position: [diamondPosition.x, diamondPosition.y, index * GemTokenSize.depth + diamondPosition.z + 0.2],
                                 rotation: [euler.x, euler.y, euler.z]
                             }
                         }),
                     [TokenGemType.SAPPHIRE]: Array.from({length: playerData.sapphire ?? 0}, (_, i) => i)
                         .map((index) => {
                             return {
-                                id: crypto.randomUUID(),
+                                ...GemSapphire,
+                                id: generateUUID(),
                                 owner: playerId,
-                                position: [sapphirePosition.x, sapphirePosition.y, index * TokenGemSize.depth + sapphirePosition.z + 0.2],
+                                position: [sapphirePosition.x, sapphirePosition.y, index * GemTokenSize.depth + sapphirePosition.z + 0.2],
                                 rotation: [euler.x, euler.y, euler.z]
                             }
                         }),
                     [TokenGemType.EMERALD]: Array.from({length: playerData.emerald ?? 0}, (_, i) => i)
                         .map((index) => {
                             return {
-                                id: crypto.randomUUID(),
+                                ...GemEmerald,
+                                id: generateUUID(),
                                 owner: playerId,
-                                position: [emeraldPosition.x, emeraldPosition.y, index * TokenGemSize.depth + emeraldPosition.z + 0.2],
+                                position: [emeraldPosition.x, emeraldPosition.y, index * GemTokenSize.depth + emeraldPosition.z + 0.2],
                                 rotation: [euler.x, euler.y, euler.z]
                             }
                         }),
                     [TokenGemType.RUBY]: Array.from({length: playerData.ruby ?? 0}, (_, i) => i)
                         .map((index) => {
                             return {
-                                id: crypto.randomUUID(),
+                                ...GemRuby,
+                                id: generateUUID(),
                                 owner: playerId,
-                                position: [rubyPosition.x, rubyPosition.y, index * TokenGemSize.depth + rubyPosition.z + 0.2],
+                                position: [rubyPosition.x, rubyPosition.y, index * GemTokenSize.depth + rubyPosition.z + 0.2],
                                 rotation: [euler.x, euler.y, euler.z]
                             }
                         }),
                     [TokenGemType.ONYX]: Array.from({length: playerData.onyx ?? 0}, (_, i) => i)
                         .map((index) => {
                             return {
-                                id: crypto.randomUUID(),
+                                ...GemOnyx,
+                                id: generateUUID(),
                                 owner: playerId,
-                                position: [onyxPosition.x, onyxPosition.y, index * TokenGemSize.depth + onyxPosition.z + 0.2],
+                                position: [onyxPosition.x, onyxPosition.y, index * GemTokenSize.depth + onyxPosition.z + 0.2],
                                 rotation: [euler.x, euler.y, euler.z]
                             }
                         })
@@ -168,35 +166,35 @@ const PlayerField = ({playerId, playerData, position, rotation} : PlayerFieldPro
                             .map((card: CardVO, index: number) => ({
                                 ...card,
                                 ...CardDictionary[card?.id || ''],
-                                position: [diamondCardPosition.x, index * PlayerPosition.distance + diamondCardPosition.y, 0.1 - index * CardGemSize.depth + diamondCardPosition.z],
+                                position: [diamondCardPosition.x, index * PlayerPosition.distance + diamondCardPosition.y, 0.1 - index * GemCardSize.depth + diamondCardPosition.z],
                                 rotation: [euler.x, euler.y, euler.z]
                             })),
                         ...playerData.cards.filter((card: CardVO) => card.type == CardGemType.SAPPHIRE)
                             .map((card: CardVO, index: number) => ({
                                 ...card,
                                 ...CardDictionary[card?.id || ''],
-                                position: [sapphireCardPosition.x, index * PlayerPosition.distance + sapphireCardPosition.y, 0.1 - index * CardGemSize.depth + sapphireCardPosition.z],
+                                position: [sapphireCardPosition.x, index * PlayerPosition.distance + sapphireCardPosition.y, 0.1 - index * GemCardSize.depth + sapphireCardPosition.z],
                                 rotation: [euler.x, euler.y, euler.z]
                             })),
                         ...playerData.cards.filter((card: CardVO) => card.type == CardGemType.EMERALD)
                             .map((card: CardVO, index: number) => ({
                                 ...card,
                                 ...CardDictionary[card?.id || ''],
-                                position: [emeraldCardPosition.x, index * PlayerPosition.distance + emeraldCardPosition.y, 0.1 - index * CardGemSize.depth + emeraldCardPosition.z],
+                                position: [emeraldCardPosition.x, index * PlayerPosition.distance + emeraldCardPosition.y, 0.1 - index * GemCardSize.depth + emeraldCardPosition.z],
                                 rotation: [euler.x, euler.y, euler.z]
                             })),
                         ...playerData.cards.filter((card: CardVO) => card.type == CardGemType.RUBY)
                             .map((card: CardVO, index: number) => ({
                                 ...card,
                                 ...CardDictionary[card?.id || ''],
-                                position: [rubyCardPosition.x, index * PlayerPosition.distance + rubyCardPosition.y, 0.1 - index * CardGemSize.depth + rubyCardPosition.z],
+                                position: [rubyCardPosition.x, index * PlayerPosition.distance + rubyCardPosition.y, 0.1 - index * GemCardSize.depth + rubyCardPosition.z],
                                 rotation: [euler.x, euler.y, euler.z]
                             })),
                         ...playerData.cards.filter((card: CardVO) => card.type == CardGemType.ONYX)
                             .map((card: CardVO, index: number) => ({
                                 ...card,
                                 ...CardDictionary[card?.id || ''],
-                                position: [onyxCardPosition.x, index * PlayerPosition.distance + onyxCardPosition.y, 0.1 - index * CardGemSize.depth + onyxCardPosition.z],
+                                position: [onyxCardPosition.x, index * PlayerPosition.distance + onyxCardPosition.y, 0.1 - index * GemCardSize.depth + onyxCardPosition.z],
                                 rotation: [euler.x, euler.y, euler.z]
                             }))
                     ]
@@ -213,8 +211,8 @@ const PlayerField = ({playerId, playerData, position, rotation} : PlayerFieldPro
                 [playerId]: playerData.reserve_cards?.map((card: CardVO, index: number) => ({
                     ...card,
                     ...CardDictionary[card?.id || ''],
-                    position: [index * PlayerPosition.distance + reserveCardPosition.x, reserveCardPosition.y, index * CardGemSize.depth * reserveCardPosition.z],
-                    rotation: [euler.x, euler.y, euler.z]
+                    position: [index * (GemCardSize.width + 0.1) + reserveCardPosition.x, reserveCardPosition.y, index * GemCardSize.depth + reserveCardPosition.z],
+                    rotation: [euler.x, Math.PI + euler.y, euler.z]
                 })) ?? []
             }))
         }
@@ -228,152 +226,30 @@ const PlayerField = ({playerId, playerData, position, rotation} : PlayerFieldPro
                 [playerId]: playerData.nobles?.map((noble: NobleVO, index: number)=> ({
                     ...noble,
                     ...NobleDictionary[noble.id ?? ''],
-                    position: [index * PlayerPosition.distance + noblePosition.x, noblePosition.y, index * CardNobleSize.depth + noblePosition.z + 0.2],
+                    position: [index * PlayerPosition.distance + noblePosition.x, noblePosition.y, index * NobleCardSize.depth + noblePosition.z + 0.2],
                     rotation: [euler.x, euler.y, euler.z]
                 })) ?? []
             }))
         }
 
-    }, []);
-
-
-    const onClickGem = useCallback((type: TokenGemType) => {
-        if (user?.user_id != playerId) return
-        if (!isMyTurn) return
-        if (!currentAction) return
-        if (currentAction && currentAction.type != "gather-gem") return
-
-        //
-        const player = (playerIds.indexOf(playerId) ?? 0) + 1
-        if (player == 0) return         // Không phải người chơi
-        const playerLocate = PlayerPosition.total[playerIds.length ?? 0]?.player[player]
-        if (!playerLocate) return       // Ko tim thay config vi tri player
-
-        const deckGems: Gem[] = gems[type]
-        const playerDeckGems: Gem[] = playerGems[playerId][type]
-        let gemPosition: Vector3
-        switch (type) {
-            case TokenGemType.DIAMOND:
-                gemPosition = new Vector3().fromArray(DiamondPosition.desk)
-                break
-            case TokenGemType.SAPPHIRE:
-                gemPosition = new Vector3().fromArray(SapphirePosition.desk)
-                break
-            case TokenGemType.EMERALD:
-                gemPosition = new Vector3().fromArray(EmeraldPosition.desk)
-                break
-            case TokenGemType.RUBY:
-                gemPosition = new Vector3().fromArray(RubyPosition.desk)
-                break
-            case TokenGemType.ONYX:
-                gemPosition = new Vector3().fromArray(OnyxPosition.desk)
-                break
-            case TokenGemType.GOLD:
-                gemPosition = new Vector3().fromArray(GoldPosition.desk)
-                break
-        }
-        if (playerDeckGems.length <= 0) return
-        let gemReturn: Gem = playerDeckGems[playerDeckGems.length - 1]
-        for (let i = playerDeckGems.length - 1; i >= 0; i--) {
-            if (!currentAction?.gem?.some(gem => gem.id == gemReturn.id && gem.count < 0)) {
-                break
-            }
-
-            gemReturn = deckGems[i]
-        }
-
-        // Update action if in turn
-        if (currentAction.gem?.some(gem => gem.id == gemReturn.id)) {
-            setCurrentAction((prevState) => ({
-                type: "gather-gem",
-                gem: prevState?.gem?.filter(gem => gem.id != gemReturn?.id)
-            }))
-        } else {
-            setCurrentAction((prevState) => ({
-                type: "gather-gem",
-                gem: [...(prevState?.gem || []), {
-                    id: gemReturn.id,
-                    type: type,
-                    count: -1
-                }]
-            }))
-        }
-
-        const instance = gemRefs.current[gemReturn.id]
-
-        // Stop physics
-        instance.stopPhysics()
-
-        // Animation
-        const startPosition = instance.position.clone()
-        const startRotation = instance.rotation.clone()
-        const targetPosition = gemPosition
-            .setZ((deckGems.length - 1 + 0.5) * TokenGemSize.depth)
-        const arcHeight = 1.5 // Adjust this value for a bigger/smaller arc
-        const animation = gsap.timeline()
-            .to(instance.position, {
-                x: targetPosition.x,
-                y: targetPosition.y,
-                duration: 0.4,
-                onUpdate: function () {
-                    const progress = this.progress() // Progress from 0 → 1
-                    instance.position.z = MathUtils.lerp(startPosition.z, targetPosition.z, progress) + arcHeight * Math.sin(progress * Math.PI)
-                }
-            }, "0.1")
-        animation
-            .then(() => {
-                // Start physics
-                instance.startPhysics()
-
-                // Update state
-                setGems((prevState) => ({
-                    ...prevState,
-                    [type]: [
-                        ...prevState[type],
-                        {
-                            id: gemReturn.id,
-                            position: targetPosition.toArray(),
-                            rotation: gemReturn.rotation
-                        }
-                    ]
-                }))
-                setPlayerGems((prevState) => ({
-                    ...prevState,
-                    [playerId]: ({
-                        ...prevState[playerId],
-                        [type]: prevState[playerId][type].filter(gem => gem.id != gemReturn.id)
-                    })
-                }))
-            })
-        if (selectedGems.some(selectedGem => selectedGem.id == gemReturn.id)) {
-            setSelectedGems((prevState) => prevState.filter(gem => gem.id != gemReturn.id))
-        } else {
-            setSelectedGems((prevState) => [...prevState, {
-                id: gemReturn.id,
-                type: type,
-                owner: playerId,
-                oldPosition: startPosition,
-                oldRotation: startRotation
-            }])
-        }
-    }, [playerId, user, playerIds, currentAction, gems, playerGems, selectedGems])
+    }, [playerId, playerData, position, rotation]);
 
 
     return (
         <group>
             <group>
-                {playerGems[playerId]?.diamond.map((diamond) => (
-                    <TokenGem key={diamond.id}
-                              id={diamond.id}
+                {playerGems[playerId]?.diamond.map((gem) => (
+                    <GemToken key={gem.id}
+                              id={gem.id}
                               type={TokenGemType.DIAMOND}
-                              onClick={() => onClickGem(TokenGemType.DIAMOND)}
-                              position={diamond.position}
-                              rotation={diamond.rotation}
-                              ref={(element: any) => (gemRefs.current[diamond.id] = element)}/>
+                              onClick={() => onClickGem?.(gem)}
+                              position={gem.position}
+                              rotation={gem.rotation}
+                              ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                 ))}
                 {playerCards[playerId]?.filter((card: CardVO) => card.type == CardGemType.DIAMOND)
                     .map((card) => (
-                        <CardGem key={card.id}
+                        <GemCard key={card.id}
                                  id={card.id}
                                  level={card.level}
                                  url={card.url}
@@ -383,18 +259,18 @@ const PlayerField = ({playerId, playerData, position, rotation} : PlayerFieldPro
                 ))}
             </group>
             <group>
-                {playerGems[playerId]?.sapphire.map((sapphire) => (
-                    <TokenGem key={sapphire.id}
-                              id={sapphire.id}
+                {playerGems[playerId]?.sapphire.map((gem) => (
+                    <GemToken key={gem.id}
+                              id={gem.id}
                               type={TokenGemType.SAPPHIRE}
-                              onClick={() => onClickGem(TokenGemType.SAPPHIRE)}
-                              position={sapphire.position}
-                              rotation={sapphire.rotation}
-                              ref={(element: any) => (gemRefs.current[sapphire.id] = element)}/>
+                              onClick={() => onClickGem?.(gem)}
+                              position={gem.position}
+                              rotation={gem.rotation}
+                              ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                 ))}
                 {playerCards[playerId]?.filter((card: CardVO) => card.type == CardGemType.SAPPHIRE)
                     .map((card) => (
-                        <CardGem key={card.id}
+                        <GemCard key={card.id}
                                  id={card.id}
                                  level={card.level}
                                  url={card.url}
@@ -404,18 +280,18 @@ const PlayerField = ({playerId, playerData, position, rotation} : PlayerFieldPro
                 ))}
             </group>
             <group>
-                {playerGems[playerId]?.emerald.map((emerald) => (
-                    <TokenGem key={emerald.id}
-                              id={emerald.id}
+                {playerGems[playerId]?.emerald.map((gem) => (
+                    <GemToken key={gem.id}
+                              id={gem.id}
                               type={TokenGemType.EMERALD}
-                              onClick={() => onClickGem(TokenGemType.EMERALD)}
-                              position={emerald.position}
-                              rotation={emerald.rotation}
-                              ref={(element: any) => (gemRefs.current[emerald.id] = element)}/>
+                              onClick={() => onClickGem?.(gem)}
+                              position={gem.position}
+                              rotation={gem.rotation}
+                              ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                 ))}
                 {playerCards[playerId]?.filter((card: CardVO) => card.type == CardGemType.EMERALD)
                     .map((card) => (
-                        <CardGem key={card.id}
+                        <GemCard key={card.id}
                                  id={card.id}
                                  level={card.level}
                                  url={card.url}
@@ -425,18 +301,18 @@ const PlayerField = ({playerId, playerData, position, rotation} : PlayerFieldPro
                 ))}
             </group>
             <group>
-                {playerGems[playerId]?.ruby.map((ruby) => (
-                    <TokenGem key={ruby.id}
-                              id={ruby.id}
+                {playerGems[playerId]?.ruby.map((gem) => (
+                    <GemToken key={gem.id}
+                              id={gem.id}
                               type={TokenGemType.RUBY}
-                              onClick={() => onClickGem(TokenGemType.RUBY)}
-                              position={ruby.position}
-                              rotation={ruby.rotation}
-                              ref={(element: any) => (gemRefs.current[ruby.id] = element)}/>
+                              onClick={() => onClickGem?.(gem)}
+                              position={gem.position}
+                              rotation={gem.rotation}
+                              ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                 ))}
                 {playerCards[playerId]?.filter((card: CardVO) => card.type == CardGemType.RUBY)
                     .map((card) => (
-                        <CardGem key={card.id}
+                        <GemCard key={card.id}
                                  id={card.id}
                                  level={card.level}
                                  url={card.url}
@@ -446,18 +322,18 @@ const PlayerField = ({playerId, playerData, position, rotation} : PlayerFieldPro
                 ))}
             </group>
             <group>
-                {playerGems[playerId]?.onyx.map((onyx) => (
-                    <TokenGem key={onyx.id}
-                              id={onyx.id}
+                {playerGems[playerId]?.onyx.map((gem) => (
+                    <GemToken key={gem.id}
+                              id={gem.id}
                               type={TokenGemType.ONYX}
-                              onClick={() => onClickGem(TokenGemType.ONYX)}
-                              position={onyx.position}
-                              rotation={onyx.rotation}
-                              ref={(element: any) => (gemRefs.current[onyx.id] = element)}/>
+                              onClick={() => onClickGem?.(gem)}
+                              position={gem.position}
+                              rotation={gem.rotation}
+                              ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                 ))}
                 {playerCards[playerId]?.filter((card: CardVO) => card.type == CardGemType.ONYX)
                     .map((card) => (
-                        <CardGem key={card.id}
+                        <GemCard key={card.id}
                                  id={card.id}
                                  level={card.level}
                                  url={card.url}
@@ -467,28 +343,29 @@ const PlayerField = ({playerId, playerData, position, rotation} : PlayerFieldPro
                 ))}
             </group>
 
-            {playerGems[playerId]?.gold.map(gold => (
-                <TokenGem key={gold.id}
-                          id={gold.id}
+            {playerGems[playerId]?.gold.map(gem => (
+                <GemToken key={gem.id}
+                          id={gem.id}
                           type={TokenGemType.GOLD}
-                          onClick={() => onClickGem(TokenGemType.GOLD)}
-                          position={gold.position}
-                          rotation={gold.rotation}
-                          ref={(element: any) => (gemRefs.current[gold.id] = element)}/>
+                          onClick={() => onClickGem?.(gem)}
+                          position={gem.position}
+                          rotation={gem.rotation}
+                          ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
             ))}
 
             {playerReserveCards[playerId]?.map(card => (
-                <CardGem key={card.id}
+                <GemCard key={card.id}
                          id={card.id}
                          level={card.level}
                          url={card.url}
+                         onClick={() => onClickReserveCard?.(card)}
                          position={card.position}
                          rotation={card.rotation}
                          ref={(element: any) => (cardRefs.current[card.id] = element)}/>
             ))}
 
             {playerNobles[playerId]?.map((noble) => (
-                <CardNoble key={noble.id}
+                <NobleCard key={noble.id}
                            id={noble.id}
                            url={noble.url}
                            position={noble.position}
@@ -499,4 +376,4 @@ const PlayerField = ({playerId, playerData, position, rotation} : PlayerFieldPro
     )
 }
 
-export default PlayerField;
+export default memo(PlayerBoard)

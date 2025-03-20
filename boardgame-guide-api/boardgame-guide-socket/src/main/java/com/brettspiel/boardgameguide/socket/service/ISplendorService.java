@@ -18,4 +18,10 @@ public interface ISplendorService {
 
     void handlerTurnActionGatherGem(String gameId, Map<String, Object> data);
 
+    void handlerTurnActionBuyCard(String gameId, Map<String, Object> data);
+
+    void handlerTurnActionReserveCard(String gameId, Map<String, Object> data);
+
+    void handlerTurnBonusActionTakeNoble(String gameId, Map<String, Object> data);
+
 }

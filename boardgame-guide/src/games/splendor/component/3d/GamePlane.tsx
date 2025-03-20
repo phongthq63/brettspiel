@@ -1,10 +1,10 @@
 import React from "react";
 
-interface PlaneProps {
+interface GamePlaneProps {
     position?: [number, number, number]
 }
 
-function Plane({...props}: PlaneProps) {
+function GamePlane({...props}: GamePlaneProps) {
     return (
         <mesh {...props}>
             <planeGeometry args={[500, 500]}/>
@@ -13,4 +13,4 @@ function Plane({...props}: PlaneProps) {
     )
 }
 
-export default Plane;
+export default GamePlane;

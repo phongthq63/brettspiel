@@ -67,4 +67,31 @@ public class SplendorServiceImpl implements ISplendorService {
         socketIOService.broadcastMessageToRoom(gameId, SocketConstants.EVENT_GAME_SPLENDOR, socketModel);
     }
 
+    @Override
+    public void handlerTurnActionBuyCard(String gameId, Map<String, Object> data) {
+        // Send notify to room
+        SocketModel<Object> socketModel = new SocketModel<>();
+        socketModel.setCmd(SocketConstants.NotifyGameSplendorActionBuyCard);
+        socketModel.setData(data);
+        socketIOService.broadcastMessageToRoom(gameId, SocketConstants.EVENT_GAME_SPLENDOR, socketModel);
+    }
+
+    @Override
+    public void handlerTurnActionReserveCard(String gameId, Map<String, Object> data) {
+        // Send notify to room
+        SocketModel<Object> socketModel = new SocketModel<>();
+        socketModel.setCmd(SocketConstants.NotifyGameSplendorActionReserveCard);
+        socketModel.setData(data);
+        socketIOService.broadcastMessageToRoom(gameId, SocketConstants.EVENT_GAME_SPLENDOR, socketModel);
+    }
+
+    @Override
+    public void handlerTurnBonusActionTakeNoble(String gameId, Map<String, Object> data) {
+        // Send notify to room
+        SocketModel<Object> socketModel = new SocketModel<>();
+        socketModel.setCmd(SocketConstants.NotifyGameSplendorBonusActionTakeNoble);
+        socketModel.setData(data);
+        socketIOService.broadcastMessageToRoom(gameId, SocketConstants.EVENT_GAME_SPLENDOR, socketModel);
+    }
+
 }

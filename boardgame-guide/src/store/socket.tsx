@@ -3,6 +3,7 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {io, Socket} from "socket.io-client";
 import {getItem} from "@/hook/useCookie";
+import {socketUrl} from "../../config";
 
 
 const SocketContext = createContext<{
@@ -17,7 +18,7 @@ export const SocketProvider = ({children}: any) => {
 
 
     useEffect(() => {
-        const socketInstance = io("http://localhost:8699", {
+        const socketInstance = io(`${socketUrl}`, {
             transports: ["websocket", "polling"],
             auth: {
                 token: "123"

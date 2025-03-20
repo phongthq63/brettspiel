@@ -1,11 +1,12 @@
 import axios, {AxiosInstance, type AxiosRequestConfig} from 'axios'
 import {getItem} from "@/hook/useCookie";
+import {apiUrl, socketApiUrl} from "../../config";
 
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 export const instanceSplendor = axios.create({
-    baseURL: "http://localhost:8083",
+    baseURL: apiUrl,
     timeout: 100000,
     withCredentials: false
 })
@@ -33,7 +34,7 @@ instanceSplendor.interceptors.response.use(
 )
 
 export const instanceSocket = axios.create({
-    baseURL: "http://localhost:8081",
+    baseURL: socketApiUrl,
     timeout: 100000,
     withCredentials: false
 })

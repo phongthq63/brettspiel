@@ -1,25 +1,19 @@
-import * as THREE from 'three'
-import React, {forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState} from "react";
 import {useFrame, useLoader} from "@react-three/fiber";
+import * as THREE from "three";
+import React, {forwardRef, Ref, useImperativeHandle, useRef, useState} from "react";
 import {RapierRigidBody, RigidBody} from "@react-three/rapier";
-import {Group, Mesh, Quaternion, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
+import {Group, Mesh, Quaternion, Vector3} from "three";
 
 
-const CardRealSize = {
-    width: 63.5,
-    height: 88
-};
+export const NobleCardSize = {
+    width: 0.6,
+    height: 0.6,
+    depth: 0.03
+}
 
-export const CardGemSize = {
-    width: 0.72,
-    height: 1,
-    depth: 0.01
-};
-
-interface CardGemProps {
+interface NobleCardProps {
     id: string
-    level: number
     url: string
     onClick?: () => void
     onClickNotThis?: () => void
@@ -27,25 +21,12 @@ interface CardGemProps {
     rotation?: any
 }
 
-const CardGem = forwardRef(({id, level, url, onClick, onClickNotThis, ...props}: CardGemProps, ref: Ref<any>) => {
-    const [textureFront, textureBackLevel1, textureBackLevel2, textureBackLevel3] = useLoader(THREE.TextureLoader, [url, '/game/splendor/card/1/card1-back.jpg', '/game/splendor/card/2/card2-back.jpg', '/game/splendor/card/3/card3-back.jpg']);
+const NobleCard = forwardRef(({id, url, onClick, onClickNotThis, ...props}: NobleCardProps, ref: Ref<any>) => {
+    const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, "/game/splendor/noble/noble-back.jpg"]);
     const [onPhysics, setOnPhysics] = useState(true);
     const groupRef = useRef<Group>(null);
     const rigidBodyRef = useRef<RapierRigidBody>(null);
     const meshRef = useRef<Mesh>(null);
-
-    const textureBack = useMemo(() => {
-        switch (level) {
-            case 1:
-                return textureBackLevel1
-            case 2:
-                return textureBackLevel2
-            case 3:
-                return textureBackLevel3
-            default:
-                throw Error(`Level ${level} not supported`)
-        }
-    }, [level])
 
 
     useImperativeHandle(ref, () => {
@@ -90,11 +71,11 @@ const CardGem = forwardRef(({id, level, url, onClick, onClickNotThis, ...props}:
         if (!onPhysics) {
             const position = new Vector3()
             groupRef.current.getWorldPosition(position)
-            rigidBodyRef.current.setTranslation(position, false)
+            rigidBodyRef.current.setNextKinematicTranslation(position)
 
             const rotation = new Quaternion()
             groupRef.current.getWorldQuaternion(rotation)
-            rigidBodyRef.current.setRotation(rotation, false)
+            rigidBodyRef.current.setNextKinematicRotation(rotation)
         }
 
         /**
@@ -115,19 +96,20 @@ const CardGem = forwardRef(({id, level, url, onClick, onClickNotThis, ...props}:
     })
 
     return (
-        <group ref={groupRef} {...props}>
-            <mesh key={id}
-                  ref={meshRef}
+        <group key={id}
+               ref={groupRef}
+               {...props}>
+            <mesh ref={meshRef}
                   onClick={(event) => {
                       event.stopPropagation();
-                      onClick?.();
+                      onClick?.()
                   }}
                   onPointerMissed={(event) => {
                       event.stopPropagation();
                       onClickNotThis?.();
                   }}
             >
-                <boxGeometry args={[CardGemSize.width, CardGemSize.height, CardGemSize.depth]}/>
+                <boxGeometry args={[NobleCardSize.width, NobleCardSize.height, NobleCardSize.depth]}/>
                 <meshBasicMaterial attach="material-0" color={"gray"}/>
                 {/*right*/}
                 <meshBasicMaterial attach="material-1" color={"gray"}/>
@@ -142,9 +124,10 @@ const CardGem = forwardRef(({id, level, url, onClick, onClickNotThis, ...props}:
                 {/*back*/}
             </mesh>
 
-            <RigidBody ref={rigidBodyRef}>
+            <RigidBody ref={rigidBodyRef}
+                       ccd={true}>
                 <mesh>
-                    <boxGeometry args={[CardGemSize.width, CardGemSize.height, CardGemSize.depth]}/>
+                    <boxGeometry args={[NobleCardSize.width, NobleCardSize.height, NobleCardSize.depth]}/>
                     <meshBasicMaterial visible={false}/>
                 </mesh>
             </RigidBody>
@@ -152,6 +135,6 @@ const CardGem = forwardRef(({id, level, url, onClick, onClickNotThis, ...props}:
     )
 })
 
-CardGem.displayName = "CardGem";
+NobleCard.displayName = "CardNoble";
 
-export default CardGem;
+export default NobleCard

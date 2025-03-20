@@ -3,18 +3,18 @@ import {useLoader} from "@react-three/fiber";
 import * as THREE from "three";
 import {RigidBody} from "@react-three/rapier";
 
-export const BoardSize = {
+export const GameTableSize = {
     width: 18,
     height: 10,
     depth: 0.25
 };
 
-interface BoardProps {
+interface GameTableProps {
     position?: [number, number, number],
     onClick?: () => void
 }
 
-function Table({onClick, ...props}: BoardProps) {
+function GameTable({onClick, ...props}: GameTableProps) {
     const texture = useLoader(THREE.TextureLoader, "/game/splendor/board.jpg");
 
     return (
@@ -24,7 +24,7 @@ function Table({onClick, ...props}: BoardProps) {
                 onClick?.();
             }}
                   {...props}>
-                <boxGeometry args={[BoardSize.width, BoardSize.height, BoardSize.depth]}/>
+                <boxGeometry args={[GameTableSize.width, GameTableSize.height, GameTableSize.depth]}/>
                 <meshBasicMaterial attach="material-0" map={texture}/>
                 {/*right*/}
                 <meshBasicMaterial attach="material-1" map={texture}/>
@@ -42,4 +42,4 @@ function Table({onClick, ...props}: BoardProps) {
     )
 }
 
-export default Table;
+export default GameTable;

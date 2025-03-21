@@ -4,6 +4,7 @@ import PlayerGameInfoBox from "@/games/splendor/component/ui/PlayerGameInfo";
 import GameCanvas from "@/games/splendor/component/3d/GameRenderer";
 import ActionDescription from "@/games/splendor/component/ui/ActionDescription";
 import {TokenGemType} from "@/games/splendor/types/gem";
+import {useFetchGameData} from "@/games/splendor/hooks/useFetchGameData";
 
 
 function GameContainer({gameId}: {gameId: string}) {
@@ -13,8 +14,9 @@ function GameContainer({gameId}: {gameId: string}) {
         playerNobles,
         playerGems,
     } = useGameSplendor()
+    useFetchGameData(gameId)
 
-    // Get data + update data to state
+
     useEffect(() => {
         setGameId(gameId)
     }, [gameId]);

@@ -1,48 +1,29 @@
-import React, {memo, useMemo} from "react";
+import React, {memo, useCallback, useMemo} from "react";
 import {Button} from "@mui/material";
 import GameBoard from "@/games/splendor/hoc/GameBoard";
-import {TokenGemType} from "@/games/splendor/types/gem";
+import {useGameSplendor} from "@/games/splendor/store/game";
+import {useGameController} from "@/games/splendor/hooks/useGameController";
 
-
-export interface ActionData {
-    type: "gather-gem" | "reserve-card" | "buy-card" | "option-action" | "take-noble"
-    option?: ("gather-gem" | "reserve-card" | "buy-card" | "option-action" | "take-noble")[]
-    card?: {
-        id: string,
-        level: number,
-        deck?: boolean,
-        ownerId?: string,
-        cost: {
-            gold?: number
-            onyx?: number
-            ruby?: number
-            emerald?: number
-            sapphire?: number
-            diamond?: number
-        }
-    }
-    noble?: {id: string}
-    gem?: {
-        id: string
-        type: TokenGemType
-        count: number
-    }[]
-}
 
 interface ActionDialogProps {
     open: boolean
     position: [number, number, number]
     rotation: [number, number, number]
-    data: ActionData | undefined
-    onCancelAction?: () => void
-    onConfirmAction?: (data: ActionData) => void
-    onSelectAction?: (data: ActionData) => void
+    onClose?: () => void
 }
 
-const ActionDialog = ({open, position, rotation, data, onCancelAction, onConfirmAction, onSelectAction}: ActionDialogProps) => {
+const ActionDialog = ({open, position, rotation, onClose}: ActionDialogProps) => {
+    const {currentAction} = useGameSplendor();
+    const {selectAction, confirmAction, cancelAction} = useGameController()
+
+
+    const handlerClose = useCallback(() => {
+        cancelAction()
+        onClose?.()
+    }, [])
 
     const textAction = useMemo(() => {
-        switch (data?.type) {
+        switch (currentAction?.type) {
             case "take-noble":
                 return "Take noble"
             case "option-action":
@@ -54,7 +35,7 @@ const ActionDialog = ({open, position, rotation, data, onCancelAction, onConfirm
             case "gather-gem":
                 return "Gather gem"
         }
-    }, [data])
+    }, [currentAction])
 
     const textButtonOption = useMemo(() => (type: string) => {
         switch (type) {
@@ -79,19 +60,19 @@ const ActionDialog = ({open, position, rotation, data, onCancelAction, onConfirm
                 {/*)}*/}
 
                 <div className="flex justify-center space-x-2">
-                    {data && (
-                        data.type == "option-action" ? (data.option?.map(option => (
+                    {currentAction && (
+                        currentAction.type == "option-action" ? (currentAction.option?.map(option => (
                             <Button key={option}
                                     variant="contained"
                                     color="success"
-                                    onClick={() => onSelectAction?.({...data, type: option})}
+                                    onClick={() => selectAction({...currentAction, type: option})}
                                     style={{textTransform: "none"}}>
                                 {textButtonOption(option)}
                             </Button>
                         ))) : (
                             <Button variant="contained"
                                     color="success"
-                                    onClick={() => onConfirmAction?.(data)}
+                                    onClick={() => confirmAction(currentAction)}
                                     style={{textTransform: "none"}}>
                                 Confirm
                             </Button>
@@ -99,7 +80,7 @@ const ActionDialog = ({open, position, rotation, data, onCancelAction, onConfirm
                     )}
                     <Button variant="contained"
                             color="error"
-                            onClick={onCancelAction}
+                            onClick={handlerClose}
                             style={{textTransform: "none"}}>
                         Cancel
                     </Button>

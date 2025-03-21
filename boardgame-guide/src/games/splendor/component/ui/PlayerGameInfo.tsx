@@ -1,8 +1,8 @@
 import Image from "next/image";
 import React, {memo, useEffect, useMemo, useState} from "react";
 import {useUser} from "@/store/user";
-import {Card, Noble} from "@/games/splendor/store/game";
 import {CardGemType} from "@/games/splendor/types/card";
+import {Card, Noble} from "@/games/splendor/types/game";
 
 
 interface PlayerGameInfoProps {

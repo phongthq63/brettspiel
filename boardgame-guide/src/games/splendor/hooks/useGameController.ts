@@ -1,76 +1,686 @@
-import React, {memo, useCallback, useEffect} from "react";
-import {RoomService} from "@/service/socket.service";
-import {Card, Gem, Noble, useGameSplendor} from "@/games/splendor/store/game";
-import {useSocket} from "@/store/socket";
-import {useUser} from "@/store/user";
-import {
-    CardPosition,
-    GemPosition,
-    NoblePosition, NotifyGameSplendorActionBuyCard,
-    NotifyGameSplendorActionGatherGem, NotifyGameSplendorActionReserveCard, NotifyGameSplendorBonusActionTakeNoble,
-    NotifyGameSplendorStart,
-    NotifyGameSplendorTurnEnd,
-    PlayerPosition
-} from "@/games/splendor/constants/game";
-import {NobleDictionary} from "@/games/splendor/constants/noble";
-import {NobleCardSize} from "@/games/splendor/component/3d/NobleCard";
-import {CardDictionary} from "@/games/splendor/constants/card";
-import {GemCardSize} from "@/games/splendor/component/3d/GemCard";
+import {useThree} from "@react-three/fiber";
+import {Action, Card, Gem, Noble} from "@/games/splendor/types/game";
+import {Euler, MathUtils, Quaternion, Vector3} from "three";
 import gsap from "gsap";
-import {useSharedRef} from "@/games/splendor/store/ref";
-import {Euler, MathUtils, Vector3} from "three";
-import {TokenGemType} from "@/games/splendor/types/gem";
+import {NobleCardSize} from "@/games/splendor/component/3d/NobleCard";
+import {GemCardSize} from "@/games/splendor/component/3d/GemCard";
+import {toast} from "react-toastify";
+import {CardPosition, GemPosition, NoblePosition, PlayerPosition} from "@/games/splendor/constants/game";
 import {GemTokenSize} from "@/games/splendor/component/3d/GemToken";
-import {useGameAction} from "@/games/splendor/store/action";
+import {CardDictionary} from "@/games/splendor/constants/card";
+import {NobleDictionary} from "@/games/splendor/constants/noble";
+import {TokenGemType} from "@/games/splendor/types/gem";
+import {GameService} from "@/games/splendor/service/splendor.service";
+import {useGameSplendor} from "@/games/splendor/store/game";
+import {useSharedRef} from "@/games/splendor/store/ref";
+import {useUser} from "@/store/user";
 
-
-function GameController() {
-    const {user} = useUser()
-    const {socket, connected} = useSocket()
+export function useGameController() {
+    const {camera} = useThree()
     const {cardRefs, nobleRefs, gemRefs} = useSharedRef()
+    const {user} = useUser()
     const {
         gameId,
-        setStatus,
+        status, setStatus,
         playerIds,
-        setCurrentPlayer,
+        currentPlayer, setCurrentPlayer,
         setNextPlayer,
+        deckNoble, setDeckNoble,
+        setFieldNoble,
         deckCard, setDeckCard,
         setFieldCard,
         gems, setGems,
-        deckNoble, setDeckNoble,
-        setFieldNoble,
         playerNobles, setPlayerNobles,
         playerCards, setPlayerCards,
         playerReserveCards, setPlayerReserveCards,
         playerGems, setPlayerGems,
-
-        isMyTurn,
-    } = useGameSplendor()
-    const {
         currentAction, setCurrentAction,
-        setActionBoard
-    } = useGameAction()
+        focusObjects, addFocusObjects, removeFocusObjects,
+        isMyTurn,
+        dialog, setDialog
+    } = useGameSplendor()
 
 
-    // Socket join room game
-    useEffect(() => {
-        if (user && gameId && connected) {
-            RoomService.joinRoom({ body: { user_id: user.user_id, room_id: gameId } })
-                .then(response => {
-                    if (response.code == 0) {
-                        console.log("Join room successfully", user.user_id, gameId)
-                    } else {
-                        console.log("Join room fail", user.user_id, gameId)
+    const selectAction = (action: Action) => {
+        setCurrentAction(action)
+    }
+
+    const cancelAction = () => {
+        setDialog({
+            open: false,
+            position: [0, 0, 0],
+            rotation: [0, 0, 0]
+        })
+        setCurrentAction(undefined)
+    }
+
+    const confirmAction = (action: Action) => {
+        const startActionGatherGem = (data: Action) => {
+            const {
+                gold = 0,
+                onyx = 0,
+                ruby = 0,
+                emerald = 0,
+                sapphire = 0,
+                diamond = 0
+            } = data.gem?.reduce((dict: any, { type, count }) => {
+                dict[type] = (dict[type] || 0) + count;
+                return dict
+            }, {})
+            GameService.turnActionGatherGem({
+                gameId: gameId,
+                body: {
+                    gold: gold,
+                    onyx: onyx,
+                    ruby: ruby,
+                    emerald: emerald,
+                    sapphire: sapphire,
+                    diamond: diamond
+                }
+            }).then(response => {
+                if (response.code != 0) {
+                    toast(response.msg, {
+                        autoClose: 2000,
+                    })
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        }
+        const startActionBuyCard = (data: Action) => {
+            GameService.turnActionBuyCard({
+                gameId: gameId,
+                body: {
+                    card_id: data.card?.id,
+                    ...(data.card?.cost ? Object.fromEntries(Object.entries(data.card.cost).map(([key, value]) => [key, value * -1])) : {})
+                }
+            }).then(response => {
+                if (response.code != 0) {
+                    toast(response.msg, {
+                        autoClose: 2000,
+                    })
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        }
+        const startActionReserveCard = (data: Action) => {
+            let gold = 0;
+            data.gem?.forEach((gem) => {
+                switch (gem.type) {
+                    case TokenGemType.GOLD:
+                        gold += gem.count;
+                        break;
+                }
+            })
+            GameService.turnActionReserveCard({
+                gameId: gameId,
+                body: {
+                    desk1: data.card?.deck && data.card.level == 1 ? 1 : 0,
+                    desk2: data.card?.deck && data.card.level == 2 ? 1 : 0,
+                    desk3: data.card?.deck && data.card.level == 3 ? 1 : 0,
+                    card_id: data.card?.deck ? undefined : data.card?.id,
+                    gold: gold,
+                }
+            }).then(response => {
+                if (response.code == 0) {
+                    console.log(response)
+                } else {
+                    toast(response.msg, {
+                        autoClose: 2000,
+                    })
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        }
+        const startActionTakeNoble = (data: Action) => {
+            GameService.turnBonusActionTakeNoble({
+                gameId: gameId,
+                body: {
+                    noble_id: data.noble?.id,
+                }
+            }).then(response => {
+                if (response.code == 0) {
+                    console.log(response)
+                } else {
+                    toast(response.msg, {
+                        autoClose: 2000,
+                    })
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        }
+
+        switch (action.type) {
+            case "gather-gem":
+                startActionGatherGem(action)
+                break
+            case "buy-card":
+                startActionBuyCard(action)
+                break
+            case "reserve-card":
+                startActionReserveCard(action)
+                break
+            case "take-noble":
+                startActionTakeNoble(action)
+                break
+        }
+    }
+
+    const onClickNoble = (noble: Noble) => {
+        if (currentAction) {
+            return
+        } else {
+            // Update action if in turn
+            if (isMyTurn) {
+                setCurrentAction({
+                    type: "take-noble",
+                    noble: {id: noble.id}
+                })
+            }
+
+            //
+            const instance = nobleRefs.current[noble.id]
+
+            // Stop physics
+            instance.stopPhysics()
+
+            // Animation
+            const direction = new Vector3()
+            camera.getWorldDirection(direction) // Get the camera's forward direction
+            direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
+            const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
+            const targetRotation = camera.rotation.clone()
+            const animation = gsap.timeline()
+                .to(instance.position, {
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    z: targetPosition.z,
+                    duration: 0.3
+                }, "0.1")
+                .to(instance.rotation, {
+                    x: targetRotation.x,
+                    y: targetRotation.y,
+                    z: targetRotation.z,
+                    duration: 0.3
+                }, "<")
+            addFocusObjects({
+                id: noble.id,
+                type: "noble",
+                noble: {
+                    ref: instance,
+                    animation: animation
+                }
+            })
+
+            // Show action board
+            if (isMyTurn) {
+                setDialog({
+                    open: true,
+                    position: targetPosition.clone().addScaledVector(new Vector3(1, 0, 0).applyQuaternion(camera.quaternion), NobleCardSize.width / 2 + 0.4).toArray(),
+                    rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
+                })
+            }
+        }
+
+    }
+
+    const onClickDeckCard = (card: Card) => {
+        if (status != 1 || !isMyTurn) return
+        if (currentAction) {
+            return
+        } else {
+            setCurrentAction({
+                type: "reserve-card",
+                card: {
+                    id: card.id,
+                    level: card.level,
+                    deck: true,
+                    cost: card.cost
+                }
+            })
+
+            //
+            const instance = cardRefs.current[card.id]
+
+            // Stop physics
+            instance.stopPhysics()
+
+            // Animation
+            const direction = new Vector3()
+            camera.getWorldDirection(direction) // Get the camera's forward direction
+            direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
+            const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
+            const cameraQuaternion = camera.quaternion.clone().multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI))
+            const targetRotation = new Euler().setFromQuaternion(cameraQuaternion)
+            const animation = gsap.timeline()
+                .to(instance.position, {
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    z: targetPosition.z,
+                    duration: 0.3
+                }, "0.1")
+                .to(instance.rotation, {
+                    x: targetRotation.x,
+                    y: targetRotation.y,
+                    z: targetRotation.z,
+                    duration: 0.3
+                }, "<")
+            addFocusObjects({
+                id: card.id,
+                type: "card",
+                card: {
+                    ref: instance,
+                    animation: animation
+                }
+            })
+
+            // Show action board
+            const cameraRotation = camera.rotation.clone()
+            setDialog({
+                open: true,
+                position: targetPosition.clone().addScaledVector(new Vector3(1, 0, 0).applyQuaternion(camera.quaternion), GemCardSize.width / 2 + 0.4).toArray(),
+                rotation: [cameraRotation.x, cameraRotation.y, cameraRotation.z]
+            })
+        }
+
+    }
+
+    const onClickCard = (card: Card) => {
+        if (currentAction) {
+            return
+        } else {
+            // Update action if in turn
+            if (isMyTurn) {
+                setCurrentAction({
+                    type: "option-action",
+                    card: {
+                        id: card.id,
+                        level: card.level,
+                        deck: false,
+                        cost: card.cost
+                    },
+                    option: ["buy-card", "reserve-card"]})
+            }
+
+            //
+            const instance = cardRefs.current[card.id]
+
+            // Stop physics
+            instance.stopPhysics()
+
+            // Move to front camera
+            const direction = new Vector3()
+            camera.getWorldDirection(direction) // Get the camera's forward direction
+            direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
+            const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
+            const targetRotation = camera.rotation.clone()
+            const animation = gsap.timeline()
+                .to(instance.position, {
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    z: targetPosition.z,
+                    duration: 0.3
+                }, "0.1")
+                .to(instance.rotation, {
+                    x: targetRotation.x,
+                    y: targetRotation.y,
+                    z: targetRotation.z,
+                    duration: 0.3
+                }, "<")
+
+            // Save animation
+            addFocusObjects({
+                id: card.id,
+                type: "card",
+                card: {
+                    ref: instance,
+                    animation: animation
+                }
+            })
+
+            // Show action board
+            if (isMyTurn) {
+                setDialog({
+                    open: true,
+                    position: targetPosition.clone().addScaledVector(new Vector3(1, 0, 0).applyQuaternion(camera.quaternion), GemCardSize.width / 2 + 0.5).toArray(),
+                    rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
+                })
+            }
+        }
+
+    }
+
+    const onClickGem = (gem: Gem) =>  {
+        if (status != 1 || !isMyTurn) return
+        if (currentAction && currentAction.type != "gather-gem") {
+            return
+        } else {
+            // Verify rule game
+            const gemsTake = currentAction?.gem?.filter(gem => gem.count > 0) || []
+            if (gemsTake.length >= 3) {
+                toast("Can't take 3 game in 1 turn", {
+                    autoClose: 2000,
+                })
+                return
+            }
+            if (gemsTake.length == 2 && (gemsTake[0].type == gemsTake[1].type || gemsTake[0].type == gem.type || gemsTake[1].type == gem.type)) {
+                toast("Only take 2 gem same type or 3 gem different type", {
+                    autoClose: 2000,
+                })
+                return
+            }
+
+            //
+            const player = playerIds.indexOf(currentPlayer)
+            if (player < 0) return         // Không phải người chơi
+            const playerLocate = PlayerPosition.total[playerIds.length]?.player[player + 1]
+            if (!playerLocate) return       // Ko tim thay config vi tri player
+
+            //
+            const deckGems: Gem[] = gems[gem.type]
+            const playerDeckGems: Gem[] = playerGems[currentPlayer][gem.type]
+            if (deckGems.length <= 0) return
+            let gemTake: Gem = deckGems[deckGems.length - 1]
+            for (let i = deckGems.length - 1; i >= 0; i--) {
+                if (!currentAction?.gem?.some(gem => gem.id == gemTake.id && gem.count > 0)) {
+                    break
+                }
+
+                gemTake = deckGems[i]
+            }
+            if (!PlayerPosition[gem.type]) return
+            const gemPosition: Vector3 = new Vector3().fromArray(PlayerPosition[gem.type])
+
+            // Update action if in turn
+            setCurrentAction((prevState) => ({
+                type: "gather-gem",
+                gem: [...(prevState?.gem || []), {
+                    id: gemTake.id,
+                    type: gem.type,
+                    count: 1
+                }]
+            }))
+
+            const instance = gemRefs.current[gemTake.id]
+
+            // Stop physics
+            instance.stopPhysics()
+
+            // Animation
+            const startPosition: Vector3 = instance.position.clone()
+            const startRotation: Euler = instance.rotation.clone()
+            const playerPosition = new Vector3().fromArray(playerLocate.position)
+            const targetPosition = gemPosition
+                .add(playerPosition)
+                .applyEuler(new Euler(playerLocate.rotation[0], playerLocate.rotation[1], playerLocate.rotation[2]))
+                .setZ((playerDeckGems.length - 1 + 0.5) * GemTokenSize.depth)
+            const targetRotation = new Euler().setFromQuaternion(new Quaternion().setFromEuler(startRotation)
+                .multiply(new Quaternion().setFromEuler(new Euler(playerLocate.rotation[0], playerLocate.rotation[1], playerLocate.rotation[2]))))
+            const arcHeight = 2 // Adjust this value for a bigger/smaller arc
+            const animation = gsap.timeline()
+                .to(instance.position, {
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    duration: 0.4,
+                    onUpdate: function () {
+                        const progress = this.progress() // Progress from 0 → 1
+                        instance.position.z = MathUtils.lerp(startPosition.z, targetPosition.z, progress) + arcHeight * Math.sin(progress * Math.PI)
+                    }
+                }, "0.1")
+                .to(instance.rotation, {
+                    x: targetRotation.x,
+                    y: targetRotation.y,
+                    z: targetRotation.z,
+                    duration: 0.4,
+                }, "<")
+            animation
+                .then(() => {
+                    // Start physics
+                    instance.startPhysics()
+
+                    // Update state
+                    setGems((prevState) => ({
+                        ...prevState,
+                        [gem.type]: prevState[gem.type].filter(gem => gem.id != gemTake.id)
+                    }))
+                    setPlayerGems((prevState) => {
+                        const gems: Gem[] = prevState[currentPlayer][gem.type]
+                        gems.push({
+                            ...gem,
+                            id: gemTake.id,
+                            position: targetPosition.toArray(),
+                            rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
+                        })
+
+                        return {
+                            ...prevState,
+                            [currentPlayer]: ({
+                                ...prevState[currentPlayer],
+                                [gem.type]: gems.map((gem, index) => ({
+                                    ...gem,
+                                    position: [gem.position[0], gem.position[1], (index + 0.5) * GemTokenSize.depth],
+                                }))
+                            })
+                        }
+                    })
+                })
+            if (focusObjects.some(focusObject => focusObject.id == gemTake.id)) {
+                removeFocusObjects(gemTake.id)
+            } else {
+                addFocusObjects({
+                    id: gemTake.id,
+                    type: "gem",
+                    gem: {
+                        type: gem.type,
+                        oldPosition: startPosition.toArray(),
+                        oldRotation: [startRotation.x, startRotation.y, startRotation.z]
                     }
                 })
-                .catch(error => {
-                    console.log("Join room error", error);
-                });
+            }
+
+            // Show action board
+            if (!dialog.open) {
+                const direction = new Vector3()
+                camera.getWorldDirection(direction) // Get the camera's forward direction
+                direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
+                const centerScenePosition = camera.position.clone().add(direction) // Calculate position in front of the camerac
+                const cameraRotation = camera.rotation.clone()
+                setDialog({
+                    open: true,
+                    position: centerScenePosition.toArray(),
+                    rotation: [cameraRotation.x, cameraRotation.y, cameraRotation.z]
+                })
+            }
         }
-    }, [connected, gameId, user]);
+
+    }
+
+    const onClickPlayerGem = (playerId: string, gem: Gem) => {
+        if (user?.user_id != playerId) return
+        if (!isMyTurn) return
+        if (currentAction && currentAction.type != "gather-gem") return
+
+        //
+        const player = (playerIds.indexOf(playerId) ?? 0) + 1
+        if (player == 0) return         // Không phải người chơi
+        const playerLocate = PlayerPosition.total[playerIds.length ?? 0]?.player[player]
+        if (!playerLocate) return       // Ko tim thay config vi tri player
+
+        const deckGems: Gem[] = gems[gem.type]
+        const playerDeckGems: Gem[] = playerGems[playerId][gem.type]
+        const gemPosition: Vector3 = new Vector3().fromArray(GemPosition[gem.type])
+        if (playerDeckGems.length <= 0) return
+        let gemReturn: Gem = playerDeckGems[playerDeckGems.length - 1]
+        for (let i = playerDeckGems.length - 1; i >= 0; i--) {
+            if (!currentAction?.gem?.some(gem => gem.id == gemReturn.id && gem.count < 0)) {
+                break
+            }
+
+            gemReturn = playerDeckGems[i]
+        }
+
+        // Update action if in turn
+        setCurrentAction((prevState) => ({
+            type: "gather-gem",
+            gem: [...(prevState?.gem || []), {
+                id: gemReturn.id,
+                type: gem.type,
+                count: -1
+            }]
+        }))
+
+        const instance = gemRefs.current[gemReturn.id]
+
+        // Stop physics
+        instance.stopPhysics()
+
+        // Animation
+        const startPosition = instance.position.clone()
+        const startRotation = instance.rotation.clone()
+        const targetPosition = gemPosition
+            .setZ((deckGems.length - 1 + 0.5) * GemTokenSize.depth)
+        const arcHeight = 1.5 // Adjust this value for a bigger/smaller arc
+        const animation = gsap.timeline()
+            .to(instance.position, {
+                x: targetPosition.x,
+                y: targetPosition.y,
+                duration: 0.4,
+                onUpdate: function () {
+                    const progress = this.progress() // Progress from 0 → 1
+                    instance.position.z = MathUtils.lerp(startPosition.z, targetPosition.z, progress) + arcHeight * Math.sin(progress * Math.PI)
+                }
+            }, "0.1")
+        animation
+            .then(() => {
+                // Start physics
+                instance.startPhysics()
+
+                // Update state
+                setGems((prevState) => {
+                    const gems = prevState[gem.type]
+                    gems.push({
+                        ...gem,
+                        id: gemReturn.id,
+                        position: targetPosition.toArray(),
+                        rotation: gemReturn.rotation
+                    })
+
+                    return {
+                        ...prevState,
+                        [gem.type]: gems.map((gem, index) => ({
+                            ...gem,
+                            position: [gem.position[0], gem.position[1], (index + 0.5) * GemTokenSize.depth],
+                        }))
+                    }
+                })
+                setPlayerGems((prevState) => ({
+                    ...prevState,
+                    [playerId]: ({
+                        ...prevState[playerId],
+                        [gem.type]: prevState[playerId][gem.type].filter(gem => gem.id != gemReturn.id)
+                    })
+                }))
+            })
+        if (focusObjects.some(focusObject => focusObject.id == gemReturn.id)) {
+            removeFocusObjects(gemReturn.id)
+        } else {
+            addFocusObjects({
+                id: gemReturn.id,
+                type: "gem",
+                gem: {
+                    type: gem.type,
+                    owner: playerId,
+                    oldPosition: startPosition,
+                    oldRotation: startRotation
+                }
+            })
+        }
+
+        // Show action board
+        if (!dialog.open) {
+            const direction = new Vector3()
+            camera.getWorldDirection(direction) // Get the camera's forward direction
+            direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
+            const centerScenePosition = camera.position.clone().add(direction) // Calculate position in front of the camera
+            const cameraRotation = camera.rotation.clone()
+            setDialog({
+                open: true,
+                position: centerScenePosition.toArray(),
+                rotation: [cameraRotation.x, cameraRotation.y, cameraRotation.z]
+            })
+        }
+
+    }
+
+    const onClickPlayerReserveCard = (playerId: string, card: Card) => {
+        if (currentAction) return
+        if (user?.user_id != playerId) return
+
+        // Update action if in turn
+        if (isMyTurn) {
+            setCurrentAction({
+                type: "buy-card",
+                card: {
+                    id: card.id,
+                    level: card.level,
+                    ownerId: playerId,
+                    cost: card.cost
+                }
+            })
+        }
+
+        //
+        const instance = cardRefs.current[card.id]
+
+        // Stop physics
+        instance.stopPhysics()
+
+        // Move to front camera
+        const direction = new Vector3()
+        camera.getWorldDirection(direction) // Get the camera's forward direction
+        direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
+        const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
+        const targetRotation = camera.rotation.clone()
+        const animation = gsap.timeline()
+            .to(instance.position, {
+                x: targetPosition.x,
+                y: targetPosition.y,
+                z: targetPosition.z,
+                duration: 0.3
+            }, "0.1")
+            .to(instance.rotation, {
+                x: targetRotation.x,
+                y: targetRotation.y,
+                z: targetRotation.z,
+                duration: 0.3
+            }, "<")
+
+        // Save animation
+        addFocusObjects({
+            id: card.id,
+            type: "card",
+            card: {
+                ref: instance,
+                animation: animation
+            }
+        })
+
+        // Show action board
+        if (isMyTurn) {
+            setDialog({
+                open: true,
+                position: targetPosition.clone().addScaledVector(new Vector3(1, 0, 0).applyQuaternion(camera.quaternion), GemCardSize.width / 2 + 0.5).toArray(),
+                rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
+            })
+        }
 
 
-    const handlerStartGame = useCallback((data: any) => {
+    }
+
+    const onStartGame = (data: any) => {
         const fieldCard3 = data.field_card_3.filter((field_card: any) => field_card.card)
             .sort((a: any, b: any) => a.position - b.position)
         const fieldCard2 = data.field_card_2.filter((field_card: any) => field_card.card)
@@ -537,12 +1147,14 @@ function GameController() {
                 setCurrentPlayer(data.current_player)
                 setNextPlayer(data.next_player)
             })
-    }, [deckCard, deckNoble])
-    const handlerTurnEnd = useCallback((data: any) => {
+    }
+
+    const onTurnEnd = (data: any) => {
         setCurrentPlayer(data.current_player)
         setNextPlayer(data.next_player)
-    }, [])
-    const handlerPlayerGatherGem = useCallback((data: any) => {
+    }
+
+    const onPlayerGatherGem = (data: any) => {
         const currentPlayer: string = data.current_player
         const goldCount: number = data.gold
         const onyxCount: number = data.onyx
@@ -552,11 +1164,15 @@ function GameController() {
         const diamondCount: number = data.diamond
 
         if (isMyTurn) {
-            setSelectedGems([])
+            // setSelectedGems([])
             setCurrentAction(undefined)
 
             // Disable action board
-            setActionBoard({enable: false})
+            setDialog({
+                open: false,
+                position: [0, 0, 0],
+                rotation: [0, 0, 0]
+            })
         } else {
             const player = playerIds.indexOf(currentPlayer)
             if (player < 0) return         // Không phải người chơi
@@ -605,7 +1221,7 @@ function GameController() {
                         setPlayerGems((prevState) => {
                             const gems = prevState[currentPlayer][type]
                             gems.push({
-                                id: gemTake.id,
+                                ...gemTake,
                                 position: targetPosition.toArray(),
                                 rotation: gemTake.rotation
                             })
@@ -654,7 +1270,7 @@ function GameController() {
                         setGems((prevState) => {
                             const gems = prevState[type]
                             gems.push({
-                                id: gemReturn.id,
+                                ...gemReturn,
                                 position: targetPosition.toArray(),
                                 rotation: gemReturn.rotation
                             })
@@ -729,8 +1345,9 @@ function GameController() {
             }
         }
 
-    }, [playerIds, gems, playerGems])
-    const handlerPlayerBuyCard = useCallback((data: any) => {
+    }
+
+    const onPlayerBuyCard = (data: any) => {
         const currentPlayer = data.current_player
         const cardId = data.card_id
         const goldCount: number = data.gold
@@ -813,7 +1430,7 @@ function GameController() {
                     setGems((prevState) => {
                         const gems = prevState[type]
                         gems.push({
-                            id: gemReturn.id,
+                            ...gemReturn,
                             position: targetPosition.toArray(),
                             rotation: gemReturn.rotation
                         })
@@ -856,10 +1473,14 @@ function GameController() {
         }
         if (isMyTurn) {
             setCurrentAction(undefined)
-            setSelectedCards([])
+            // setSelectedCards([])
 
             // Disable action board
-            setActionBoard({enable: false})
+            setDialog({
+                open: false,
+                position: [0, 0, 0],
+                rotation: [0, 0, 0]
+            })
 
             animation
                 .to(instance.position, {
@@ -942,8 +1563,9 @@ function GameController() {
             returnGems(TokenGemType.DIAMOND, diamondCount * -1)
         }
 
-    }, [playerIds, playerCards, playerGems, isMyTurn])
-    const handlerPlayerReserveCard = useCallback((data: any) => {
+    }
+
+    const onPlayerReserveCard = (data: any) => {
         const cardId = data.card_id
         const currentPlayer = data.current_player
 
@@ -973,10 +1595,14 @@ function GameController() {
         const animation = gsap.timeline()
         if (isMyTurn) {
             setCurrentAction(undefined)
-            setSelectedCards([])
+            // setSelectedCards([])
 
             // Disable action board
-            setActionBoard({enable: false})
+            setDialog({
+                open: false,
+                position: [0, 0, 0],
+                rotation: [0, 0, 0]
+            })
 
             animation
                 .to(instance.position, {
@@ -1036,8 +1662,9 @@ function GameController() {
                 }
             })
 
-    }, [playerIds, playerReserveCards, currentAction])
-    const handlerPlayerTakeNoble = useCallback((data: any) => {
+    }
+
+    const onPlayerTakeNoble = (data: any) => {
         const nobleId = data.noble_id
         const currentPlayer = data.current_player
 
@@ -1067,10 +1694,14 @@ function GameController() {
         const animation = gsap.timeline()
         if (isMyTurn) {
             setCurrentAction(undefined)
-            setSelectedNobles([])
+            // setSelectedNobles([])
 
             // Disable action board
-            setActionBoard({enable: false})
+            setDialog({
+                open: false,
+                position: [0, 0, 0],
+                rotation: [0, 0, 0]
+            })
 
             animation
                 .to(instance.position, {
@@ -1120,49 +1751,23 @@ function GameController() {
                 setFieldNoble((prevState) => prevState.filter(noble => noble.id != nobleId))
             })
 
-    }, [playerIds, playerNobles])
+    }
 
-    // Handler socket event
-    useEffect(() => {
-        function onEventGameSplendor(data: any) {
-            console.log(data)
-
-            const cmdSocket = data?.cmd
-            const dataSocket = data.data
-            switch (cmdSocket) {
-                case NotifyGameSplendorStart:
-                    handlerStartGame(dataSocket)
-                    break
-                case NotifyGameSplendorTurnEnd:
-                    handlerTurnEnd(dataSocket)
-                    break
-                case NotifyGameSplendorActionGatherGem:
-                    handlerPlayerGatherGem(dataSocket)
-                    break
-                case NotifyGameSplendorActionBuyCard:
-                    handlerPlayerBuyCard(dataSocket)
-                    break
-                case NotifyGameSplendorActionReserveCard:
-                    handlerPlayerReserveCard(dataSocket)
-                    break
-                case NotifyGameSplendorBonusActionTakeNoble:
-                    handlerPlayerTakeNoble(dataSocket)
-                    break
-            }
-        }
-
-        if (socket) {
-            socket.on("game_splendor", onEventGameSplendor);
-        }
-        
-        return () => {
-            if (socket) {
-                socket.off("game_splendor", onEventGameSplendor);
-            }
-        }
-    }, [socket, handlerStartGame, handlerTurnEnd, handlerPlayerGatherGem, handlerPlayerBuyCard, handlerPlayerReserveCard, handlerPlayerTakeNoble]);
-
-    return <></>
+    return {
+        selectAction,
+        cancelAction,
+        confirmAction,
+        onClickNoble,
+        onClickDeckCard,
+        onClickCard,
+        onClickGem,
+        onClickPlayerGem,
+        onClickPlayerReserveCard,
+        onStartGame,
+        onTurnEnd,
+        onPlayerGatherGem,
+        onPlayerBuyCard,
+        onPlayerReserveCard,
+        onPlayerTakeNoble,
+    }
 }
-
-export default memo(GameController);

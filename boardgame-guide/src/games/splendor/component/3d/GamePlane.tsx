@@ -1,4 +1,5 @@
 import React from "react";
+import {RigidBody} from "@react-three/rapier";
 
 interface GamePlaneProps {
     position?: [number, number, number]
@@ -6,10 +7,12 @@ interface GamePlaneProps {
 
 function GamePlane({...props}: GamePlaneProps) {
     return (
-        <mesh {...props}>
-            <planeGeometry args={[500, 500]}/>
-            <meshStandardMaterial color="lightblue"/>
-        </mesh>
+        <RigidBody type={"fixed"}>
+            <mesh {...props}>
+                <planeGeometry args={[500, 500]}/>
+                <meshStandardMaterial color="lightblue"/>
+            </mesh>
+        </RigidBody>
     )
 }
 

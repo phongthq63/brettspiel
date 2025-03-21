@@ -1,15 +1,8 @@
 import React, {createContext, Dispatch, SetStateAction, useContext, useState} from "react";
 import {useUser} from "@/store/user";
 import {TokenGemType} from "@/games/splendor/types/gem";
-import {Card, Gem, Noble} from "@/games/splendor/types/game";
+import {Action, Card, Dialog, Gem, Noble, Player} from "@/games/splendor/types/game";
 
-
-export interface Player {
-    id: string
-    name: string
-    avatar: string
-    score: number
-}
 
 export interface FocusObject {
     id: string
@@ -61,10 +54,13 @@ const GameContext = createContext<{
     setPlayerNobles: Dispatch<SetStateAction<{[key: string]: Noble[]}>>
     playerGems: {[key: string]: {[key in TokenGemType]: Gem[]}}
     setPlayerGems: Dispatch<SetStateAction<{[key: string]: {[key in TokenGemType]: Gem[]}}>>
-
+    currentAction: Action | undefined
+    setCurrentAction: Dispatch<SetStateAction<Action | undefined>>
     focusObjects: FocusObject[]
     addFocusObjects: (focusObject: FocusObject) => void
     removeFocusObjects: (id: string) => void
+    dialog: Dialog
+    setDialog: Dispatch<SetStateAction<Dialog>>
 
     isMyTurn: boolean
     // [key: string]: any;
@@ -94,7 +90,7 @@ export const GameSplendorProvider = ({children}: any) => {
     const [playerReserveCards, setPlayerReserveCards] = useState<{[key: string]: Card[]}>({})
     const [playerNobles, setPlayerNobles] = useState<{[key: string]: Noble[]}>({})
     const [playerGems, setPlayerGems] = useState<{[key: string]: {[key in TokenGemType]: Gem[]}}>({})
-
+    const [currentAction, setCurrentAction] = useState<Action>()
     const [focusObjects, setFocusObjects] = useState<FocusObject[]>([])
     const addFocusObjects = (focusObject: FocusObject) => {
         if (focusObjects.some(fo => fo.id == focusObject.id)) return
@@ -103,6 +99,12 @@ export const GameSplendorProvider = ({children}: any) => {
     const removeFocusObjects = (id: string) => {
         setFocusObjects((prevState) => prevState.filter(object => object.id != id))
     }
+
+    const [dialog, setDialog] = useState<Dialog>({
+        open: false,
+        position: [0, 0, 0],
+        rotation: [0, 0, 0]
+    })
 
     const isMyTurn = user?.user_id == currentPlayer
 
@@ -123,9 +125,9 @@ export const GameSplendorProvider = ({children}: any) => {
             playerReserveCards, setPlayerReserveCards,
             playerNobles, setPlayerNobles,
             playerGems, setPlayerGems,
-
+            currentAction, setCurrentAction,
             focusObjects, addFocusObjects, removeFocusObjects,
-
+            dialog, setDialog,
             isMyTurn,
         }}>
             {children}

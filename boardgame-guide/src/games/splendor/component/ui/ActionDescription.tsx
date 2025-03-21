@@ -1,19 +1,19 @@
 import {Button} from "@mui/material";
-import React, {useCallback, useMemo} from "react";
+import React, {useMemo} from "react";
 import {useGameSplendor} from "@/games/splendor/store/game";
 import {useSocket} from "@/store/socket";
-import {GameService} from "@/games/splendor/service/splendor.service";
-import {useGameAction} from "@/games/splendor/store/action";
+import {useGameActions} from "@/games/splendor/hooks/useGameActions";
 
 
 export default function ActionDescription() {
     const { connected } = useSocket()
-    const { gameId, status,
+    const {
+        status,
         currentPlayer,
+        currentAction,
         isMyTurn
     } = useGameSplendor()
-    const {currentAction, setCurrentAction} = useGameAction()
-
+    const {startGame, endTurn} = useGameActions()
 
     const playerName = useMemo(() => {
         return isMyTurn ? "Your" : currentPlayer
@@ -52,25 +52,6 @@ export default function ActionDescription() {
         }
     }, [isMyTurn, currentAction])
 
-    const handlerStartGame = useCallback(() => {
-        if (gameId) {
-            GameService.startGame({gameId: gameId})
-                .catch(error => {
-                    console.log("Start game error", error);
-                })
-        }
-    }, [gameId])
-
-    const handlerSkipAction = useCallback(() => {
-        setCurrentAction(undefined);
-        if (gameId) {
-            GameService.endTurn({gameId: gameId})
-                .catch(error => {
-                    console.log("Skip action error", error);
-                })
-        }
-    }, [gameId])
-
     return (
         <>
             {status != undefined && connected && (
@@ -79,7 +60,7 @@ export default function ActionDescription() {
                         <div className="w-full flex justify-center items-center">
                             <Button variant="contained"
                                     color="error"
-                                    onClick={handlerStartGame}>Start game</Button>
+                                    onClick={startGame}>Start game</Button>
                         </div>
                     )}
                     {status == 1 && (
@@ -89,7 +70,7 @@ export default function ActionDescription() {
                                     <Button className="right-1 top-1"
                                             variant="contained"
                                             color="error"
-                                            onClick={handlerSkipAction}
+                                            onClick={endTurn}
                                             style={{position: "absolute", textTransform: "none"}}>End turn</Button>
                                 )}
                                 <p className="text-center text-xl">

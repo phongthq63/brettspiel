@@ -1,4 +1,4 @@
-import {useGameSplendor} from "@/games/splendor/store/game";
+import {useGameSplendor} from "@/games/splendor/store/game.context";
 import {useEffect} from "react";
 import {
     CardVO,
@@ -12,16 +12,17 @@ import {CardPosition, GemPosition, NoblePosition, PlayerPosition} from "@/games/
 import {Card, Gem, Noble, Player} from "@/games/splendor/types/game";
 import {CardDictionary} from "@/games/splendor/constants/card";
 import {GemCardSize} from "@/games/splendor/component/3d/GemCard";
-import {GemDiamond, GemEmerald, GemGold, GemOnyx, GemRuby, GemSapphire} from "@/games/splendor/constants/gem";
 import {generateUUID} from "@/utils";
 import {GemTokenSize} from "@/games/splendor/component/3d/GemToken";
 import {NobleDictionary} from "@/games/splendor/constants/noble";
 import {NobleCardSize} from "@/games/splendor/component/3d/NobleCard";
 import {Euler, Vector3} from "three";
 import {CardGemType} from "@/games/splendor/types/card";
+import {GemDictionary} from "@/games/splendor/constants/gem";
 
 export function useFetchGameData(gameId: string) {
     const {
+        setGameId,
         setStatus,
         setPlayerIds,
         setCurrentPlayer,
@@ -35,6 +36,8 @@ export function useFetchGameData(gameId: string) {
     } = useGameSplendor()
 
     useEffect(() => {
+        setGameId(gameId)
+
         GameService.getGameInfo({ gameId: gameId })
             .then(response => {
                 if (response.code !== 0 || !response.data) {
@@ -63,7 +66,7 @@ export function useFetchGameData(gameId: string) {
                 }
 
                 // Deck Cards
-                if (gameData.status && gameData.ingame_data.deck_card1 && gameData.ingame_data.deck_card2 && gameData.ingame_data.deck_card3) {
+                if (gameData.status != undefined && gameData.ingame_data.deck_card1 && gameData.ingame_data.deck_card2 && gameData.ingame_data.deck_card3) {
                     setDeckCard({
                         [1]: formatDeckCards(gameData.ingame_data.deck_card1, gameData.status, 1),
                         [2]: formatDeckCards(gameData.ingame_data.deck_card2, gameData.status, 2),
@@ -90,7 +93,7 @@ export function useFetchGameData(gameId: string) {
                     gameData.ingame_data.diamond ?? 0))
 
                 // Noble Cards
-                if (gameData.status && gameData.ingame_data.deck_noble) {
+                if (gameData.status != undefined && gameData.ingame_data.deck_noble) {
                     setDeckNoble(formatNobleDeck(gameData.ingame_data.deck_noble, gameData.status))
                 }
                 if (gameData.ingame_data.field_noble) {
@@ -153,7 +156,7 @@ function formatGems(gold: number, onyx: number, ruby: number, emerald: number, s
         "gold": Array.from({length: gold}, (_, i) => i)
             .map((index) => {
                 return {
-                    ...GemGold,
+                    ...GemDictionary.gold,
                     id: generateUUID(),
                     owner: "",
                     position: [GemPosition.gold[0], GemPosition.gold[1], index * GemTokenSize.depth + GemPosition.gold[2] + 0.2],
@@ -163,7 +166,7 @@ function formatGems(gold: number, onyx: number, ruby: number, emerald: number, s
         "onyx": Array.from({length: onyx}, (_, i) => i)
             .map((index) => {
                 return {
-                    ...GemOnyx,
+                    ...GemDictionary.onyx,
                     id: generateUUID(),
                     owner: "",
                     position: [GemPosition.onyx[0], GemPosition.onyx[1], index * GemTokenSize.depth + GemPosition.onyx[2] + 0.2],
@@ -173,7 +176,7 @@ function formatGems(gold: number, onyx: number, ruby: number, emerald: number, s
         "ruby": Array.from({length: ruby}, (_, i) => i)
             .map((index) => {
                 return {
-                    ...GemRuby,
+                    ...GemDictionary.ruby,
                     id: generateUUID(),
                     owner: "",
                     position: [GemPosition.ruby[0], GemPosition.ruby[1], index * GemTokenSize.depth + GemPosition.ruby[2] + 0.2],
@@ -183,7 +186,7 @@ function formatGems(gold: number, onyx: number, ruby: number, emerald: number, s
         "emerald": Array.from({length: emerald}, (_, i) => i)
             .map((index) => {
                 return {
-                    ...GemEmerald,
+                    ...GemDictionary.emerald,
                     id: generateUUID(),
                     owner: "",
                     position: [GemPosition.emerald[0], GemPosition.emerald[1], index * GemTokenSize.depth + GemPosition.emerald[2] + 0.2],
@@ -193,7 +196,7 @@ function formatGems(gold: number, onyx: number, ruby: number, emerald: number, s
         "sapphire": Array.from({length: sapphire}, (_, i) => i)
             .map((index) => {
                 return {
-                    ...GemSapphire,
+                    ...GemDictionary.sapphire,
                     id: generateUUID(),
                     owner: "",
                     position: [GemPosition.sapphire[0], GemPosition.sapphire[1], index * GemTokenSize.depth + GemPosition.sapphire[2] + 0.2],
@@ -203,7 +206,7 @@ function formatGems(gold: number, onyx: number, ruby: number, emerald: number, s
         "diamond": Array.from({length: diamond}, (_, i) => i)
             .map((index) => {
                 return {
-                    ...GemDiamond,
+                    ...GemDictionary.diamond,
                     id: generateUUID(),
                     owner: "",
                     position: [GemPosition.diamond[0], GemPosition.diamond[1], index * GemTokenSize.depth + GemPosition.diamond[2] + 0.2],
@@ -389,7 +392,7 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
             "gold": Array.from({length: gold}, (_, i) => i)
                 .map((index) => {
                     return {
-                        ...GemGold,
+                        ...GemDictionary.gold,
                         id: generateUUID(),
                         position: [goldPosition.x, goldPosition.y, index * GemTokenSize.depth + goldPosition.z + 0.2],
                         rotation: [euler.x, euler.y, euler.z]
@@ -398,7 +401,7 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
             "diamond": Array.from({length: diamond}, (_, i) => i)
                 .map((index) => {
                     return {
-                        ...GemDiamond,
+                        ...GemDictionary.diamond,
                         id: generateUUID(),
                         position: [diamondPosition.x, diamondPosition.y, index * GemTokenSize.depth + diamondPosition.z + 0.2],
                         rotation: [euler.x, euler.y, euler.z]
@@ -407,7 +410,7 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
             "sapphire": Array.from({length: sapphire}, (_, i) => i)
                 .map((index) => {
                     return {
-                        ...GemSapphire,
+                        ...GemDictionary.sapphire,
                         id: generateUUID(),
                         position: [sapphirePosition.x, sapphirePosition.y, index * GemTokenSize.depth + sapphirePosition.z + 0.2],
                         rotation: [euler.x, euler.y, euler.z]
@@ -416,7 +419,7 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
             "emerald": Array.from({length: emerald}, (_, i) => i)
                 .map((index) => {
                     return {
-                        ...GemEmerald,
+                        ...GemDictionary.emerald,
                         id: generateUUID(),
                         position: [emeraldPosition.x, emeraldPosition.y, index * GemTokenSize.depth + emeraldPosition.z + 0.2],
                         rotation: [euler.x, euler.y, euler.z]
@@ -425,7 +428,7 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
             "ruby": Array.from({length: ruby}, (_, i) => i)
                 .map((index) => {
                     return {
-                        ...GemRuby,
+                        ...GemDictionary.ruby,
                         id: generateUUID(),
                         position: [rubyPosition.x, rubyPosition.y, index * GemTokenSize.depth + rubyPosition.z + 0.2],
                         rotation: [euler.x, euler.y, euler.z]
@@ -434,7 +437,7 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
             "onyx": Array.from({length: onyx}, (_, i) => i)
                 .map((index) => {
                     return {
-                        ...GemOnyx,
+                        ...GemDictionary.onyx,
                         id: generateUUID(),
                         position: [onyxPosition.x, onyxPosition.y, index * GemTokenSize.depth + onyxPosition.z + 0.2],
                         rotation: [euler.x, euler.y, euler.z]

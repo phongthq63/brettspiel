@@ -2,7 +2,7 @@ import {Canvas} from "@react-three/fiber";
 import React, {memo, Suspense} from "react";
 import GameArea from "@/games/splendor/component/3d/GameArea";
 import {Physics} from "@react-three/rapier";
-import {SharedRefProvider} from "@/games/splendor/store/ref";
+import {SharedRefProvider} from "@/games/splendor/store/ref.context";
 
 
 function GameRenderer() {

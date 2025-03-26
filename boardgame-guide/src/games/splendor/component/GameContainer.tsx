@@ -1,25 +1,15 @@
-import React, {useEffect} from "react";
-import {useGameSplendor} from "@/games/splendor/store/game";
+import React from "react";
+import {useGameSplendor} from "@/games/splendor/store/game.context";
 import PlayerGameInfoBox from "@/games/splendor/component/ui/PlayerGameInfo";
 import GameCanvas from "@/games/splendor/component/3d/GameRenderer";
 import ActionDescription from "@/games/splendor/component/ui/ActionDescription";
-import {TokenGemType} from "@/games/splendor/types/gem";
 import {useFetchGameData} from "@/games/splendor/hooks/useFetchGameData";
 
 
 function GameContainer({gameId}: {gameId: string}) {
-    const { setGameId,
-        players,
-        playerCards, playerReserveCards,
-        playerNobles,
-        playerGems,
-    } = useGameSplendor()
+    const { players} = useGameSplendor()
     useFetchGameData(gameId)
 
-
-    useEffect(() => {
-        setGameId(gameId)
-    }, [gameId]);
 
     return (
         <>
@@ -38,15 +28,19 @@ function GameContainer({gameId}: {gameId: string}) {
                                                id={playerId}
                                                data={{
                                                    ...players[playerId],
-                                                   cards: playerCards[playerId] ?? [],
-                                                   reserveCards: playerReserveCards[playerId] ?? [],
-                                                   nobles: playerNobles[playerId] ?? [],
-                                                   gold: playerGems[playerId]?.[TokenGemType.GOLD].length ?? 0,
-                                                   onyx: playerGems[playerId]?.[TokenGemType.ONYX].length ?? 0,
-                                                   ruby: playerGems[playerId]?.[TokenGemType.RUBY].length ?? 0,
-                                                   emerald: playerGems[playerId]?.[TokenGemType.EMERALD].length ?? 0,
-                                                   sapphire: playerGems[playerId]?.[TokenGemType.SAPPHIRE].length ?? 0,
-                                                   diamond: playerGems[playerId]?.[TokenGemType.DIAMOND].length ?? 0}}/>
+                                                   nobles: players[playerId].nobles,
+                                                   reserveCards: players[playerId].reserveCards,
+                                                   cardDiamond: players[playerId].cards.diamond.length,
+                                                   cardSapphire: players[playerId].cards.sapphire.length,
+                                                   cardEmerald: players[playerId].cards.emerald.length,
+                                                   cardRuby: players[playerId].cards.ruby.length,
+                                                   cardOnyx: players[playerId].cards.onyx.length,
+                                                   gold: players[playerId].gems.gold.length,
+                                                   diamond: players[playerId].gems.diamond.length,
+                                                   sapphire: players[playerId].gems.sapphire.length,
+                                                   emerald: players[playerId].gems.emerald.length,
+                                                   ruby: players[playerId].gems.ruby.length,
+                                                   onyx: players[playerId].gems.onyx.length}}/>
                         ))}
                     </div>
                 </div>

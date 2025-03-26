@@ -1,6 +1,6 @@
 import {useFrame, useLoader} from "@react-three/fiber";
 import * as THREE from "three";
-import React, {forwardRef, Ref, useImperativeHandle, useRef, useState} from "react";
+import React, {forwardRef, memo, Ref, useImperativeHandle, useRef, useState} from "react";
 import {RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
 import {Group, Mesh, Quaternion, Vector3} from "three";
@@ -21,7 +21,7 @@ interface NobleCardProps {
     rotation?: any
 }
 
-const NobleCard = forwardRef(({id, url, onClick, onClickNotThis, ...props}: NobleCardProps, ref: Ref<any>) => {
+const NobleCard = memo(forwardRef(({id, url, onClick, onClickNotThis, ...props}: NobleCardProps, ref: Ref<any>) => {
     const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, "/game/splendor/noble/noble-back.jpg"]);
     const [onPhysics, setOnPhysics] = useState(true);
     const groupRef = useRef<Group>(null);
@@ -124,8 +124,7 @@ const NobleCard = forwardRef(({id, url, onClick, onClickNotThis, ...props}: Nobl
                 {/*back*/}
             </mesh>
 
-            <RigidBody ref={rigidBodyRef}
-                       ccd={true}>
+            <RigidBody ref={rigidBodyRef}>
                 <mesh>
                     <boxGeometry args={[NobleCardSize.width, NobleCardSize.height, NobleCardSize.depth]}/>
                     <meshBasicMaterial visible={false}/>
@@ -133,7 +132,7 @@ const NobleCard = forwardRef(({id, url, onClick, onClickNotThis, ...props}: Nobl
             </RigidBody>
         </group>
     )
-})
+}))
 
 NobleCard.displayName = "CardNoble";
 

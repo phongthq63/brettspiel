@@ -1,8 +1,8 @@
 import GemToken from "@/games/splendor/component/3d/GemToken";
 import GemCard from "@/games/splendor/component/3d/GemCard";
 import React from "react";
-import {useGameSplendor} from "@/games/splendor/store/game";
-import {useSharedRef} from "@/games/splendor/store/ref";
+import {useGameSplendor} from "@/games/splendor/store/game.context";
+import {useSharedRef} from "@/games/splendor/store/ref.context";
 import NobleCard from "@/games/splendor/component/3d/NobleCard";
 import {useGameController} from "@/games/splendor/hooks/useGameController";
 

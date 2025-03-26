@@ -2,7 +2,7 @@
 
 import GameContainer from "@/games/splendor/component/GameContainer";
 import React, {useEffect} from "react";
-import {GameSplendorProvider} from "@/games/splendor/store/game";
+import {GameSplendorProvider} from "@/games/splendor/store/game.context";
 
 
 export default function Page({ params } : { params: Promise<{ id: string }>}) {

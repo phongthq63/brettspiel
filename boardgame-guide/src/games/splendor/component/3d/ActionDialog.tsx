@@ -1,7 +1,7 @@
-import React, {memo, useCallback, useMemo} from "react";
+import React, {useCallback, useMemo} from "react";
 import {Button} from "@mui/material";
 import GameBoard from "@/games/splendor/hoc/GameBoard";
-import {useGameSplendor} from "@/games/splendor/store/game";
+import {useGameSplendor} from "@/games/splendor/store/game.context";
 import {useGameController} from "@/games/splendor/hooks/useGameController";
 
 
@@ -17,10 +17,10 @@ const ActionDialog = ({open, position, rotation, onClose}: ActionDialogProps) =>
     const {selectAction, confirmAction, cancelAction} = useGameController()
 
 
-    const handlerClose = useCallback(() => {
+    const handlerCancelAction = useCallback(() => {
         cancelAction()
         onClose?.()
-    }, [])
+    }, [cancelAction, onClose])
 
     const textAction = useMemo(() => {
         switch (currentAction?.type) {
@@ -80,7 +80,7 @@ const ActionDialog = ({open, position, rotation, onClose}: ActionDialogProps) =>
                     )}
                     <Button variant="contained"
                             color="error"
-                            onClick={handlerClose}
+                            onClick={handlerCancelAction}
                             style={{textTransform: "none"}}>
                         Cancel
                     </Button>
@@ -90,4 +90,4 @@ const ActionDialog = ({open, position, rotation, onClose}: ActionDialogProps) =>
     ))
 }
 
-export default memo(ActionDialog)
+export default ActionDialog

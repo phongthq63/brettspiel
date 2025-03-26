@@ -1,5 +1,5 @@
 import axios, {AxiosInstance, type AxiosRequestConfig} from 'axios'
-import {getItem} from "@/hook/useCookie";
+import {getItem} from "@/hooks/useCookie";
 import {apiUrl, socketApiUrl} from "../../config";
 
 

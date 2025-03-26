@@ -1,6 +1,6 @@
 import {Button} from "@mui/material";
 import React, {useMemo} from "react";
-import {useGameSplendor} from "@/games/splendor/store/game";
+import {useGameSplendor} from "@/games/splendor/store/game.context";
 import {useSocket} from "@/store/socket";
 import {useGameActions} from "@/games/splendor/hooks/useGameActions";
 

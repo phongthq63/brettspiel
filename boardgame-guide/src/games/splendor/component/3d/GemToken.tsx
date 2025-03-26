@@ -1,18 +1,11 @@
-import React, {forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState} from "react";
+import React, {forwardRef, memo, Ref, useImperativeHandle, useRef, useState} from "react";
 import {useFrame, useLoader} from "@react-three/fiber";
 import * as THREE from "three";
-import {
-    GemGold,
-    GemDiamond,
-    GemEmerald,
-    GemOnyx,
-    GemRuby,
-    GemSapphire
-} from "@/games/splendor/constants/gem";
 import {Group, Mesh, Quaternion, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
 import {CylinderCollider, RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {TokenGemType} from "@/games/splendor/types/gem";
+import {GemDictionary} from "@/games/splendor/constants/gem";
 
 
 export const GemTokenSize = {
@@ -29,54 +22,11 @@ interface GemTokenProps {
 }
 
 const GemToken = forwardRef(({id, type, onClick, ...props}: GemTokenProps, ref: Ref<any>) => {
-    const [textureGold,
-        textureDiamond,
-        textureEmerald,
-        textureOnyx,
-        textureRuby,
-        textureSapphire
-    ] = useLoader(THREE.TextureLoader, [GemGold.url, GemDiamond.url, GemEmerald.url, GemOnyx.url, GemRuby.url, GemSapphire.url]);
+    const textureFront = useLoader(THREE.TextureLoader, GemDictionary[type].url);
     const [onPhysics, setOnPhysics] = useState(true);
     const groupRef = useRef<Group>(null);
     const rigidBodyRef = useRef<RapierRigidBody>(null);
     const meshRef = useRef<Mesh>(null);
-
-    const textureFront = useMemo(() => {
-        switch (type) {
-            case TokenGemType.GOLD:
-                return textureGold
-            case TokenGemType.DIAMOND:
-                return textureDiamond
-            case TokenGemType.EMERALD:
-                return textureEmerald
-            case TokenGemType.ONYX:
-                return textureOnyx
-            case TokenGemType.RUBY:
-                return textureRuby
-            case TokenGemType.SAPPHIRE:
-                return textureSapphire
-            default:
-                throw Error(`Type ${type} not supported`)
-        }
-    }, [type])
-    const color = useMemo(() => {
-        switch (type) {
-            case TokenGemType.GOLD:
-                return GemGold.color
-            case TokenGemType.DIAMOND:
-                return GemDiamond.color
-            case TokenGemType.EMERALD:
-                return GemEmerald.color
-            case TokenGemType.ONYX:
-                return GemOnyx.color
-            case TokenGemType.RUBY:
-                return GemRuby.color
-            case TokenGemType.SAPPHIRE:
-                return GemSapphire.color
-            default:
-                throw Error(`Type ${type} not supported`)
-        }
-    }, [type])
 
 
     useImperativeHandle(ref, () => {
@@ -156,16 +106,13 @@ const GemToken = forwardRef(({id, type, onClick, ...props}: GemTokenProps, ref: 
                   rotation={[Math.PI / 2, 0, 0]}
             >
                 <cylinderGeometry args={[GemTokenSize.size, GemTokenSize.size, GemTokenSize.depth, 32]}/>
-                <meshBasicMaterial attach="material-0" color={color}/>
+                <meshBasicMaterial attach="material-0" color={GemDictionary[type].color}/>
                 <meshBasicMaterial attach="material-1" map={textureFront}/>
-                <meshBasicMaterial attach="material-2" color={color}/>
+                <meshBasicMaterial attach="material-2" color={GemDictionary[type].color}/>
             </mesh>
 
             <RigidBody ref={rigidBodyRef}
-                       colliders={false}
-                       ccd={true}
-                       mass={40}
-            >
+                       colliders={false}>
                 <CylinderCollider args={[GemTokenSize.depth / 2, GemTokenSize.size]}
                                   rotation={[Math.PI / 2, 0, 0]}>
                     <mesh rotation={[Math.PI / 2, 0, 0]}>
@@ -179,4 +126,4 @@ const GemToken = forwardRef(({id, type, onClick, ...props}: GemTokenProps, ref: 
 })
 GemToken.displayName = "TokenGem";
 
-export default GemToken;
+export default GemToken

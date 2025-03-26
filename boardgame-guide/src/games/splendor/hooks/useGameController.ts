@@ -1,5 +1,5 @@
 import {useThree} from "@react-three/fiber";
-import {Action, Card, Gem, Noble} from "@/games/splendor/types/game";
+import {Action, Card, Gem, GemAction, Noble, ObjectAction} from "@/games/splendor/types/game";
 import {Euler, MathUtils, Quaternion, Vector3} from "three";
 import gsap from "gsap";
 import {NobleCardSize} from "@/games/splendor/component/3d/NobleCard";
@@ -10,17 +10,17 @@ import {GemTokenSize} from "@/games/splendor/component/3d/GemToken";
 import {CardDictionary} from "@/games/splendor/constants/card";
 import {NobleDictionary} from "@/games/splendor/constants/noble";
 import {TokenGemType} from "@/games/splendor/types/gem";
-import {GameService} from "@/games/splendor/service/splendor.service";
-import {useGameSplendor} from "@/games/splendor/store/game";
-import {useSharedRef} from "@/games/splendor/store/ref";
+import {useGameSplendor} from "@/games/splendor/store/game.context";
+import {useSharedRef} from "@/games/splendor/store/ref.context";
 import {useUser} from "@/store/user";
+import {useGameActions} from "@/games/splendor/hooks/useGameActions";
+
 
 export function useGameController() {
     const {camera} = useThree()
     const {cardRefs, nobleRefs, gemRefs} = useSharedRef()
     const {user} = useUser()
     const {
-        gameId,
         status, setStatus,
         playerIds,
         currentPlayer, setCurrentPlayer,
@@ -30,141 +30,157 @@ export function useGameController() {
         deckCard, setDeckCard,
         setFieldCard,
         gems, setGems,
-        playerNobles, setPlayerNobles,
-        playerCards, setPlayerCards,
-        playerReserveCards, setPlayerReserveCards,
-        playerGems, setPlayerGems,
+        players, setPlayers,
         currentAction, setCurrentAction,
-        focusObjects, addFocusObjects, removeFocusObjects,
+        physicsObjectActions, setPhysicsObjectActions,
         isMyTurn,
         dialog, setDialog
     } = useGameSplendor()
+    const {gatherGem, buyCard, reserveCard, takeNoble} = useGameActions()
 
+
+    const rollbackPhysicsObjects = () => {
+        const animation = gsap.timeline()
+        physicsObjectActions.reverse()
+            .forEach(object => {
+                switch (object.type) {
+                    case "noble":
+                    case "card":
+                    {
+                        const dataAction = object.data as ObjectAction
+                        animation.add(dataAction.animation
+                            .call(() => {
+                                // Stop physics
+                                dataAction.ref.stopPhysics()
+                            })
+                            .reverse()
+                            .eventCallback("onReverseComplete", () => {
+                                gsap.delayedCall(0.1, () => {
+                                    // Start physics
+                                    dataAction.ref.startPhysics()
+                                })
+                            }))
+                        break
+                    }
+                    case "gem":
+                    {
+                        const dataAction = object.data as GemAction
+                        const instance = gemRefs.current[object.id]
+
+                        // Animation
+                        const startPosition = instance.position.clone()
+                        const targetPosition = dataAction.oldPosition
+                        const targetRotation = dataAction.oldRotation
+                        const arcHeight = 1.5
+                        animation.add(gsap.timeline()
+                            .call(() => {
+                                // Stop physics
+                                instance.stopPhysics()
+                            })
+                            .to(instance.position, {
+                                x: targetPosition[0],
+                                y: targetPosition[1],
+                                duration: 0.3,
+                                onUpdate: function () {
+                                    const progress = this.progress() // Progress from 0 → 1
+                                    instance.position.z = MathUtils.lerp(startPosition.z, targetPosition[2], progress) + arcHeight * Math.sin(progress * Math.PI)
+                                }
+                            })
+                            .to(instance.rotation, {
+                                x: targetRotation[0],
+                                y: targetRotation[1],
+                                z: targetRotation[2],
+                                duration: 0.3
+                            }, "<")
+                            .call(() => {
+                                // Start physics
+                                gemRefs.current[object.id].startPhysics()
+
+                                // Update state
+                                if (dataAction.owner) {
+                                    setGems((prevState) => ({
+                                        ...prevState,
+                                        [dataAction.type]: prevState[dataAction.type].filter(gem => gem.id != object.id)
+                                    }))
+                                    setPlayers((prevState) => ({
+                                        ...prevState,
+                                        [currentPlayer]: ({
+                                            ...prevState[currentPlayer],
+                                            gems: {
+                                                ...prevState[currentPlayer].gems,
+                                                [dataAction.type]: [
+                                                    ...prevState[currentPlayer].gems[dataAction.type],
+                                                    {
+                                                        ...object.state,
+                                                        id: object.id,
+                                                        position: targetPosition,
+                                                        rotation: targetRotation
+                                                    }
+                                                ]
+                                            }
+                                        })
+                                    }))
+                                } else {
+                                    setGems((prevState) => ({
+                                        ...prevState,
+                                        [dataAction.type]: [
+                                            ...prevState[dataAction.type],
+                                            {
+                                                ...object.state,
+                                                id: object.id,
+                                                position: targetPosition,
+                                                rotation: targetRotation
+                                            }
+                                        ],
+                                    }))
+                                    setPlayers((prevState) => ({
+                                        ...prevState,
+                                        [currentPlayer]: {
+                                            ...prevState[currentPlayer],
+                                            gems: {
+                                                ...prevState[currentPlayer].gems,
+                                                [dataAction.type]: prevState[currentPlayer].gems[dataAction.type].filter(gem => gem.id != object.id)
+                                            }
+                                        }
+                                    }))
+                                }
+                            }))
+                        break
+                    }
+                }
+            })
+        animation.then(() => {
+            setPhysicsObjectActions([])
+        })
+    }
 
     const selectAction = (action: Action) => {
         setCurrentAction(action)
     }
 
     const cancelAction = () => {
+        setCurrentAction(undefined)
         setDialog({
             open: false,
             position: [0, 0, 0],
             rotation: [0, 0, 0]
         })
-        setCurrentAction(undefined)
+        rollbackPhysicsObjects()
     }
 
     const confirmAction = (action: Action) => {
-        const startActionGatherGem = (data: Action) => {
-            const {
-                gold = 0,
-                onyx = 0,
-                ruby = 0,
-                emerald = 0,
-                sapphire = 0,
-                diamond = 0
-            } = data.gem?.reduce((dict: any, { type, count }) => {
-                dict[type] = (dict[type] || 0) + count;
-                return dict
-            }, {})
-            GameService.turnActionGatherGem({
-                gameId: gameId,
-                body: {
-                    gold: gold,
-                    onyx: onyx,
-                    ruby: ruby,
-                    emerald: emerald,
-                    sapphire: sapphire,
-                    diamond: diamond
-                }
-            }).then(response => {
-                if (response.code != 0) {
-                    toast(response.msg, {
-                        autoClose: 2000,
-                    })
-                }
-            }).catch(error => {
-                console.log(error);
-            })
-        }
-        const startActionBuyCard = (data: Action) => {
-            GameService.turnActionBuyCard({
-                gameId: gameId,
-                body: {
-                    card_id: data.card?.id,
-                    ...(data.card?.cost ? Object.fromEntries(Object.entries(data.card.cost).map(([key, value]) => [key, value * -1])) : {})
-                }
-            }).then(response => {
-                if (response.code != 0) {
-                    toast(response.msg, {
-                        autoClose: 2000,
-                    })
-                }
-            }).catch(error => {
-                console.log(error);
-            })
-        }
-        const startActionReserveCard = (data: Action) => {
-            let gold = 0;
-            data.gem?.forEach((gem) => {
-                switch (gem.type) {
-                    case TokenGemType.GOLD:
-                        gold += gem.count;
-                        break;
-                }
-            })
-            GameService.turnActionReserveCard({
-                gameId: gameId,
-                body: {
-                    desk1: data.card?.deck && data.card.level == 1 ? 1 : 0,
-                    desk2: data.card?.deck && data.card.level == 2 ? 1 : 0,
-                    desk3: data.card?.deck && data.card.level == 3 ? 1 : 0,
-                    card_id: data.card?.deck ? undefined : data.card?.id,
-                    gold: gold,
-                }
-            }).then(response => {
-                if (response.code == 0) {
-                    console.log(response)
-                } else {
-                    toast(response.msg, {
-                        autoClose: 2000,
-                    })
-                }
-            }).catch(error => {
-                console.log(error);
-            })
-        }
-        const startActionTakeNoble = (data: Action) => {
-            GameService.turnBonusActionTakeNoble({
-                gameId: gameId,
-                body: {
-                    noble_id: data.noble?.id,
-                }
-            }).then(response => {
-                if (response.code == 0) {
-                    console.log(response)
-                } else {
-                    toast(response.msg, {
-                        autoClose: 2000,
-                    })
-                }
-            }).catch(error => {
-                console.log(error);
-            })
-        }
-
         switch (action.type) {
             case "gather-gem":
-                startActionGatherGem(action)
+                gatherGem(action)
                 break
             case "buy-card":
-                startActionBuyCard(action)
+                buyCard(action)
                 break
             case "reserve-card":
-                startActionReserveCard(action)
+                reserveCard(action)
                 break
             case "take-noble":
-                startActionTakeNoble(action)
+                takeNoble(action)
                 break
         }
     }
@@ -181,39 +197,41 @@ export function useGameController() {
                 })
             }
 
-            //
-            const instance = nobleRefs.current[noble.id]
-
-            // Stop physics
-            instance.stopPhysics()
-
             // Animation
+            const instance = nobleRefs.current[noble.id]
             const direction = new Vector3()
             camera.getWorldDirection(direction) // Get the camera's forward direction
             direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
             const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
             const targetRotation = camera.rotation.clone()
             const animation = gsap.timeline()
+                .call(() => {
+                    // Stop physics
+                    instance.stopPhysics()
+                })
                 .to(instance.position, {
                     x: targetPosition.x,
                     y: targetPosition.y,
                     z: targetPosition.z,
                     duration: 0.3
-                }, "0.1")
+                })
                 .to(instance.rotation, {
                     x: targetRotation.x,
                     y: targetRotation.y,
                     z: targetRotation.z,
                     duration: 0.3
                 }, "<")
-            addFocusObjects({
-                id: noble.id,
-                type: "noble",
-                noble: {
-                    ref: instance,
-                    animation: animation
+            setPhysicsObjectActions([
+                {
+                    id: noble.id,
+                    type: "noble",
+                    data: {
+                        ref: instance,
+                        animation: animation
+                    },
+                    state: noble
                 }
-            })
+            ])
 
             // Show action board
             if (isMyTurn) {
@@ -224,6 +242,9 @@ export function useGameController() {
                 })
             }
         }
+    }
+
+    const onClickNotCurrentNoble = (noble: Noble) => {
 
     }
 
@@ -242,13 +263,8 @@ export function useGameController() {
                 }
             })
 
-            //
-            const instance = cardRefs.current[card.id]
-
-            // Stop physics
-            instance.stopPhysics()
-
             // Animation
+            const instance = cardRefs.current[card.id]
             const direction = new Vector3()
             camera.getWorldDirection(direction) // Get the camera's forward direction
             direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
@@ -256,26 +272,33 @@ export function useGameController() {
             const cameraQuaternion = camera.quaternion.clone().multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI))
             const targetRotation = new Euler().setFromQuaternion(cameraQuaternion)
             const animation = gsap.timeline()
+                .call(() => {
+                    // Stop physics
+                    instance.stopPhysics()
+                })
                 .to(instance.position, {
                     x: targetPosition.x,
                     y: targetPosition.y,
                     z: targetPosition.z,
                     duration: 0.3
-                }, "0.1")
+                })
                 .to(instance.rotation, {
                     x: targetRotation.x,
                     y: targetRotation.y,
                     z: targetRotation.z,
                     duration: 0.3
                 }, "<")
-            addFocusObjects({
-                id: card.id,
-                type: "card",
-                card: {
-                    ref: instance,
-                    animation: animation
+            setPhysicsObjectActions([
+                {
+                    id: card.id,
+                    type: "card",
+                    data: {
+                        ref: instance,
+                        animation: animation
+                    },
+                    state: card
                 }
-            })
+            ])
 
             // Show action board
             const cameraRotation = camera.rotation.clone()
@@ -285,7 +308,6 @@ export function useGameController() {
                 rotation: [cameraRotation.x, cameraRotation.y, cameraRotation.z]
             })
         }
-
     }
 
     const onClickCard = (card: Card) => {
@@ -305,19 +327,18 @@ export function useGameController() {
                     option: ["buy-card", "reserve-card"]})
             }
 
-            //
-            const instance = cardRefs.current[card.id]
-
-            // Stop physics
-            instance.stopPhysics()
-
             // Move to front camera
+            const instance = cardRefs.current[card.id]
             const direction = new Vector3()
             camera.getWorldDirection(direction) // Get the camera's forward direction
             direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
             const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
             const targetRotation = camera.rotation.clone()
             const animation = gsap.timeline()
+                .call(() => {
+                    // Stop physics
+                    instance.stopPhysics()
+                })
                 .to(instance.position, {
                     x: targetPosition.x,
                     y: targetPosition.y,
@@ -332,14 +353,17 @@ export function useGameController() {
                 }, "<")
 
             // Save animation
-            addFocusObjects({
-                id: card.id,
-                type: "card",
-                card: {
-                    ref: instance,
-                    animation: animation
+            setPhysicsObjectActions([
+                {
+                    id: card.id,
+                    type: "card",
+                    data: {
+                        ref: instance,
+                        animation: animation
+                    },
+                    state: card
                 }
-            })
+            ])
 
             // Show action board
             if (isMyTurn) {
@@ -350,6 +374,9 @@ export function useGameController() {
                 })
             }
         }
+    }
+
+    const onClickNotCurrentCard = (card: Card) => {
 
     }
 
@@ -381,8 +408,7 @@ export function useGameController() {
 
             //
             const deckGems: Gem[] = gems[gem.type]
-            const playerDeckGems: Gem[] = playerGems[currentPlayer][gem.type]
-            if (deckGems.length <= 0) return
+            const playerDeckGems: Gem[] = players[currentPlayer].gems[gem.type]
             let gemTake: Gem = deckGems[deckGems.length - 1]
             for (let i = deckGems.length - 1; i >= 0; i--) {
                 if (!currentAction?.gem?.some(gem => gem.id == gemTake.id && gem.count > 0)) {
@@ -391,7 +417,6 @@ export function useGameController() {
 
                 gemTake = deckGems[i]
             }
-            if (!PlayerPosition[gem.type]) return
             const gemPosition: Vector3 = new Vector3().fromArray(PlayerPosition[gem.type])
 
             // Update action if in turn
@@ -404,12 +429,8 @@ export function useGameController() {
                 }]
             }))
 
-            const instance = gemRefs.current[gemTake.id]
-
-            // Stop physics
-            instance.stopPhysics()
-
             // Animation
+            const instance = gemRefs.current[gemTake.id]
             const startPosition: Vector3 = instance.position.clone()
             const startRotation: Euler = instance.rotation.clone()
             const playerPosition = new Vector3().fromArray(playerLocate.position)
@@ -420,7 +441,11 @@ export function useGameController() {
             const targetRotation = new Euler().setFromQuaternion(new Quaternion().setFromEuler(startRotation)
                 .multiply(new Quaternion().setFromEuler(new Euler(playerLocate.rotation[0], playerLocate.rotation[1], playerLocate.rotation[2]))))
             const arcHeight = 2 // Adjust this value for a bigger/smaller arc
-            const animation = gsap.timeline()
+            gsap.timeline()
+                .call(() => {
+                    // Stop physics
+                    instance.stopPhysics()
+                })
                 .to(instance.position, {
                     x: targetPosition.x,
                     y: targetPosition.y,
@@ -429,15 +454,14 @@ export function useGameController() {
                         const progress = this.progress() // Progress from 0 → 1
                         instance.position.z = MathUtils.lerp(startPosition.z, targetPosition.z, progress) + arcHeight * Math.sin(progress * Math.PI)
                     }
-                }, "0.1")
+                })
                 .to(instance.rotation, {
                     x: targetRotation.x,
                     y: targetRotation.y,
                     z: targetRotation.z,
                     duration: 0.4,
                 }, "<")
-            animation
-                .then(() => {
+                .call(() => {
                     // Start physics
                     instance.startPhysics()
 
@@ -446,40 +470,44 @@ export function useGameController() {
                         ...prevState,
                         [gem.type]: prevState[gem.type].filter(gem => gem.id != gemTake.id)
                     }))
-                    setPlayerGems((prevState) => {
-                        const gems: Gem[] = prevState[currentPlayer][gem.type]
+                    setPlayers((prevState) => {
+                        let gems: Gem[] = prevState[currentPlayer].gems[gem.type]
                         gems.push({
                             ...gem,
                             id: gemTake.id,
                             position: targetPosition.toArray(),
                             rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
                         })
+                        gems = gems.map((gem, index) => ({
+                            ...gem,
+                            position: [gem.position[0], gem.position[1], (index + 0.5) * GemTokenSize.depth],
+                        }))
 
                         return {
                             ...prevState,
                             [currentPlayer]: ({
                                 ...prevState[currentPlayer],
-                                [gem.type]: gems.map((gem, index) => ({
-                                    ...gem,
-                                    position: [gem.position[0], gem.position[1], (index + 0.5) * GemTokenSize.depth],
-                                }))
+                                gems: {
+                                    ...prevState[currentPlayer].gems,
+                                    [gem.type]: gems
+                                }
                             })
                         }
                     })
-                })
-            if (focusObjects.some(focusObject => focusObject.id == gemTake.id)) {
-                removeFocusObjects(gemTake.id)
-            } else {
-                addFocusObjects({
+                });
+            setPhysicsObjectActions((prevState) => [
+                ...prevState,
+                {
                     id: gemTake.id,
                     type: "gem",
-                    gem: {
+                    data: {
                         type: gem.type,
                         oldPosition: startPosition.toArray(),
                         oldRotation: [startRotation.x, startRotation.y, startRotation.z]
-                    }
-                })
-            }
+                    },
+                    state: gem
+                },
+            ])
 
             // Show action board
             if (!dialog.open) {
@@ -495,189 +523,192 @@ export function useGameController() {
                 })
             }
         }
-
     }
 
     const onClickPlayerGem = (playerId: string, gem: Gem) => {
         if (user?.user_id != playerId) return
         if (!isMyTurn) return
-        if (currentAction && currentAction.type != "gather-gem") return
+        if (currentAction && currentAction.type != "gather-gem") {
+            return
+        } else {
+            //
+            const player = (playerIds.indexOf(playerId) ?? 0) + 1
+            if (player == 0) return         // Không phải người chơi
+            const playerLocate = PlayerPosition.total[playerIds.length ?? 0]?.player[player]
+            if (!playerLocate) return       // Ko tim thay config vi tri player
 
-        //
-        const player = (playerIds.indexOf(playerId) ?? 0) + 1
-        if (player == 0) return         // Không phải người chơi
-        const playerLocate = PlayerPosition.total[playerIds.length ?? 0]?.player[player]
-        if (!playerLocate) return       // Ko tim thay config vi tri player
+            const deckGems: Gem[] = gems[gem.type]
+            const playerDeckGems: Gem[] = players[playerId].gems[gem.type]
+            const gemPosition: Vector3 = new Vector3().fromArray(GemPosition[gem.type])
+            let gemReturn: Gem = playerDeckGems[playerDeckGems.length - 1]
+            for (let i = playerDeckGems.length - 1; i >= 0; i--) {
+                if (!currentAction?.gem?.some(gem => gem.id == gemReturn.id && gem.count < 0)) {
+                    break
+                }
 
-        const deckGems: Gem[] = gems[gem.type]
-        const playerDeckGems: Gem[] = playerGems[playerId][gem.type]
-        const gemPosition: Vector3 = new Vector3().fromArray(GemPosition[gem.type])
-        if (playerDeckGems.length <= 0) return
-        let gemReturn: Gem = playerDeckGems[playerDeckGems.length - 1]
-        for (let i = playerDeckGems.length - 1; i >= 0; i--) {
-            if (!currentAction?.gem?.some(gem => gem.id == gemReturn.id && gem.count < 0)) {
-                break
+                gemReturn = playerDeckGems[i]
             }
 
-            gemReturn = playerDeckGems[i]
-        }
+            // Update action if in turn
+            setCurrentAction((prevState) => ({
+                type: "gather-gem",
+                gem: [...(prevState?.gem || []), {
+                    id: gemReturn.id,
+                    type: gem.type,
+                    count: -1
+                }]
+            }))
 
-        // Update action if in turn
-        setCurrentAction((prevState) => ({
-            type: "gather-gem",
-            gem: [...(prevState?.gem || []), {
-                id: gemReturn.id,
-                type: gem.type,
-                count: -1
-            }]
-        }))
-
-        const instance = gemRefs.current[gemReturn.id]
-
-        // Stop physics
-        instance.stopPhysics()
-
-        // Animation
-        const startPosition = instance.position.clone()
-        const startRotation = instance.rotation.clone()
-        const targetPosition = gemPosition
-            .setZ((deckGems.length - 1 + 0.5) * GemTokenSize.depth)
-        const arcHeight = 1.5 // Adjust this value for a bigger/smaller arc
-        const animation = gsap.timeline()
-            .to(instance.position, {
-                x: targetPosition.x,
-                y: targetPosition.y,
-                duration: 0.4,
-                onUpdate: function () {
-                    const progress = this.progress() // Progress from 0 → 1
-                    instance.position.z = MathUtils.lerp(startPosition.z, targetPosition.z, progress) + arcHeight * Math.sin(progress * Math.PI)
-                }
-            }, "0.1")
-        animation
-            .then(() => {
-                // Start physics
-                instance.startPhysics()
-
-                // Update state
-                setGems((prevState) => {
-                    const gems = prevState[gem.type]
-                    gems.push({
-                        ...gem,
-                        id: gemReturn.id,
-                        position: targetPosition.toArray(),
-                        rotation: gemReturn.rotation
-                    })
-
-                    return {
-                        ...prevState,
-                        [gem.type]: gems.map((gem, index) => ({
-                            ...gem,
-                            position: [gem.position[0], gem.position[1], (index + 0.5) * GemTokenSize.depth],
-                        }))
+            // Animation
+            const instance = gemRefs.current[gemReturn.id]
+            const startPosition = instance.position.clone()
+            const startRotation = instance.rotation.clone()
+            const targetPosition = gemPosition
+                .setZ((deckGems.length - 1 + 0.5) * GemTokenSize.depth)
+            const arcHeight = 1.5 // Adjust this value for a bigger/smaller arc
+            gsap.timeline()
+                .call(() => {
+                    // Stop physics
+                    instance.stopPhysics()
+                })
+                .to(instance.position, {
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    duration: 0.4,
+                    onUpdate: function () {
+                        const progress = this.progress() // Progress from 0 → 1
+                        instance.position.z = MathUtils.lerp(startPosition.z, targetPosition.z, progress) + arcHeight * Math.sin(progress * Math.PI)
                     }
                 })
-                setPlayerGems((prevState) => ({
-                    ...prevState,
-                    [playerId]: ({
-                        ...prevState[playerId],
-                        [gem.type]: prevState[playerId][gem.type].filter(gem => gem.id != gemReturn.id)
+                .call(() => {
+                    // Start physics
+                    instance.startPhysics()
+
+                    // Update state
+                    setGems((prevState) => {
+                        const gems = prevState[gem.type]
+                        gems.push({
+                            ...gem,
+                            id: gemReturn.id,
+                            position: targetPosition.toArray(),
+                            rotation: gemReturn.rotation
+                        })
+
+                        return {
+                            ...prevState,
+                            [gem.type]: gems.map((gem, index) => ({
+                                ...gem,
+                                position: [gem.position[0], gem.position[1], (index + 0.5) * GemTokenSize.depth],
+                            }))
+                        }
                     })
-                }))
-            })
-        if (focusObjects.some(focusObject => focusObject.id == gemReturn.id)) {
-            removeFocusObjects(gemReturn.id)
-        } else {
-            addFocusObjects({
-                id: gemReturn.id,
-                type: "gem",
-                gem: {
-                    type: gem.type,
-                    owner: playerId,
-                    oldPosition: startPosition,
-                    oldRotation: startRotation
+                    setPlayers((prevState) => ({
+                        ...prevState,
+                        [playerId]: {
+                            ...prevState[playerId],
+                            gems: {
+                                ...prevState[playerId].gems,
+                                [gem.type]: prevState[playerId].gems[gem.type].filter(gem => gem.id != gemReturn.id)
+                            }
+                        }
+                    }))
+                });
+            setPhysicsObjectActions((prevState) => [
+                ...prevState,
+                {
+                    id: gemReturn.id,
+                    type: "gem",
+                    data: {
+                        type: gem.type,
+                        owner: playerId,
+                        oldPosition: startPosition,
+                        oldRotation: startRotation
+                    },
+                    state: gem
                 }
-            })
-        }
+            ])
 
-        // Show action board
-        if (!dialog.open) {
-            const direction = new Vector3()
-            camera.getWorldDirection(direction) // Get the camera's forward direction
-            direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
-            const centerScenePosition = camera.position.clone().add(direction) // Calculate position in front of the camera
-            const cameraRotation = camera.rotation.clone()
-            setDialog({
-                open: true,
-                position: centerScenePosition.toArray(),
-                rotation: [cameraRotation.x, cameraRotation.y, cameraRotation.z]
-            })
+            // Show action board
+            if (!dialog.open) {
+                const direction = new Vector3()
+                camera.getWorldDirection(direction) // Get the camera's forward direction
+                direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
+                const centerScenePosition = camera.position.clone().add(direction) // Calculate position in front of the camera
+                const cameraRotation = camera.rotation.clone()
+                setDialog({
+                    open: true,
+                    position: centerScenePosition.toArray(),
+                    rotation: [cameraRotation.x, cameraRotation.y, cameraRotation.z]
+                })
+            }
         }
-
     }
 
     const onClickPlayerReserveCard = (playerId: string, card: Card) => {
-        if (currentAction) return
         if (user?.user_id != playerId) return
-
-        // Update action if in turn
-        if (isMyTurn) {
-            setCurrentAction({
-                type: "buy-card",
-                card: {
-                    id: card.id,
-                    level: card.level,
-                    ownerId: playerId,
-                    cost: card.cost
-                }
-            })
-        }
-
-        //
-        const instance = cardRefs.current[card.id]
-
-        // Stop physics
-        instance.stopPhysics()
-
-        // Move to front camera
-        const direction = new Vector3()
-        camera.getWorldDirection(direction) // Get the camera's forward direction
-        direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
-        const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
-        const targetRotation = camera.rotation.clone()
-        const animation = gsap.timeline()
-            .to(instance.position, {
-                x: targetPosition.x,
-                y: targetPosition.y,
-                z: targetPosition.z,
-                duration: 0.3
-            }, "0.1")
-            .to(instance.rotation, {
-                x: targetRotation.x,
-                y: targetRotation.y,
-                z: targetRotation.z,
-                duration: 0.3
-            }, "<")
-
-        // Save animation
-        addFocusObjects({
-            id: card.id,
-            type: "card",
-            card: {
-                ref: instance,
-                animation: animation
+        if (currentAction) {
+            return
+        } else {
+            // Update action if in turn
+            if (isMyTurn) {
+                setCurrentAction({
+                    type: "buy-card",
+                    card: {
+                        id: card.id,
+                        level: card.level,
+                        ownerId: playerId,
+                        cost: card.cost
+                    }
+                })
             }
-        })
 
-        // Show action board
-        if (isMyTurn) {
-            setDialog({
-                open: true,
-                position: targetPosition.clone().addScaledVector(new Vector3(1, 0, 0).applyQuaternion(camera.quaternion), GemCardSize.width / 2 + 0.5).toArray(),
-                rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
-            })
+            // Move to front camera
+            const instance = cardRefs.current[card.id]
+            const direction = new Vector3()
+            camera.getWorldDirection(direction) // Get the camera's forward direction
+            direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
+            const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
+            const targetRotation = camera.rotation.clone()
+            const animation = gsap.timeline()
+                .call(() => {
+                    // Stop physics
+                    instance.stopPhysics()
+                })
+                .to(instance.position, {
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    z: targetPosition.z,
+                    duration: 0.3
+                }, "0.1")
+                .to(instance.rotation, {
+                    x: targetRotation.x,
+                    y: targetRotation.y,
+                    z: targetRotation.z,
+                    duration: 0.3
+                }, "<")
+
+            // Save animation
+            setPhysicsObjectActions([
+                {
+                    id: card.id,
+                    type: "card",
+                    data: {
+                        ref: instance,
+                        animation: animation
+                    },
+                    state: card
+                }
+            ])
+
+            // Show action board
+            if (isMyTurn) {
+                setDialog({
+                    open: true,
+                    position: targetPosition.clone().addScaledVector(new Vector3(1, 0, 0).applyQuaternion(camera.quaternion), GemCardSize.width / 2 + 0.5).toArray(),
+                    rotation: [targetRotation.x, targetRotation.y, targetRotation.z]
+                })
+            }
         }
-
-
     }
 
     const onStartGame = (data: any) => {
@@ -691,15 +722,15 @@ export function useGameController() {
             .sort((a: any, b: any) => a.position - b.position)
 
         //
-        const animation = gsap.timeline();
-        const timelineDeckCard3 = gsap.timeline();
-        const timelineDeckCard2 = gsap.timeline();
-        const timelineDeckCard1 = gsap.timeline();
-        const timelineDeckNoble = gsap.timeline();
-        const timelineOpenField3 = gsap.timeline();
-        const timelineOpenField2 = gsap.timeline();
-        const timelineOpenField1 = gsap.timeline();
-        const timelineOpenNoble = gsap.timeline();
+        const animation = gsap.timeline()
+        const timelineDeckCard3 = gsap.timeline()
+        const timelineDeckCard2 = gsap.timeline()
+        const timelineDeckCard1 = gsap.timeline()
+        const timelineDeckNoble = gsap.timeline()
+        const timelineOpenField3 = gsap.timeline()
+        const timelineOpenField2 = gsap.timeline()
+        const timelineOpenField1 = gsap.timeline()
+        const timelineOpenNoble = gsap.timeline()
 
 
         const card3Opens: Card[] = fieldCard3.map((field: any) => {
@@ -1023,7 +1054,7 @@ export function useGameController() {
                     const instance = nobleRefs.current[field.noble.id]
                     const startPosition = instance.position
                     const targetPosition = NoblePosition.field[field.position];
-                    const arcHeight = 0.8
+                    const arcHeight = 0.4
                     timelineOpenNoble.to(instance.position, {
                         x: targetPosition[0],
                         y: targetPosition[1],
@@ -1182,7 +1213,7 @@ export function useGameController() {
             const animation = gsap.timeline()
 
             function takeGem(type: TokenGemType, gemTake: Gem) {
-                const playerDeckGems: Gem[] = playerGems[currentPlayer][type]
+                const playerDeckGems: Gem[] = players[currentPlayer].gems[type]
                 if (!PlayerPosition[type]) return
                 const gemPosition: Vector3 = new Vector3().fromArray(PlayerPosition[type])
 
@@ -1218,23 +1249,27 @@ export function useGameController() {
                             ...prevState,
                             [type]: prevState[type].filter(gem => gem.id != gemTake.id)
                         }))
-                        setPlayerGems((prevState) => {
-                            const gems = prevState[currentPlayer][type]
+                        setPlayers((prevState) => {
+                            let gems = prevState[currentPlayer].gems[type]
                             gems.push({
                                 ...gemTake,
                                 position: targetPosition.toArray(),
                                 rotation: gemTake.rotation
                             })
+                            gems = gems.map((gem, index) => ({
+                                ...gem,
+                                position: [gem.position[0], gem.position[1], (index + 0.5) * GemTokenSize.depth],
+                            }))
 
                             return {
                                 ...prevState,
-                                [currentPlayer]: ({
+                                [currentPlayer]: {
                                     ...prevState[currentPlayer],
-                                    [type]: gems.map((gem, index) => ({
-                                        ...gem,
-                                        position: [gem.position[0], gem.position[1], (index + 0.5) * GemTokenSize.depth],
-                                    }))
-                                })
+                                    gems: {
+                                        ...prevState[currentPlayer].gems,
+                                        [type]: gems
+                                    }
+                                }
                             }
                         })
                     }))
@@ -1283,11 +1318,14 @@ export function useGameController() {
                                 }))
                             }
                         })
-                        setPlayerGems((prevState) => ({
+                        setPlayers((prevState) => ({
                             ...prevState,
                             [currentPlayer]: ({
                                 ...prevState[currentPlayer],
-                                [type]: prevState[currentPlayer][type].filter(gem => gem.id != gemReturn.id)
+                                gems: {
+                                    ...prevState[currentPlayer].gems,
+                                    [type]: prevState[currentPlayer].gems[type].filter(gem => gem.id != gemReturn.id)
+                                }
                             })
                         }))
                     }))
@@ -1304,7 +1342,7 @@ export function useGameController() {
                 }
             }
             function returnGems(type: TokenGemType, total: number) {
-                const playerDeckGems: Gem[] = playerGems[currentPlayer][type]
+                const playerDeckGems: Gem[] = players[currentPlayer].gems[type]
                 if (playerDeckGems.length <= 0) return
 
                 let gemReturn: Gem
@@ -1365,10 +1403,10 @@ export function useGameController() {
         const cardConfig = CardDictionary[cardId]
         if (!cardConfig) return
 
-        const cards: Card[] = playerCards[currentPlayer].filter(card => card.type == cardConfig.type)
+        const cards: Card[] = players[currentPlayer].cards[cardConfig.type]
         if (!PlayerPosition[cardConfig.type]) return
         const cardPosition: Vector3 = new Vector3().fromArray(PlayerPosition[cardConfig.type])
-        const gems: Gem[] = playerGems[currentPlayer][cardConfig.type]
+        const gems: Gem[] = players[currentPlayer].gems[cardConfig.type]
 
         //
         let instanceUp = undefined
@@ -1400,7 +1438,7 @@ export function useGameController() {
         const animation = gsap.timeline()
 
         function returnGem(type: TokenGemType, gemReturn: Gem) {
-            const deckGems: Gem[] = playerGems[currentPlayer][type]
+            const playerGems: Gem[] = players[currentPlayer].gems[type]
             const gemPosition: Vector3 = new Vector3().fromArray(GemPosition[type])
             const instance = gemRefs.current[gemReturn.id]
 
@@ -1410,7 +1448,7 @@ export function useGameController() {
             // Animation
             const startPosition = instance.position.clone()
             const targetPosition = gemPosition
-                .setZ((deckGems.length - 1 + 0.5) * GemTokenSize.depth)
+                .setZ((playerGems.length - 1 + 0.5) * GemTokenSize.depth)
             const arcHeight = 2 // Adjust this value for a bigger/smaller arc
             animation.add(gsap.timeline()
                 .to(instance.position, {
@@ -1443,17 +1481,20 @@ export function useGameController() {
                             }))
                         }
                     })
-                    setPlayerGems((prevState) => ({
+                    setPlayers((prevState) => ({
                         ...prevState,
-                        [currentPlayer]: ({
+                        [currentPlayer]: {
                             ...prevState[currentPlayer],
-                            [type]: prevState[currentPlayer][type].filter(gem => gem.id != gemReturn.id)
-                        })
+                            gems: {
+                                ...prevState[currentPlayer].gems,
+                                [type]: prevState[currentPlayer].gems[type].filter(gem => gem.id != gemReturn.id)
+                            }
+                        }
                     }))
                 }))
         }
         function returnGems(type: TokenGemType, total: number) {
-            const playerDeckGems: Gem[] = playerGems[currentPlayer][type]
+            const playerDeckGems: Gem[] = players[currentPlayer].gems[type]
             if (playerDeckGems.length <= 0) return
 
             let gemReturn: Gem
@@ -1521,21 +1562,31 @@ export function useGameController() {
                 instance.startPhysics()
 
                 // Update state
-                setPlayerCards((prevState) => ({
+                setPlayers((prevState) => ({
                     ...prevState,
-                    [currentPlayer]: [
+                    [currentPlayer]: {
                         ...prevState[currentPlayer],
-                        {
-                            ...cardConfig,
-                            id: cardId,
-                            position: targetPosition.toArray(),
-                            rotation: targetRotation
-                        }]
+                        cards: {
+                            ...prevState[currentPlayer].cards,
+                            [cardConfig.type]: [
+                                ...prevState[currentPlayer].cards[cardConfig.type],
+                                {
+                                    ...cardConfig,
+                                    id: cardId,
+                                    position: targetPosition.toArray(),
+                                    rotation: targetRotation
+                                }
+                            ]
+                        }
+                    }
                 }))
-                if (playerReserveCards[currentPlayer].some(card => card.id == cardId)) {
-                    setPlayerReserveCards((prevState) => ({
+                if (players[currentPlayer].reserveCards.some(card => card.id == cardId)) {
+                    setPlayers((prevState) => ({
                         ...prevState,
-                        [currentPlayer]: prevState[currentPlayer].filter(card => card.id == cardId)
+                        [currentPlayer]: {
+                            ...prevState[currentPlayer],
+                            reserveCards: prevState[currentPlayer].reserveCards.filter(card => card.id == cardId)
+                        }
                     }))
                 } else {
                     setFieldCard((prevState) => ({
@@ -1574,7 +1625,7 @@ export function useGameController() {
         const playerLocate = PlayerPosition.total[playerIds.length]?.player[player + 1]
         if (!playerLocate) return       // Ko tim thay config vi tri player
 
-        const reserveCards: Card[] = playerReserveCards[currentPlayer]
+        const reserveCards: Card[] = players[currentPlayer].reserveCards
         const cardPosition: Vector3 = new Vector3().fromArray(PlayerPosition.reserveCard)
 
         //
@@ -1637,17 +1688,20 @@ export function useGameController() {
                 instance.startPhysics()
 
                 // Update state
-                setPlayerReserveCards((prevState) => ({
+                setPlayers((prevState) => ({
                     ...prevState,
-                    [currentPlayer]: [
+                    [currentPlayer]: {
                         ...prevState[currentPlayer],
-                        {
-                            ...CardDictionary[cardId],
-                            id: cardId,
-                            position: targetPosition.toArray(),
-                            rotation: targetRotation
-                        }
-                    ]
+                        reserveCards: [
+                            ...prevState[currentPlayer].reserveCards,
+                            {
+                                ...CardDictionary[cardId],
+                                id: cardId,
+                                position: targetPosition.toArray(),
+                                rotation: targetRotation
+                            }
+                        ]
+                    }
                 }))
                 if (currentAction?.card?.deck) {
                     setDeckCard((prevState) => ({
@@ -1673,7 +1727,7 @@ export function useGameController() {
         const playerLocate = PlayerPosition.total[playerIds.length]?.player[player + 1]
         if (!playerLocate) return       // Ko tim thay config vi tri player
 
-        const nobles: Noble[] = playerNobles[currentPlayer]
+        const nobles: Noble[] = players[currentPlayer].nobles
         const noblePosition: Vector3 = new Vector3().fromArray(PlayerPosition.noble)
 
         //
@@ -1736,17 +1790,20 @@ export function useGameController() {
                 instance.startPhysics()
 
                 // Update state
-                setPlayerNobles((prevState) => ({
+                setPlayers((prevState) => ({
                     ...prevState,
-                    [currentPlayer]: [
+                    [currentPlayer]: {
                         ...prevState[currentPlayer],
-                        {
-                            ...NobleDictionary[nobleId],
-                            id: nobleId,
-                            position: targetPosition.toArray(),
-                            rotation: targetRotation
-                        }
-                    ]
+                        nobles: [
+                            ...prevState[currentPlayer].nobles,
+                            {
+                                ...NobleDictionary[nobleId],
+                                id: nobleId,
+                                position: targetPosition.toArray(),
+                                rotation: targetRotation
+                            }
+                        ]
+                    }
                 }))
                 setFieldNoble((prevState) => prevState.filter(noble => noble.id != nobleId))
             })
@@ -1758,8 +1815,10 @@ export function useGameController() {
         cancelAction,
         confirmAction,
         onClickNoble,
+        onClickNotCurrentNoble,
         onClickDeckCard,
         onClickCard,
+        onClickNotCurrentCard,
         onClickGem,
         onClickPlayerGem,
         onClickPlayerReserveCard,

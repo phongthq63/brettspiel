@@ -1,7 +1,6 @@
 import Image from "next/image";
-import React, {memo, useEffect, useMemo, useState} from "react";
+import React, {memo, useMemo} from "react";
 import {useUser} from "@/store/user";
-import {CardGemType} from "@/games/splendor/types/card";
 import {Card, Noble} from "@/games/splendor/types/game";
 
 
@@ -12,30 +11,24 @@ interface PlayerGameInfoProps {
         name: string
         avatar: string
         score: number
-        cards: Card[]
-        reserveCards: Card[]
         nobles: Noble[]
+        reserveCards: Card[]
+        cardDiamond: number
+        cardSapphire: number
+        cardEmerald: number
+        cardRuby: number
+        cardOnyx: number
         gold: number
-        onyx: number
-        ruby: number
-        emerald: number
-        sapphire: number
         diamond: number
+        sapphire: number
+        emerald: number
+        ruby: number
+        onyx: number
     }
 }
 
 const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
     const {user} = useUser()
-    const [cardDiamond, setCardDiamond] = useState(0)
-    const [diamond, setDiamond] = useState(0)
-    const [cardSapphire, setCardSapphire] = useState(0)
-    const [sapphire, setSapphire] = useState(0)
-    const [cardEmerald, setCardEmerald] = useState(0)
-    const [emerald, setEmerald] = useState(0)
-    const [cardRuby, setCardRuby] = useState(0)
-    const [ruby, setRuby] = useState(0)
-    const [cardOnyx, setCardOnyx] = useState(0)
-    const [onyx, setOnyx] = useState(0)
 
 
     const imageCardReserveUrl = useMemo(() => (card: Card) => {
@@ -55,19 +48,6 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
         }
     }, [id, user])
 
-
-    useEffect(() => {
-        setCardDiamond(data.cards.filter(card => card.type == CardGemType.DIAMOND).length)
-        setDiamond(data.diamond)
-        setCardSapphire(data.cards.filter(card => card.type == CardGemType.SAPPHIRE).length)
-        setSapphire(data.sapphire)
-        setCardEmerald(data.cards.filter(card => card.type == CardGemType.EMERALD).length)
-        setEmerald(data.emerald)
-        setCardRuby(data.cards.filter(card => card.type == CardGemType.RUBY).length)
-        setRuby(data.ruby)
-        setCardOnyx(data.cards.filter(card => card.type == CardGemType.ONYX).length)
-        setOnyx(data.onyx)
-    }, [data])
     
     return (
         <div className="basis-1/2 md:basis-auto md:shrink p-2 bg-stone-400 rounded-3xl md:rounded-l-3xl">
@@ -94,15 +74,15 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
                     <div className="flex-auto grid grid-cols-5 gap-1 max-w-48">
                         <div className="relative">
                             <div className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-gray-200 overflow-hidden">
-                                {cardDiamond > 0 && (
+                                {data.cardDiamond > 0 && (
                                     <div
                                         className="block absolute bottom-1 left-1 rounded-md bg-white border border-white shadow pl-0.5 pr-1">
-                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{cardDiamond}</p>
+                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.cardDiamond}</p>
                                     </div>
                                 )}
-                                {diamond > 0 && (
+                                {data.diamond > 0 && (
                                     <div className="absolute top-0.5 right-0.5">
-                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{diamond}</p>
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.diamond}</p>
                                     </div>
                                 )}
                             </div>
@@ -112,14 +92,14 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
                         </div>
                         <div className="relative">
                             <div className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-blue-800 overflow-hidden">
-                                {cardSapphire > 0 && (
+                                {data.cardSapphire > 0 && (
                                     <div className="block absolute bottom-1 left-1 rounded-md bg-blue-600 border border-white shadow pl-0.5 pr-1">
-                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{cardSapphire}</p>
+                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.cardSapphire}</p>
                                     </div>
                                 )}
-                                {sapphire > 0 && (
+                                {data.sapphire > 0 && (
                                     <div className="absolute top-0.5 right-0.5">
-                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{sapphire}</p>
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.sapphire}</p>
                                     </div>
                                 )}
                             </div>
@@ -129,14 +109,14 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
                         </div>
                         <div className="relative">
                             <div className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-green-800 overflow-hidden">
-                                {cardEmerald > 0 && (
+                                {data.cardEmerald > 0 && (
                                     <div className="block absolute bottom-1 left-1 rounded-md bg-green-600 border border-white shadow pl-0.5 pr-1">
-                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{cardEmerald}</p>
+                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.cardEmerald}</p>
                                     </div>
                                 )}
-                                {emerald > 0 && (
+                                {data.emerald > 0 && (
                                     <div className="absolute top-0.5 right-0.5">
-                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{emerald}</p>
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.emerald}</p>
                                     </div>
                                 )}
                             </div>
@@ -146,14 +126,14 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
                         </div>
                         <div className="relative">
                             <div className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-red-800 overflow-hidden">
-                                {cardRuby > 0 && (
+                                {data.cardRuby > 0 && (
                                     <div className="block absolute bottom-1 left-1 rounded-md bg-red-600 border border-white shadow pl-0.5 pr-1">
-                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{cardRuby}</p>
+                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.cardRuby}</p>
                                     </div>
                                 )}
-                                {ruby > 0 && (
+                                {data.ruby > 0 && (
                                     <div className="absolute top-0.5 right-0.5">
-                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ruby}</p>
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.ruby}</p>
                                     </div>
                                 )}
                             </div>
@@ -163,14 +143,14 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
                         </div>
                         <div className="relative">
                             <div className="relative h-12 rounded-lg shadow-[inset_0_3px_4px_rgba(0,0,0,0.6)] bg-gray-800 overflow-hidden">
-                                {cardOnyx > 0 && (
+                                {data.cardOnyx > 0 && (
                                     <div className="block absolute bottom-1 left-1 rounded-md bg-gray-600 border border-white shadow pl-0.5 pr-1">
-                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{cardOnyx}</p>
+                                        <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.cardOnyx}</p>
                                     </div>
                                 )}
-                                {onyx > 0 && (
+                                {data.onyx > 0 && (
                                     <div className="absolute top-0.5 right-0.5">
-                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{onyx}</p>
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.onyx}</p>
                                     </div>
                                 )}
                             </div>

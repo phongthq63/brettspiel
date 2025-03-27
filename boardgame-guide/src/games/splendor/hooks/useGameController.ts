@@ -94,7 +94,7 @@ export function useGameController() {
                             }, "<")
                             .call(() => {
                                 // Start physics
-                                gemRefs.current[object.id].startPhysics()
+                                instance.startPhysics()
 
                                 // Update state
                                 if (dataAction.owner) {
@@ -437,7 +437,7 @@ export function useGameController() {
             const targetPosition = gemPosition
                 .add(playerPosition)
                 .applyEuler(new Euler(playerLocate.rotation[0], playerLocate.rotation[1], playerLocate.rotation[2]))
-                .setZ((playerDeckGems.length - 1 + 0.5) * GemTokenSize.depth)
+                .setZ((playerDeckGems.length + 0.5) * GemTokenSize.depth)
             const targetRotation = new Euler().setFromQuaternion(new Quaternion().setFromEuler(startRotation)
                 .multiply(new Quaternion().setFromEuler(new Euler(playerLocate.rotation[0], playerLocate.rotation[1], playerLocate.rotation[2]))))
             const arcHeight = 2 // Adjust this value for a bigger/smaller arc
@@ -559,12 +559,14 @@ export function useGameController() {
                 }]
             }))
 
+
+
             // Animation
             const instance = gemRefs.current[gemReturn.id]
             const startPosition = instance.position.clone()
             const startRotation = instance.rotation.clone()
             const targetPosition = gemPosition
-                .setZ((deckGems.length - 1 + 0.5) * GemTokenSize.depth)
+                .setZ((deckGems.length + 0.5) * GemTokenSize.depth)
             const arcHeight = 1.5 // Adjust this value for a bigger/smaller arc
             gsap.timeline()
                 .call(() => {

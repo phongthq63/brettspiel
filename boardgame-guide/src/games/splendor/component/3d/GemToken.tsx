@@ -1,4 +1,4 @@
-import React, {forwardRef, memo, Ref, useImperativeHandle, useRef, useState} from "react";
+import React, {forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState} from "react";
 import {useFrame, useLoader} from "@react-three/fiber";
 import * as THREE from "three";
 import {Group, Mesh, Quaternion, Vector3} from "three";
@@ -22,11 +22,15 @@ interface GemTokenProps {
 }
 
 const GemToken = forwardRef(({id, type, onClick, ...props}: GemTokenProps, ref: Ref<any>) => {
-    const textureFront = useLoader(THREE.TextureLoader, GemDictionary[type].url);
+    const [textureFront] = useLoader(THREE.TextureLoader, [GemDictionary[type].url]);
     const [onPhysics, setOnPhysics] = useState(true);
     const groupRef = useRef<Group>(null);
     const rigidBodyRef = useRef<RapierRigidBody>(null);
     const meshRef = useRef<Mesh>(null);
+
+    const color = useMemo(() => {
+        return GemDictionary[type].color
+    }, [type])
 
 
     useImperativeHandle(ref, () => {
@@ -106,9 +110,9 @@ const GemToken = forwardRef(({id, type, onClick, ...props}: GemTokenProps, ref: 
                   rotation={[Math.PI / 2, 0, 0]}
             >
                 <cylinderGeometry args={[GemTokenSize.size, GemTokenSize.size, GemTokenSize.depth, 32]}/>
-                <meshBasicMaterial attach="material-0" color={GemDictionary[type].color}/>
+                <meshBasicMaterial attach="material-0" color={color}/>
                 <meshBasicMaterial attach="material-1" map={textureFront}/>
-                <meshBasicMaterial attach="material-2" color={GemDictionary[type].color}/>
+                <meshBasicMaterial attach="material-2" color={color}/>
             </mesh>
 
             <RigidBody ref={rigidBodyRef}

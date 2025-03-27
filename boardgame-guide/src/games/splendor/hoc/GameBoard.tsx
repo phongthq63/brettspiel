@@ -1,5 +1,5 @@
 import {Html} from "@react-three/drei";
-import React, {memo, useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {useThree} from "@react-three/fiber";
 
 
@@ -43,4 +43,4 @@ const GameBoard = ({position, rotation, onClickNotThis, children, ...props}: Gam
     )
 }
 
-export default memo(GameBoard);
+export default GameBoard;

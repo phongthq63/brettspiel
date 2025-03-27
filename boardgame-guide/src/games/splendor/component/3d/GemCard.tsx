@@ -1,7 +1,7 @@
 import * as THREE from 'three'
-import React, {forwardRef, memo, Ref, useImperativeHandle, useMemo, useRef, useState} from "react";
+import React, {forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState} from "react";
 import {useFrame, useLoader} from "@react-three/fiber";
-import {CuboidCollider, RapierRigidBody, RigidBody} from "@react-three/rapier";
+import {RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {Group, Mesh, Quaternion, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
 
@@ -139,8 +139,7 @@ const GemCard = forwardRef(({id, level, url, onClick, onClickNotThis, ...props}:
             </mesh>
 
             <RigidBody ref={rigidBodyRef}
-                       ccd={true}
-            >
+                       ccd={true}>
                 {/*<CuboidCollider args={[GemCardSize.width / 2, GemCardSize.height / 2, GemCardSize.depth / 2]} />*/}
                 <mesh>
                     <boxGeometry args={[GemCardSize.width, GemCardSize.height, GemCardSize.depth]}/>

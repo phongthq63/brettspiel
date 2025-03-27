@@ -1,6 +1,6 @@
 import GemCard from "@/games/splendor/component/3d/GemCard";
 import NobleCard from "@/games/splendor/component/3d/NobleCard";
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {useGameSplendor} from "@/games/splendor/store/game.context";
 import GamePlane from "@/games/splendor/component/3d/GamePlane";
 import GameTable, {GameTableSize} from "@/games/splendor/component/3d/GameTable";
@@ -9,10 +9,8 @@ import {useSharedRef} from "@/games/splendor/store/ref.context";
 import GemToken from "@/games/splendor/component/3d/GemToken";
 import PlayerBoard from "@/games/splendor/component/3d/PlayerBoard";
 import ActionDialog from "@/games/splendor/component/3d/ActionDialog";
-import {Card, Gem, Noble} from "@/games/splendor/types/game";
 import {useGameSocket} from "@/games/splendor/hooks/useGameSocket";
 import {useGameController} from "@/games/splendor/hooks/useGameController";
-import {TokenGemType} from "@/games/splendor/types/gem";
 
 
 function GameArea() {
@@ -37,50 +35,50 @@ function GameArea() {
     } = useGameController()
     useGameSocket(gameId)
 
-    const [DeckCard, setDeckCard] = useState<{[key: number]: Card[]}>({
-        [1]: [],
-        [2]: [],
-        [3]: []
-    })
-    const [FieldCard, setFieldCard] = useState<{[key: number]: Card[]}>({
-        [1]: [],
-        [2]: [],
-        [3]: []
-    })
-    const [Gem, setGem] = useState<{[key in TokenGemType]: Gem[]}>({
-        [TokenGemType.GOLD]: [],
-        [TokenGemType.ONYX]: [],
-        [TokenGemType.RUBY]: [],
-        [TokenGemType.EMERALD]: [],
-        [TokenGemType.SAPPHIRE]: [],
-        [TokenGemType.DIAMOND]: [],
-    })
-    const [DeckNoble, setDeckNoble] = useState<Noble[]>([])
-    const [FieldNoble, setFieldNoble] = useState<Noble[]>([])
-
-
-    useEffect(() => {
-        if (deckCard[1] && deckCard[2] && deckCard[3]) {
-            setDeckCard(deckCard)
-        }
-        if (fieldCard[1] && fieldCard[2] && fieldCard[3]) {
-            setFieldCard(fieldCard)
-        }
-        if (gems.gold != undefined &&
-            gems.onyx != undefined && 
-            gems.ruby != undefined && 
-            gems.emerald != undefined && 
-            gems.sapphire != undefined && 
-            gems.diamond != undefined) {
-            setGem(gems)
-        }
-        if (deckNoble) {
-            setDeckNoble(deckNoble)
-        }
-        if (fieldNoble) {
-            setFieldNoble(fieldNoble)
-        }
-    }, [deckCard, deckNoble, fieldCard, fieldNoble, gems])
+    // const [DeckCard, setDeckCard] = useState<{[key: number]: Card[]}>({
+    //     [1]: [],
+    //     [2]: [],
+    //     [3]: []
+    // })
+    // const [FieldCard, setFieldCard] = useState<{[key: number]: Card[]}>({
+    //     [1]: [],
+    //     [2]: [],
+    //     [3]: []
+    // })
+    // const [Gem, setGem] = useState<{[key in TokenGemType]: Gem[]}>({
+    //     [TokenGemType.GOLD]: [],
+    //     [TokenGemType.ONYX]: [],
+    //     [TokenGemType.RUBY]: [],
+    //     [TokenGemType.EMERALD]: [],
+    //     [TokenGemType.SAPPHIRE]: [],
+    //     [TokenGemType.DIAMOND]: [],
+    // })
+    // const [DeckNoble, setDeckNoble] = useState<Noble[]>([])
+    // const [FieldNoble, setFieldNoble] = useState<Noble[]>([])
+    //
+    //
+    // useEffect(() => {
+    //     if (deckCard[1] && deckCard[2] && deckCard[3]) {
+    //         setDeckCard(deckCard)
+    //     }
+    //     if (fieldCard[1] && fieldCard[2] && fieldCard[3]) {
+    //         setFieldCard(fieldCard)
+    //     }
+    //     if (gems.gold != undefined &&
+    //         gems.onyx != undefined &&
+    //         gems.ruby != undefined &&
+    //         gems.emerald != undefined &&
+    //         gems.sapphire != undefined &&
+    //         gems.diamond != undefined) {
+    //         setGem(gems)
+    //     }
+    //     if (deckNoble) {
+    //         setDeckNoble(deckNoble)
+    //     }
+    //     if (fieldNoble) {
+    //         setFieldNoble(fieldNoble)
+    //     }
+    // }, [deckCard, deckNoble, fieldCard, fieldNoble, gems])
 
 
     return (
@@ -92,7 +90,7 @@ function GameArea() {
             <group>
                 <group>
                     {
-                        DeckCard[3]?.map((card) => (
+                        deckCard[3]?.map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
                                      level={card.level}
@@ -104,7 +102,7 @@ function GameArea() {
                         ))
                     }
                     {
-                        DeckCard[2]?.map((card) => (
+                        deckCard[2]?.map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
                                      level={card.level}
@@ -116,7 +114,7 @@ function GameArea() {
                         ))
                     }
                     {
-                        DeckCard[1]?.map((card) => (
+                        deckCard[1]?.map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
                                      level={card.level}
@@ -130,7 +128,7 @@ function GameArea() {
                 </group>
                 <group>
                     {
-                        FieldCard[3].map((card) => (
+                        fieldCard[3].map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
                                      level={card.level}
@@ -142,7 +140,7 @@ function GameArea() {
                         ))
                     }
                     {
-                        FieldCard[2].map((card) => (
+                        fieldCard[2].map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
                                      level={card.level}
@@ -154,7 +152,7 @@ function GameArea() {
                         ))
                     }
                     {
-                        FieldCard[1].map((card) => (
+                        fieldCard[1].map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
                                      level={card.level}
@@ -168,22 +166,14 @@ function GameArea() {
                     }
                 </group>
                 <group>
-                    {Gem.gold.map((gem: Gem) => (
+                    {gems.gold.map((gem) => (
                         <GemToken key={gem.id}
                                   id={gem.id}
                                   type={gem.type}
                                   position={gem.position}
                                   ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                     ))}
-                    {Gem.onyx.map((gem) => (
-                        <GemToken key={gem.id}
-                                  id={gem.id}
-                                  type={gem.type}
-                                  onClick={() => onClickGem(gem)}
-                                  position={gem.position}
-                                  ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
-                    ))}
-                    {Gem.ruby.map((gem: Gem) => (
+                    {gems.onyx.map((gem) => (
                         <GemToken key={gem.id}
                                   id={gem.id}
                                   type={gem.type}
@@ -191,7 +181,7 @@ function GameArea() {
                                   position={gem.position}
                                   ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                     ))}
-                    {Gem.emerald.map((gem: Gem) => (
+                    {gems.ruby.map((gem) => (
                         <GemToken key={gem.id}
                                   id={gem.id}
                                   type={gem.type}
@@ -199,7 +189,7 @@ function GameArea() {
                                   position={gem.position}
                                   ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                     ))}
-                    {Gem.sapphire.map((gem: Gem) => (
+                    {gems.emerald.map((gem) => (
                         <GemToken key={gem.id}
                                   id={gem.id}
                                   type={gem.type}
@@ -207,7 +197,15 @@ function GameArea() {
                                   position={gem.position}
                                   ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                     ))}
-                    {Gem.diamond.map((gem: Gem) => (
+                    {gems.sapphire.map((gem) => (
+                        <GemToken key={gem.id}
+                                  id={gem.id}
+                                  type={gem.type}
+                                  onClick={() => onClickGem(gem)}
+                                  position={gem.position}
+                                  ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
+                    ))}
+                    {gems.diamond.map((gem) => (
                         <GemToken key={gem.id}
                                   id={gem.id}
                                   type={gem.type}
@@ -217,7 +215,7 @@ function GameArea() {
                     ))}
                 </group>
                 <group>
-                    {DeckNoble.map((noble) => (
+                    {deckNoble.map((noble) => (
                         <NobleCard key={noble.id}
                                    id={noble.id}
                                    url={noble.url}
@@ -225,7 +223,7 @@ function GameArea() {
                                    rotation={noble.rotation}
                                    ref={(element: any) => nobleRefs.current[noble.id] = element}/>
                     ))}
-                    {FieldNoble.map((noble) => (
+                    {fieldNoble.map((noble) => (
                         <NobleCard key={noble.id}
                                    id={noble.id}
                                    url={noble.url}

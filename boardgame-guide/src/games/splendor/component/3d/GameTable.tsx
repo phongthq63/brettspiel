@@ -1,4 +1,4 @@
-import React, {memo} from "react";
+import React from "react";
 import {useLoader} from "@react-three/fiber";
 import * as THREE from "three";
 import {RigidBody} from "@react-three/rapier";
@@ -42,4 +42,4 @@ function GameTable({onClick, ...props}: GameTableProps) {
     )
 }
 
-export default memo(GameTable)
+export default GameTable

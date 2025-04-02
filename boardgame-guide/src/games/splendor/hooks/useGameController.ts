@@ -1,5 +1,5 @@
 import {useThree} from "@react-three/fiber";
-import {Action, Card, Gem, GemAction, Noble, ObjectAction} from "@/games/splendor/types/game";
+import {Action, Card, Gem, GemAction, Noble, ObjectAction, PhysicsObjectAction} from "@/games/splendor/types/game";
 import {Euler, MathUtils, Quaternion, Vector3} from "three";
 import gsap from "gsap";
 import {NobleCardSize} from "@/games/splendor/component/3d/NobleCard";
@@ -42,7 +42,7 @@ export function useGameController() {
     const rollbackPhysicsObjects = () => {
         const animation = gsap.timeline()
         physicsObjectActions.reverse()
-            .forEach(object => {
+            .forEach((object: PhysicsObjectAction) => {
                 switch (object.type) {
                     case "noble":
                     case "card":
@@ -68,8 +68,9 @@ export function useGameController() {
                         const instance = gemRefs.current[object.id]
 
                         // Animation
-                        const startPosition = instance.position.clone()
+                        const startPosition: Vector3 = instance.position.clone()
                         const targetPosition = dataAction.oldPosition
+                        console.log(targetPosition)
                         const targetRotation = dataAction.oldRotation
                         const arcHeight = 1.5
                         animation.add(gsap.timeline()
@@ -84,6 +85,7 @@ export function useGameController() {
                                 onUpdate: function () {
                                     const progress = this.progress() // Progress from 0 → 1
                                     instance.position.z = MathUtils.lerp(startPosition.z, targetPosition[2], progress) + arcHeight * Math.sin(progress * Math.PI)
+                                    console.log(instance.position)
                                 }
                             })
                             .to(instance.rotation, {
@@ -96,55 +98,55 @@ export function useGameController() {
                                 // Start physics
                                 instance.startPhysics()
 
-                                // Update state
-                                if (dataAction.owner) {
-                                    setGems((prevState) => ({
-                                        ...prevState,
-                                        [dataAction.type]: prevState[dataAction.type].filter(gem => gem.id != object.id)
-                                    }))
-                                    setPlayers((prevState) => ({
-                                        ...prevState,
-                                        [currentPlayer]: ({
-                                            ...prevState[currentPlayer],
-                                            gems: {
-                                                ...prevState[currentPlayer].gems,
-                                                [dataAction.type]: [
-                                                    ...prevState[currentPlayer].gems[dataAction.type],
-                                                    {
-                                                        ...object.state,
-                                                        id: object.id,
-                                                        position: targetPosition,
-                                                        rotation: targetRotation
-                                                    }
-                                                ]
-                                            }
-                                        })
-                                    }))
-                                } else {
-                                    setGems((prevState) => ({
-                                        ...prevState,
-                                        [dataAction.type]: [
-                                            ...prevState[dataAction.type],
-                                            {
-                                                ...object.state,
-                                                id: object.id,
-                                                position: targetPosition,
-                                                rotation: targetRotation
-                                            }
-                                        ],
-                                    }))
-                                    setPlayers((prevState) => ({
-                                        ...prevState,
-                                        [currentPlayer]: {
-                                            ...prevState[currentPlayer],
-                                            gems: {
-                                                ...prevState[currentPlayer].gems,
-                                                [dataAction.type]: prevState[currentPlayer].gems[dataAction.type].filter(gem => gem.id != object.id)
-                                            }
-                                        }
-                                    }))
-                                }
-                            }))
+                                // // Update state
+                                // if (dataAction.owner) {
+                                //     setGems((prevState) => ({
+                                //         ...prevState,
+                                //         [dataAction.type]: prevState[dataAction.type].filter(gem => gem.id != object.id)
+                                //     }))
+                                //     setPlayers((prevState) => ({
+                                //         ...prevState,
+                                //         [currentPlayer]: ({
+                                //             ...prevState[currentPlayer],
+                                //             gems: {
+                                //                 ...prevState[currentPlayer].gems,
+                                //                 [dataAction.type]: [
+                                //                     ...prevState[currentPlayer].gems[dataAction.type],
+                                //                     {
+                                //                         ...object.state,
+                                //                         id: object.id,
+                                //                         position: targetPosition,
+                                //                         rotation: targetRotation
+                                //                     }
+                                //                 ]
+                                //             }
+                                //         })
+                                //     }))
+                                // } else {
+                                //     setGems((prevState) => ({
+                                //         ...prevState,
+                                //         [dataAction.type]: [
+                                //             ...prevState[dataAction.type],
+                                //             {
+                                //                 ...object.state,
+                                //                 id: object.id,
+                                //                 position: targetPosition,
+                                //                 rotation: targetRotation
+                                //             }
+                                //         ],
+                                //     }))
+                                //     setPlayers((prevState) => ({
+                                //         ...prevState,
+                                //         [currentPlayer]: {
+                                //             ...prevState[currentPlayer],
+                                //             gems: {
+                                //                 ...prevState[currentPlayer].gems,
+                                //                 [dataAction.type]: prevState[currentPlayer].gems[dataAction.type].filter(gem => gem.id != object.id)
+                                //             }
+                                //         }
+                                //     }))
+                                // }
+                            }, [], ">0.1"))
                         break
                     }
                 }
@@ -202,8 +204,8 @@ export function useGameController() {
             const direction = new Vector3()
             camera.getWorldDirection(direction) // Get the camera's forward direction
             direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
-            const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
-            const targetRotation = camera.rotation.clone()
+            const targetPosition: Vector3 = camera.position.clone().add(direction) // Calculate position in front of the camera
+            const targetRotation: Euler = camera.rotation.clone()
             const animation = gsap.timeline()
                 .call(() => {
                     // Stop physics
@@ -268,9 +270,9 @@ export function useGameController() {
             const direction = new Vector3()
             camera.getWorldDirection(direction) // Get the camera's forward direction
             direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
-            const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
-            const cameraQuaternion = camera.quaternion.clone().multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI))
-            const targetRotation = new Euler().setFromQuaternion(cameraQuaternion)
+            const targetPosition: Vector3 = camera.position.clone().add(direction) // Calculate position in front of the camera
+            const cameraQuaternion: Quaternion = camera.quaternion.clone().multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI))
+            const targetRotation: Euler = new Euler().setFromQuaternion(cameraQuaternion)
             const animation = gsap.timeline()
                 .call(() => {
                     // Stop physics
@@ -332,8 +334,8 @@ export function useGameController() {
             const direction = new Vector3()
             camera.getWorldDirection(direction) // Get the camera's forward direction
             direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
-            const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
-            const targetRotation = camera.rotation.clone()
+            const targetPosition: Vector3 = camera.position.clone().add(direction) // Calculate position in front of the camera
+            const targetRotation: Euler = camera.rotation.clone()
             const animation = gsap.timeline()
                 .call(() => {
                     // Stop physics
@@ -433,8 +435,8 @@ export function useGameController() {
             const instance = gemRefs.current[gemTake.id]
             const startPosition: Vector3 = instance.position.clone()
             const startRotation: Euler = instance.rotation.clone()
-            const playerPosition = new Vector3().fromArray(playerLocate.position)
-            const targetPosition = gemPosition
+            const playerPosition: Vector3 = new Vector3().fromArray(playerLocate.position)
+            const targetPosition: Vector3 = gemPosition
                 .add(playerPosition)
                 .applyEuler(new Euler(playerLocate.rotation[0], playerLocate.rotation[1], playerLocate.rotation[2]))
                 .setZ((playerDeckGems.length + 0.5) * GemTokenSize.depth)
@@ -514,8 +516,8 @@ export function useGameController() {
                 const direction = new Vector3()
                 camera.getWorldDirection(direction) // Get the camera's forward direction
                 direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
-                const centerScenePosition = camera.position.clone().add(direction) // Calculate position in front of the camerac
-                const cameraRotation = camera.rotation.clone()
+                const centerScenePosition: Vector3 = camera.position.clone().add(direction) // Calculate position in front of the camerac
+                const cameraRotation: Euler = camera.rotation.clone()
                 setDialog({
                     open: true,
                     position: centerScenePosition.toArray(),
@@ -563,9 +565,9 @@ export function useGameController() {
 
             // Animation
             const instance = gemRefs.current[gemReturn.id]
-            const startPosition = instance.position.clone()
-            const startRotation = instance.rotation.clone()
-            const targetPosition = gemPosition
+            const startPosition: Vector3 = instance.position.clone()
+            const startRotation: Euler = instance.rotation.clone()
+            const targetPosition: Vector3 = gemPosition
                 .setZ((deckGems.length + 0.5) * GemTokenSize.depth)
             const arcHeight = 1.5 // Adjust this value for a bigger/smaller arc
             gsap.timeline()
@@ -623,8 +625,8 @@ export function useGameController() {
                     data: {
                         type: gem.type,
                         owner: playerId,
-                        oldPosition: startPosition,
-                        oldRotation: startRotation
+                        oldPosition: startPosition.toArray(),
+                        oldRotation: [startRotation.x, startRotation.y, startRotation.z]
                     },
                     state: gem
                 }
@@ -669,8 +671,8 @@ export function useGameController() {
             const direction = new Vector3()
             camera.getWorldDirection(direction) // Get the camera's forward direction
             direction.multiplyScalar(1.5) // Distance from the camera (e.g., 5 units)
-            const targetPosition = camera.position.clone().add(direction) // Calculate position in front of the camera
-            const targetRotation = camera.rotation.clone()
+            const targetPosition: Vector3 = camera.position.clone().add(direction) // Calculate position in front of the camera
+            const targetRotation: Euler = camera.rotation.clone()
             const animation = gsap.timeline()
                 .call(() => {
                     // Stop physics

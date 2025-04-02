@@ -1,9 +1,9 @@
-import * as THREE from 'three'
-import React, {forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState} from "react";
+import React, {forwardRef, Ref, useImperativeHandle, useRef, useState} from "react";
 import {useFrame, useLoader} from "@react-three/fiber";
 import {RapierRigidBody, RigidBody} from "@react-three/rapier";
-import {Group, Mesh, Quaternion, Vector3} from "three";
+import {Group, Mesh, Quaternion, TextureLoader, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
+import {CardDictionary} from "@/games/splendor/constants/card";
 
 
 export const GemCardSize = {
@@ -14,34 +14,19 @@ export const GemCardSize = {
 
 interface GemCardProps {
     id: string
-    level: number
-    url: string
     onClick?: () => void
     onClickNotThis?: () => void
     position?: any
     rotation?: any
 }
 
-const GemCard = forwardRef(({id, level, url, onClick, onClickNotThis, ...props}: GemCardProps, ref: Ref<any>) => {
-    const [textureFront, textureBackLevel1, textureBackLevel2, textureBackLevel3] = useLoader(THREE.TextureLoader, [url, '/game/splendor/card/1/card1-back.jpg', '/game/splendor/card/2/card2-back.jpg', '/game/splendor/card/3/card3-back.jpg']);
+const GemCard = forwardRef(({id, onClick, onClickNotThis, ...props}: GemCardProps, ref: Ref<any>) => {
+    const cardConfig = CardDictionary[id]
+    const [textureFront, textureBack] = useLoader(TextureLoader, [cardConfig.url, cardConfig.urlBack]);
     const [onPhysics, setOnPhysics] = useState(true)
     const groupRef = useRef<Group>(null)
     const rigidBodyRef = useRef<RapierRigidBody>(null)
     const meshRef = useRef<Mesh>(null)
-
-
-    const textureBack = useMemo(() => {
-        switch (level) {
-            case 1:
-                return textureBackLevel1
-            case 2:
-                return textureBackLevel2
-            case 3:
-                return textureBackLevel3
-            default:
-                throw Error(`Level ${level} not supported`)
-        }
-    }, [level])
 
 
     useImperativeHandle(ref, () => {

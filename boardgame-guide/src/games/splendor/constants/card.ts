@@ -7,6 +7,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 1,
         url: '/game/splendor/card/1/diamond_3.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             sapphire: 3
         }
@@ -16,6 +17,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 1,
         url: '/game/splendor/card/1/diamond_4.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             emerald: 4
         }
@@ -25,6 +27,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 1,
         url: '/game/splendor/card/1/diamond_21.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             ruby: 2,
             onyx: 1
@@ -35,6 +38,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 1,
         url: '/game/splendor/card/1/diamond_22.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             sapphire: 2,
             onyx: 2
@@ -45,6 +49,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 1,
         url: '/game/splendor/card/1/diamond_221.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             sapphire: 2,
             emerald: 2,
@@ -56,6 +61,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 1,
         url: '/game/splendor/card/1/diamond_311.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 3,
             sapphire: 1,
@@ -67,6 +73,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 1,
         url: '/game/splendor/card/1/diamond_1111.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             sapphire: 1,
             emerald: 1,
@@ -79,6 +86,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 1,
         url: '/game/splendor/card/1/diamond_1211.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             sapphire: 1,
             emerald: 2,
@@ -91,6 +99,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 1,
         url: '/game/splendor/card/1/emerald_3.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             ruby: 3
         }
@@ -100,6 +109,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 1,
         url: '/game/splendor/card/1/emerald_4.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             onyx: 4
         }
@@ -109,6 +119,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 1,
         url: '/game/splendor/card/1/emerald_21.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 2,
             sapphire: 1
@@ -119,6 +130,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 1,
         url: '/game/splendor/card/1/emerald_22.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             sapphire: 2,
             ruby: 2
@@ -129,6 +141,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 1,
         url: '/game/splendor/card/1/emerald_122.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             sapphire: 1,
             ruby: 2,
@@ -140,6 +153,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 1,
         url: '/game/splendor/card/1/emerald_131.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 1,
             sapphire: 3,
@@ -151,6 +165,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 1,
         url: '/game/splendor/card/1/emerald_1111.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 1,
             sapphire: 1,
@@ -163,6 +178,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 1,
         url: '/game/splendor/card/1/emerald_1112.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 1,
             sapphire: 1,
@@ -175,6 +191,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 1,
         url: '/game/splendor/card/1/onyx_3.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             emerald: 3
         }
@@ -184,6 +201,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 1,
         url: '/game/splendor/card/1/onyx_4.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             sapphire: 4
         }
@@ -193,6 +211,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 1,
         url: '/game/splendor/card/1/onyx_21.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             emerald: 2,
             ruby: 1
@@ -203,6 +222,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 1,
         url: '/game/splendor/card/1/onyx_22.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 2,
             emerald: 2
@@ -213,6 +233,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 1,
         url: '/game/splendor/card/1/onyx_131.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             emerald: 1,
             ruby: 3,
@@ -224,6 +245,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 1,
         url: '/game/splendor/card/1/onyx_221.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 2,
             sapphire: 2,
@@ -235,6 +257,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 1,
         url: '/game/splendor/card/1/onyx_1111.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 1,
             sapphire: 1,
@@ -247,6 +270,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 1,
         url: '/game/splendor/card/1/onyx_1211.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 1,
             sapphire: 2,
@@ -259,6 +283,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 1,
         url: '/game/splendor/card/1/ruby_3.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 3
         }
@@ -268,6 +293,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 1,
         url: '/game/splendor/card/1/ruby_21.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             sapphire: 2,
             emerald: 1
@@ -278,6 +304,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 1,
         url: '/game/splendor/card/1/ruby_22.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 2,
             ruby: 2
@@ -288,6 +315,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 1,
         url: '/game/splendor/card/1/ruby_113.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 1,
             ruby: 1,
@@ -299,6 +327,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 1,
         url: '/game/splendor/card/1/ruby_212.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 2,
             emerald: 1,
@@ -310,6 +339,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 1,
         url: '/game/splendor/card/1/ruby_1111.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 1,
             sapphire: 1,
@@ -322,6 +352,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 1,
         url: '/game/splendor/card/1/ruby_2111.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 2,
             sapphire: 1,
@@ -334,6 +365,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 1,
         url: '/game/splendor/card/1/sapphire_3.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             onyx: 3
         }
@@ -343,6 +375,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 1,
         url: '/game/splendor/card/1/sapphire_4.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             ruby: 4
         }
@@ -352,6 +385,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 1,
         url: '/game/splendor/card/1/sapphire_12.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 1,
             onyx: 2
@@ -362,6 +396,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 1,
         url: '/game/splendor/card/1/sapphire_22.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             emerald: 2,
             onyx: 2
@@ -372,6 +407,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 1,
         url: '/game/splendor/card/1/sapphire_122.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 1,
             emerald: 2,
@@ -383,6 +419,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 1,
         url: '/game/splendor/card/1/sapphire_131.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             sapphire: 1,
             emerald: 3,
@@ -394,6 +431,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 1,
         url: '/game/splendor/card/1/sapphire_1111.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 1,
             emerald: 1,
@@ -406,6 +444,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 1,
         url: '/game/splendor/card/1/sapphire_1121.jpg',
+        urlBack: '/game/splendor/card/1/card1-back.jpg',
         cost: {
             diamond: 1,
             emerald: 1,
@@ -418,6 +457,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 2,
         url: '/game/splendor/card/2/diamond_5.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             ruby: 5
         }
@@ -427,6 +467,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 2,
         url: '/game/splendor/card/2/diamond_6.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 6
         }
@@ -436,6 +477,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 2,
         url: '/game/splendor/card/2/diamond_53.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             ruby: 5,
             onyx: 3
@@ -446,6 +488,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 2,
         url: '/game/splendor/card/2/diamond_142.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             emerald: 1,
             ruby: 4,
@@ -457,6 +500,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 2,
         url: '/game/splendor/card/2/diamond_233.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 2,
             sapphire: 3,
@@ -468,6 +512,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 2,
         url: '/game/splendor/card/2/diamond_322.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             emerald: 3,
             ruby: 2,
@@ -479,6 +524,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 2,
         url: '/game/splendor/card/2/emerald_5.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             emerald: 5,
         }
@@ -488,6 +534,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 2,
         url: '/game/splendor/card/2/emerald_6.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             emerald: 6,
         }
@@ -497,6 +544,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 2,
         url: '/game/splendor/card/2/emerald_53.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             sapphire: 5,
             emerald: 3,
@@ -507,6 +555,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 2,
         url: '/game/splendor/card/2/emerald_232.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 2,
             sapphire: 3,
@@ -518,6 +567,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 2,
         url: '/game/splendor/card/2/emerald_323.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 3,
             emerald: 2,
@@ -529,6 +579,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 2,
         url: '/game/splendor/card/2/emerald_421.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 4,
             sapphire: 2,
@@ -540,6 +591,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 2,
         url: '/game/splendor/card/2/onyx_5.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 5
         }
@@ -549,6 +601,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 2,
         url: '/game/splendor/card/2/onyx_6.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             onyx: 6
         }
@@ -558,6 +611,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 2,
         url: '/game/splendor/card/2/onyx_53.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             emerald: 5,
             ruby: 3
@@ -568,6 +622,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 2,
         url: '/game/splendor/card/2/onyx_142.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             sapphire: 1,
             emerald: 4,
@@ -579,6 +634,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 2,
         url: '/game/splendor/card/2/onyx_322.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 3,
             sapphire: 2,
@@ -590,6 +646,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 2,
         url: '/game/splendor/card/2/onyx_332.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 3,
             emerald: 3,
@@ -601,6 +658,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 2,
         url: '/game/splendor/card/2/ruby_5.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             onyx: 5
         }
@@ -610,6 +668,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 2,
         url: '/game/splendor/card/2/ruby_6.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             ruby: 6
         }
@@ -619,6 +678,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 2,
         url: '/game/splendor/card/2/ruby_35.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 3,
             onyx: 5
@@ -629,6 +689,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 2,
         url: '/game/splendor/card/2/ruby_142.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 1,
             sapphire: 4,
@@ -640,6 +701,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 2,
         url: '/game/splendor/card/2/ruby_223.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 2,
             ruby: 2,
@@ -651,6 +713,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 2,
         url: '/game/splendor/card/2/ruby_323.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             sapphire: 3,
             ruby: 2,
@@ -662,6 +725,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 2,
         url: '/game/splendor/card/2/sapphire_5.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             sapphire: 5
         }
@@ -671,6 +735,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 2,
         url: '/game/splendor/card/2/sapphire_6.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             sapphire: 6
         }
@@ -680,6 +745,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 2,
         url: '/game/splendor/card/2/sapphire_53.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 5,
             sapphire: 3
@@ -690,6 +756,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 2,
         url: '/game/splendor/card/2/sapphire_214.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             diamond: 2,
             ruby: 1,
@@ -701,6 +768,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 2,
         url: '/game/splendor/card/2/sapphire_223.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             sapphire: 2,
             emerald: 2,
@@ -712,6 +780,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 2,
         url: '/game/splendor/card/2/sapphire_233.jpg',
+        urlBack: '/game/splendor/card/2/card2-back.jpg',
         cost: {
             sapphire: 2,
             emerald: 2,
@@ -723,6 +792,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 3,
         url: '/game/splendor/card/3/diamond_7.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             onyx: 7
         }
@@ -732,6 +802,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 3,
         url: '/game/splendor/card/3/diamond_37.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             diamond: 3,
             onyx: 7
@@ -742,6 +813,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 3,
         url: '/game/splendor/card/3/diamond_336.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             diamond: 3,
             ruby: 3,
@@ -753,6 +825,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.DIAMOND,
         level: 3,
         url: '/game/splendor/card/3/diamond_3353.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             sapphire: 3,
             emerald: 3,
@@ -765,6 +838,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 3,
         url: '/game/splendor/card/3/emerald_7.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             sapphire: 7
         }
@@ -774,6 +848,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 3,
         url: '/game/splendor/card/3/emerald_73.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             sapphire: 7,
             emerald: 3
@@ -784,6 +859,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 3,
         url: '/game/splendor/card/3/emerald_363.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             diamond: 3,
             sapphire: 6,
@@ -795,6 +871,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.EMERALD,
         level: 3,
         url: '/game/splendor/card/3/emerald_5333.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             diamond: 5,
             sapphire: 3,
@@ -807,6 +884,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 3,
         url: '/game/splendor/card/3/onyx_7.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             ruby: 7
         }
@@ -816,6 +894,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 3,
         url: '/game/splendor/card/3/onyx_73.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             ruby: 7,
             onyx: 3
@@ -826,6 +905,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 3,
         url: '/game/splendor/card/3/onyx_363.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             emerald: 3,
             ruby: 6,
@@ -837,6 +917,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.ONYX,
         level: 3,
         url: '/game/splendor/card/3/onyx_3353.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             diamond: 3,
             sapphire: 3,
@@ -849,6 +930,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 3,
         url: '/game/splendor/card/3/ruby_7.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             emerald: 7
         }
@@ -858,6 +940,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 3,
         url: '/game/splendor/card/3/ruby_73.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             emerald: 7,
             ruby: 3
@@ -868,6 +951,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 3,
         url: '/game/splendor/card/3/ruby_363.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             sapphire: 3,
             emerald: 6,
@@ -879,6 +963,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.RUBY,
         level: 3,
         url: '/game/splendor/card/3/ruby_3533.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             ruby: 3,
             sapphire: 5,
@@ -891,6 +976,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 3,
         url: '/game/splendor/card/3/sapphire_7.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             diamond: 7
         }
@@ -900,6 +986,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 3,
         url: '/game/splendor/card/3/sapphire_73.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             diamond: 7,
             sapphire: 3
@@ -910,6 +997,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 3,
         url: '/game/splendor/card/3/sapphire_633.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             diamond: 6,
             sapphire: 3,
@@ -921,6 +1009,7 @@ export const Cards : CardGem[] = [
         type: CardGemType.SAPPHIRE,
         level: 3,
         url: '/game/splendor/card/3/sapphire_3335.jpg',
+        urlBack: '/game/splendor/card/3/card3-back.jpg',
         cost: {
             diamond: 3,
             emerald: 3,

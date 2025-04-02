@@ -1,7 +1,6 @@
 import React, {forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState} from "react";
 import {useFrame, useLoader} from "@react-three/fiber";
-import * as THREE from "three";
-import {Group, Mesh, Quaternion, Vector3} from "three";
+import {Group, Mesh, Quaternion, TextureLoader, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
 import {CylinderCollider, RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {TokenGemType} from "@/games/splendor/types/gem";
@@ -22,7 +21,8 @@ interface GemTokenProps {
 }
 
 const GemToken = forwardRef(({id, type, onClick, ...props}: GemTokenProps, ref: Ref<any>) => {
-    const [textureFront] = useLoader(THREE.TextureLoader, [GemDictionary[type].url]);
+    const gemConfig = GemDictionary[type]
+    const [textureFront] = useLoader(TextureLoader, [gemConfig.url]);
     const [onPhysics, setOnPhysics] = useState(true);
     const groupRef = useRef<Group>(null);
     const rigidBodyRef = useRef<RapierRigidBody>(null);

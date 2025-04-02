@@ -35,51 +35,6 @@ function GameArea() {
     } = useGameController()
     useGameSocket(gameId)
 
-    // const [DeckCard, setDeckCard] = useState<{[key: number]: Card[]}>({
-    //     [1]: [],
-    //     [2]: [],
-    //     [3]: []
-    // })
-    // const [FieldCard, setFieldCard] = useState<{[key: number]: Card[]}>({
-    //     [1]: [],
-    //     [2]: [],
-    //     [3]: []
-    // })
-    // const [Gem, setGem] = useState<{[key in TokenGemType]: Gem[]}>({
-    //     [TokenGemType.GOLD]: [],
-    //     [TokenGemType.ONYX]: [],
-    //     [TokenGemType.RUBY]: [],
-    //     [TokenGemType.EMERALD]: [],
-    //     [TokenGemType.SAPPHIRE]: [],
-    //     [TokenGemType.DIAMOND]: [],
-    // })
-    // const [DeckNoble, setDeckNoble] = useState<Noble[]>([])
-    // const [FieldNoble, setFieldNoble] = useState<Noble[]>([])
-    //
-    //
-    // useEffect(() => {
-    //     if (deckCard[1] && deckCard[2] && deckCard[3]) {
-    //         setDeckCard(deckCard)
-    //     }
-    //     if (fieldCard[1] && fieldCard[2] && fieldCard[3]) {
-    //         setFieldCard(fieldCard)
-    //     }
-    //     if (gems.gold != undefined &&
-    //         gems.onyx != undefined &&
-    //         gems.ruby != undefined &&
-    //         gems.emerald != undefined &&
-    //         gems.sapphire != undefined &&
-    //         gems.diamond != undefined) {
-    //         setGem(gems)
-    //     }
-    //     if (deckNoble) {
-    //         setDeckNoble(deckNoble)
-    //     }
-    //     if (fieldNoble) {
-    //         setFieldNoble(fieldNoble)
-    //     }
-    // }, [deckCard, deckNoble, fieldCard, fieldNoble, gems])
-
 
     return (
         <>
@@ -93,8 +48,6 @@ function GameArea() {
                         deckCard[3]?.map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
-                                     level={card.level}
-                                     url={card.url}
                                      onClick={() => onClickDeckCard(card)}
                                      position={card.position}
                                      rotation={card.rotation}
@@ -105,8 +58,6 @@ function GameArea() {
                         deckCard[2]?.map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
-                                     level={card.level}
-                                     url={card.url}
                                      onClick={() => onClickDeckCard(card)}
                                      position={card.position}
                                      rotation={card.rotation}
@@ -117,8 +68,6 @@ function GameArea() {
                         deckCard[1]?.map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
-                                     level={card.level}
-                                     url={card.url}
                                      onClick={() => onClickDeckCard(card)}
                                      position={card.position}
                                      rotation={card.rotation}
@@ -131,8 +80,6 @@ function GameArea() {
                         fieldCard[3].map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
-                                     level={card.level}
-                                     url={card.url}
                                      onClick={() => onClickCard(card)}
                                      position={card.position}
                                      rotation={card.rotation}
@@ -143,8 +90,6 @@ function GameArea() {
                         fieldCard[2].map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
-                                     level={card.level}
-                                     url={card.url}
                                      onClick={() => onClickCard(card)}
                                      position={card.position}
                                      rotation={card.rotation}
@@ -155,8 +100,6 @@ function GameArea() {
                         fieldCard[1].map((card) => (
                             <GemCard key={card.id}
                                      id={card.id}
-                                     level={card.level}
-                                     url={card.url}
                                      onClick={() => onClickCard(card)}
                                      onClickNotThis={() => onClickNotCurrentCard(card)}
                                      position={card.position}
@@ -218,7 +161,6 @@ function GameArea() {
                     {deckNoble.map((noble) => (
                         <NobleCard key={noble.id}
                                    id={noble.id}
-                                   url={noble.url}
                                    position={noble.position}
                                    rotation={noble.rotation}
                                    ref={(element: any) => nobleRefs.current[noble.id] = element}/>
@@ -226,7 +168,6 @@ function GameArea() {
                     {fieldNoble.map((noble) => (
                         <NobleCard key={noble.id}
                                    id={noble.id}
-                                   url={noble.url}
                                    onClick={() => onClickNoble(noble)}
                                    onClickNotThis={() => onClickNotCurrentNoble(noble)}
                                    position={noble.position}

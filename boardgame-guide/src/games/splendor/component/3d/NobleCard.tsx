@@ -1,9 +1,9 @@
 import {useFrame, useLoader} from "@react-three/fiber";
-import * as THREE from "three";
 import React, {forwardRef, Ref, useImperativeHandle, useRef, useState} from "react";
 import {RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
-import {Group, Mesh, Quaternion, Vector3} from "three";
+import {Group, Mesh, Quaternion, TextureLoader, Vector3} from "three";
+import {NobleDictionary} from "@/games/splendor/constants/noble";
 
 
 export const NobleCardSize = {
@@ -14,15 +14,15 @@ export const NobleCardSize = {
 
 interface NobleCardProps {
     id: string
-    url: string
     onClick?: () => void
     onClickNotThis?: () => void
     position?: any
     rotation?: any
 }
 
-const NobleCard = forwardRef(({id, url, onClick, onClickNotThis, ...props}: NobleCardProps, ref: Ref<any>) => {
-    const [textureFront, textureBack] = useLoader(THREE.TextureLoader, [url, "/game/splendor/noble/noble-back.jpg"]);
+const NobleCard = forwardRef(({id, onClick, onClickNotThis, ...props}: NobleCardProps, ref: Ref<any>) => {
+    const nobleConfig = NobleDictionary[id]
+    const [textureFront, textureBack] = useLoader(TextureLoader, [nobleConfig.url, nobleConfig.urlBack]);
     const [onPhysics, setOnPhysics] = useState(true);
     const groupRef = useRef<Group>(null);
     const rigidBodyRef = useRef<RapierRigidBody>(null);

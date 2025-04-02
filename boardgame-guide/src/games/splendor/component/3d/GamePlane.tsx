@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 import {RigidBody} from "@react-three/rapier";
 
 interface GamePlaneProps {
@@ -16,4 +16,4 @@ function GamePlane({...props}: GamePlaneProps) {
     )
 }
 
-export default GamePlane
+export default memo(GamePlane)

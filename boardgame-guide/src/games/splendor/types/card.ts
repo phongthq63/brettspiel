@@ -11,6 +11,7 @@ export interface CardGem {
     type: CardGemType
     level: 1 | 2 | 3
     url: string
+    urlBack: string
     cost: {
         gold?: number
         onyx?: number

@@ -1,7 +1,7 @@
-import React from "react";
+import React, {memo} from "react";
 import {useLoader} from "@react-three/fiber";
-import * as THREE from "three";
 import {RigidBody} from "@react-three/rapier";
+import {TextureLoader} from "three";
 
 export const GameTableSize = {
     width: 18,
@@ -15,7 +15,7 @@ interface GameTableProps {
 }
 
 function GameTable({onClick, ...props}: GameTableProps) {
-    const texture = useLoader(THREE.TextureLoader, "/game/splendor/board.jpg");
+    const texture = useLoader(TextureLoader, "/game/splendor/board.jpg");
 
     return (
         <RigidBody type={"fixed"}>
@@ -42,4 +42,4 @@ function GameTable({onClick, ...props}: GameTableProps) {
     )
 }
 
-export default GameTable
+export default memo(GameTable)

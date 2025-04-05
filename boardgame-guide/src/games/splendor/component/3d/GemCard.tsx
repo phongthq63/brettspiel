@@ -1,4 +1,4 @@
-import React, {forwardRef, Ref, useImperativeHandle, useRef, useState} from "react";
+import React, {forwardRef, Ref, useImperativeHandle, useRef} from "react";
 import {useFrame, useLoader} from "@react-three/fiber";
 import {RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {Group, Mesh, Quaternion, TextureLoader, Vector3} from "three";
@@ -9,7 +9,7 @@ import {CardDictionary} from "@/games/splendor/constants/card";
 export const GemCardSize = {
     width: 0.72,
     height: 1,
-    depth: 0.01
+    depth: 0.015
 };
 
 interface GemCardProps {
@@ -22,11 +22,11 @@ interface GemCardProps {
 
 const GemCard = forwardRef(({id, onClick, onClickNotThis, ...props}: GemCardProps, ref: Ref<any>) => {
     const cardConfig = CardDictionary[id]
-    const [textureFront, textureBack] = useLoader(TextureLoader, [cardConfig.url, cardConfig.urlBack]);
-    const [onPhysics, setOnPhysics] = useState(true)
+    const [textureFront, textureBack] = useLoader(TextureLoader, [cardConfig.url, cardConfig.urlBack])
     const groupRef = useRef<Group>(null)
     const rigidBodyRef = useRef<RapierRigidBody>(null)
     const meshRef = useRef<Mesh>(null)
+    const physics = useRef<boolean>(true)
 
 
     useImperativeHandle(ref, () => {
@@ -50,30 +50,29 @@ const GemCard = forwardRef(({id, onClick, onClickNotThis, ...props}: GemCardProp
                 }
             },
             stopPhysics() {
-                setOnPhysics(false)
+                physics.current = false
                 if (rigidBodyRef.current) {
                     rigidBodyRef.current.setBodyType(RigidBodyType.KinematicPositionBased, true);
                 }
             },
             startPhysics() {
-                setOnPhysics(true)
+                physics.current = true
                 if (rigidBodyRef.current) {
                     rigidBodyRef.current.setBodyType(RigidBodyType.Dynamic, true);
                 }
             }
         })
-    });
+    })
 
+    const position = new Vector3()
+    const rotation = new Quaternion()
     useFrame(() => {
         if (!groupRef.current || !meshRef.current || !rigidBodyRef.current) return;
 
         // Update rigid body theo position mesh interactive
-        if (!onPhysics) {
-            const position = new Vector3()
+        if (!physics.current) {
             groupRef.current.getWorldPosition(position)
             rigidBodyRef.current.setNextKinematicTranslation(position)
-
-            const rotation = new Quaternion()
             groupRef.current.getWorldQuaternion(rotation)
             rigidBodyRef.current.setNextKinematicRotation(rotation)
         }
@@ -83,15 +82,14 @@ const GemCard = forwardRef(({id, onClick, onClickNotThis, ...props}: GemCardProp
          * ? when it's moving without user input (after user stops
          * ? dragging or RigidBody is moving)
          */
-        if (onPhysics && rigidBodyRef.current.bodyType() !== 2 && !rigidBodyRef.current.isSleeping()) {
+        if (physics.current && rigidBodyRef.current.bodyType() !== RigidBodyType.KinematicPositionBased && !rigidBodyRef.current.isSleeping()) {
             const physicsPosition = rigidBodyRef.current.translation()
             const physicsRotation = rigidBodyRef.current.rotation()
-            const physicsQuaternion = new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w)
 
             // Position
             groupRef.current.position.copy(physicsPosition)
             // Rotation
-            groupRef.current.setRotationFromQuaternion(physicsQuaternion)
+            groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w))
         }
     })
 
@@ -135,6 +133,6 @@ const GemCard = forwardRef(({id, onClick, onClickNotThis, ...props}: GemCardProp
     )
 })
 
-GemCard.displayName = "GemCard";
+GemCard.displayName = "GemCard"
 
 export default GemCard

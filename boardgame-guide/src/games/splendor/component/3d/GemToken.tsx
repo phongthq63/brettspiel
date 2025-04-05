@@ -1,4 +1,4 @@
-import React, {forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState} from "react";
+import React, {forwardRef, Ref, useImperativeHandle, useMemo, useRef} from "react";
 import {useFrame, useLoader} from "@react-three/fiber";
 import {Group, Mesh, Quaternion, TextureLoader, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
@@ -22,11 +22,11 @@ interface GemTokenProps {
 
 const GemToken = forwardRef(({id, type, onClick, ...props}: GemTokenProps, ref: Ref<any>) => {
     const gemConfig = GemDictionary[type]
-    const [textureFront] = useLoader(TextureLoader, [gemConfig.url]);
-    const [onPhysics, setOnPhysics] = useState(true);
-    const groupRef = useRef<Group>(null);
-    const rigidBodyRef = useRef<RapierRigidBody>(null);
-    const meshRef = useRef<Mesh>(null);
+    const [textureFront] = useLoader(TextureLoader, [gemConfig.url])
+    const groupRef = useRef<Group>(null)
+    const rigidBodyRef = useRef<RapierRigidBody>(null)
+    const meshRef = useRef<Mesh>(null)
+    const physics = useRef<boolean>(true)
 
     const color = useMemo(() => {
         return GemDictionary[type].color
@@ -54,13 +54,13 @@ const GemToken = forwardRef(({id, type, onClick, ...props}: GemTokenProps, ref: 
                 }
             },
             stopPhysics() {
-                setOnPhysics(false)
+                physics.current = false
                 if (rigidBodyRef.current) {
                     rigidBodyRef.current.setBodyType(RigidBodyType.KinematicPositionBased, true);
                 }
             },
             startPhysics() {
-                setOnPhysics(true)
+                physics.current = true
                 if (rigidBodyRef.current) {
                     rigidBodyRef.current.setBodyType(RigidBodyType.Dynamic, true);
                 }
@@ -68,16 +68,15 @@ const GemToken = forwardRef(({id, type, onClick, ...props}: GemTokenProps, ref: 
         })
     });
 
+    const position = new Vector3()
+    const rotation = new Quaternion()
     useFrame(() => {
         if (!groupRef.current || !meshRef.current || !rigidBodyRef.current) return;
 
         // Update rigid body theo position mesh interactive
-        if (!onPhysics) {
-            const position = new Vector3()
+        if (!physics.current) {
             groupRef.current.getWorldPosition(position)
             rigidBodyRef.current.setNextKinematicTranslation(position)
-
-            const rotation = new Quaternion()
             groupRef.current.getWorldQuaternion(rotation)
             rigidBodyRef.current.setNextKinematicRotation(rotation)
         }
@@ -87,15 +86,14 @@ const GemToken = forwardRef(({id, type, onClick, ...props}: GemTokenProps, ref: 
          * ? when it's moving without user input (after user stops
          * ? dragging or RigidBody is moving)
          */
-        if (onPhysics && rigidBodyRef.current.bodyType() !== 2 && !rigidBodyRef.current.isSleeping()) {
+        if (physics.current && rigidBodyRef.current.bodyType() !== RigidBodyType.KinematicPositionBased && !rigidBodyRef.current.isSleeping()) {
             const physicsPosition = rigidBodyRef.current.translation()
             const physicsRotation = rigidBodyRef.current.rotation()
-            const physicsQuaternion = new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w)
 
             // Position
             groupRef.current.position.copy(physicsPosition)
             // Rotation
-            groupRef.current.setRotationFromQuaternion(physicsQuaternion)
+            groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w))
         }
     })
 

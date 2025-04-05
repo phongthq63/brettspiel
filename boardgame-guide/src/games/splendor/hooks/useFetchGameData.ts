@@ -1,4 +1,4 @@
-import {useGameSplendor} from "@/games/splendor/store/game.context";
+import {useGameStore} from "@/games/splendor/store/game.store";
 import {useEffect} from "react";
 import {
     CardVO,
@@ -19,8 +19,10 @@ import {NobleCardSize} from "@/games/splendor/component/3d/NobleCard";
 import {Euler, Vector3} from "three";
 import {CardGemType} from "@/games/splendor/types/card";
 import {GemDictionary} from "@/games/splendor/constants/gem";
+import {useUser} from "@/store/user";
 
 export function useFetchGameData(gameId: string) {
+    const { user } = useUser()
     const {
         setGameId,
         setStatus,
@@ -32,8 +34,9 @@ export function useFetchGameData(gameId: string) {
         setGems,
         setDeckNoble,
         setFieldNoble,
-        setPlayers
-    } = useGameSplendor()
+        setPlayers,
+        setIsMyTurn
+    } = useGameStore();
 
     useEffect(() => {
         setGameId(gameId)
@@ -105,9 +108,10 @@ export function useFetchGameData(gameId: string) {
                     setPlayers(formatPlayerData(gameData.ingame_data.players));
                 }
 
+                setIsMyTurn(user?.user_id)
             })
             .catch(error => console.error("Error fetching game data", error))
-    }, [gameId]);
+    }, [user, gameId]);
 }
 
 // Helper Functions

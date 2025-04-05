@@ -1,23 +1,31 @@
 import {Button} from "@mui/material";
 import React, {useMemo} from "react";
-import {useGameSplendor} from "@/games/splendor/store/game.context";
+import {useGameStore} from "@/games/splendor/store/game.store";
 import {useSocket} from "@/store/socket";
 import {useGameActions} from "@/games/splendor/hooks/useGameActions";
+import {useShallow} from "zustand/react/shallow";
 
 
 export default function ActionDescription() {
     const { connected } = useSocket()
     const {
         status,
-        currentPlayer,
         currentAction,
+        currentPlayer,
         isMyTurn
-    } = useGameSplendor()
+    } = useGameStore(useShallow((state) => ({
+        status: state.status,
+        currentAction: state.currentAction,
+        currentPlayer: state.currentPlayer,
+        isMyTurn: state.isMyTurn
+    })))
     const {startGame, endTurn} = useGameActions()
+
 
     const playerName = useMemo(() => {
         return isMyTurn ? "Your" : currentPlayer
     }, [isMyTurn, currentPlayer]);
+
 
     const textAction = useMemo(() => {
         switch (currentAction?.type) {

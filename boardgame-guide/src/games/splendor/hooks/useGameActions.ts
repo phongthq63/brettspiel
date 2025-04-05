@@ -1,15 +1,18 @@
 import {toast} from "react-toastify";
 import {GameService} from "@/games/splendor/service/splendor.service";
-import {useGameSplendor} from "@/games/splendor/store/game.context";
+import {useGameStore} from "@/games/splendor/store/game.store";
 import {Action} from "@/games/splendor/types/game";
 import {TokenGemType} from "@/games/splendor/types/gem";
+import {useShallow} from "zustand/react/shallow";
 
 export function useGameActions() {
     const {
         gameId,
         setCurrentAction,
-    } = useGameSplendor()
-
+    } = useGameStore(useShallow((state) => ({
+        gameId: state.gameId,
+        setCurrentAction: state.setCurrentAction,
+    })))
 
     const startGame = () => {
         if (gameId) {

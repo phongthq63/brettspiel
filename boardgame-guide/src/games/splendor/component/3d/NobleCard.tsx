@@ -1,5 +1,5 @@
 import {useFrame, useLoader} from "@react-three/fiber";
-import React, {forwardRef, Ref, useImperativeHandle, useRef, useState} from "react";
+import React, {forwardRef, Ref, useImperativeHandle, useRef} from "react";
 import {RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
 import {Group, Mesh, Quaternion, TextureLoader, Vector3} from "three";
@@ -22,11 +22,11 @@ interface NobleCardProps {
 
 const NobleCard = forwardRef(({id, onClick, onClickNotThis, ...props}: NobleCardProps, ref: Ref<any>) => {
     const nobleConfig = NobleDictionary[id]
-    const [textureFront, textureBack] = useLoader(TextureLoader, [nobleConfig.url, nobleConfig.urlBack]);
-    const [onPhysics, setOnPhysics] = useState(true);
-    const groupRef = useRef<Group>(null);
-    const rigidBodyRef = useRef<RapierRigidBody>(null);
-    const meshRef = useRef<Mesh>(null);
+    const [textureFront, textureBack] = useLoader(TextureLoader, [nobleConfig.url, nobleConfig.urlBack])
+    const groupRef = useRef<Group>(null)
+    const rigidBodyRef = useRef<RapierRigidBody>(null)
+    const meshRef = useRef<Mesh>(null)
+    const physics = useRef<boolean>(true)
 
 
     useImperativeHandle(ref, () => {
@@ -50,13 +50,13 @@ const NobleCard = forwardRef(({id, onClick, onClickNotThis, ...props}: NobleCard
                 }
             },
             stopPhysics() {
-                setOnPhysics(false)
+                physics.current = false
                 if (rigidBodyRef.current) {
                     rigidBodyRef.current.setBodyType(RigidBodyType.KinematicPositionBased, true);
                 }
             },
             startPhysics() {
-                setOnPhysics(true)
+                physics.current = true
                 if (rigidBodyRef.current) {
                     rigidBodyRef.current.setBodyType(RigidBodyType.Dynamic, true);
                 }
@@ -64,16 +64,15 @@ const NobleCard = forwardRef(({id, onClick, onClickNotThis, ...props}: NobleCard
         })
     });
 
+    const position = new Vector3()
+    const rotation = new Quaternion()
     useFrame(() => {
         if (!groupRef.current || !meshRef.current || !rigidBodyRef.current) return;
 
         // Update rigid body theo position mesh interactive
-        if (!onPhysics) {
-            const position = new Vector3()
+        if (!physics.current) {
             groupRef.current.getWorldPosition(position)
             rigidBodyRef.current.setNextKinematicTranslation(position)
-
-            const rotation = new Quaternion()
             groupRef.current.getWorldQuaternion(rotation)
             rigidBodyRef.current.setNextKinematicRotation(rotation)
         }
@@ -83,15 +82,14 @@ const NobleCard = forwardRef(({id, onClick, onClickNotThis, ...props}: NobleCard
          * ? when it's moving without user input (after user stops
          * ? dragging or RigidBody is moving)
          */
-        if (onPhysics && rigidBodyRef.current.bodyType() !== 2 && !rigidBodyRef.current.isSleeping()) {
+        if (physics.current && rigidBodyRef.current.bodyType() !== RigidBodyType.KinematicPositionBased && !rigidBodyRef.current.isSleeping()) {
             const physicsPosition = rigidBodyRef.current.translation()
             const physicsRotation = rigidBodyRef.current.rotation()
-            const physicsQuaternion = new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w)
 
             // Position
             groupRef.current.position.copy(physicsPosition)
             // Rotation
-            groupRef.current.setRotationFromQuaternion(physicsQuaternion)
+            groupRef.current.setRotationFromQuaternion(new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w))
         }
     })
 

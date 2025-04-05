@@ -1,10 +1,10 @@
 import GemToken from "@/games/splendor/component/3d/GemToken";
 import GemCard from "@/games/splendor/component/3d/GemCard";
 import React, {memo} from "react";
-import {useGameSplendor} from "@/games/splendor/store/game.context";
 import {useSharedRef} from "@/games/splendor/store/ref.context";
 import NobleCard from "@/games/splendor/component/3d/NobleCard";
 import {useGameController} from "@/games/splendor/hooks/useGameController";
+import {useGameStore} from "@/games/splendor/store/game.store";
 
 
 interface PlayerBoardProps {
@@ -13,10 +13,9 @@ interface PlayerBoardProps {
 
 const PlayerBoard = ({playerId} : PlayerBoardProps) => {
     const {cardRefs, nobleRefs, gemRefs} = useSharedRef()
-    const {players} = useGameSplendor()
     const {onClickPlayerGem, onClickPlayerReserveCard} = useGameController()
+    const players = useGameStore((state) => state.players)
     const player = players[playerId]
-
 
     return (
         <group>

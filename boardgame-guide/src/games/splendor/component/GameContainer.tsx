@@ -4,12 +4,15 @@ import GameCanvas from "@/games/splendor/component/3d/GameRenderer";
 import ActionDescription from "@/games/splendor/component/ui/ActionDescription";
 import {useFetchGameData} from "@/games/splendor/hooks/useFetchGameData";
 import {useGameStore} from "@/games/splendor/store/game.store";
+import {useShallow} from "zustand/react/shallow";
 
 function GameContainer({gameId}: {gameId: string}) {
-    const players = useGameStore((state) => state.players)
+    const players = useGameStore(useShallow((state) => state.players))
     useFetchGameData(gameId)
 
+
     const hasPlayers = Object.keys(players || {}).length > 0
+
 
     return (
         <>
@@ -26,7 +29,7 @@ function GameContainer({gameId}: {gameId: string}) {
                             {Object.keys(players).map((playerId: string) => (
                                 <PlayerGameInfoBox 
                                     key={playerId}
-                                    id={playerId}
+                                    playerId={playerId}
                                     data={{
                                         ...players[playerId],
                                         nobles: players[playerId].nobles,

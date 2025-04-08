@@ -1,11 +1,11 @@
 import Image from "next/image";
-import React, {memo, useMemo} from "react";
+import React, {memo, useEffect, useMemo, useState} from "react";
 import {useUser} from "@/store/user";
 import {Card, Noble} from "@/games/splendor/types/game";
 
 
 interface PlayerGameInfoProps {
-    id: string
+    playerId: string
     data: {
         id: string
         name: string
@@ -27,26 +27,33 @@ interface PlayerGameInfoProps {
     }
 }
 
-const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
+const PlayerGameInfo = ({ playerId, data }: PlayerGameInfoProps) => {
     const {user} = useUser()
+    const [gold, setGold] = useState<number>(0)
+    const [diamond, setDiamond] = useState<number>(0)
+    const [sapphire, setSapphire] = useState<number>(0)
+    const [emerald, setEmerald] = useState<number>(0)
+    const [ruby, setRuby] = useState<number>(0)
+    const [onyx, setOnyx] = useState<number>(0)
 
 
     const imageCardReserveUrl = useMemo(() => (card: Card) => {
-        if (user?.user_id == id) {
+        if (user?.user_id == playerId) {
             return card.url
+        } else {
+            return card.urlBack
         }
-        
-        switch (card.level) {
-            case 1:
-                return '/game/splendor/card/1/card1-back.jpg'
-            case 2:
-                return '/game/splendor/card/2/card2-back.jpg'
-            case 3:
-                return '/game/splendor/card/3/card3-back.jpg'
-            default:
-                throw new Error(`Level ${card.level} not supported`)
-        }
-    }, [id, user])
+    }, [playerId, user])
+
+
+    useEffect(() => {
+        setGold(data.gold)
+        setDiamond(data.diamond)
+        setSapphire(data.sapphire)
+        setEmerald(data.emerald)
+        setRuby(data.ruby)
+        setOnyx(data.onyx)
+    }, [data])
 
     
     return (
@@ -80,9 +87,9 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
                                         <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.cardDiamond}</p>
                                     </div>
                                 )}
-                                {data.diamond > 0 && (
+                                {diamond > 0 && (
                                     <div className="absolute top-0.5 right-0.5">
-                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.diamond}</p>
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{diamond}</p>
                                     </div>
                                 )}
                             </div>
@@ -97,9 +104,9 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
                                         <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.cardSapphire}</p>
                                     </div>
                                 )}
-                                {data.sapphire > 0 && (
+                                {sapphire > 0 && (
                                     <div className="absolute top-0.5 right-0.5">
-                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.sapphire}</p>
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{sapphire}</p>
                                     </div>
                                 )}
                             </div>
@@ -114,9 +121,9 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
                                         <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.cardEmerald}</p>
                                     </div>
                                 )}
-                                {data.emerald > 0 && (
+                                {emerald > 0 && (
                                     <div className="absolute top-0.5 right-0.5">
-                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.emerald}</p>
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{emerald}</p>
                                     </div>
                                 )}
                             </div>
@@ -131,9 +138,9 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
                                         <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.cardRuby}</p>
                                     </div>
                                 )}
-                                {data.ruby > 0 && (
+                                {ruby > 0 && (
                                     <div className="absolute top-0.5 right-0.5">
-                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.ruby}</p>
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ruby}</p>
                                     </div>
                                 )}
                             </div>
@@ -148,9 +155,9 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
                                         <p className="text-base text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.cardOnyx}</p>
                                     </div>
                                 )}
-                                {data.onyx > 0 && (
+                                {onyx > 0 && (
                                     <div className="absolute top-0.5 right-0.5">
-                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{data.onyx}</p>
+                                        <p className="text-xl text-white italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{onyx}</p>
                                     </div>
                                 )}
                             </div>
@@ -160,7 +167,7 @@ const PlayerGameInfo = ({ id, data }: PlayerGameInfoProps) => {
                         </div>
                     </div>
                     <div className="relative flex items-center mx-5">
-                        <p className="text-3xl text-yellow-300 italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ data.gold }</p>
+                        <p className="text-3xl text-yellow-300 italic font-bold drop-shadow-[0_0px_1px_rgba(0,0,0,1)]">{ gold }</p>
                         <div className="absolute w-5 h-4 -bottom-2 -right-2">
                             <Image src="/game/splendor/gem/gold.png" alt="Gold" fill sizes={"100%"}/>
                         </div>

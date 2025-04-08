@@ -2,7 +2,6 @@
 
 import React, {use, useEffect} from "react";
 import GameContainer from "@/games/splendor/component/GameContainer";
-import {SharedRefProvider} from "@/games/splendor/store/ref.context";
 
 export default function Page({ params } : { params: Promise<{ id: string }>}) {
     const {id} = use(params);
@@ -14,8 +13,6 @@ export default function Page({ params } : { params: Promise<{ id: string }>}) {
 
 
     return (
-        <SharedRefProvider>
-            <GameContainer gameId={id}/>
-        </SharedRefProvider>
+        <GameContainer gameId={id}/>
     )
 }

@@ -116,27 +116,29 @@ export function useFetchGameData(gameId: string) {
 
 // Helper Functions
 function formatDeckCards(cards: CardVO[], status: number, level: number): Card[] {
-    return cards.map((card, index) => {
-        if (status == 0) {
-            return {
-                ...card,
-                ...CardDictionary[card.id],
-                position: [CardPosition.level[level].desk[0], CardPosition.level[level].desk[1], index * GemCardSize.depth + CardPosition.level[level].desk[2] + 0.2],
-                rotation: [0, 0, 0]
-            };
-        } else {
-            return {
-                ...card,
-                ...CardDictionary[card.id],
-                position: [CardPosition.level[level].desk[0], CardPosition.level[level].desk[1], (cards.length - 1 - index) * GemCardSize.depth + CardPosition.level[level].desk[2] + 0.2],
-                rotation: [0, Math.PI, 0]
-            };
-        }
-    })
+    return cards
+        .map((card, index) => {
+            if (status == 0) {
+                return {
+                    ...card,
+                    ...CardDictionary[card.id],
+                    position: [CardPosition.level[level].desk[0], CardPosition.level[level].desk[1], index * GemCardSize.depth + CardPosition.level[level].desk[2] + 0.2],
+                    rotation: [0, 0, 0]
+                };
+            } else {
+                return {
+                    ...card,
+                    ...CardDictionary[card.id],
+                    position: [CardPosition.level[level].desk[0], CardPosition.level[level].desk[1], (cards.length - 1 - index) * GemCardSize.depth + CardPosition.level[level].desk[2] + 0.2],
+                    rotation: [0, Math.PI, 0]
+                };
+            }
+        })
 }
 
 function formatFieldCards(fieldCards: FieldCardVO[], level: number): Card[] {
-    return fieldCards.filter((fieldCard: FieldCardVO) => fieldCard.card)
+    return fieldCards
+        .filter((fieldCard: FieldCardVO) => fieldCard.card)
         .map((fieldCard) => {
             const position = CardPosition.level[level].field[fieldCard.position ?? 0]
             return {
@@ -264,12 +266,13 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
             .add(vector)
             .applyEuler(euler)
 
-        return nobles.map((noble: NobleVO, index: number)=> ({
-            ...noble,
-            ...NobleDictionary[noble.id ?? ''],
-            position: [index * PlayerPosition.distance + noblePosition.x, noblePosition.y, index * NobleCardSize.depth + noblePosition.z + 0.2],
-            rotation: [euler.x, euler.y, euler.z]
-        }))
+        return nobles
+            .map((noble: NobleVO, index: number)=> ({
+                ...noble,
+                ...NobleDictionary[noble.id ?? ''],
+                position: [index * PlayerPosition.distance + noblePosition.x, noblePosition.y, index * NobleCardSize.depth + noblePosition.z + 0.2],
+                rotation: [euler.x, euler.y, euler.z]
+            }))
     }
     function formatPlayerCards(locate: {position: [number, number, number], rotation: [number, number, number]}, cards: CardVO[]): {
         onyx: Card[]
@@ -300,35 +303,40 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
             .applyEuler(euler)
 
         return {
-            "diamond": cards.filter((card: CardVO) => card.type == CardGemType.DIAMOND)
+            "diamond": cards
+                .filter((card: CardVO) => card.type == CardGemType.DIAMOND)
                 .map((card: CardVO, index: number) => ({
                     ...card,
                     ...CardDictionary[card?.id || ''],
                     position: [diamondCardPosition.x, index * PlayerPosition.distance + diamondCardPosition.y, 0.1 - index * GemCardSize.depth + diamondCardPosition.z],
                     rotation: [euler.x, euler.y, euler.z]
                 })),
-            "sapphire": cards.filter((card: CardVO) => card.type == CardGemType.SAPPHIRE)
+            "sapphire": cards
+                .filter((card: CardVO) => card.type == CardGemType.SAPPHIRE)
                 .map((card: CardVO, index: number) => ({
                     ...card,
                     ...CardDictionary[card?.id || ''],
                     position: [sapphireCardPosition.x, index * PlayerPosition.distance + sapphireCardPosition.y, 0.1 - index * GemCardSize.depth + sapphireCardPosition.z],
                     rotation: [euler.x, euler.y, euler.z]
                 })),
-            "emerald": cards.filter((card: CardVO) => card.type == CardGemType.EMERALD)
+            "emerald": cards
+                .filter((card: CardVO) => card.type == CardGemType.EMERALD)
                 .map((card: CardVO, index: number) => ({
                     ...card,
                     ...CardDictionary[card?.id || ''],
                     position: [emeraldCardPosition.x, index * PlayerPosition.distance + emeraldCardPosition.y, 0.1 - index * GemCardSize.depth + emeraldCardPosition.z],
                     rotation: [euler.x, euler.y, euler.z]
                 })),
-            "ruby": cards.filter((card: CardVO) => card.type == CardGemType.RUBY)
+            "ruby": cards
+                .filter((card: CardVO) => card.type == CardGemType.RUBY)
                 .map((card: CardVO, index: number) => ({
                     ...card,
                     ...CardDictionary[card?.id || ''],
                     position: [rubyCardPosition.x, index * PlayerPosition.distance + rubyCardPosition.y, 0.1 - index * GemCardSize.depth + rubyCardPosition.z],
                     rotation: [euler.x, euler.y, euler.z]
                 })),
-            "onyx": cards.filter((card: CardVO) => card.type == CardGemType.ONYX)
+            "onyx": cards
+                .filter((card: CardVO) => card.type == CardGemType.ONYX)
                 .map((card: CardVO, index: number) => ({
                     ...card,
                     ...CardDictionary[card?.id || ''],
@@ -347,12 +355,13 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
             .add(vector)
             .applyEuler(euler)
 
-        return cards.map((card: CardVO, index: number) => ({
-            ...card,
-            ...CardDictionary[card?.id || ''],
-            position: [index * (GemCardSize.width + 0.1) + reserveCardPosition.x, reserveCardPosition.y, index * GemCardSize.depth + reserveCardPosition.z],
-            rotation: [euler.x, Math.PI + euler.y, euler.z]
-        }))
+        return cards
+            .map((card: CardVO, index: number) => ({
+                ...card,
+                ...CardDictionary[card?.id || ''],
+                position: [index * (GemCardSize.width + 0.1) + reserveCardPosition.x, reserveCardPosition.y, index * GemCardSize.depth + reserveCardPosition.z],
+                rotation: [euler.x, Math.PI + euler.y, euler.z]
+            }))
     }
     function formatPlayerGems(locate: {position: [number, number, number], rotation: [number, number, number]},
                               gold: number,

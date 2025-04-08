@@ -1,6 +1,6 @@
 import GemCard from "@/games/splendor/component/3d/GemCard";
 import NobleCard from "@/games/splendor/component/3d/NobleCard";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import GamePlane from "@/games/splendor/component/3d/GamePlane";
 import GameTable, {GameTableSize} from "@/games/splendor/component/3d/GameTable";
 import {OrbitControls} from "@react-three/drei";
@@ -12,6 +12,7 @@ import {useGameSocket} from "@/games/splendor/hooks/useGameSocket";
 import {useGameController} from "@/games/splendor/hooks/useGameController";
 import {useGameStore} from "@/games/splendor/store/game.store";
 import {useShallow} from "zustand/react/shallow";
+import {Gem} from "@/games/splendor/types/game";
 
 
 function GameArea() {
@@ -44,6 +45,22 @@ function GameArea() {
         onClickGem,
     } = useGameController()
     useGameSocket(gameId)
+    const [golds, setGolds] = useState<Gem[]>([])
+    const [diamonds, setDiamonds] = useState<Gem[]>([])
+    const [sapphires, setSapphires] = useState<Gem[]>([])
+    const [emeralds, setEmeralds] = useState<Gem[]>([])
+    const [rubies, setRubies] = useState<Gem[]>([])
+    const [onyxes, setOnyxes] = useState<Gem[]>([])
+
+
+    useEffect(() => {
+        setGolds(gems.gold)
+        setDiamonds(gems.diamond)
+        setSapphires(gems.sapphire)
+        setEmeralds(gems.emerald)
+        setRubies(gems.ruby)
+        setOnyxes(gems.onyx)
+    }, [gems]);
 
 
     return (
@@ -122,22 +139,14 @@ function GameArea() {
                         }
                     </group>
                     <group>
-                        {gems.gold.map((gem) => (
+                        {golds.map((gem) => (
                             <GemToken key={gem.id}
                                       id={gem.id}
                                       type={gem.type}
                                       position={gem.position}
                                       ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                         ))}
-                        {gems.onyx.map((gem) => (
-                            <GemToken key={gem.id}
-                                      id={gem.id}
-                                      type={gem.type}
-                                      onClick={() => onClickGem(gem)}
-                                      position={gem.position}
-                                      ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
-                        ))}
-                        {gems.ruby.map((gem) => (
+                        {onyxes.map((gem) => (
                             <GemToken key={gem.id}
                                       id={gem.id}
                                       type={gem.type}
@@ -145,7 +154,7 @@ function GameArea() {
                                       position={gem.position}
                                       ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                         ))}
-                        {gems.emerald.map((gem) => (
+                        {rubies.map((gem) => (
                             <GemToken key={gem.id}
                                       id={gem.id}
                                       type={gem.type}
@@ -153,7 +162,7 @@ function GameArea() {
                                       position={gem.position}
                                       ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                         ))}
-                        {gems.sapphire.map((gem) => (
+                        {emeralds.map((gem) => (
                             <GemToken key={gem.id}
                                       id={gem.id}
                                       type={gem.type}
@@ -161,7 +170,15 @@ function GameArea() {
                                       position={gem.position}
                                       ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                         ))}
-                        {gems.diamond.map((gem) => (
+                        {sapphires.map((gem) => (
+                            <GemToken key={gem.id}
+                                      id={gem.id}
+                                      type={gem.type}
+                                      onClick={() => onClickGem(gem)}
+                                      position={gem.position}
+                                      ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
+                        ))}
+                        {diamonds.map((gem) => (
                             <GemToken key={gem.id}
                                       id={gem.id}
                                       type={gem.type}

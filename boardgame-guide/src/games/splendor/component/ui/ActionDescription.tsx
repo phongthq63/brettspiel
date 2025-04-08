@@ -26,7 +26,6 @@ export default function ActionDescription() {
         return isMyTurn ? "Your" : currentPlayer
     }, [isMyTurn, currentPlayer]);
 
-
     const textAction = useMemo(() => {
         switch (currentAction?.type) {
             case "gather-gem":

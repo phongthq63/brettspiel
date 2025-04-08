@@ -29,20 +29,11 @@ export interface Player {
     gems: {[key in TokenGemType]: Gem[]}
 }
 
-export interface GemAction {
-    type: TokenGemType
-    owner?: string
-    oldPosition: [number, number, number]
-    oldRotation: [number, number, number]
-}
-export interface ObjectAction {
-    ref: { [key: string]: any }
-    animation: gsap.core.Timeline
-}
 export interface PhysicsObjectAction {
     id: string
-    type: 'noble' | 'card' | 'gem'
-    data: GemAction | ObjectAction
+    type: 'noble' | 'card' | 'gem' | "gem-player"
+    ref: { [key: string]: any }
+    animation?: gsap.core.Timeline
     state: Noble | Card | Gem
 }
 

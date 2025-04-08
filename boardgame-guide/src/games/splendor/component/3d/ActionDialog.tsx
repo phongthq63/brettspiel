@@ -3,6 +3,7 @@ import {Button} from "@mui/material";
 import GameBoard from "@/games/splendor/hoc/GameBoard";
 import {useGameController} from "@/games/splendor/hooks/useGameController";
 import {useGameStore} from "@/games/splendor/store/game.store";
+import {useShallow} from "zustand/react/shallow";
 
 
 interface ActionDialogProps {
@@ -14,7 +15,7 @@ interface ActionDialogProps {
 
 const ActionDialog = ({open, position, rotation, onClose}: ActionDialogProps) => {
     const {selectAction, confirmAction, cancelAction} = useGameController()
-    const currentAction = useGameStore((state) => state.currentAction);
+    const currentAction = useGameStore(useShallow((state) => state.currentAction))
 
 
     const handlerCancelAction = useCallback(() => {

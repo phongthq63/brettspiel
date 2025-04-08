@@ -1,10 +1,12 @@
 import GemToken from "@/games/splendor/component/3d/GemToken";
 import GemCard from "@/games/splendor/component/3d/GemCard";
-import React, {memo} from "react";
+import React, {memo, useEffect, useState} from "react";
 import {useSharedRef} from "@/games/splendor/store/ref.context";
 import NobleCard from "@/games/splendor/component/3d/NobleCard";
 import {useGameController} from "@/games/splendor/hooks/useGameController";
 import {useGameStore} from "@/games/splendor/store/game.store";
+import {useShallow} from "zustand/react/shallow";
+import {Gem} from "@/games/splendor/types/game";
 
 
 interface PlayerBoardProps {
@@ -14,13 +16,30 @@ interface PlayerBoardProps {
 const PlayerBoard = ({playerId} : PlayerBoardProps) => {
     const {cardRefs, nobleRefs, gemRefs} = useSharedRef()
     const {onClickPlayerGem, onClickPlayerReserveCard} = useGameController()
-    const players = useGameStore((state) => state.players)
+    const players = useGameStore(useShallow((state) => state.players))
     const player = players[playerId]
+    const [golds, setGolds] = useState<Gem[]>([])
+    const [diamonds, setDiamonds] = useState<Gem[]>([])
+    const [sapphires, setSapphires] = useState<Gem[]>([])
+    const [emeralds, setEmeralds] = useState<Gem[]>([])
+    const [rubies, setRubies] = useState<Gem[]>([])
+    const [onyxes, setOnyxes] = useState<Gem[]>([])
+
+
+    useEffect(() => {
+        setGolds(player.gems.gold)
+        setDiamonds(player.gems.diamond)
+        setSapphires(player.gems.sapphire)
+        setEmeralds(player.gems.emerald)
+        setRubies(player.gems.ruby)
+        setOnyxes(player.gems.onyx)
+    }, [player]);
+
 
     return (
         <group>
             <group>
-                {player.gems.diamond.map((gem) => (
+                {diamonds.map((gem) => (
                     <GemToken key={gem.id}
                               id={gem.id}
                               type={gem.type}
@@ -38,7 +57,7 @@ const PlayerBoard = ({playerId} : PlayerBoardProps) => {
                 ))}
             </group>
             <group>
-                {player.gems.sapphire.map((gem) => (
+                {sapphires.map((gem) => (
                     <GemToken key={gem.id}
                               id={gem.id}
                               type={gem.type}
@@ -56,7 +75,7 @@ const PlayerBoard = ({playerId} : PlayerBoardProps) => {
                 ))}
             </group>
             <group>
-                {player.gems.emerald.map((gem) => (
+                {emeralds.map((gem) => (
                     <GemToken key={gem.id}
                               id={gem.id}
                               type={gem.type}
@@ -65,7 +84,7 @@ const PlayerBoard = ({playerId} : PlayerBoardProps) => {
                               rotation={gem.rotation}
                               ref={(element: any) => (gemRefs.current[gem.id] = element)}/>
                 ))}
-                {player.cards.sapphire.map((card) => (
+                {player.cards.emerald.map((card) => (
                     <GemCard key={card.id}
                              id={card.id}
                              position={card.position}
@@ -74,7 +93,7 @@ const PlayerBoard = ({playerId} : PlayerBoardProps) => {
                 ))}
             </group>
             <group>
-                {player.gems.ruby.map((gem) => (
+                {rubies.map((gem) => (
                     <GemToken key={gem.id}
                               id={gem.id}
                               type={gem.type}
@@ -92,7 +111,7 @@ const PlayerBoard = ({playerId} : PlayerBoardProps) => {
                 ))}
             </group>
             <group>
-                {player.gems.onyx.map((gem) => (
+                {onyxes.map((gem) => (
                     <GemToken key={gem.id}
                               id={gem.id}
                               type={gem.type}
@@ -110,7 +129,7 @@ const PlayerBoard = ({playerId} : PlayerBoardProps) => {
                 ))}
             </group>
 
-            {player.gems.gold.map(gem => (
+            {golds.map(gem => (
                 <GemToken key={gem.id}
                           id={gem.id}
                           type={gem.type}

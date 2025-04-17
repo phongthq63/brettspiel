@@ -1,0 +1,198 @@
+{
+  "playNow": "Play Now",
+  "signup": "Signup",
+  "login": "Login",
+  "popular": "Popular",
+  "featured": "Featured",
+  "new": "New",
+
+
+  "header.features": "Features",
+  "header.games": "Games",
+  "header.contact": "Contact",
+
+
+  "footer.tagline": "The ultimate online platform for playing boardgames with friends and family, no matter where they are.",
+  "footer.links": "Quick Links",
+  "footer.links.home": "Home",
+  "footer.links.features": "Features",
+  "footer.links.games": "Games",
+  "footer.links.stats": "Stats",
+  "footer.links.contact": "Contact",
+  "footer.resources": "Resources",
+  "footer.resources.rules": "Rules",
+  "footer.resources.tutorials": "Tutorials",
+  "footer.resources.faq": "FAQ",
+  "footer.resources.support": "Support",
+  "footer.resources.community": "Community",
+  "footer.legal": "Legal",
+  "footer.legal.terms": "Terms of Service",
+  "footer.legal.privacy": "Privacy Policy",
+  "footer.legal.cookies": "Cookie Policy",
+  "footer.legal.gdpr": "GDPR",
+  "footer.legal.licenses": "Licenses",
+  "footer.copyright": "All rights reserved.",
+
+
+  "section.hero.title1": "Play",
+  "section.hero.title2": "Boardgames",
+  "section.hero.title3": "Together",
+  "section.hero.description": "Experience the joy of playing boardgames with friends and family from anywhere in the world. Our platform offers the best online boardgaming experience with real-time multiplayer.",
+
+
+  "section.features.title": "Play Anywhere, Anytime",
+  "section.features.subtitle": "Our platform works seamlessly across all your devices, allowing you to enjoy your favorite boardgames wherever you are.",
+  "section.features.desktop": "Desktop",
+  "section.features.tablet": "Tablets",
+  "section.features.mobile": "Mobile",
+  "section.features.browser": "Browser",
+
+
+  "section.featuredGame.title": "Featured Boardgames",
+  "section.featuredGame.seeAll": "See all games",
+
+
+  "section.statistics.title": "Our Community",
+  "section.statistics.subtitle": "Join thousands of boardgame enthusiasts from around the world",
+  "section.statistics.players": "Registered Players",
+  "section.statistics.games": "Available Games",
+  "section.statistics.matches": "Daily Matches",
+
+
+  "section.contact.title": "Get in Touch",
+  "section.contact.subtitle": "Want to learn more about our platform or have questions? Reach out to us and our team will get back to you as soon as possible.",
+  "section.contact.form.title": "Send us a message",
+  "section.contact.form.name": "Name",
+  "section.contact.form.namePlaceholder": "Your name",
+  "section.contact.form.email": "Email",
+  "section.contact.form.emailPlaceholder": "Your email",
+  "section.contact.form.subject": "Subject",
+  "section.contact.form.subjectPlaceholder": "Message subject",
+  "section.contact.form.message": "Message",
+  "section.contact.form.messagePlaceholder": "Your message",
+  "section.contact.form.submit": "Send Message",
+  "section.contact.form.sending": "Sending...",
+  "section.contact.success.title": "Message Sent",
+  "section.contact.success.message": "Thanks for contacting us! We'll get back to you soon.",
+  "section.contact.error.title": "Error",
+  "section.contact.error.message": "There was a problem sending your message. Please try again.",
+
+
+
+
+
+
+  "games": {
+    "catan": {
+      "title": "Catan",
+      "description": "Build settlements, trade resources, and outmaneuver your opponents in this classic strategy game.",
+      "duration": "60-120 min",
+      "players": "3-4 players"
+    },
+    "ticketToRide": {
+      "title": "Ticket to Ride",
+      "description": "Connect cities with train routes to complete destination tickets and build the longest railway network.",
+      "duration": "30-60 min",
+      "players": "2-5 players"
+    },
+    "pandemic": {
+      "title": "Pandemic",
+      "description": "Work together as a team to treat infections around the world while gathering resources for cures.",
+      "duration": "45-60 min",
+      "players": "2-4 players"
+    }
+  },
+
+  "header.searchPlaceholder": "Search board games...",
+  "header.login": "Log In",
+  "header.signup": "Sign Up",
+  "header.language": "Language",
+
+  "banner.title": "Discover the World of Board Games",
+  "banner.description": "Find, learn, and play the best board games with friends and family.",
+  "banner.exploreButton": "Explore Games",
+  "banner.howItWorksButton": "How It Works",
+  "banner.imageAlt": "Board games collection",
+
+  "featuredGames.title": "Featured Games",
+  "featuredGames.filters.popular": "Popular",
+  "featuredGames.filters.hot": "Hot",
+  "featuredGames.filters.topRated": "Highly Rated",
+  "featuredGames.viewAllButton": "View All Games",
+
+  "gamesList.title": "Explore All Games",
+  "gamesList.searchPlaceholder": "Search games...",
+  "gamesList.sortBy": "Sort by",
+  "gamesList.sortOptions.popular": "Most Popular",
+  "gamesList.sortOptions.highestRated": "Highest Rated",
+  "gamesList.sortOptions.newest": "Newest",
+  "gamesList.sortOptions.playTime": "Play Time",
+  "gamesList.showing": "Showing",
+  "gamesList.of": "of",
+  "gamesList.games": "games",
+
+  "gameFilter.title": "Filters",
+  "gameFilter.playerCountTitle": "Number of Players",
+  "gameFilter.players.solo": "1 player (Solo)",
+  "gameFilter.players.two": "2 players",
+  "gameFilter.players.threeFour": "3-4 players",
+  "gameFilter.players.fivePlus": "5+ players",
+
+  "gameFilter.playTimeTitle": "Play Time",
+  "gameFilter.playTime.quick": "Quick (< 30 min)",
+  "gameFilter.playTime.medium": "Medium (30-60 min)",
+  "gameFilter.playTime.long": "Long (1-2 hours)",
+  "gameFilter.playTime.epic": "Epic (2+ hours)",
+
+  "gameFilter.genreTitle": "Genre",
+  "gameFilter.genres.strategy": "Strategy",
+  "gameFilter.genres.family": "Family",
+  "gameFilter.genres.party": "Party",
+  "gameFilter.genres.cooperative": "Cooperative",
+  "gameFilter.genres.card": "Card Game",
+  "gameFilter.genres.abstract": "Abstract",
+  "gameFilter.genres.areaControl": "Area Control",
+  "gameFilter.genres.word": "Word Game",
+  "gameFilter.genres.trading": "Trading",
+  "gameFilter.genres.routeBuilding": "Route Building",
+
+  "gameFilter.showMore": "+ Show more",
+  "gameFilter.showLess": "- Show less",
+  "gameFilter.applyButton": "Apply Filters",
+  "gameFilter.resetButton": "Reset",
+
+  "gameCard.hot": "HOT",
+  "gameCard.popular": "POPULAR",
+  "gameCard.topRated": "TOP RATED",
+  "gameCard.players": "players",
+  "gameCard.minutes": "min",
+
+  "feedback.title": "Share Your Feedback",
+  "feedback.subtitle": "We'd Love to Hear From You",
+  "feedback.description": "Your feedback helps us improve our platform and bring more exciting board games to the community.",
+  "feedback.imageAlt": "People playing board games",
+
+  "feedback.form.name": "Name",
+  "feedback.form.namePlaceholder": "Your name",
+  "feedback.form.email": "Email",
+  "feedback.form.emailPlaceholder": "Your email",
+  "feedback.form.subject": "Subject",
+  "feedback.form.subjectPlaceholder": "Select a subject",
+  "feedback.form.subjects.suggestion": "Suggestion",
+  "feedback.form.subjects.question": "Question",
+  "feedback.form.subjects.gameRequest": "Game Request",
+  "feedback.form.subjects.bugReport": "Bug Report",
+  "feedback.form.subjects.other": "Other",
+  "feedback.form.message": "Message",
+  "feedback.form.messagePlaceholder": "Your message",
+  "feedback.form.submitButton": "Submit Feedback",
+  "feedback.form.submitting": "Submitting...",
+
+  "feedback.success.title": "Thank you!",
+  "feedback.success.message": "Your feedback has been submitted successfully.",
+  "feedback.error.title": "Submission Failed",
+  "feedback.error.message": "There was an error submitting your feedback. Please try again.",
+
+  "pagination.previous": "Previous page",
+  "pagination.next": "Next page"
+}

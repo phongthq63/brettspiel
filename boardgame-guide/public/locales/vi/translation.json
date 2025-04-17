@@ -1,0 +1,201 @@
+{
+  "playNow": "Chơi Ngay",
+  "signup": "Đăng ký",
+  "login": "Đăng nhập",
+  "popular": "Phổ Biến",
+  "featured": "Nổi Bật",
+  "new": "Mới",
+
+
+  "header.features": "Tính Năng",
+  "header.games": "Trò Chơi",
+  "header.contact": "Liên Hệ",
+
+
+  "footer.tagline": "Nền tảng trực tuyến tối ưu để chơi boardgame cùng bạn bè và gia đình, bất kể họ ở đâu.",
+  "footer.links": "Liên Kết Nhanh",
+  "footer.links.home": "Trang Chủ",
+  "footer.links.features": "Tính Năng",
+  "footer.links.games": "Trò Chơi",
+  "footer.links.stats": "Thống Kê",
+  "footer.links.contact": "Liên Hệ",
+  "footer.resources": "Tài Nguyên",
+  "footer.resources.rules": "Luật Chơi",
+  "footer.resources.tutorials": "Hướng Dẫn",
+  "footer.resources.faq": "Câu Hỏi Thường Gặp",
+  "footer.resources.support": "Hỗ Trợ",
+  "footer.resources.community": "Cộng Đồng",
+  "footer.legal": "Pháp Lý",
+  "footer.legal.terms": "Điều Khoản Dịch Vụ",
+  "footer.legal.privacy": "Chính Sách Bảo Mật",
+  "footer.legal.cookies": "Chính Sách Cookie",
+  "footer.legal.gdpr": "GDPR",
+  "footer.legal.licenses": "Giấy Phép",
+  "footer.copyright": "Tất cả các quyền được bảo lưu.",
+
+
+  "section.hero.title1": "Chơi",
+  "section.hero.title2": "Boardgames",
+  "section.hero.title3": "Cùng Nhau",
+  "section.hero.description": "Trải nghiệm niềm vui chơi boardgame cùng bạn bè và gia đình từ bất kỳ đâu trên thế giới. Nền tảng của chúng tôi cung cấp trải nghiệm chơi boardgame trực tuyến tốt nhất với chế độ nhiều người chơi thời gian thực.",
+
+
+  "section.features.title": "Chơi Mọi Nơi, Mọi Lúc",
+  "section.features.subtitle": "Nền tảng của chúng tôi hoạt động liền mạch trên tất cả các thiết bị, cho phép bạn thưởng thức boardgame yêu thích ở bất kỳ đâu.",
+  "section.features.desktop": "Máy tính",
+  "section.features.tablet": "Máy Tính Bảng",
+  "section.features.mobile": "Thiết Bị Di Động",
+  "section.features.browser": "Trình duyệt",
+
+
+  "section.featuredGame.title": "Boardgame Nổi Bật",
+  "section.featuredGame.seeAll": "Xem tất cả",
+
+
+  "section.statistics.title": "Cộng Đồng Của Chúng Tôi",
+  "section.statistics.subtitle": "Tham gia cùng hàng nghìn người yêu thích boardgame từ khắp nơi trên thế giới",
+  "section.statistics.players": "Người Chơi Đã Đăng Ký",
+  "section.statistics.games": "Trò Chơi Có Sẵn",
+  "section.statistics.matches": "Trận Đấu Mỗi Ngày",
+
+
+  "section.contact.title": "Liên Hệ Với Chúng Tôi",
+  "section.contact.subtitle": "Bạn muốn tìm hiểu thêm về nền tảng của chúng tôi hoặc có câu hỏi? Liên hệ với chúng tôi và đội ngũ của chúng tôi sẽ phản hồi trong thời gian sớm nhất.",
+  "section.contact.form.title": "Gửi tin nhắn cho chúng tôi",
+  "section.contact.form.name": "Tên",
+  "section.contact.form.namePlaceholder": "Tên của bạn",
+  "section.contact.form.email": "Email",
+  "section.contact.form.emailPlaceholder": "Email của bạn",
+  "section.contact.form.subject": "Tiêu đề",
+  "section.contact.form.subjectPlaceholder": "Tiêu đề tin nhắn",
+  "section.contact.form.message": "Tin nhắn",
+  "section.contact.form.messagePlaceholder": "Nội dung tin nhắn",
+  "section.contact.form.submit": "Gửi",
+  "section.contact.form.sending": "Đang gửi...",
+  "section.contact.success.title": "Tin Nhắn Đã Gửi",
+  "section.contact.success.message": "Cảm ơn bạn đã liên hệ với chúng tôi! Chúng tôi sẽ phản hồi trong thời gian sớm nhất.",
+  "section.contact.error.title": "Lỗi",
+  "section.contact.error.message": "Có vấn đề khi gửi tin nhắn của bạn. Vui lòng thử lại.",
+
+
+
+
+
+
+  "games": {
+    "catan": {
+      "title": "Catan",
+      "description": "Xây dựng khu định cư, trao đổi tài nguyên và vượt qua đối thủ trong trò chơi chiến thuật kinh điển này.",
+      "duration": "60-120 phút",
+      "players": "3-4 người chơi"
+    },
+    "ticketToRide": {
+      "title": "Ticket to Ride",
+      "description": "Kết nối các thành phố bằng đường tàu để hoàn thành vé đích và xây dựng mạng lưới đường sắt dài nhất.",
+      "duration": "30-60 phút",
+      "players": "2-5 người chơi"
+    },
+    "pandemic": {
+      "title": "Pandemic",
+      "description": "Làm việc cùng nhau như một đội để điều trị nhiễm trùng trên toàn thế giới trong khi thu thập tài nguyên cho thuốc chữa bệnh.",
+      "duration": "45-60 phút",
+      "players": "2-4 người chơi"
+    }
+  },
+
+
+
+
+  "header.searchPlaceholder": "Tìm kiếm trò chơi...",
+  "header.login": "Đăng nhập",
+  "header.signup": "Đăng ký",
+  "header.language": "Ngôn ngữ",
+
+  "banner.title": "Khám phá thế giới trò chơi board game",
+  "banner.description": "Tìm, học và chơi những board game hay nhất cùng bạn bè và gia đình.",
+  "banner.exploreButton": "Khám phá trò chơi",
+  "banner.howItWorksButton": "Cách hoạt động",
+  "banner.imageAlt": "Bộ sưu tập trò chơi board game",
+
+  "featuredGames.title": "Trò chơi nổi bật",
+  "featuredGames.filters.popular": "Phổ biến",
+  "featuredGames.filters.hot": "Hot",
+  "featuredGames.filters.topRated": "Đánh giá cao",
+  "featuredGames.viewAllButton": "Xem tất cả trò chơi",
+
+  "gamesList.title": "Khám phá tất cả trò chơi",
+  "gamesList.searchPlaceholder": "Tìm kiếm trò chơi...",
+  "gamesList.sortBy": "Sắp xếp theo",
+  "gamesList.sortOptions.popular": "Phổ biến nhất",
+  "gamesList.sortOptions.highestRated": "Đánh giá cao nhất",
+  "gamesList.sortOptions.newest": "Mới nhất",
+  "gamesList.sortOptions.playTime": "Thời gian chơi",
+  "gamesList.showing": "Hiển thị",
+  "gamesList.of": "trong số",
+  "gamesList.games": "trò chơi",
+
+  "gameFilter.title": "Bộ lọc",
+  "gameFilter.playerCountTitle": "Số người chơi",
+  "gameFilter.players.solo": "1 người chơi (Đơn)",
+  "gameFilter.players.two": "2 người chơi",
+  "gameFilter.players.threeFour": "3-4 người chơi",
+  "gameFilter.players.fivePlus": "5+ người chơi",
+
+  "gameFilter.playTimeTitle": "Thời gian chơi",
+  "gameFilter.playTime.quick": "Nhanh (< 30 phút)",
+  "gameFilter.playTime.medium": "Trung bình (30-60 phút)",
+  "gameFilter.playTime.long": "Dài (1-2 giờ)",
+  "gameFilter.playTime.epic": "Dài đặc biệt (2+ giờ)",
+
+  "gameFilter.genreTitle": "Thể loại",
+  "gameFilter.genres.strategy": "Chiến thuật",
+  "gameFilter.genres.family": "Gia đình",
+  "gameFilter.genres.party": "Tiệc tùng",
+  "gameFilter.genres.cooperative": "Hợp tác",
+  "gameFilter.genres.card": "Trò chơi thẻ bài",
+  "gameFilter.genres.abstract": "Trừu tượng",
+  "gameFilter.genres.areaControl": "Kiểm soát khu vực",
+  "gameFilter.genres.word": "Trò chơi từ ngữ",
+  "gameFilter.genres.trading": "Trao đổi",
+  "gameFilter.genres.routeBuilding": "Xây dựng đường đi",
+
+  "gameFilter.showMore": "+ Xem thêm",
+  "gameFilter.showLess": "- Ẩn bớt",
+  "gameFilter.applyButton": "Áp dụng bộ lọc",
+  "gameFilter.resetButton": "Đặt lại",
+
+  "gameCard.hot": "HOT",
+  "gameCard.popular": "PHỔ BIẾN",
+  "gameCard.topRated": "ĐÁNH GIÁ CAO",
+  "gameCard.players": "người chơi",
+  "gameCard.minutes": "phút",
+
+  "feedback.title": "Chia sẻ phản hồi của bạn",
+  "feedback.subtitle": "Chúng tôi rất muốn nghe từ bạn",
+  "feedback.description": "Phản hồi của bạn giúp chúng tôi cải thiện nền tảng và mang đến nhiều trò chơi thú vị hơn cho cộng đồng.",
+  "feedback.imageAlt": "Mọi người chơi board game",
+
+  "feedback.form.name": "Tên",
+  "feedback.form.namePlaceholder": "Tên của bạn",
+  "feedback.form.email": "Email",
+  "feedback.form.emailPlaceholder": "Email của bạn",
+  "feedback.form.subject": "Chủ đề",
+  "feedback.form.subjectPlaceholder": "Chọn một chủ đề",
+  "feedback.form.subjects.suggestion": "Đề xuất",
+  "feedback.form.subjects.question": "Câu hỏi",
+  "feedback.form.subjects.gameRequest": "Yêu cầu trò chơi",
+  "feedback.form.subjects.bugReport": "Báo cáo lỗi",
+  "feedback.form.subjects.other": "Khác",
+  "feedback.form.message": "Nội dung",
+  "feedback.form.messagePlaceholder": "Nội dung của bạn",
+  "feedback.form.submitButton": "Gửi phản hồi",
+  "feedback.form.submitting": "Đang gửi...",
+
+  "feedback.success.title": "Cảm ơn bạn!",
+  "feedback.success.message": "Phản hồi của bạn đã được gửi thành công.",
+  "feedback.error.title": "Gửi không thành công",
+  "feedback.error.message": "Đã xảy ra lỗi khi gửi phản hồi của bạn. Vui lòng thử lại.",
+
+  "pagination.previous": "Trang trước",
+  "pagination.next": "Trang sau"
+}

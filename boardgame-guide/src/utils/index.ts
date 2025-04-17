@@ -1,7 +1,12 @@
 import {v4} from "uuid"
 
+
 export const generateUUID = () => {
     return v4()
+}
+
+export const getTimestampUTC = () => {
+    return Date.now()
 }
 
 export const wait = (ms: number) => {

@@ -19,7 +19,7 @@ import {NobleCardSize} from "@/games/splendor/component/3d/NobleCard";
 import {Euler, Vector3} from "three";
 import {CardGemType} from "@/games/splendor/types/card";
 import {GemDictionary} from "@/games/splendor/constants/gem";
-import {useUser} from "@/store/user";
+import {useUser} from "@/store/user.context";
 
 export function useFetchGameData(gameId: string) {
     const { user } = useUser()

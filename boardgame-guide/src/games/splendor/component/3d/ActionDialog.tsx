@@ -53,13 +53,6 @@ const ActionDialog = ({open, position, rotation, onClose}: ActionDialogProps) =>
         <GameBoard position={position} rotation={rotation}>
             <div className="bg-cyan-100 p-4 rounded-md">
                 <h2 className="text-xl text-center mb-4">{textAction}</h2>
-                {/*{data.type == "buy-card" && (*/}
-                {/*    <BuyCardQuantity cost={data.card?.cost || {}}*/}
-                {/*                     base={playerCard(playerCards[currentPlayer])}*/}
-                {/*                     gold={playerGems[currentPlayer].gold.length}*/}
-                {/*    />*/}
-                {/*)}*/}
-
                 <div className="flex justify-center space-x-2">
                     {currentAction && (
                         currentAction.type == "option-action" ? (currentAction.option?.map(option => (

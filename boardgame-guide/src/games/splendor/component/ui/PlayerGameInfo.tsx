@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React, {memo, useEffect, useMemo, useState} from "react";
-import {useUser} from "@/store/user";
+import {useUser} from "@/store/user.context";
 import {Card, Noble} from "@/games/splendor/types/game";
 
 

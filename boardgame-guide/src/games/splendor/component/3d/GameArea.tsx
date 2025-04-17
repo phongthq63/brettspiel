@@ -12,7 +12,7 @@ import {useGameSocket} from "@/games/splendor/hooks/useGameSocket";
 import {useGameController} from "@/games/splendor/hooks/useGameController";
 import {useGameStore} from "@/games/splendor/store/game.store";
 import {useShallow} from "zustand/react/shallow";
-import {Gem} from "@/games/splendor/types/game";
+import {Card, Gem} from "@/games/splendor/types/game";
 
 
 function GameArea() {
@@ -45,6 +45,10 @@ function GameArea() {
         onClickGem,
     } = useGameController()
     useGameSocket(gameId)
+
+    const [deckCard1, setDeckCard1] = useState<Card[]>([])
+    const [deckCard2, setDeckCard2] = useState<Card[]>([])
+    const [deckCard3, setDeckCard3] = useState<Card[]>([])
     const [golds, setGolds] = useState<Gem[]>([])
     const [diamonds, setDiamonds] = useState<Gem[]>([])
     const [sapphires, setSapphires] = useState<Gem[]>([])
@@ -54,13 +58,32 @@ function GameArea() {
 
 
     useEffect(() => {
+        setDeckCard1(deckCard[1])
+        setDeckCard2(deckCard[2])
+        setDeckCard3(deckCard[3])
+
+        deckCard[1].forEach(card => {
+            cardRefs.current[card.id]?.setPosition(card.position)
+            cardRefs.current[card.id]?.setRotation(card.rotation)
+        })
+        deckCard[2].forEach(card => {
+            cardRefs.current[card.id]?.setPosition(card.position)
+            cardRefs.current[card.id]?.setRotation(card.rotation)
+        })
+        deckCard[3].forEach(card => {
+            cardRefs.current[card.id]?.setPosition(card.position)
+            cardRefs.current[card.id]?.setRotation(card.rotation)
+        })
+    }, [deckCard])
+
+    useEffect(() => {
         setGolds(gems.gold)
         setDiamonds(gems.diamond)
         setSapphires(gems.sapphire)
         setEmeralds(gems.emerald)
         setRubies(gems.ruby)
         setOnyxes(gems.onyx)
-    }, [gems]);
+    }, [gems])
 
 
     return (
@@ -73,30 +96,33 @@ function GameArea() {
                 <group>
                     <group>
                         {
-                            deckCard[3]?.map((card) => (
+                            deckCard3.map((card) => (
                                 <GemCard key={card.id}
                                          id={card.id}
                                          onClick={() => onClickDeckCard(card)}
+                                         onClickNotThis={() => onClickNotCurrentCard(card)}
                                          position={card.position}
                                          rotation={card.rotation}
                                          ref={(element: any) => (cardRefs.current[card.id] = element)}/>
                             ))
                         }
                         {
-                            deckCard[2]?.map((card) => (
+                            deckCard2.map((card) => (
                                 <GemCard key={card.id}
                                          id={card.id}
                                          onClick={() => onClickDeckCard(card)}
+                                         onClickNotThis={() => onClickNotCurrentCard(card)}
                                          position={card.position}
                                          rotation={card.rotation}
                                          ref={(element: any) => (cardRefs.current[card.id] = element)}/>
                             ))
                         }
                         {
-                            deckCard[1]?.map((card) => (
+                            deckCard1.map((card) => (
                                 <GemCard key={card.id}
                                          id={card.id}
                                          onClick={() => onClickDeckCard(card)}
+                                         onClickNotThis={() => onClickNotCurrentCard(card)}
                                          position={card.position}
                                          rotation={card.rotation}
                                          ref={(element: any) => (cardRefs.current[card.id] = element)}/>

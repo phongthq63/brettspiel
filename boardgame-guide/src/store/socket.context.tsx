@@ -18,13 +18,16 @@ export const SocketProvider = ({children}: any) => {
 
 
     useEffect(() => {
+        const token = getItem('access-token')
+        if (!token) return
+
         const socketInstance = io(`${socketUrl}`, {
             transports: ["websocket", "polling"],
             auth: {
                 token: "123"
             },
             query: {
-                "token": getItem('access-token')
+                "token": token
             },
             extraHeaders: {
                 "Authentication": "TTTTTTTTTTTTTTTTTT"

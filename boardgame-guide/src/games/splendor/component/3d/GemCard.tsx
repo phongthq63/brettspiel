@@ -9,7 +9,7 @@ import {CardDictionary} from "@/games/splendor/constants/card";
 export const GemCardSize = {
     width: 0.72,
     height: 1,
-    depth: 0.015
+    depth: 0.02
 };
 
 interface GemCardProps {
@@ -36,29 +36,29 @@ const GemCard = forwardRef(({id, onClick, onClickNotThis, ...props}: GemCardProp
             setPosition(position: [number, number, number]) {
                 if (groupRef.current && rigidBodyRef.current) {
                     const worldPosition = new Vector3()
-                    groupRef.current.position.fromArray(position);
-                    groupRef.current.getWorldPosition(worldPosition);
+                    groupRef.current.position.fromArray(position)
+                    groupRef.current.getWorldPosition(worldPosition)
                     rigidBodyRef.current.setTranslation(worldPosition, true)
                 }
             },
             setRotation(rotation: [number, number, number]) {
                 if (groupRef.current && rigidBodyRef.current) {
                     const worldRotation = new Quaternion()
-                    groupRef.current.rotation.fromArray(rotation);
-                    groupRef.current.getWorldQuaternion(worldRotation);
+                    groupRef.current.rotation.fromArray(rotation)
+                    groupRef.current.getWorldQuaternion(worldRotation)
                     rigidBodyRef.current.setRotation(worldRotation, true)
                 }
             },
             stopPhysics() {
                 physics.current = false
                 if (rigidBodyRef.current) {
-                    rigidBodyRef.current.setBodyType(RigidBodyType.KinematicPositionBased, true);
+                    rigidBodyRef.current.setBodyType(RigidBodyType.KinematicPositionBased, true)
                 }
             },
             startPhysics() {
                 physics.current = true
                 if (rigidBodyRef.current) {
-                    rigidBodyRef.current.setBodyType(RigidBodyType.Dynamic, true);
+                    rigidBodyRef.current.setBodyType(RigidBodyType.Dynamic, true)
                 }
             }
         })
@@ -67,7 +67,7 @@ const GemCard = forwardRef(({id, onClick, onClickNotThis, ...props}: GemCardProp
     const position = new Vector3()
     const rotation = new Quaternion()
     useFrame(() => {
-        if (!groupRef.current || !meshRef.current || !rigidBodyRef.current) return;
+        if (!groupRef.current || !meshRef.current || !rigidBodyRef.current) return
 
         // Update rigid body theo position mesh interactive
         if (!physics.current) {

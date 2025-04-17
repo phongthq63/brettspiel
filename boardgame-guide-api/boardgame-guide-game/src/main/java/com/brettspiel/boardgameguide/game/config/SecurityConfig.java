@@ -57,6 +57,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 "/test/**",
                                 "/actuator/**")
                         .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/contact").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer

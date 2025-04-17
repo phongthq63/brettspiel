@@ -11,7 +11,7 @@ import {CardDictionary} from "@/games/splendor/constants/card";
 import {NobleDictionary} from "@/games/splendor/constants/noble";
 import {TokenGemType} from "@/games/splendor/types/gem";
 import {useSharedRef} from "@/games/splendor/store/ref.context";
-import {useUser} from "@/store/user";
+import {useUser} from "@/store/user.context";
 import {useGameActions} from "@/games/splendor/hooks/useGameActions";
 import {useGameStore} from "@/games/splendor/store/game.store";
 import {getPlayerLocate} from "@/games/splendor/utils/game";
@@ -34,14 +34,12 @@ export function useGameController() {
         gems, setGems, addGem, addGems, removeGem,
         players, setPlayers, setPlayerGems, addPlayerGem, removePlayerGem, removePlayerGems, addPlayerCard, addPlayerReserveCard, removePlayerReserveCard, addPlayerNoble,
         currentAction, setCurrentAction,
-        physicsObjectActions, setPhysicsObjectActions,
+        physicsObjectActions, setPhysicsObjectActions, addPhysicsObjectAction, removePhysicsObjectAction,
         isMyTurn,
         dialog, setDialog
     } = useGameStore();
 
-
     const rollbackPhysicsObjects = () => {
-        const animation = gsap.timeline()
         const timelineReverse = gsap.timeline()
 
         // Reserve animation action
@@ -61,7 +59,7 @@ export function useGameController() {
                                     .call(() => {
                                         // Start physics
                                         object.ref.startPhysics()
-                                    }))
+                                    }, [], ">0.1"))
                             }
                             break
                         case "gem":
@@ -94,13 +92,13 @@ export function useGameController() {
                                 .call(() => {
                                     // Start physics
                                     instance.startPhysics()
-                                }))
+                                }, [], ">0.1"))
                             break
                     }
                 })
         }
 
-        animation
+        gsap.timeline()
             .add(timelineReverse)
             .call(() => {
                 // Update state
@@ -125,6 +123,8 @@ export function useGameController() {
                         }
                     })
                     .forEach(physicsObjectAction => {
+                        const userId = user?.user_id ?? ''
+
                         switch (physicsObjectAction.type) {
                             case "gem":
                             {
@@ -141,11 +141,11 @@ export function useGameController() {
                                 }
                                 newStatePlayers = {
                                     ...newStatePlayers,
-                                    [currentPlayer]: {
-                                        ...newStatePlayers[currentPlayer],
+                                    [userId]: {
+                                        ...newStatePlayers[userId],
                                         gems: {
-                                            ...newStatePlayers[currentPlayer].gems,
-                                            [gem.type]: newStatePlayers[currentPlayer].gems[gem.type].filter(gem => gem.id != physicsObjectAction.id)
+                                            ...newStatePlayers[userId].gems,
+                                            [gem.type]: newStatePlayers[userId].gems[gem.type].filter(gem => gem.id != physicsObjectAction.id)
                                         }
                                     }
                                 }
@@ -160,12 +160,12 @@ export function useGameController() {
                                 }
                                 newStatePlayers = {
                                     ...newStatePlayers,
-                                    [currentPlayer]: ({
-                                        ...newStatePlayers[currentPlayer],
+                                    [userId]: ({
+                                        ...newStatePlayers[userId],
                                         gems: {
-                                            ...newStatePlayers[currentPlayer].gems,
+                                            ...newStatePlayers[userId].gems,
                                             [gem.type]: [
-                                                ...newStatePlayers[currentPlayer].gems[gem.type],
+                                                ...newStatePlayers[userId].gems[gem.type],
                                                 {
                                                     ...gem,
                                                     id: physicsObjectAction.id
@@ -181,6 +181,35 @@ export function useGameController() {
                 setGems(newStateGems)
                 setPlayers(newStatePlayers)
                 setPhysicsObjectActions([])
+            })
+    }
+
+    const rollbackPhysicsObject = (id: string) => {
+        const timelineReverse = gsap.timeline()
+        const physicsObjectAction = physicsObjectActions.find(object => object.id == id)
+        switch (physicsObjectAction?.type) {
+            case "card":
+            case "noble":
+                if (physicsObjectAction?.animation) {
+                    timelineReverse
+                        .call(() => {
+                            // Stop physics
+                            physicsObjectAction.ref.stopPhysics()
+                        })
+                        .add(physicsObjectAction.animation.reverse())
+                        .call(() => {
+                            // Start physics
+                            physicsObjectAction.ref.startPhysics()
+                        }, [], ">0.1")
+                }
+                break
+        }
+
+        gsap.timeline()
+            .add(timelineReverse)
+            .call(() => {
+                // Update state
+                removePhysicsObjectAction(id)
             })
     }
 
@@ -253,19 +282,17 @@ export function useGameController() {
                     z: targetRotation.z,
                     duration: 0.3
                 }, "<")
-            setPhysicsObjectActions([
-                {
-                    id: noble.id,
-                    type: "noble",
-                    ref: instance,
-                    animation: animation,
-                    state: {
-                        ...noble,
-                        position: startPosition.toArray(),
-                        rotation: [startRotation.x, startRotation.y, startRotation.z]
-                    }
+            addPhysicsObjectAction({
+                id: noble.id,
+                type: "noble",
+                ref: instance,
+                animation: animation,
+                state: {
+                    ...noble,
+                    position: startPosition.toArray(),
+                    rotation: [startRotation.x, startRotation.y, startRotation.z]
                 }
-            ])
+            })
 
             // Show action board
             if (isMyTurn) {
@@ -279,7 +306,9 @@ export function useGameController() {
     }
 
     const onClickNotCurrentNoble = (noble: Noble) => {
-
+        if (!isMyTurn) {
+            rollbackPhysicsObject(noble.id)
+        }
     }
 
     const onClickDeckCard = (card: Card) => {
@@ -324,19 +353,17 @@ export function useGameController() {
                     z: targetRotation.z,
                     duration: 0.3
                 }, "<")
-            setPhysicsObjectActions([
-                {
-                    id: card.id,
-                    type: "card",
-                    ref: instance,
-                    animation: animation,
-                    state: {
-                        ...card,
-                        position: startPosition.toArray(),
-                        rotation: [startRotation.x, startRotation.y, startRotation.z]
-                    }
+            addPhysicsObjectAction({
+                id: card.id,
+                type: "card",
+                ref: instance,
+                animation: animation,
+                state: {
+                    ...card,
+                    position: startPosition.toArray(),
+                    rotation: [startRotation.x, startRotation.y, startRotation.z]
                 }
-            ])
+            })
 
             // Show action board
             const cameraRotation = camera.rotation.clone()
@@ -393,19 +420,17 @@ export function useGameController() {
                 }, "<")
 
             // Save animation
-            setPhysicsObjectActions([
-                {
-                    id: card.id,
-                    type: "card",
-                    ref: instance,
-                    animation: animation,
-                    state: {
-                        ...card,
-                        position: startPosition.toArray(),
-                        rotation: [startRotation.x, startRotation.y, startRotation.z]
-                    }
+            addPhysicsObjectAction({
+                id: card.id,
+                type: "card",
+                ref: instance,
+                animation: animation,
+                state: {
+                    ...card,
+                    position: startPosition.toArray(),
+                    rotation: [startRotation.x, startRotation.y, startRotation.z]
                 }
-            ])
+            })
 
             // Show action board
             if (isMyTurn) {
@@ -419,10 +444,15 @@ export function useGameController() {
     }
 
     const onClickNotCurrentCard = (card: Card) => {
-
+        if (!isMyTurn) {
+            rollbackPhysicsObject(card.id)
+        }
     }
 
     const onClickGem = (gem: Gem) =>  {
+        const userId = user?.user_id ?? ''
+
+        if (userId != currentPlayer) return
         if (status != 1 || !isMyTurn) return
         if (currentAction && currentAction.type != "gather-gem") {
             return
@@ -444,16 +474,16 @@ export function useGameController() {
             }
 
             //
-            const playerLocate = getPlayerLocate(playerIds, currentPlayer)
+            const playerLocate = getPlayerLocate(playerIds, userId)
             if (!playerLocate) {
                 // Ko tim thay config vi tri player
-                console.log(`Config player is not found - ${playerIds} ${currentPlayer}`)
+                console.log(`Config player is not found - ${playerIds} ${userId}`)
                 return
             }
 
             //
             const deckGems: Gem[] = gems[gem.type]
-            const playerGems: Gem[] = players[currentPlayer].gems[gem.type]
+            const playerGems: Gem[] = players[userId].gems[gem.type]
             let tookGem: Gem = deckGems[deckGems.length - 1]
             for (let i = deckGems.length - 1; i >= 0; i--) {
                 if (!currentAction?.gem?.some(gem => gem.id == tookGem.id && gem.count > 0)) {
@@ -509,11 +539,11 @@ export function useGameController() {
                 .call(() => {
                     // Start physics
                     instance.startPhysics()
-                })
+                }, [], ">0.1")
                 .call(() => {
                     // Update state
                     removeGem({id: tookGem.id, type: gem.type})
-                    addPlayerGem(currentPlayer, {
+                    addPlayerGem(userId, {
                         ...gem,
                         id: tookGem.id,
                         position: targetPosition.toArray(),
@@ -608,7 +638,7 @@ export function useGameController() {
                 .call(() => {
                     // Start physics
                     instance.startPhysics()
-                })
+                }, [], ">0.1")
                 .call(() => {
                     // Update state
                     addGem({
@@ -695,19 +725,17 @@ export function useGameController() {
                 }, "<")
 
             // Save animation
-            setPhysicsObjectActions([
-                {
-                    id: card.id,
-                    type: "card",
-                    ref: instance,
-                    animation: animation,
-                    state: {
-                        ...card,
-                        position: startPosition.toArray(),
-                        rotation: [startRotation.x, startRotation.y, startRotation.z]
-                    }
+            addPhysicsObjectAction({
+                id: card.id,
+                type: "card",
+                ref: instance,
+                animation: animation,
+                state: {
+                    ...card,
+                    position: startPosition.toArray(),
+                    rotation: [startRotation.x, startRotation.y, startRotation.z]
                 }
-            ])
+            })
 
             // Show action board
             if (isMyTurn) {
@@ -729,18 +757,6 @@ export function useGameController() {
             .sort((a: any, b: any) => a.position - b.position)
         const fieldNoble = data.field_noble.filter((field_noble: any) => field_noble.noble)
             .sort((a: any, b: any) => a.position - b.position)
-
-        //
-        const animation = gsap.timeline()
-        const timelineDeckCard3 = gsap.timeline()
-        const timelineDeckCard2 = gsap.timeline()
-        const timelineDeckCard1 = gsap.timeline()
-        const timelineDeckNoble = gsap.timeline()
-        const timelineOpenField3 = gsap.timeline()
-        const timelineOpenField2 = gsap.timeline()
-        const timelineOpenField1 = gsap.timeline()
-        const timelineOpenNoble = gsap.timeline()
-
 
         const card3Opens: Card[] = fieldCard3.map((field: any) => {
             return {
@@ -773,11 +789,21 @@ export function useGameController() {
             }
         })
 
+        //
+        const animation = gsap.timeline()
+        const timelineDeckCard3 = gsap.timeline()
+        const timelineDeckCard2 = gsap.timeline()
+        const timelineDeckCard1 = gsap.timeline()
+        const timelineDeckNoble = gsap.timeline()
+        const timelineOpenField3 = gsap.timeline()
+        const timelineOpenField2 = gsap.timeline()
+        const timelineOpenField1 = gsap.timeline()
+        const timelineOpenNoble = gsap.timeline()
         // Animation description
         {
             // Timeline shuffle deck card 3
             {
-                deckCard[3]?.forEach((card: Card, index: number) => {
+                deckCard[3].forEach((card: Card, index: number) => {
                     const instance = cardRefs.current[card.id];
                     const height = 0.8
                     timelineDeckCard3.add(gsap.timeline()
@@ -991,7 +1017,7 @@ export function useGameController() {
                             }
                         })
                         .to(instance.rotation, {
-                            y: 0,
+                            y: Math.PI,
                             duration: 0.3,
                         }, "<")
                         .to(instance.position, {
@@ -1036,7 +1062,7 @@ export function useGameController() {
                             }
                         })
                         .to(instance.rotation, {
-                            y: 0,
+                            y: Math.PI,
                             duration: 0.3,
                         }, "<")
                         .to(instance.position, {
@@ -1081,7 +1107,7 @@ export function useGameController() {
                             }
                         })
                         .to(instance.rotation, {
-                            y: 0,
+                            y: Math.PI,
                             duration: 0.3,
                         }, "<")
                         .to(instance.position, {
@@ -1126,7 +1152,7 @@ export function useGameController() {
                             }
                         })
                         .to(instance.rotation, {
-                            y: 0,
+                            y: Math.PI,
                             duration: 0.3,
                         }, "<")
                         .to(instance.position, {
@@ -1243,8 +1269,8 @@ export function useGameController() {
         }
 
         const timelineGems = gsap.timeline()
-        let newGems = {...gems}
-        let newPlayerGems = {...players[currentPlayer].gems}
+        let newGems: Record<TokenGemType, Gem[]> = {...gems}
+        let newPlayerGems: Record<TokenGemType, Gem[]> = {...players[currentPlayer].gems}
         {
             function takeGem(tookGem: Gem) {
                 const playerDeckGems: Gem[] = players[currentPlayer].gems[tookGem.type]
@@ -1293,7 +1319,7 @@ export function useGameController() {
                                 }
                             ],
                         }
-                    })
+                    }, [], ">0.1")
             }
             function returnGem(returnGem: Gem) {
                 const deckGems: Gem[] = gems[returnGem.type]
@@ -1339,7 +1365,7 @@ export function useGameController() {
                             ...newPlayerGems,
                             [returnGem.type]: newPlayerGems[returnGem.type].filter(typeGem => typeGem.id != returnGem.id)
                         }
-                    })
+                    }, [], ">0.1")
             }
             function takeGems(type: TokenGemType, total: number) {
                 const deckGems: Gem[] = gems[type]
@@ -1367,33 +1393,35 @@ export function useGameController() {
             }
 
             //
-            if (goldCount < 0) {
-                returnGems(TokenGemType.GOLD, goldCount * -1)
-            }
-            if (onyxCount > 0) {
-                takeGems(TokenGemType.ONYX, onyxCount)
-            } else if (onyxCount < 0) {
-                returnGems(TokenGemType.ONYX, onyxCount * -1)
-            }
-            if (rubyCount > 0) {
-                takeGems(TokenGemType.RUBY, rubyCount)
-            } else if (rubyCount < 0) {
-                returnGems(TokenGemType.RUBY, rubyCount * -1)
-            }
-            if (emeraldCount > 0) {
-                takeGems(TokenGemType.EMERALD, emeraldCount)
-            } else if (emeraldCount < 0) {
-                returnGems(TokenGemType.EMERALD, emeraldCount * -1)
-            }
-            if (sapphireCount > 0) {
-                takeGems(TokenGemType.SAPPHIRE, sapphireCount)
-            } else if (sapphireCount < 0) {
-                returnGems(TokenGemType.SAPPHIRE, sapphireCount * -1)
-            }
-            if (diamondCount > 0) {
-                takeGems(TokenGemType.DIAMOND, diamondCount)
-            } else if (diamondCount < 0) {
-                returnGems(TokenGemType.DIAMOND, diamondCount * -1)
+            if (!isMyTurn) {
+                if (goldCount < 0) {
+                    returnGems(TokenGemType.GOLD, goldCount * -1)
+                }
+                if (onyxCount > 0) {
+                    takeGems(TokenGemType.ONYX, onyxCount)
+                } else if (onyxCount < 0) {
+                    returnGems(TokenGemType.ONYX, onyxCount * -1)
+                }
+                if (rubyCount > 0) {
+                    takeGems(TokenGemType.RUBY, rubyCount)
+                } else if (rubyCount < 0) {
+                    returnGems(TokenGemType.RUBY, rubyCount * -1)
+                }
+                if (emeraldCount > 0) {
+                    takeGems(TokenGemType.EMERALD, emeraldCount)
+                } else if (emeraldCount < 0) {
+                    returnGems(TokenGemType.EMERALD, emeraldCount * -1)
+                }
+                if (sapphireCount > 0) {
+                    takeGems(TokenGemType.SAPPHIRE, sapphireCount)
+                } else if (sapphireCount < 0) {
+                    returnGems(TokenGemType.SAPPHIRE, sapphireCount * -1)
+                }
+                if (diamondCount > 0) {
+                    takeGems(TokenGemType.DIAMOND, diamondCount)
+                } else if (diamondCount < 0) {
+                    returnGems(TokenGemType.DIAMOND, diamondCount * -1)
+                }
             }
         }
 
@@ -1401,7 +1429,19 @@ export function useGameController() {
             .add(timelineGems)
             .call(() => {
                 // Update state
+                for (const type of Object.keys(newGems) as TokenGemType[]) {
+                    newGems[type] = newGems[type].map((gem, index) => ({
+                        ...gem,
+                        position: [gem.position[0], gem.position[1], (index + 0.5) * GemTokenSize.depth],
+                    }))
+                }
                 setGems(newGems)
+                for (const type of Object.keys(newPlayerGems) as TokenGemType[]) {
+                    newPlayerGems[type] = newPlayerGems[type].map((gem, index) => ({
+                        ...gem,
+                        position: [gem.position[0], gem.position[1], (index + 0.5) * GemTokenSize.depth],
+                    }))
+                }
                 setPlayerGems(currentPlayer, newPlayerGems)
             })
     }
@@ -1489,7 +1529,7 @@ export function useGameController() {
                     .call(() => {
                         // Start physics
                         instanceHoldUp.startPhysics()
-                    })
+                    }, [], ">0.1")
             }
         }
 
@@ -1522,7 +1562,7 @@ export function useGameController() {
                     .call(() => {
                         // Start physics
                         instanceCard.startPhysics()
-                    })
+                    }, [], ">0.1")
             } else {
                 const arcHeight = 1 // Adjust this value for a bigger/smaller arc
                 timelineCard
@@ -1554,7 +1594,7 @@ export function useGameController() {
                     .call(() => {
                         // Start physics
                         instanceCard.startPhysics()
-                    })
+                    }, [], ">0.1")
             }
 
         }
@@ -1597,7 +1637,7 @@ export function useGameController() {
                             position: targetPosition.toArray(),
                             rotation: returnGem.rotation
                         })
-                    })
+                    }, [], ">0.1")
             }
             function returnGems(type: TokenGemType, total: number) {
                 const playerDeckGems: Gem[] = players[currentPlayer].gems[type]
@@ -1633,7 +1673,7 @@ export function useGameController() {
 
         gsap.timeline()
             .add(timelineHoldUp)
-            .add(timelineCard)
+            .add(timelineCard, "<")
             .add(timelineGems)
             .call(() => {
                 // Update state

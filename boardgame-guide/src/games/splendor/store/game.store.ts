@@ -11,7 +11,7 @@ interface GameState {
     nextPlayer: string
     deckCard: {[key: number]: Card[]}
     fieldCard: {[key: number]: Card[]}
-    gems: {[key in TokenGemType]: Gem[]}
+    gems: Record<TokenGemType, Gem[]>
     deckNoble: Noble[]
     fieldNoble: Noble[]
     players: {[key: string]: Player}
@@ -30,7 +30,7 @@ interface GameState {
     removeCardDeckCard: (card: {id: string, level: number}) => void
     setFieldCard: (field: {[key: number]: Card[]}) => void
     removeCardFieldCard: (card: {id: string, level: number}) => void
-    setGems: (gems: {[key in TokenGemType]: Gem[]}) => void
+    setGems: (gems: Record<TokenGemType, Gem[]>) => void
     addGem: (gem: Gem) => void
     addGems: (gems: Gem[]) => void
     removeGem: (gem: {id: string, type: TokenGemType}) => void
@@ -48,6 +48,8 @@ interface GameState {
     addPlayerNoble:  (playerId: string, noble: Noble) => void
     setCurrentAction: (action: Action | undefined) => void
     setPhysicsObjectActions: (actions: PhysicsObjectAction[]) => void
+    addPhysicsObjectAction: (action: PhysicsObjectAction) => void
+    removePhysicsObjectAction: (id: string) => void
     setDialog: (dialog: Dialog) => void
     setIsMyTurn: (userId?: string) => void
 }
@@ -264,6 +266,26 @@ export const useGameStore = create<GameState>((set) => ({
     })),
     setCurrentAction: (currentAction) => set({ currentAction }),
     setPhysicsObjectActions: (physicsObjectActions) => set({ physicsObjectActions }),
+    addPhysicsObjectAction: (action: PhysicsObjectAction) => set((state) => {
+        switch (action.type) {
+            case "noble":
+            case "card":
+                if (state.physicsObjectActions.some(physicsObjectAction => physicsObjectAction.id == action.id)) {
+                    return {}
+                }
+                break
+        }
+
+        return {
+            physicsObjectActions: [
+                ...state.physicsObjectActions,
+                action
+            ]
+        }
+    }),
+    removePhysicsObjectAction: (id: string) => set((state) => ({
+        physicsObjectActions: state.physicsObjectActions.filter(physicsObjectAction => physicsObjectAction.id != id)
+    })),
     setDialog: (dialog) => set({ dialog }),
     setIsMyTurn: (userId) => set((state) => ({
         isMyTurn: userId === state.currentPlayer

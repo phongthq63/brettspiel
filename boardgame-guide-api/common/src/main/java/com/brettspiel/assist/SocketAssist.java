@@ -4,6 +4,7 @@ import com.brettspiel.constants.SocketConstants;
 import com.brettspiel.utils.IdGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -21,6 +22,7 @@ import java.util.Map;
  * On 11/18/2024 - 4:26 PM
  */
 @Slf4j
+@Lazy
 @Component
 @RequiredArgsConstructor
 public class SocketAssist {
@@ -71,7 +73,7 @@ public class SocketAssist {
     public class SocketAssistHandler {
 
         @RetryableTopic(
-                attempts = "${spring.kafka.consumer.retry}",
+                attempts = "${spring.kafka.consumer.retry:1}",
                 backoff = @Backoff(delay = 60000),
                 topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
                 sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC)
@@ -84,7 +86,7 @@ public class SocketAssist {
         }
 
         @RetryableTopic(
-                attempts = "${spring.kafka.consumer.retry}",
+                attempts = "${spring.kafka.consumer.retry:1}",
                 backoff = @Backoff(delay = 60000),
                 topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
                 sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC)
@@ -97,7 +99,7 @@ public class SocketAssist {
         }
 
         @RetryableTopic(
-                attempts = "${spring.kafka.consumer.retry}",
+                attempts = "${spring.kafka.consumer.retry:1}",
                 backoff = @Backoff(delay = 60000),
                 topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
                 sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC)
@@ -110,7 +112,7 @@ public class SocketAssist {
         }
 
         @RetryableTopic(
-                attempts = "${spring.kafka.consumer.retry}",
+                attempts = "${spring.kafka.consumer.retry:1}",
                 backoff = @Backoff(delay = 60000),
                 topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
                 sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC)

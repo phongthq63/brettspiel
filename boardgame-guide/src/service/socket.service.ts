@@ -1,4 +1,5 @@
-import {instanceSocket, IRequestOptions, ServiceOptions} from "@/service/axios.service";
+import {getConfigs, IRequestOptions, ServiceOptions} from "@/service/axios.service";
+import {instanceSocket} from "@/service/axios/socket";
 
 
 export const basePath = '';
@@ -30,19 +31,6 @@ export function axios(configs: IRequestConfig, resolve: (p: any) => void, reject
     } else {
         throw new Error('please inject yourself instance like axios  ');
     }
-}
-
-export function getConfigs(method: string, contentType: string, url: string, options: any): IRequestConfig {
-    const configs: IRequestConfig = {
-        ...options,
-        method,
-        url
-    };
-    configs.headers = {
-        ...options.headers,
-        'Content-Type': contentType
-    };
-    return configs;
 }
 
 

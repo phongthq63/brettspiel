@@ -1,65 +1,7 @@
 import axios, {AxiosInstance, type AxiosRequestConfig} from 'axios'
-import {getItem} from "@/hooks/useCookie";
-import {apiUrl, socketApiUrl} from "../../config";
-
+import {IRequestConfig} from "@/service/game.service";
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
-
-export const instanceSplendor = axios.create({
-    baseURL: apiUrl,
-    timeout: 100000,
-    withCredentials: false
-})
-
-instanceSplendor.interceptors.request.use(
-    (config) => {
-        const customHeaders: Record<string, string> = {}
-        const token = getItem('access-token')
-        if (token && config.headers?.Authorization !== 'no-auth') {
-            customHeaders['Authorization'] = `Bearer ${token}`
-        }
-
-        config.headers = Object.assign(config.headers, customHeaders)
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    });
-
-instanceSplendor.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-        return Promise.reject(error)
-    }
-)
-
-export const instanceSocket = axios.create({
-    baseURL: socketApiUrl,
-    timeout: 100000,
-    withCredentials: false
-})
-
-instanceSocket.interceptors.request.use(
-    (config) => {
-        const customHeaders: Record<string, string> = {}
-        const token = getItem('access-token')
-        if (token && config.headers?.Authorization !== 'no-auth') {
-            customHeaders['Authorization'] = `Bearer ${token}`
-        }
-
-        config.headers = Object.assign(config.headers, customHeaders)
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    });
-
-instanceSocket.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-        return Promise.reject(error)
-    }
-)
 
 
 export interface IRequestOptions extends AxiosRequestConfig {
@@ -85,6 +27,19 @@ export interface IRequestOptions extends AxiosRequestConfig {
 // Add options interface
 export interface ServiceOptions {
     axios?: AxiosInstance;
+}
+
+export function getConfigs(method: string, contentType: string, url: string, options: any): IRequestConfig {
+    const configs: IRequestConfig = {
+        ...options,
+        method,
+        url
+    };
+    configs.headers = {
+        ...options.headers,
+        'Content-Type': contentType
+    };
+    return configs;
 }
 
 export default axios

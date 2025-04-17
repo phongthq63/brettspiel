@@ -1,5 +1,5 @@
-import {useUser} from "@/store/user";
-import {useSocket} from "@/store/socket";
+import {useUser} from "@/store/user.context";
+import {useSocket} from "@/store/socket.context";
 import {useEffect} from "react";
 import {RoomService} from "@/service/socket.service";
 import {NotifyGameSplendorActionBuyCard, NotifyGameSplendorActionGatherGem,

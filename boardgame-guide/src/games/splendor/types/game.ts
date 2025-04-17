@@ -24,9 +24,9 @@ export interface Player {
     avatar: string
     score: number
     nobles: Noble[]
-    cards: {[key in CardGemType]: Card[]}
+    cards: Record<CardGemType, Card[]>
     reserveCards: Card[]
-    gems: {[key in TokenGemType]: Gem[]}
+    gems: Record<TokenGemType, Gem[]>
 }
 
 export interface PhysicsObjectAction {

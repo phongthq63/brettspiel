@@ -1,4 +1,5 @@
-import {instanceSplendor, IRequestOptions, ServiceOptions} from "@/service/axios.service";
+import {getConfigs, IRequestOptions, ServiceOptions} from "@/service/axios.service";
+import {instanceSplendor} from "@/games/splendor/service/axios/splendor";
 
 
 export const basePath = ''
@@ -28,19 +29,6 @@ export async function axios(configs: IRequestConfig, resolve: (p: any) => void, 
     } else {
         throw new Error('please inject yourself instance like axios  ');
     }
-}
-
-export function getConfigs(method: string, contentType: string, url: string, options: any): IRequestConfig {
-    const configs: IRequestConfig = {
-        ...options,
-        method,
-        url
-    };
-    configs.headers = {
-        ...options.headers,
-        'Content-Type': contentType
-    };
-    return configs;
 }
 
 

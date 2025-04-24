@@ -6,9 +6,9 @@ package com.brettspiel.constants;
  */
 public class SocketConstants {
 
-    public final static String TOPIC_PUBLISH_MESSAGE_USER = "socket.socket-internal.user";
-    public final static String TOPIC_PUBLISH_MESSAGE_USERS = "socket.socket-internal.users";
-    public final static String TOPIC_PUBLISH_MESSAGE_ROOM = "socket.socket-internal.room";
-    public final static String TOPIC_PUBLISH_MESSAGE_ALL = "socket.socket-internal.all";
+    public final static String TOPIC_PUBLISH_MESSAGE_USER = "brettspiel.socket-internal.user";
+    public final static String TOPIC_PUBLISH_MESSAGE_USERS = "brettspiel.socket-internal.users";
+    public final static String TOPIC_PUBLISH_MESSAGE_ROOM = "brettspiel.socket-internal.room";
+    public final static String TOPIC_PUBLISH_MESSAGE_ALL = "brettspiel.socket-internal.all";
 
 }

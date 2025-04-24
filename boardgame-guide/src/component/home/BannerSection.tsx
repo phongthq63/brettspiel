@@ -5,7 +5,7 @@ const BannerSection = () => {
 
 
     return (
-        <section className="relative h-[500px] md:h-[600px] mb-60">
+        <section className="relative h-[600px] md:h-[700px] mb-60">
             <div className="absolute w-full h-full grid grid-cols-5 grid-rows-5">
                 <div className="relative col-span-5 row-span-4 shadow-2xl">
                     <Image src="/news-banner-899_wide.jpg"
@@ -14,7 +14,7 @@ const BannerSection = () => {
                            sizes={"100%"}/>
                 </div>
             </div>
-            <div className="absolute w-full h-full grid grid-cols-5 grid-rows-5 gap-0">
+            <div className="absolute w-full h-full grid grid-cols-5 grid-rows-5">
                 <div className="col-span-3 row-span-3 col-start-2"></div>
                 <div className="col-span-5 row-start-4 bg-black/60">
                     <div className="h-full grid grid-cols-5 grid-rows-1">

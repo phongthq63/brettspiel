@@ -105,6 +105,7 @@ public class MinIOUtils {
                 .build();
         try {
             ObjectWriteResponse objectWriteResponse = minioClient.putObject(putObjectArgs);
+            log.info("MinIOUtils - putObject - {}", objectWriteResponse);
         } catch (Exception e) {
             log.error("MinIOUtils - putObject - {}", e.getMessage());
         }
@@ -121,6 +122,7 @@ public class MinIOUtils {
                 .build();
         try {
             ObjectWriteResponse objectWriteResponse = minioClient.uploadObject(uploadObjectArgs);
+            log.info("MinIOUtils - uploadFile - {}", objectWriteResponse);
         } catch (Exception e) {
             log.error("MinIOUtils - uploadFile - {}", e.getMessage());
         }

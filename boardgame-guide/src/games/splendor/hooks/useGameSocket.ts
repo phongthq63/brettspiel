@@ -20,7 +20,7 @@ export function useGameSocket(gameId: string) {
     } = useGameController()
 
 
-    // Socket join room game
+    // Socket join room gamedetail
     useEffect(() => {
         if (user && gameId && connected) {
             RoomService.joinRoom({ body: { user_id: user.user_id, room_id: gameId } })

@@ -83,24 +83,31 @@ export default function FeaturesSection() {
                     </div>
 
                     {/* Platform labels */}
-                    <div className="flex justify-center gap-4 md:gap-10 mt-8">
-                        <div className="text-center">
-                            <Computer className="h-8 w-8 text-black mx-auto"/>
-                            <p className="text-sm font-medium mt-2">{t('section.features.desktop')}</p>
+                    <motion.div
+                        initial={{opacity: 0, y: 20}}
+                        whileInView={{opacity: 1, y: 0}}
+                        transition={{duration: 0.5}}
+                        viewport={{once: true}}
+                    >
+                        <div className="flex justify-center gap-4 md:gap-10 mt-8">
+                            <div className="text-center">
+                                <Computer className="h-8 w-8 text-black mx-auto"/>
+                                <p className="text-sm font-medium mt-2">{t('section.features.desktop')}</p>
+                            </div>
+                            <div className="text-center">
+                                <Tablet className="h-8 w-8 text-black mx-auto"/>
+                                <p className="text-sm font-medium mt-2">{t('section.features.tablet')}</p>
+                            </div>
+                            <div className="text-center">
+                                <Smartphone className="h-8 w-8 text-black mx-auto"/>
+                                <p className="text-sm font-medium mt-2">{t('section.features.mobile')}</p>
+                            </div>
+                            <div className="text-center">
+                                <Language className="h-8 w-8 text-black mx-auto"/>
+                                <p className="text-sm font-medium mt-2">{t('section.features.browser')}</p>
+                            </div>
                         </div>
-                        <div className="text-center">
-                            <Tablet className="h-8 w-8 text-black mx-auto"/>
-                            <p className="text-sm font-medium mt-2">{t('section.features.tablet')}</p>
-                        </div>
-                        <div className="text-center">
-                            <Smartphone className="h-8 w-8 text-black mx-auto"/>
-                            <p className="text-sm font-medium mt-2">{t('section.features.mobile')}</p>
-                        </div>
-                        <div className="text-center">
-                            <Language className="h-8 w-8 text-black mx-auto" />
-                            <p className="text-sm font-medium mt-2">{t('section.features.browser')}</p>
-                        </div>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
         </section>

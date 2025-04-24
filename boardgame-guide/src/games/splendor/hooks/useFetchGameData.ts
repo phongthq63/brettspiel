@@ -44,13 +44,13 @@ export function useFetchGameData(gameId: string) {
         GameService.getGameInfo({ gameId: gameId })
             .then(response => {
                 if (response.code !== 0 || !response.data) {
-                    console.error("Failed to fetch game data", response)
+                    console.error("Failed to fetch gamedetail data", response)
                     return
                 }
 
                 const gameData: SplendorGameDTO = response.data
                 if (!gameData || !gameData.ingame_data) {
-                    console.error("Invalid game data", gameData)
+                    console.error("Invalid gamedetail data", gameData)
                     return
                 }
 
@@ -110,7 +110,7 @@ export function useFetchGameData(gameId: string) {
 
                 setIsMyTurn(user?.user_id)
             })
-            .catch(error => console.error("Error fetching game data", error))
+            .catch(error => console.error("Error fetching gamedetail data", error))
     }, [user, gameId]);
 }
 

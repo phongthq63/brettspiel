@@ -2,7 +2,6 @@ package com.brettspiel.utils;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -23,9 +22,6 @@ public class RedisUtils {
 
     @Value("${spring.redis.prefix:#{''}}")
     private String prefix;
-
-    @Autowired(required = false)
-    private RedissonClient redissonClient;
 
     @Autowired(required = false)
     private RedisTemplate<String, Object> redisTemplate;

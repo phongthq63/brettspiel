@@ -8,22 +8,14 @@ import {
 import Link from "next/link";
 import LogoSVG from "@/assets/svg/logo";
 import LanguageSwitcher from "@/component/ui/LanguageSwitcher";
-import SearchBarHeader from "@/component/ui/SearchBarHeader";
+import SearchBarHeader from "@/component/ui/SearchBarHeader/SearchBarHeader";
 
 
 const Header = () => {
     const { t } = useTranslation()
 
-
-    const scrollToSection = (id: string) => {
-        const element = document.getElementById(id)
-        if (element) {
-            element.scrollIntoView({ behavior: "smooth", block: "start" })
-        }
-    }
-
     return (
-        <Navbar className="shadow-md">
+        <Navbar position="static" className="shadow-md">
             <NavbarBrand>
                 {/* Logo */}
                 <Link href="/" className="flex items-center">
@@ -41,23 +33,17 @@ const Header = () => {
 
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 <NavbarItem>
-                    <Button onPress={() => scrollToSection("games")}
-                            className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
-                    >
-                        {t("header.games")}
+                    <Button className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent">
+                        {t("header.playNow")}
                     </Button>
                 </NavbarItem>
                 <NavbarItem>
-                    <Button onPress={() => scrollToSection("games")}
-                            className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
-                    >
-                        {t("header.games")}
+                    <Button className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent">
+                        {t("header.news")}
                     </Button>
                 </NavbarItem>
                 <NavbarItem>
-                    <Button onPress={() => scrollToSection("games")}
-                            className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
-                    >
+                    <Button className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent">
                         {t("header.games")}
                     </Button>
                 </NavbarItem>

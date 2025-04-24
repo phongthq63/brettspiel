@@ -10,6 +10,9 @@
   "header.features": "Tính Năng",
   "header.games": "Trò Chơi",
   "header.contact": "Liên Hệ",
+  "header.playNow": "Chơi ngay",
+  "header.news": "Tin tức",
+  "header.search.placeholder": "Tìm kiếm...",
 
 
   "footer.tagline": "Nền tảng trực tuyến tối ưu để chơi boardgame cùng bạn bè và gia đình, bất kể họ ở đâu.",
@@ -78,6 +81,87 @@
   "section.contact.error.message": "Có vấn đề khi gửi tin nhắn của bạn. Vui lòng thử lại.",
 
 
+  "section.feedback.title": "Chia sẻ phản hồi của bạn",
+  "section.feedback.subtitle": "Chúng tôi rất muốn nghe từ bạn",
+  "section.feedback.description": "Phản hồi của bạn giúp chúng tôi cải thiện nền tảng và mang đến nhiều trò chơi thú vị hơn cho cộng đồng.",
+  "section.feedback.form.name": "Tên",
+  "section.feedback.form.namePlaceholder": "Tên của bạn",
+  "section.feedback.form.email": "Email",
+  "section.feedback.form.emailPlaceholder": "Email của bạn",
+  "section.feedback.form.subject": "Tiêu đề",
+  "section.feedback.form.subjectPlaceholder": "Tiêu đề tin nhắn",
+  "section.feedback.form.message": "Nội dung",
+  "section.feedback.form.messagePlaceholder": "Nội dung tin nhắn",
+  "section.feedback.form.submit": "Gửi phản hồi",
+  "section.feedback.form.sending": "Đang gửi...",
+  "section.feedback.success.title": "Cảm ơn bạn!",
+  "section.feedback.success.message": "Phản hồi của bạn đã được gửi thành công.",
+  "section.feedback.error.title": "Gửi không thành công",
+  "section.feedback.error.message": "Đã xảy ra lỗi khi gửi phản hồi của bạn. Vui lòng thử lại.",
+
+
+  "section.games.title": "Khám phá tất cả trò chơi",
+  "section.games.searchPlaceholder": "Tìm kiếm trò chơi...",
+  "section.games.sort.label": "Sắp xếp theo",
+  "section.games.sort.options.popular": "Phổ biến",
+  "section.games.sort.options.highestRated": "Đánh giá cao",
+  "section.games.sort.options.newest": "Mới",
+  "section.games.showing": "Hiển thị",
+  "section.games.of": "trong số",
+  "section.games.games": "trò chơi",
+  "section.games.filter.title": "Bộ lọc",
+  "section.games.filter.players.title": "Số người chơi",
+  "section.games.filter.players.solo": "1 người chơi (Đơn)",
+  "section.games.filter.players.two": "2 người chơi",
+  "section.games.filter.players.threeFour": "3-4 người chơi",
+  "section.games.filter.players.fivePlus": "5+ người chơi",
+  "section.games.filter.playTime.title": "Thời gian chơi",
+  "section.games.filter.playTime.quick": "Nhanh (< 30 phút)",
+  "section.games.filter.playTime.medium": "Trung bình (30-60 phút)",
+  "section.games.filter.playTime.long": "Dài (1-2 giờ)",
+  "section.games.filter.playTime.epic": "Rất dài (2+ giờ)",
+  "section.games.filter.genres.title": "Thể loại",
+  "section.games.filter.genres.strategy": "Chiến thuật",
+  "section.games.filter.genres.family": "Gia đình",
+  "section.games.filter.genres.party": "Nhóm",
+  "section.games.filter.genres.cooperative": "Hợp tác",
+  "section.games.filter.genres.card": "Trò chơi thẻ bài",
+  "section.games.filter.genres.abstract": "Trừu tượng",
+  "section.games.filter.genres.areaControl": "Kiểm soát khu vực",
+  "section.games.filter.genres.word": "Trò chơi từ ngữ",
+  "section.games.filter.genres.trading": "Trao đổi",
+  "section.games.filter.genres.routeBuilding": "Xây dựng đường đi",
+  "section.games.filter.showMore": "+ Xem thêm",
+  "section.games.filter.showLess": "- Ẩn bớt",
+  "section.games.filter.reset": "Đặt lại",
+
+
+
+  "gameHistory.title": "Trò chơi đã chơi gần đây",
+  "gameHistory.noGames": "Chưa có trò chơi nào được chơi",
+  "gameHistory.lastPlayed": "Lần chơi gần nhất",
+  "gameHistory.viewAll": "Xem tất cả lịch sử chơi",
+
+
+  "gameFavorite.title": "Danh sách yêu thích",
+  "gameFavorite.viewAll": "Xem tất cả trò chơi yêu thích",
+
+
+  "gameStats.currentPlayers": "Người chơi trực tuyến",
+  "gameStats.currentGames": "Trò chơi đang diễn ra",
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -103,99 +187,15 @@
     }
   },
 
-
-
-
-  "header.searchPlaceholder": "Tìm kiếm trò chơi...",
-  "header.login": "Đăng nhập",
-  "header.signup": "Đăng ký",
-  "header.language": "Ngôn ngữ",
-
-  "banner.title": "Khám phá thế giới trò chơi board game",
-  "banner.description": "Tìm, học và chơi những board game hay nhất cùng bạn bè và gia đình.",
-  "banner.exploreButton": "Khám phá trò chơi",
-  "banner.howItWorksButton": "Cách hoạt động",
-  "banner.imageAlt": "Bộ sưu tập trò chơi board game",
-
   "featuredGames.title": "Trò chơi nổi bật",
   "featuredGames.filters.popular": "Phổ biến",
   "featuredGames.filters.hot": "Hot",
   "featuredGames.filters.topRated": "Đánh giá cao",
   "featuredGames.viewAllButton": "Xem tất cả trò chơi",
 
-  "gamesList.title": "Khám phá tất cả trò chơi",
-  "gamesList.searchPlaceholder": "Tìm kiếm trò chơi...",
-  "gamesList.sortBy": "Sắp xếp theo",
-  "gamesList.sortOptions.popular": "Phổ biến nhất",
-  "gamesList.sortOptions.highestRated": "Đánh giá cao nhất",
-  "gamesList.sortOptions.newest": "Mới nhất",
-  "gamesList.sortOptions.playTime": "Thời gian chơi",
-  "gamesList.showing": "Hiển thị",
-  "gamesList.of": "trong số",
-  "gamesList.games": "trò chơi",
-
-  "gameFilter.title": "Bộ lọc",
-  "gameFilter.playerCountTitle": "Số người chơi",
-  "gameFilter.players.solo": "1 người chơi (Đơn)",
-  "gameFilter.players.two": "2 người chơi",
-  "gameFilter.players.threeFour": "3-4 người chơi",
-  "gameFilter.players.fivePlus": "5+ người chơi",
-
-  "gameFilter.playTimeTitle": "Thời gian chơi",
-  "gameFilter.playTime.quick": "Nhanh (< 30 phút)",
-  "gameFilter.playTime.medium": "Trung bình (30-60 phút)",
-  "gameFilter.playTime.long": "Dài (1-2 giờ)",
-  "gameFilter.playTime.epic": "Dài đặc biệt (2+ giờ)",
-
-  "gameFilter.genreTitle": "Thể loại",
-  "gameFilter.genres.strategy": "Chiến thuật",
-  "gameFilter.genres.family": "Gia đình",
-  "gameFilter.genres.party": "Tiệc tùng",
-  "gameFilter.genres.cooperative": "Hợp tác",
-  "gameFilter.genres.card": "Trò chơi thẻ bài",
-  "gameFilter.genres.abstract": "Trừu tượng",
-  "gameFilter.genres.areaControl": "Kiểm soát khu vực",
-  "gameFilter.genres.word": "Trò chơi từ ngữ",
-  "gameFilter.genres.trading": "Trao đổi",
-  "gameFilter.genres.routeBuilding": "Xây dựng đường đi",
-
-  "gameFilter.showMore": "+ Xem thêm",
-  "gameFilter.showLess": "- Ẩn bớt",
-  "gameFilter.applyButton": "Áp dụng bộ lọc",
-  "gameFilter.resetButton": "Đặt lại",
-
   "gameCard.hot": "HOT",
   "gameCard.popular": "PHỔ BIẾN",
   "gameCard.topRated": "ĐÁNH GIÁ CAO",
   "gameCard.players": "người chơi",
-  "gameCard.minutes": "phút",
-
-  "feedback.title": "Chia sẻ phản hồi của bạn",
-  "feedback.subtitle": "Chúng tôi rất muốn nghe từ bạn",
-  "feedback.description": "Phản hồi của bạn giúp chúng tôi cải thiện nền tảng và mang đến nhiều trò chơi thú vị hơn cho cộng đồng.",
-  "feedback.imageAlt": "Mọi người chơi board game",
-
-  "feedback.form.name": "Tên",
-  "feedback.form.namePlaceholder": "Tên của bạn",
-  "feedback.form.email": "Email",
-  "feedback.form.emailPlaceholder": "Email của bạn",
-  "feedback.form.subject": "Chủ đề",
-  "feedback.form.subjectPlaceholder": "Chọn một chủ đề",
-  "feedback.form.subjects.suggestion": "Đề xuất",
-  "feedback.form.subjects.question": "Câu hỏi",
-  "feedback.form.subjects.gameRequest": "Yêu cầu trò chơi",
-  "feedback.form.subjects.bugReport": "Báo cáo lỗi",
-  "feedback.form.subjects.other": "Khác",
-  "feedback.form.message": "Nội dung",
-  "feedback.form.messagePlaceholder": "Nội dung của bạn",
-  "feedback.form.submitButton": "Gửi phản hồi",
-  "feedback.form.submitting": "Đang gửi...",
-
-  "feedback.success.title": "Cảm ơn bạn!",
-  "feedback.success.message": "Phản hồi của bạn đã được gửi thành công.",
-  "feedback.error.title": "Gửi không thành công",
-  "feedback.error.message": "Đã xảy ra lỗi khi gửi phản hồi của bạn. Vui lòng thử lại.",
-
-  "pagination.previous": "Trang trước",
-  "pagination.next": "Trang sau"
+  "gameCard.minutes": "phút"
 }

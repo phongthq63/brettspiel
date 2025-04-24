@@ -10,6 +10,9 @@
   "header.features": "Features",
   "header.games": "Games",
   "header.contact": "Contact",
+  "header.playNow": "Play now",
+  "header.news": "News",
+  "header.search.placeholder": "Type to search...",
 
 
   "footer.tagline": "The ultimate online platform for playing boardgames with friends and family, no matter where they are.",
@@ -78,6 +81,90 @@
   "section.contact.error.message": "There was a problem sending your message. Please try again.",
 
 
+  "section.feedback.title": "Share Your Feedback",
+  "section.feedback.subtitle": "We'd Love to Hear From You",
+  "section.feedback.description": "Your feedback helps us improve our platform and bring more exciting board games to the community.",
+  "section.feedback.form.name": "Name",
+  "section.feedback.form.namePlaceholder": "Your name",
+  "section.feedback.form.email": "Email",
+  "section.feedback.form.emailPlaceholder": "Your email",
+  "section.feedback.form.subject": "Subject",
+  "section.feedback.form.subjectPlaceholder": "Message subject",
+  "section.feedback.form.message": "Message",
+  "section.feedback.form.messagePlaceholder": "Your message",
+  "section.feedback.form.submit": "Submit Feedback",
+  "section.feedback.form.sending": "Submitting...",
+  "section.feedback.success.title": "Thank you!",
+  "section.feedback.success.message": "Your feedback has been submitted successfully.",
+  "section.feedback.error.title": "Submission Failed",
+  "section.feedback.error.message": "There was an error submitting your feedback. Please try again.",
+
+
+  "section.games.title": "Explore All Games",
+  "section.games.search.placeholder": "Search games...",
+  "section.games.sort.label": "Sort by",
+  "section.games.sort.options.popular": "Most Popular",
+  "section.games.sort.options.highestRated": "Highest Rated",
+  "section.games.sort.options.newest": "Newest",
+  "section.games.showing": "Showing",
+  "section.games.of": "of",
+  "section.games.games": "games",
+  "section.games.filter.title": "Filters",
+  "section.games.filter.players.title": "Number of Players",
+  "section.games.filter.players.solo": "1 player (Solo)",
+  "section.games.filter.players.two": "2 players",
+  "section.games.filter.players.threeFour": "3-4 players",
+  "section.games.filter.players.fivePlus": "5+ players",
+  "section.games.filter.playTime.title": "Play Time",
+  "section.games.filter.playTime.quick": "Quick (< 30 min)",
+  "section.games.filter.playTime.medium": "Medium (30-60 min)",
+  "section.games.filter.playTime.long": "Long (1-2 hours)",
+  "section.games.filter.playTime.epic": "Epic (2+ hours)",
+  "section.games.filter.genres.title": "Genre",
+  "section.games.filter.genres.strategy": "Strategy",
+  "section.games.filter.genres.family": "Family",
+  "section.games.filter.genres.party": "Party",
+  "section.games.filter.genres.cooperative": "Cooperative",
+  "section.games.filter.genres.card": "Card Game",
+  "section.games.filter.genres.abstract": "Abstract",
+  "section.games.filter.genres.areaControl": "Area Control",
+  "section.games.filter.genres.word": "Word Game",
+  "section.games.filter.genres.trading": "Trading",
+  "section.games.filter.genres.routeBuilding": "Route Building",
+  "section.games.filter.showMore": "+ Show more",
+  "section.games.filter.showLess": "- Show less",
+  "section.games.filter.reset": "Reset",
+
+  "gameCard.hot": "HOT",
+  "gameCard.popular": "POPULAR",
+  "gameCard.topRated": "TOP RATED",
+  "gameCard.players": "players",
+  "gameCard.minutes": "min",
+
+
+
+  "gameHistory.title": "Recently Played Games",
+  "gameHistory.noGames": "No games played yet",
+  "gameHistory.lastPlayed": "Last played",
+  "gameHistory.viewAll": "View all play history",
+
+
+  "gameFavorite.title": "Favorite List",
+  "gameFavorite.viewAll": "View all favorite game",
+
+
+
+  "gameStats.currentPlayers": "Players Online",
+  "gameStats.currentGames": "Games in Progress",
+
+
+
+
+
+
+
+
+
 
 
 
@@ -102,97 +189,9 @@
       "players": "2-4 players"
     }
   },
-
-  "header.searchPlaceholder": "Search board games...",
-  "header.login": "Log In",
-  "header.signup": "Sign Up",
-  "header.language": "Language",
-
-  "banner.title": "Discover the World of Board Games",
-  "banner.description": "Find, learn, and play the best board games with friends and family.",
-  "banner.exploreButton": "Explore Games",
-  "banner.howItWorksButton": "How It Works",
-  "banner.imageAlt": "Board games collection",
-
   "featuredGames.title": "Featured Games",
   "featuredGames.filters.popular": "Popular",
   "featuredGames.filters.hot": "Hot",
   "featuredGames.filters.topRated": "Highly Rated",
-  "featuredGames.viewAllButton": "View All Games",
-
-  "gamesList.title": "Explore All Games",
-  "gamesList.searchPlaceholder": "Search games...",
-  "gamesList.sortBy": "Sort by",
-  "gamesList.sortOptions.popular": "Most Popular",
-  "gamesList.sortOptions.highestRated": "Highest Rated",
-  "gamesList.sortOptions.newest": "Newest",
-  "gamesList.sortOptions.playTime": "Play Time",
-  "gamesList.showing": "Showing",
-  "gamesList.of": "of",
-  "gamesList.games": "games",
-
-  "gameFilter.title": "Filters",
-  "gameFilter.playerCountTitle": "Number of Players",
-  "gameFilter.players.solo": "1 player (Solo)",
-  "gameFilter.players.two": "2 players",
-  "gameFilter.players.threeFour": "3-4 players",
-  "gameFilter.players.fivePlus": "5+ players",
-
-  "gameFilter.playTimeTitle": "Play Time",
-  "gameFilter.playTime.quick": "Quick (< 30 min)",
-  "gameFilter.playTime.medium": "Medium (30-60 min)",
-  "gameFilter.playTime.long": "Long (1-2 hours)",
-  "gameFilter.playTime.epic": "Epic (2+ hours)",
-
-  "gameFilter.genreTitle": "Genre",
-  "gameFilter.genres.strategy": "Strategy",
-  "gameFilter.genres.family": "Family",
-  "gameFilter.genres.party": "Party",
-  "gameFilter.genres.cooperative": "Cooperative",
-  "gameFilter.genres.card": "Card Game",
-  "gameFilter.genres.abstract": "Abstract",
-  "gameFilter.genres.areaControl": "Area Control",
-  "gameFilter.genres.word": "Word Game",
-  "gameFilter.genres.trading": "Trading",
-  "gameFilter.genres.routeBuilding": "Route Building",
-
-  "gameFilter.showMore": "+ Show more",
-  "gameFilter.showLess": "- Show less",
-  "gameFilter.applyButton": "Apply Filters",
-  "gameFilter.resetButton": "Reset",
-
-  "gameCard.hot": "HOT",
-  "gameCard.popular": "POPULAR",
-  "gameCard.topRated": "TOP RATED",
-  "gameCard.players": "players",
-  "gameCard.minutes": "min",
-
-  "feedback.title": "Share Your Feedback",
-  "feedback.subtitle": "We'd Love to Hear From You",
-  "feedback.description": "Your feedback helps us improve our platform and bring more exciting board games to the community.",
-  "feedback.imageAlt": "People playing board games",
-
-  "feedback.form.name": "Name",
-  "feedback.form.namePlaceholder": "Your name",
-  "feedback.form.email": "Email",
-  "feedback.form.emailPlaceholder": "Your email",
-  "feedback.form.subject": "Subject",
-  "feedback.form.subjectPlaceholder": "Select a subject",
-  "feedback.form.subjects.suggestion": "Suggestion",
-  "feedback.form.subjects.question": "Question",
-  "feedback.form.subjects.gameRequest": "Game Request",
-  "feedback.form.subjects.bugReport": "Bug Report",
-  "feedback.form.subjects.other": "Other",
-  "feedback.form.message": "Message",
-  "feedback.form.messagePlaceholder": "Your message",
-  "feedback.form.submitButton": "Submit Feedback",
-  "feedback.form.submitting": "Submitting...",
-
-  "feedback.success.title": "Thank you!",
-  "feedback.success.message": "Your feedback has been submitted successfully.",
-  "feedback.error.title": "Submission Failed",
-  "feedback.error.message": "There was an error submitting your feedback. Please try again.",
-
-  "pagination.previous": "Previous page",
-  "pagination.next": "Next page"
+  "featuredGames.viewAllButton": "View All Games"
 }

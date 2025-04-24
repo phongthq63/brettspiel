@@ -4,7 +4,6 @@ import {Euler, MathUtils, Quaternion, Vector3} from "three";
 import gsap from "gsap";
 import {NobleCardSize} from "@/games/splendor/component/3d/NobleCard";
 import {GemCardSize} from "@/games/splendor/component/3d/GemCard";
-import {toast} from "react-toastify";
 import {CardPosition, GemPosition, NoblePosition, PlayerPosition} from "@/games/splendor/constants/game";
 import {GemTokenSize} from "@/games/splendor/component/3d/GemToken";
 import {CardDictionary} from "@/games/splendor/constants/card";
@@ -15,6 +14,7 @@ import {useUser} from "@/store/user.context";
 import {useGameActions} from "@/games/splendor/hooks/useGameActions";
 import {useGameStore} from "@/games/splendor/store/game.store";
 import {getPlayerLocate} from "@/games/splendor/utils/game";
+import {toast} from "@/utils/toast";
 
 
 export function useGameController() {
@@ -457,17 +457,19 @@ export function useGameController() {
         if (currentAction && currentAction.type != "gather-gem") {
             return
         } else {
-            // Verify rule game
+            // Verify rule gamedetail
             const tookGems = currentAction?.gem?.filter(tookGem => tookGem.count > 0) || []
             if (tookGems.length >= 3) {
-                toast("Can't take more than 3 game in 1 turn", {
+                toast({
+                    description: "Can't take more than 3 gamedetail in 1 turn",
                     autoClose: 2000,
                 })
                 return
             }
             if (tookGems.length == 2 &&
                 (tookGems[0].type == tookGems[1].type || tookGems[0].type == gem.type || tookGems[1].type == gem.type)) {
-                toast("Only take 2 gem same type or 3 gem different type", {
+                toast({
+                    description: "Only take 2 gem same type or 3 gem different type",
                     autoClose: 2000,
                 })
                 return

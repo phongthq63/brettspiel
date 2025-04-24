@@ -2,12 +2,12 @@ import { useState } from 'react';
 import {useTranslation} from "react-i18next";
 import {Chip, Skeleton} from '@heroui/react';
 import {AccessTime, PeopleAltOutlined, Star} from "@mui/icons-material";
-import {Card, CardBody} from "@heroui/card";
+import {Card, CardBody, CardFooter} from "@heroui/card";
 import Image from "next/image";
 
 type Tag = 'popular' | 'hot' | 'topRated';
 
-const FeaturedGames = () => {
+const FeaturedGamesSection = () => {
     const [activeTag, setActiveTag] = useState<Tag>('popular');
 
     const featuredGames = [
@@ -63,7 +63,7 @@ const FeaturedGames = () => {
     }
 
     return (
-        <div>
+        <section className="min-h-[500] bg-cyan-50 shadow-[inset_0_3px_4px_rgba(0,0,0,0.4)] rounded-3xl p-5">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <h2 className="text-2xl font-bold text-gray-800">{"Featured Games"}</h2>
                 <div className="flex space-x-2">
@@ -135,7 +135,7 @@ const FeaturedGames = () => {
                         ))
                 )}
             </div>
-        </div>
+        </section>
     )
 }
 
@@ -188,26 +188,29 @@ function GameCard({ game }: GameCardProps) {
                             </Chip>
                         ))}
                     </div>
-                    <div className="flex justify-between text-xs text-gray-500">
-                        <div className="flex items-center">
-                            <PeopleAltOutlined className="h-4 w-4 mr-1"/>
-                            {game.minPlayers === game.maxPlayers
-                                ? `${game.minPlayers} ${t('gameCard.players')}`
-                                : `${game.minPlayers}-${game.maxPlayers} ${"players"}`
-                            }
-                        </div>
-                        <div className="flex items-center">
-                            <AccessTime className="h-4 w-4 mr-1"/>
-                            {game.minPlayTime === game.maxPlayTime
-                                ? `${game.minPlayTime} ${t('gameCard.minutes')}`
-                                : `${game.minPlayTime}-${game.maxPlayTime} ${"minutes"}`
-                            }
-                        </div>
-                    </div>
+
                 </div>
             </CardBody>
+            <CardFooter>
+                <div className="w-full flex justify-between text-xs text-gray-500">
+                    <div className="flex items-center">
+                        <PeopleAltOutlined className="h-4 w-4 mr-1"/>
+                        {game.minPlayers === game.maxPlayers
+                            ? `${game.minPlayers} ${t('gameCard.players')}`
+                            : `${game.minPlayers}-${game.maxPlayers} ${"players"}`
+                        }
+                    </div>
+                    <div className="flex items-center">
+                        <AccessTime className="h-4 w-4 mr-1"/>
+                        {game.minPlayTime === game.maxPlayTime
+                            ? `${game.minPlayTime} ${t('gameCard.minutes')}`
+                            : `${game.minPlayTime}-${game.maxPlayTime} ${"minutes"}`
+                        }
+                    </div>
+                </div>
+            </CardFooter>
         </Card>
     )
 }
 
-export default FeaturedGames
+export default FeaturedGamesSection

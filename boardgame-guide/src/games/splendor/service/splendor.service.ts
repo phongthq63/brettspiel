@@ -107,7 +107,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/game/{gameId}/turn/start';
+            let url = basePath + '/gamedetail/{gameId}/turn/start';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -126,7 +126,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/game/{gameId}/turn/end';
+            let url = basePath + '/gamedetail/{gameId}/turn/end';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -147,7 +147,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/game/{gameId}/turn/bonus-action/take-noble';
+            let url = basePath + '/gamedetail/{gameId}/turn/bonus-action/take-noble';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -168,7 +168,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/game/{gameId}/turn/action/skip';
+            let url = basePath + '/gamedetail/{gameId}/turn/action/skip';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -189,7 +189,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/game/{gameId}/turn/action/reserve-card';
+            let url = basePath + '/gamedetail/{gameId}/turn/action/reserve-card';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -212,7 +212,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/game/{gameId}/turn/action/gather-gem';
+            let url = basePath + '/gamedetail/{gameId}/turn/action/gather-gem';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -235,7 +235,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/game/{gameId}/turn/action/buy-card';
+            let url = basePath + '/gamedetail/{gameId}/turn/action/buy-card';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -256,7 +256,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/game/{gameId}/start';
+            let url = basePath + '/gamedetail/{gameId}/start';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -275,7 +275,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            const url = basePath + '/game/init';
+            const url = basePath + '/gamedetail/init';
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -295,7 +295,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<RSplendorGameDTO> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/game/{gameId}';
+            let url = basePath + '/gamedetail/{gameId}';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
@@ -414,7 +414,7 @@ export interface IngameDataVO {
     /** Danh sách id người chơi */
     player_ids?: string[];
 
-    /** Điểm kết thúc game */
+    /** Điểm kết thúc gamedetail */
     endgame_score?: number;
 
     /** Vòng */
@@ -474,7 +474,7 @@ export interface IngameDataVO {
     /** Kim cương */
     diamond?: number;
 
-    /** Thông tin dữ liệu của người chơi trong game */
+    /** Thông tin dữ liệu của người chơi trong gamedetail */
     players?: IngamePlayerDataVO[];
 }
 
@@ -548,7 +548,7 @@ export interface RSplendorGameDTO {
 }
 
 export interface SplendorGameDTO {
-    /** Id game */
+    /** Id gamedetail */
     game_id?: string;
 
     /** Danh sách id người chơi */
@@ -577,7 +577,7 @@ export interface SplendorTableDTO {
     /** Danh sách id người chơi */
     user_ids?: string[];
 
-    /** Trạng thái (0: chờ; 1: đang tìm người chơi; 2: trong game) */
+    /** Trạng thái (0: chờ; 1: đang tìm người chơi; 2: trong gamedetail) */
     status?: number;
 
     /** Id chủ phòng */

@@ -54,7 +54,44 @@ export class ContactService {
     }
 }
 
+export class FeedbackService {
+    /**
+     *
+     */
+    static sendFeedback(
+        params: {
+            /** requestBody */
+            body?: SendFeedbackRequest;
+        } = {} as any,
+        options: IRequestOptions = {}
+    ): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const url = basePath + '/feedback';
+
+            const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+            configs.data = params.body;
+
+            axios(configs, resolve, reject);
+        });
+    }
+}
+
 export interface SendContactRequest {
+    /** Tên người chơi */
+    name?: string;
+
+    /** Email */
+    email?: string;
+
+    /** Tiêu đề */
+    subject?: string;
+
+    /** Nội dung */
+    message?: string;
+}
+
+export interface SendFeedbackRequest {
     /** Tên người chơi */
     name?: string;
 

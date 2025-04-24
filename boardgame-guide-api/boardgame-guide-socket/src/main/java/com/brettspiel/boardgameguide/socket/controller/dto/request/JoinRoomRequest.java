@@ -3,7 +3,6 @@ package com.brettspiel.boardgameguide.socket.controller.dto.request;
 import com.brettspiel.service.dto.request.BaseRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import {Card, CardBody, CardFooter, CardHeader} from "@heroui/card";
 import {Chip} from "@heroui/react";
+import {useTranslation} from "react-i18next";
 
 export default function GameHistory() {
+    const { t } = useTranslation();
     const [playedGames, setPlayedGames] = useState<any[]>([])
 
     useEffect(() => {
@@ -76,11 +78,11 @@ export default function GameHistory() {
     return (
         <Card>
             <CardHeader>
-                <h3 className="text-xl font-bold">{"Recently Played Games"}</h3>
+                <h3 className="text-xl font-bold">{t("gameHistory.title")}</h3>
             </CardHeader>
             <CardBody>
                 {playedGames.length === 0 ? (
-                    <p className="text-gray-500 text-center py-4">{"noGames"}</p>
+                    <p className="text-gray-500 text-center py-4">{t("gameHistory.noGames")}</p>
                 ) : (
                     <ul className="space-y-3">
                         {playedGames.map((game) => (
@@ -98,7 +100,7 @@ export default function GameHistory() {
                                         ))}
                                     </div>
                                     <div className="text-xs text-gray-500 mt-1">
-                                        {"lastPlayed"}: {new Date().toLocaleDateString()}
+                                        {t("gameHistory.lastPlayed")}: {new Date().toLocaleDateString()}
                                     </div>
                                 </div>
                             </li>
@@ -109,7 +111,7 @@ export default function GameHistory() {
             <CardFooter>
                 <div className="w-full mt-4 text-center">
                     <a href="#" className="text-sm text-blue-600 hover:underline">
-                        {"View all play history"}
+                        {t("gameHistory.viewAll")}
                     </a>
                 </div>
             </CardFooter>

@@ -17,7 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ContactServiceImpl implements IContactService {
 
-    private final static String TOPIC_PUBLISH_CONTACT = "game.socket-internal.contact";
+    private final static String TOPIC_PUBLISH_CONTACT = "brettspiel.game-service.contact";
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 

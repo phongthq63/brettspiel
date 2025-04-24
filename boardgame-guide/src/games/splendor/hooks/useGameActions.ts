@@ -25,7 +25,7 @@ export function useGameActions() {
                     }
                 })
                 .catch(error => {
-                    console.log("Start game error", error);
+                    console.log("Start gamedetail error", error);
                 })
         }
     }

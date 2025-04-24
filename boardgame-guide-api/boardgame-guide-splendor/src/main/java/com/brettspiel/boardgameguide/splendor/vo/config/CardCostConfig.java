@@ -1,6 +1,5 @@
 package com.brettspiel.boardgameguide.splendor.vo.config;
 
-import lombok.Builder;
 import lombok.Data;
 
 /**

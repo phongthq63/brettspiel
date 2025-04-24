@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import {Facebook, FmdGoodOutlined, Instagram, Mail, Phone, Twitter, ChatBubbleOutlineOutlined} from "@mui/icons-material";
-import {addToast, Button, Input, Textarea, Form} from "@heroui/react";
+import {Button, Input, Textarea, Form} from "@heroui/react";
 import {Card, CardHeader, CardBody} from "@heroui/card";
 import {ContactService} from "@/service/game.service";
+import {toast} from "@/utils/toast";
 
 
 export default function ContactSection() {
@@ -30,9 +31,10 @@ export default function ContactSection() {
             .then(response => {
                 if (response.code == 0) {
 
-                    addToast({
+                    toast({
                         title: t("section.contact.success.title"),
                         description: t("section.contact.success.message"),
+                        autoClose: 2000,
                     })
 
                     setFormData({
@@ -42,17 +44,19 @@ export default function ContactSection() {
                         message: ""
                     })
                 } else {
-                    addToast({
+                    toast({
                         title: t("section.contact.error.title"),
                         description: response.msg,
+                        autoClose: 2000,
                     })
                 }
             })
             .catch((error) => {
                 console.log(error)
-                addToast({
+                toast({
                     title: t("section.contact.error.title"),
                     description: t("section.contact.error.message"),
+                    autoClose: 2000,
                 })
             })
             .finally(() => setIsSubmitting(false))

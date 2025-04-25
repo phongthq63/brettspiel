@@ -23,10 +23,11 @@ export default function FeaturesSection() {
                 <div className="max-w-5xl mx-auto">
                     <div className="flex flex-col md:flex-row items-end justify-center gap-8">
                         {/* Desktop Device */}
-                        <motion.div className="relative border-8 border-gray-800 rounded-xl overflow-hidden shadow-xl w-full md:w-2/3 lg:w-1/2 h-80"
-                                    initial={{opacity: 0, x: 50}}
-                                    animate={{opacity: 1, x: 0}}
-                                    transition={{duration: 0.5, delay: 0.1}}
+                        <motion.div
+                            className="relative border-8 border-gray-800 rounded-xl overflow-hidden shadow-xl w-full md:w-2/3 lg:w-1/2 h-80"
+                            initial={{opacity: 0, x: 50}}
+                            animate={{opacity: 1, x: 0}}
+                            transition={{duration: 0.5, delay: 0.1}}
                         >
                             <div className="relative  h-full bg-gray-200">
                                 <Image src="/photo-1611996575749-79a3a250f948.jpg"
@@ -35,7 +36,8 @@ export default function FeaturesSection() {
                                        sizes={"100%"}
                                 />
                             </div>
-                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                            <div
+                                className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                                 <span className="text-white font-medium">Windows & MacOS</span>
                             </div>
                         </motion.div>
@@ -43,10 +45,11 @@ export default function FeaturesSection() {
                         {/* Mobile Devices */}
                         <div className="flex gap-4 items-end">
                             {/* Tablet */}
-                            <motion.div className="relative border-8 border-gray-800 rounded-xl overflow-hidden shadow-xl w-48 h-64"
-                                        initial={{opacity: 0, x: 50}}
-                                        animate={{opacity: 1, x: 0}}
-                                        transition={{duration: 0.5, delay: 0.2}}
+                            <motion.div
+                                className="relative border-8 border-gray-800 rounded-xl overflow-hidden shadow-xl w-48 h-64"
+                                initial={{opacity: 0, x: 50}}
+                                animate={{opacity: 1, x: 0}}
+                                transition={{duration: 0.5, delay: 0.2}}
                             >
                                 <div className="relative h-full bg-gray-200 ">
                                     <Image src="/photo-1611996575749-79a3a250f948.jpg"
@@ -62,10 +65,11 @@ export default function FeaturesSection() {
                             </motion.div>
 
                             {/* Phone */}
-                            <motion.div className="relative border-8 border-gray-800 rounded-xl overflow-hidden shadow-xl w-20 h-36"
-                                 initial={{opacity: 0, x: 50}}
-                                 animate={{opacity: 1, x: 0}}
-                                 transition={{duration: 0.5, delay: 0.3}}
+                            <motion.div
+                                className="relative border-8 border-gray-800 rounded-xl overflow-hidden shadow-xl w-20 h-36"
+                                initial={{opacity: 0, x: 50}}
+                                animate={{opacity: 1, x: 0}}
+                                transition={{duration: 0.5, delay: 0.3}}
                             >
                                 <div className="relative h-full bg-gray-200 ">
                                     <Image src="/photo-1611996575749-79a3a250f948.jpg"
@@ -91,19 +95,19 @@ export default function FeaturesSection() {
                     >
                         <div className="flex justify-center gap-4 md:gap-10 mt-8">
                             <div className="text-center">
-                                <Computer />
+                                <Computer/>
                                 <p className="text-sm font-medium mt-2">{t('section.features.desktop')}</p>
                             </div>
                             <div className="text-center">
-                                <Tablet />
+                                <Tablet/>
                                 <p className="text-sm font-medium mt-2">{t('section.features.tablet')}</p>
                             </div>
                             <div className="text-center">
-                                <Smartphone />
+                                <Smartphone/>
                                 <p className="text-sm font-medium mt-2">{t('section.features.mobile')}</p>
                             </div>
                             <div className="text-center">
-                                <Language />
+                                <Language/>
                                 <p className="text-sm font-medium mt-2">{t('section.features.browser')}</p>
                             </div>
                         </div>

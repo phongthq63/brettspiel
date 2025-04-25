@@ -7,7 +7,6 @@ import {Card, CardHeader, CardBody} from "@heroui/card";
 import {ContactService} from "@/service/game.service";
 import {toast} from "@/utils/toast";
 
-
 export default function ContactSection() {
     const { t } = useTranslation()
     const [formData, setFormData] = useState({
@@ -73,7 +72,9 @@ export default function ContactSection() {
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
                     >
-                        <h2 className="font-bold text-3xl md:text-4xl mb-4">{t("section.contact.title")}</h2>
+                        <h1 className="font-bold text-3xl md:text-4xl mb-4">{t("section.contact.title")}</h1>
+                        <meta name="description" content={t("section.contact.metaDescription")} />
+                        <meta name="keywords" content="contact, boardgame, support" />
                         <p className="mb-8 max-w-lg opacity-90">{t("section.contact.subtitle")}</p>
 
                         <div className="mb-8">
@@ -93,17 +94,19 @@ export default function ContactSection() {
 
                         <div className="flex space-x-4">
                             <a href="#"
-                               className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all">
+                               className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all"
+                               aria-label="Facebook">
                                 <Facebook />
                             </a>
                             <a href="#"
-                               className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all">
+                               className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all"
+                               aria-label="Twitter">
                                 <Twitter />
                             </a>
-                            <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all">
+                            <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all" aria-label="Instagram">
                                 <Instagram />
                             </a>
-                            <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all">
+                            <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all" aria-label="Chat">
                                 <ChatBubbleOutlineOutlined />
                             </a>
                         </div>
@@ -118,10 +121,10 @@ export default function ContactSection() {
                     >
                         <Card className="p-8 shadow-lg">
                             <CardHeader>
-                                <h3 className="font-semibold text-xl mb-6">{t("section.contact.form.title")}</h3>
+                                <h2 className="font-semibold text-xl mb-6">{t("section.contact.form.title")}</h2>
                             </CardHeader>
                             <CardBody>
-                                <Form onSubmit={handleSubmit}>
+                                <Form onSubmit={handleSubmit} aria-label="Contact Form">
                                     <Input
                                         id="name"
                                         label={t("section.contact.form.name")}

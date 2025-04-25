@@ -26,7 +26,7 @@ export default function Page() {
     return (
         <div id="root" className="min-h-screen flex flex-col justify-between">
             <Header />
-            <main>
+            <main role="main">
                 <HeroSection />
                 <FeaturesSection />
                 <FeaturedGameSection />

@@ -1,15 +1,14 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import {Card, CardBody, CardFooter} from "@heroui/card";
-import {Button, Chip} from "@heroui/react";
-import {AccessTime, ArrowForwardOutlined, PeopleAltOutlined} from "@mui/icons-material";
+import { Card, CardBody, CardFooter } from "@heroui/card";
+import { Button, Chip } from "@heroui/react";
+import { AccessTime, ArrowForwardOutlined, PeopleAltOutlined } from "@mui/icons-material";
 import Image from "next/image";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
-
-export default function FeaturedGameSection(){
-    const router = useRouter()
-    const { t } = useTranslation()
+export default function FeaturedGameSection() {
+    const router = useRouter();
+    const { t } = useTranslation();
 
     const games = [
         {
@@ -39,16 +38,16 @@ export default function FeaturedGameSection(){
             badge: t("new"),
             delay: 0.3
         }
-    ]
+    ];
 
     const handlerPlayGame = () => {
-        router.push('/')
-    }
+        router.push("/");
+    };
 
     return (
         <section id="games" className="py-20 bg-gray-50 bg-[rgba(249,250,251,0.1)]">
             <div className="container mx-auto px-4">
-                <div className="flex justify-between items-center mb-12">
+                <header className="flex justify-between items-center mb-12">
                     <motion.h2
                         className="font-bold text-3xl md:text-4xl"
                         initial={{ opacity: 0, x: -20 }}
@@ -65,11 +64,12 @@ export default function FeaturedGameSection(){
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
+                        aria-label="See all featured games"
                     >
                         {t("section.featuredGame.seeAll")}
                         <ArrowForwardOutlined className="text-blue-500" />
                     </motion.a>
-                </div>
+                </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {games.map((game, index) => (
@@ -88,40 +88,38 @@ export default function FeaturedGameSection(){
                 </div>
             </div>
         </section>
-    )
+    );
 }
 
 interface GameCardProps {
-    title: string
-    description: string
-    duration: string
-    players: string
-    image: string
-    badge: string
-    delay: number
-    onClickPlay: () => void
+    title: string;
+    description: string;
+    duration: string;
+    players: string;
+    image: string;
+    badge: string;
+    delay: number;
+    onClickPlay: () => void;
 }
 
 function GameCard({ title, description, duration, players, image, badge, delay, onClickPlay }: GameCardProps) {
-    const { t } = useTranslation()
+    const { t } = useTranslation();
 
     return (
-        <motion.div
+        <motion.article
             className="transition-all duration-300 bg-white"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay }}
             viewport={{ once: true }}
         >
-            <Card className="h-full hover:transition hover:shadow-xl">
+            <Card className="h-full hover:transition hover:shadow-xl hover:-translate-y-2">
                 <CardBody>
                     <div className="mb-6">
                         <div className="relative w-full h-56 rounded-lg overflow-hidden">
-                            <Image alt={"Card image"} src={image} fill sizes={"100%"}/>
+                            <Image alt={title} src={image} fill sizes="100%" />
                         </div>
-                        <Chip className="absolute top-4 right-4 px-2 py-1"
-                              size="sm"
-                        >
+                        <Chip className="absolute top-4 right-4 px-2 py-1" size="sm">
                             {badge}
                         </Chip>
                     </div>
@@ -147,11 +145,12 @@ function GameCard({ title, description, duration, players, image, badge, delay, 
                             backgroundImage: "linear-gradient(109.6deg, rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1%)"
                         }}
                         onPress={onClickPlay}
+                        aria-label={t("playNow")}
                     >
                         {t("playNow")}
                     </Button>
                 </CardFooter>
             </Card>
-        </motion.div>
-    )
+        </motion.article>
+    );
 }

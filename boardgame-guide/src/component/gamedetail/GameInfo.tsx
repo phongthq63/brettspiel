@@ -20,7 +20,8 @@ export default function GameInfo({game}: GameInfoProps) {
                     <Image
                         src="/en_280.png"
                         alt="Board games box"
-                        fill/>
+                        fill
+                        sizes={"100%"}/>
                 </div>
             </div>
             <div className="flex flex-col gap-4">

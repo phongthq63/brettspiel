@@ -14,7 +14,7 @@ const HeroSection = () => {
     }
 
     return (
-        <section className="min-h-screen flex items-center bg-[rgba(156,252,248,0.1)]">
+        <section className="min-h-screen flex items-center bg-[rgba(156,252,248,0.1)]" aria-label="Hero Section">
             <div className="container mx-auto px-4 py-16">
                 <div className="flex flex-col md:flex-row items-center">
                     <motion.div
@@ -43,6 +43,7 @@ const HeroSection = () => {
                                 transition: "all 0.3s"
                             }}
                             onPress={onClickPlay}
+                            aria-label="Play Now"
                         >
                             {t("playNow")}
                         </Button>
@@ -57,7 +58,9 @@ const HeroSection = () => {
                             <Image src="/photo-1496449903678-68ddcb189a24.jpg"
                                    alt="People playing board games"
                                    fill
-                                   sizes={"100%"}/>
+                                   sizes="100%"
+                                   priority
+                            />
                         </div>
                     </motion.div>
                 </div>

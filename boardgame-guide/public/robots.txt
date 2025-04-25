@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://brettspiel.thanhphong.com
+
+# Sitemaps
+Sitemap: https://brettspiel.thanhphong.com/sitemap.xml

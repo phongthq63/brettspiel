@@ -91,19 +91,19 @@ export default function FeaturesSection() {
                     >
                         <div className="flex justify-center gap-4 md:gap-10 mt-8">
                             <div className="text-center">
-                                <Computer className="h-8 w-8 text-black mx-auto"/>
+                                <Computer />
                                 <p className="text-sm font-medium mt-2">{t('section.features.desktop')}</p>
                             </div>
                             <div className="text-center">
-                                <Tablet className="h-8 w-8 text-black mx-auto"/>
+                                <Tablet />
                                 <p className="text-sm font-medium mt-2">{t('section.features.tablet')}</p>
                             </div>
                             <div className="text-center">
-                                <Smartphone className="h-8 w-8 text-black mx-auto"/>
+                                <Smartphone />
                                 <p className="text-sm font-medium mt-2">{t('section.features.mobile')}</p>
                             </div>
                             <div className="text-center">
-                                <Language className="h-8 w-8 text-black mx-auto"/>
+                                <Language />
                                 <p className="text-sm font-medium mt-2">{t('section.features.browser')}</p>
                             </div>
                         </div>

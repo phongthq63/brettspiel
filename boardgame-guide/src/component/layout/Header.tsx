@@ -1,3 +1,5 @@
+"use client"
+
 import {useTranslation} from "react-i18next";
 import {
     Button, Navbar,
@@ -18,7 +20,11 @@ const Header = () => {
         <Navbar position="static" className="shadow-md">
             <NavbarBrand>
                 {/* Logo */}
-                <Link href="/" className="flex items-center">
+                <Link
+                    href="/"
+                    prefetch={true}
+                    className="flex items-center"
+                >
                     <LogoSVG className="mr-2 h-8 w-8" />
                     <span className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-text text-2xl font-bold text-transparent">
                         BoardGame
@@ -33,19 +39,31 @@ const Header = () => {
 
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 <NavbarItem>
-                    <Button className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent">
+                    <Link
+                        href="/"
+                        prefetch={true}
+                        className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
+                    >
                         {t("header.playNow")}
-                    </Button>
+                    </Link>
                 </NavbarItem>
                 <NavbarItem>
-                    <Button className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent">
+                    <Link
+                        href="/news"
+                        prefetch={true}
+                        className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
+                    >
                         {t("header.news")}
-                    </Button>
+                    </Link>
                 </NavbarItem>
                 <NavbarItem>
-                    <Button className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent">
+                    <Link
+                        href="/game"
+                        prefetch={true}
+                        className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
+                    >
                         {t("header.games")}
-                    </Button>
+                    </Link>
                 </NavbarItem>
             </NavbarContent>
 

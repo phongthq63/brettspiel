@@ -11,8 +11,8 @@ export default function Page({ params } : { params: Promise<{ id: string }>}) {
     return (
         <div id="root" className="min-h-screen flex flex-col justify-between">
             <Header/>
-            <main id="home">
-                <GameContainer id={id} />
+            <main>
+                <GameContainer id={id}/>
             </main>
             <Footer/>
         </div>

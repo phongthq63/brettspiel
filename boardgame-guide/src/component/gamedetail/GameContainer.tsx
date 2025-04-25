@@ -1,3 +1,5 @@
+"use client"
+
 import GameBanner from "@/component/gamedetail/GameBanner";
 import GameInfo from "@/component/gamedetail/GameInfo";
 import GameIntro from "@/component/gamedetail/GameIntro";

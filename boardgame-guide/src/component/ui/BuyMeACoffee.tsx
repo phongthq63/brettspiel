@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {Modal, ModalBody, ModalContent, ModalHeader, useDisclosure} from "@heroui/modal";

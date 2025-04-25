@@ -1,3 +1,5 @@
+"use client"
+
 import { useTranslation } from "react-i18next";
 import {ChatBubbleOutlineOutlined, Facebook, Instagram, Twitter} from "@mui/icons-material";
 

@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from 'react';
 import {Card, CardBody, CardFooter, CardHeader} from "@heroui/card";
 import {Chip} from "@heroui/react";

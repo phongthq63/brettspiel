@@ -77,16 +77,16 @@ export default function ContactSection() {
                         <p className="mb-8 max-w-lg opacity-90">{t("section.contact.subtitle")}</p>
 
                         <div className="mb-8">
-                            <div className="flex items-center mb-4">
-                                <Mail className="mr-3 h-5 w-5" />
+                            <div className="flex items-center gap-3 mb-4">
+                                <Mail />
                                 <span>support@boardgamehub.com</span>
                             </div>
-                            <div className="flex items-center mb-4">
-                                <Phone className="mr-3 h-5 w-5" />
+                            <div className="flex items-center gap-3 mb-4">
+                                <Phone />
                                 <span>+1 (555) 123-4567</span>
                             </div>
-                            <div className="flex items-center">
-                                <FmdGoodOutlined className="mr-3 h-5 w-5" />
+                            <div className="flex items-center gap-3">
+                                <FmdGoodOutlined />
                                 <span>123 Game Street, Digital City</span>
                             </div>
                         </div>
@@ -94,17 +94,17 @@ export default function ContactSection() {
                         <div className="flex space-x-4">
                             <a href="#"
                                className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all">
-                                <Facebook className="h-5 w-5"/>
+                                <Facebook />
                             </a>
                             <a href="#"
                                className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all">
-                                <Twitter className="h-5 w-5" />
+                                <Twitter />
                             </a>
                             <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all">
-                                <Instagram className="h-5 w-5" />
+                                <Instagram />
                             </a>
                             <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all">
-                                <ChatBubbleOutlineOutlined className="h-5 w-5" />
+                                <ChatBubbleOutlineOutlined />
                             </a>
                         </div>
                     </motion.div>

@@ -8,6 +8,7 @@ import {useRouter} from "next/navigation";
 
 
 export default function FeaturedGameSection(){
+    const router = useRouter()
     const { t } = useTranslation()
 
     const games = [
@@ -40,6 +41,10 @@ export default function FeaturedGameSection(){
         }
     ]
 
+    const handlerPlayGame = () => {
+        router.push('/')
+    }
+
     return (
         <section id="games" className="py-20 bg-gray-50 bg-[rgba(249,250,251,0.1)]">
             <div className="container mx-auto px-4">
@@ -55,14 +60,14 @@ export default function FeaturedGameSection(){
                     </motion.h2>
                     <motion.a
                         href="/"
-                        className="flex items-center bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-text font-medium text-transparent"
+                        className="flex items-center gap-1 bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-text font-medium text-transparent"
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
                     >
                         {t("section.featuredGame.seeAll")}
-                        <ArrowForwardOutlined className="ml-1 h-4 w-4 text-blue-500" />
+                        <ArrowForwardOutlined className="text-blue-500" />
                     </motion.a>
                 </div>
 
@@ -77,6 +82,7 @@ export default function FeaturedGameSection(){
                             image={game.image}
                             badge={game.badge}
                             delay={game.delay}
+                            onClickPlay={handlerPlayGame}
                         />
                     ))}
                 </div>
@@ -93,16 +99,11 @@ interface GameCardProps {
     image: string
     badge: string
     delay: number
+    onClickPlay: () => void
 }
 
-function GameCard({ title, description, duration, players, image, badge, delay }: GameCardProps) {
-    const router = useRouter()
+function GameCard({ title, description, duration, players, image, badge, delay, onClickPlay }: GameCardProps) {
     const { t } = useTranslation()
-
-
-    const onClickPlay = () => {
-        router.push('/')
-    }
 
     return (
         <motion.div
@@ -131,12 +132,12 @@ function GameCard({ title, description, duration, players, image, badge, delay }
                 </CardBody>
                 <CardFooter className="flex flex-col">
                     <div className="w-full flex justify-between text-sm text-gray-500 mb-6">
-                        <div className="flex items-center">
-                            <AccessTime className="h-4 w-4 mr-1"/>
+                        <div className="flex items-center gap-1">
+                            <AccessTime />
                             <span>{duration}</span>
                         </div>
-                        <div className="flex items-center">
-                            <PeopleAltOutlined className="h-4 w-4 mr-1"/>
+                        <div className="flex items-center gap-1">
+                            <PeopleAltOutlined />
                             <span>{players}</span>
                         </div>
                     </div>

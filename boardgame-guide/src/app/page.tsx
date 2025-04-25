@@ -16,7 +16,7 @@ export default function Page() {
     return (
         <div id="root" className="min-h-screen flex flex-col justify-between">
             <Header/>
-            <main id="home">
+            <main>
                 <GameStats>
                     <BannerSection/>
                     <div className="flex justify-between flex-wrap mb-32">

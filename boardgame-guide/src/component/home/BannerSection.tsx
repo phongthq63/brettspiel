@@ -2,8 +2,6 @@ import Image from "next/image";
 import {Button} from "@heroui/react";
 
 const BannerSection = () => {
-
-
     return (
         <section className="relative h-[600px] md:h-[700px] mb-60">
             <div className="absolute w-full h-full grid grid-cols-5 grid-rows-5">

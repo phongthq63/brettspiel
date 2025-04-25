@@ -32,7 +32,12 @@ const Header = () => {
         <Navbar className="fixed shadow-md">
             <NavbarBrand>
                 {/* Logo */}
-                <Link href="/" className="flex items-center">
+                <Link
+                    href="#"
+                    prefetch
+                    shallow
+                    className="flex items-center"
+                >
                     <LogoSVG className="mr-2 h-8 w-8" />
                     <span className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-text text-2xl font-bold text-transparent">
                         BoardGame

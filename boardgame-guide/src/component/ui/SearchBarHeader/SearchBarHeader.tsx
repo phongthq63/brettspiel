@@ -1,3 +1,5 @@
+"use client"
+
 import {Clear, Search} from "@mui/icons-material";
 import {Input} from "@heroui/react";
 import React, {useState, useEffect} from "react";

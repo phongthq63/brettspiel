@@ -1,3 +1,6 @@
+"use client"
+
+import Image from "next/image";
 import { useTranslation } from 'react-i18next';
 import React, {useState} from "react";
 import {Button, Form, Input, Textarea} from '@heroui/react';
@@ -67,10 +70,12 @@ export default function FeedbackSection() {
 
                 <div className="flex flex-col lg:flex-row items-center gap-8">
                     <div className="w-full lg:w-1/2 order-2 lg:order-1">
-                        <img
+                        <Image
                             src="/photo-1496449903678-68ddcb189a24.jpg"
                             alt="Image"
                             className="rounded-lg shadow-xl w-full h-auto object-cover"
+                            width={800}
+                            height={800}
                         />
                     </div>
 

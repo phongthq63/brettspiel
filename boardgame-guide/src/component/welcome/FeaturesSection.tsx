@@ -31,7 +31,7 @@ export default function FeaturesSection() {
                         >
                             <div className="relative  h-full bg-gray-200">
                                 <Image src="/photo-1611996575749-79a3a250f948.jpg"
-                                       alt="Boardgame on desktop"
+                                       alt="Board game displayed on a desktop screen"
                                        fill
                                        sizes={"100%"}
                                 />
@@ -53,7 +53,7 @@ export default function FeaturesSection() {
                             >
                                 <div className="relative h-full bg-gray-200 ">
                                     <Image src="/photo-1611996575749-79a3a250f948.jpg"
-                                           alt="Boardgame on tablet"
+                                           alt="Board game displayed on a tablet screen"
                                            fill
                                            sizes={"100%"}
                                     />
@@ -73,7 +73,7 @@ export default function FeaturesSection() {
                             >
                                 <div className="relative h-full bg-gray-200 ">
                                     <Image src="/photo-1611996575749-79a3a250f948.jpg"
-                                           alt="Boardgame on phone"
+                                           alt="Board game displayed on a mobile phone screen"
                                            fill
                                            sizes={"100%"}
                                     />

@@ -14,7 +14,7 @@ const HeroSection = () => {
     }
 
     return (
-        <section className="min-h-screen flex items-center bg-[rgba(156,252,248,0.1)]" aria-label="Hero Section">
+        <section className="min-h-screen flex items-center bg-[rgba(156,252,248,0.1)]" aria-labelledby="hero-title">
             <div className="container mx-auto px-4 py-16">
                 <div className="flex flex-col md:flex-row items-center">
                     <motion.div
@@ -23,7 +23,7 @@ const HeroSection = () => {
                         animate={{opacity: 1, x: 0}}
                         transition={{duration: 0.5}}
                     >
-                        <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl mb-4 leading-tight">
+                        <h1 id="hero-title" className="font-bold text-4xl md:text-5xl lg:text-6xl mb-4 leading-tight">
                             {t("section.hero.title1")}
                             <br/>
                             <span
@@ -43,7 +43,7 @@ const HeroSection = () => {
                                 transition: "all 0.3s"
                             }}
                             onPress={onClickPlay}
-                            aria-label="Play Now"
+                            aria-label={t("playNow")}
                         >
                             {t("playNow")}
                         </Button>
@@ -54,14 +54,15 @@ const HeroSection = () => {
                         animate={{opacity: 1, x: 0}}
                         transition={{duration: 0.5, delay: 0.2}}
                     >
-                        <div className="relative w-full h-96 max-h-[30vh] sm:max-h-full shadow-[0_20px_25px_5px_rgba(0,0,0,0.4)]">
+                        <figure className="relative w-full h-96 max-h-[30vh] sm:max-h-full shadow-[0_20px_25px_5px_rgba(0,0,0,0.4)]">
                             <Image src="/photo-1496449903678-68ddcb189a24.jpg"
-                                   alt="People playing board games"
+                                   alt="Group of people enjoying board games together"
                                    fill
                                    sizes="100%"
                                    priority
                             />
-                        </div>
+                            <figcaption className="sr-only">{t("section.hero.imageAlt")}</figcaption>
+                        </figure>
                     </motion.div>
                 </div>
             </div>

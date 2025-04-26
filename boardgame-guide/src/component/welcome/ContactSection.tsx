@@ -62,7 +62,7 @@ export default function ContactSection() {
     }
 
     return (
-        <section id="contact" className="py-20 relative overflow-hidden bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)]">
+        <section id="contact" className="py-20 relative overflow-hidden bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)]" aria-labelledby="contact-title">
             <div className="container mx-auto px-4">
                 <div className="flex flex-col md:flex-row">
                     <motion.div
@@ -72,12 +72,10 @@ export default function ContactSection() {
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
                     >
-                        <h1 className="font-bold text-3xl md:text-4xl mb-4">{t("section.contact.title")}</h1>
-                        <meta name="description" content={t("section.contact.metaDescription")} />
-                        <meta name="keywords" content="contact, boardgame, support" />
+                        <h1 id="contact-title" className="font-bold text-3xl md:text-4xl mb-4">{t("section.contact.title")}</h1>
                         <p className="mb-8 max-w-lg opacity-90">{t("section.contact.subtitle")}</p>
 
-                        <div className="mb-8">
+                        <address className="not-italic mb-8">
                             <div className="flex items-center gap-3 mb-4">
                                 <Mail />
                                 <span>support@boardgamehub.com</span>
@@ -90,41 +88,39 @@ export default function ContactSection() {
                                 <FmdGoodOutlined />
                                 <span>123 Game Street, Digital City</span>
                             </div>
-                        </div>
+                        </address>
 
-                        <div className="flex space-x-4">
-                            <a href="#"
-                               className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all"
-                               aria-label="Facebook">
-                                <Facebook />
-                            </a>
-                            <a href="#"
-                               className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all"
-                               aria-label="Twitter">
-                                <Twitter />
-                            </a>
-                            <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all" aria-label="Instagram">
-                                <Instagram />
-                            </a>
-                            <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all" aria-label="Chat">
-                                <ChatBubbleOutlineOutlined />
-                            </a>
-                        </div>
+                        <nav aria-label="Social Media Links">
+                            <div className="flex space-x-4">
+                                <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all" aria-label="Facebook">
+                                    <Facebook />
+                                </a>
+                                <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all" aria-label="Twitter">
+                                    <Twitter />
+                                </a>
+                                <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all" aria-label="Instagram">
+                                    <Instagram />
+                                </a>
+                                <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all" aria-label="Chat">
+                                    <ChatBubbleOutlineOutlined />
+                                </a>
+                            </div>
+                        </nav>
                     </motion.div>
 
                     <motion.div
                         className="w-full md:w-1/2"
-                        initial={{opacity: 0, x: 30}}
-                        whileInView={{opacity: 1, x: 0}}
-                        transition={{duration: 0.5}}
-                        viewport={{once: true}}
+                        initial={{ opacity: 0, x: 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5 }}
+                        viewport={{ once: true }}
                     >
                         <Card className="p-8 shadow-lg">
                             <CardHeader>
                                 <h2 className="font-semibold text-xl mb-6">{t("section.contact.form.title")}</h2>
                             </CardHeader>
                             <CardBody>
-                                <Form onSubmit={handleSubmit} aria-label="Contact Form">
+                                <Form onSubmit={handleSubmit} aria-labelledby="contact-form-title">
                                     <Input
                                         id="name"
                                         label={t("section.contact.form.name")}

@@ -125,7 +125,7 @@ function GameCard({ title, description, image, minPlayTime, maxPlayTime, minPlay
                 <CardBody>
                     <div className="mb-6">
                         <div className="relative w-full h-56 rounded-lg overflow-hidden">
-                            <Image alt={title} src={image} fill sizes="100%" />
+                            <Image alt={`Image of ${title}`} src={image} fill sizes="100%" />
                         </div>
                         {highestPriorityChip && (
                             <div className="absolute top-4 right-4">
@@ -176,4 +176,3 @@ function GameCard({ title, description, image, minPlayTime, maxPlayTime, minPlay
         </motion.article>
     );
 }
-

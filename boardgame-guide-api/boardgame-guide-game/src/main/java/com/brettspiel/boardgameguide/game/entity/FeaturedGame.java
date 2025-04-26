@@ -25,16 +25,16 @@ public class FeaturedGame extends BaseMongodbEntity {
     private String imageUrl;
 
     @Field("min_play_time")
-    private String minPlayTime;
+    private Integer minPlayTime;
 
     @Field("max_play_time")
-    private String maxPlayTime;
+    private Integer maxPlayTime;
 
     @Field("min_players")
-    private String minPlayers;
+    private Integer minPlayers;
 
     @Field("max_players")
-    private String maxPlayers;
+    private Integer maxPlayers;
 
     private Integer popular;
 

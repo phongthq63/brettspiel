@@ -14,7 +14,7 @@ export default function GamePlay() {
                     transition: "all 0.1s"
                 }}
             >
-                {"Play now"}
+                {t("playNow")}
             </Button>
             <Button
                 className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] border-4 hover:border-none border-[rgba(110,123,251,1)] bg-clip-text hover:bg-clip-border text-transparent hover:text-white w-64 h-20 text-3xl font-semibold uppercase"
@@ -23,7 +23,7 @@ export default function GamePlay() {
                     transition: "all 0.1s"
                 }}
             >
-                {"Tutorial"}
+                {t("tutorial")}
             </Button>
         </div>
     )

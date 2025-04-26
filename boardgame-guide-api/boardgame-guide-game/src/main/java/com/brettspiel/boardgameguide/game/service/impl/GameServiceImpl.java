@@ -1,6 +1,5 @@
 package com.brettspiel.boardgameguide.game.service.impl;
 
-import com.brettspiel.boardgameguide.game.constants.GameConstants;
 import com.brettspiel.boardgameguide.game.dto.FeaturedGameDTO;
 import com.brettspiel.boardgameguide.game.entity.FeaturedGame;
 import com.brettspiel.boardgameguide.game.mapper.IGameMapper;
@@ -27,10 +26,10 @@ public class GameServiceImpl implements IGameService {
 
 
     @Override
-    public R<List<FeaturedGameDTO>> getListFeatureGame(GameConstants.SortBy sortBy, Integer size) {
+    public R<List<FeaturedGameDTO>> getListFeatureGame(String sortBy, Integer size) {
         List<FeaturedGame> featuredGames = sortBy == null ?
                 featuredGameRepository.findList(size) :
-                featuredGameRepository.findList(sortBy.getId(), size);
+                featuredGameRepository.findList(sortBy, size);
         List<FeaturedGameDTO> featuredGameDTOS = featuredGames.stream()
                 .map(gameMapper::toFeaturedGameDTO)
                 .toList();

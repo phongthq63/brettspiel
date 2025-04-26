@@ -26,16 +26,16 @@ public class FeaturedGameDTO extends BaseDTO {
     private String imageUrl;
 
     @Schema(description = "Thời gian chơi tối thiểu", example = "30")
-    private String minPlayTime;
+    private Integer minPlayTime;
 
     @Schema(description = "Thời gian chơi tối đa", example = "120")
-    private String maxPlayTime;
+    private Integer maxPlayTime;
 
     @Schema(description = "Số người chơi tối thiểu", example = "2")
-    private String minPlayers;
+    private Integer minPlayers;
 
     @Schema(description = "Số người chơi tối đa", example = "6")
-    private String maxPlayers;
+    private Integer maxPlayers;
 
     @Schema(description = "Độ phổ biến của game", example = "1000")
     private Integer popular;

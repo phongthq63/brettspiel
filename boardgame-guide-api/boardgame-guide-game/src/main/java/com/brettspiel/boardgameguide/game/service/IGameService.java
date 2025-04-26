@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface IGameService {
 
-    R<List<FeaturedGameDTO>> getListFeatureGame(GameConstants.SortBy sortBy, Integer size);
+    R<List<FeaturedGameDTO>> getListFeatureGame(String sortBy, Integer size);
 
 }

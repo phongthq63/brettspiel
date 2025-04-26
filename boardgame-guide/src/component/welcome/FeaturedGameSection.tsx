@@ -5,40 +5,28 @@ import { Button, Chip } from "@heroui/react";
 import { AccessTime, ArrowForwardOutlined, PeopleAltOutlined } from "@mui/icons-material";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import {useEffect, useState} from "react";
+import {FeaturedGameDTO, WelcomeService} from "@/service/game.service";
 
 export default function FeaturedGameSection() {
     const router = useRouter();
     const { t } = useTranslation();
+    const [games, setGames] = useState<FeaturedGameDTO[]>([]);
 
-    const games = [
-        {
-            title: t("games.catan.title"),
-            description: t("games.catan.description"),
-            duration: t("games.catan.duration"),
-            players: t("games.catan.players"),
-            image: "/photo-1496449903678-68ddcb189a24.jpg",
-            badge: t("popular"),
-            delay: 0.1
-        },
-        {
-            title: t("games.ticketToRide.title"),
-            description: t("games.ticketToRide.description"),
-            duration: t("games.ticketToRide.duration"),
-            players: t("games.ticketToRide.players"),
-            image: "/photo-1496449903678-68ddcb189a24.jpg",
-            badge: t("featured"),
-            delay: 0.2
-        },
-        {
-            title: t("games.pandemic.title"),
-            description: t("games.pandemic.description"),
-            duration: t("games.pandemic.duration"),
-            players: t("games.pandemic.players"),
-            image: "/photo-1496449903678-68ddcb189a24.jpg",
-            badge: t("new"),
-            delay: 0.3
-        }
-    ];
+
+    useEffect(() => {
+        WelcomeService.getListFeatureGame()
+            .then((response) => {
+                if (response.code === 0 && response.data) {
+                    setGames(response.data);
+                } else {
+                    console.error("Failed to fetch featured games:", response);
+                }
+            })
+            .catch((error) => {
+                console.error("Failed to fetch featured games:", error);
+            });
+    }, []);
 
     const handlerPlayGame = () => {
         router.push("/");
@@ -74,15 +62,20 @@ export default function FeaturedGameSection() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {games.map((game, index) => (
                         <GameCard
-                            key={index}
-                            title={game.title}
-                            description={game.description}
-                            duration={game.duration}
-                            players={game.players}
-                            image={game.image}
-                            badge={game.badge}
-                            delay={game.delay}
-                            onClickPlay={handlerPlayGame}
+                            key={game.id}
+                            id={game.id ?? ''}
+                            title={game.title ?? ''}
+                            description={game.description ?? ''}
+                            image={game.image_url ?? ''}
+                            minPlayTime={game.min_play_time ?? 30}
+                            maxPlayTime={game.max_play_time ?? 30}
+                            minPlayers={game.min_players ?? 1}
+                            maxPlayers={game.max_players ?? 1}
+                            popular={game.popular}
+                            hot={game.hot}
+                            topRated={game.top_rated}
+                            delay={(index + 1) * 0.1}
+                            onClickPlay={() => handlerPlayGame()}
                         />
                     ))}
                 </div>
@@ -92,18 +85,33 @@ export default function FeaturedGameSection() {
 }
 
 interface GameCardProps {
+    id: string;
     title: string;
     description: string;
-    duration: string;
-    players: string;
     image: string;
-    badge: string;
+    minPlayTime: number;
+    maxPlayTime: number;
+    minPlayers: number;
+    maxPlayers: number;
+    popular?: number;
+    hot?: number;
+    topRated?: number;
     delay: number;
     onClickPlay: () => void;
 }
 
-function GameCard({ title, description, duration, players, image, badge, delay, onClickPlay }: GameCardProps) {
+function GameCard({ title, description, image, minPlayTime, maxPlayTime, minPlayers, maxPlayers, popular, hot, topRated, delay, onClickPlay }: GameCardProps) {
     const { t } = useTranslation();
+
+    // Determine the highest priority chip
+    const getHighestPriorityChip = () => {
+        if (hot && hot > 0) return { label: t("hot"), className: "bg-red-500" };
+        if (topRated && topRated > 0) return { label: t("topRated"), className: "bg-yellow-300" };
+        if (popular && popular > 0) return { label: t("popular"), className: "bg-blue-400" };
+        return null;
+    };
+
+    const highestPriorityChip = getHighestPriorityChip();
 
     return (
         <motion.article
@@ -119,9 +127,13 @@ function GameCard({ title, description, duration, players, image, badge, delay, 
                         <div className="relative w-full h-56 rounded-lg overflow-hidden">
                             <Image alt={title} src={image} fill sizes="100%" />
                         </div>
-                        <Chip className="absolute top-4 right-4 px-2 py-1" size="sm">
-                            {badge}
-                        </Chip>
+                        {highestPriorityChip && (
+                            <div className="absolute top-4 right-4">
+                                <Chip className={`px-2 py-1 ${highestPriorityChip.className}`} size="sm">
+                                    {highestPriorityChip.label}
+                                </Chip>
+                            </div>
+                        )}
                     </div>
                     <div>
                         <h3 className="font-semibold text-xl mb-2">{title}</h3>
@@ -132,11 +144,21 @@ function GameCard({ title, description, duration, players, image, badge, delay, 
                     <div className="w-full flex justify-between text-sm text-gray-500 mb-6">
                         <div className="flex items-center gap-1">
                             <AccessTime />
-                            <span>{duration}</span>
+                            <span>
+                                {minPlayers === maxPlayers
+                                    ? `${minPlayers} ${t('gameCard.players')}`
+                                    : `${minPlayers}-${maxPlayers} ${t("gameCard.players")}`
+                                }
+                            </span>
                         </div>
                         <div className="flex items-center gap-1">
                             <PeopleAltOutlined />
-                            <span>{players}</span>
+                            <span>
+                                {minPlayTime === maxPlayTime
+                                    ? `${minPlayTime} ${t('gameCard.minutes')}`
+                                    : `${minPlayTime}-${maxPlayTime} ${t("gameCard.minutes")}`
+                                }
+                            </span>
                         </div>
                     </div>
                     <Button
@@ -154,3 +176,4 @@ function GameCard({ title, description, duration, players, image, badge, delay, 
         </motion.article>
     );
 }
+

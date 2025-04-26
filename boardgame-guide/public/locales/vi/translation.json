@@ -3,8 +3,9 @@
   "signup": "Đăng ký",
   "login": "Đăng nhập",
   "popular": "Phổ Biến",
-  "featured": "Nổi Bật",
+  "topRated": "Đánh Giá Cao",
   "new": "Mới",
+  "tutorial": "Hướng dẫn chơi",
 
 
   "header.features": "Tính Năng",
@@ -57,9 +58,10 @@
 
   "section.statistics.title": "Cộng Đồng Của Chúng Tôi",
   "section.statistics.subtitle": "Tham gia cùng hàng nghìn người yêu thích boardgame từ khắp nơi trên thế giới",
-  "section.statistics.players": "Người Chơi Đã Đăng Ký",
+  "section.statistics.visitor": "Người Ghé Thăm",
+  "section.statistics.playingPlayer": "Người chơi Đang Chơi",
+  "section.statistics.playingGame": "Trò Chơi Đang Chơi",
   "section.statistics.games": "Trò Chơi Có Sẵn",
-  "section.statistics.matches": "Trận Đấu Mỗi Ngày",
 
 
   "section.contact.title": "Liên Hệ Với Chúng Tôi",

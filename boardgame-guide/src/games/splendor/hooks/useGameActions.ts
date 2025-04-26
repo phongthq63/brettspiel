@@ -1,9 +1,9 @@
-import {toast} from "react-toastify";
 import {GameService} from "@/games/splendor/service/splendor.service";
 import {useGameStore} from "@/games/splendor/store/game.store";
 import {Action} from "@/games/splendor/types/game";
 import {TokenGemType} from "@/games/splendor/types/gem";
 import {useShallow} from "zustand/react/shallow";
+import {toast} from "@/utils/toast";
 
 export function useGameActions() {
     const {
@@ -19,7 +19,8 @@ export function useGameActions() {
             GameService.startGame({gameId: gameId})
                 .then((response) => {
                     if (response.code != 0) {
-                        toast(response.msg, {
+                        toast({
+                            description: response.msg,
                             autoClose: 2000,
                         })
                     }
@@ -36,7 +37,8 @@ export function useGameActions() {
             GameService.endTurn({gameId: gameId})
                 .then((response) => {
                     if (response.code != 0) {
-                        toast(response.msg, {
+                        toast({
+                            description: response.msg,
                             autoClose: 2000,
                         })
                     }
@@ -71,7 +73,8 @@ export function useGameActions() {
             }
         }).then(response => {
             if (response.code != 0) {
-                toast(response.msg, {
+                toast({
+                    description: response.msg,
                     autoClose: 2000,
                 })
             }
@@ -89,7 +92,8 @@ export function useGameActions() {
             }
         }).then(response => {
             if (response.code != 0) {
-                toast(response.msg, {
+                toast({
+                    description: response.msg,
                     autoClose: 2000,
                 })
             }
@@ -120,7 +124,8 @@ export function useGameActions() {
             if (response.code == 0) {
                 console.log(response)
             } else {
-                toast(response.msg, {
+                toast({
+                    description: response.msg,
                     autoClose: 2000,
                 })
             }
@@ -139,7 +144,8 @@ export function useGameActions() {
             if (response.code == 0) {
                 console.log(response)
             } else {
-                toast(response.msg, {
+                toast({
+                    description: response.msg,
                     autoClose: 2000,
                 })
             }

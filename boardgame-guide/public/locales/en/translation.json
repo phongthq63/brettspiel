@@ -3,8 +3,9 @@
   "signup": "Signup",
   "login": "Login",
   "popular": "Popular",
-  "featured": "Featured",
+  "topRated": "Top Rated",
   "new": "New",
+  "tutorial": "Tutorial",
 
 
   "header.features": "Features",
@@ -57,9 +58,10 @@
 
   "section.statistics.title": "Our Community",
   "section.statistics.subtitle": "Join thousands of boardgame enthusiasts from around the world",
-  "section.statistics.players": "Registered Players",
+  "section.statistics.visitor": "Visitors",
+  "section.statistics.playingPlayer": "Playing Players",
+  "section.statistics.playingGame": "Playing Games",
   "section.statistics.games": "Available Games",
-  "section.statistics.matches": "Daily Matches",
 
 
   "section.contact.title": "Get in Touch",
@@ -135,9 +137,8 @@
   "section.games.filter.showLess": "- Show less",
   "section.games.filter.reset": "Reset",
 
-  "gameCard.hot": "HOT",
-  "gameCard.popular": "POPULAR",
-  "gameCard.topRated": "TOP RATED",
+
+
   "gameCard.players": "players",
   "gameCard.minutes": "min",
 

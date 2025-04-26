@@ -96,10 +96,10 @@ export default function GamesSection() {
     //     ...filters
     // });
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        // refetch();
-    };
+    // const handleSearch = (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     // refetch();
+    // };
 
     const handleFilterChange = (newFilters: typeof filters) => {
         setFilters(newFilters);

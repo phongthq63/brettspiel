@@ -1,0 +1,41 @@
+[
+  {
+    "game_id": "game123",
+    "title": "Catan",
+    "description": "A strategy game where players collect resources and build settlements.",
+    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
+    "min_play_time": 60,
+    "max_play_time": 120,
+    "min_players": 3,
+    "max_players": 4,
+    "popular": 95,
+    "hot": 80,
+    "top_rated": 90
+  },
+  {
+    "game_id": "game456",
+    "title": "Ticket to Ride",
+    "description": "A railway-themed board game where players collect train cards to claim routes.",
+    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
+    "min_play_time": 30,
+    "max_play_time": 60,
+    "min_players": 2,
+    "max_players": 5,
+    "popular": 85,
+    "hot": 75,
+    "top_rated": 88
+  },
+  {
+    "game_id": "game789",
+    "title": "Pandemic",
+    "description": "A cooperative game where players work together to stop global outbreaks.",
+    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
+    "min_play_time": 45,
+    "max_play_time": 60,
+    "min_players": 2,
+    "max_players": 4,
+    "popular": 90,
+    "hot": 85,
+    "top_rated": 92
+  }
+]

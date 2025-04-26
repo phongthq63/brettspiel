@@ -5,12 +5,18 @@ import GameInfo from "@/component/gamedetail/GameInfo";
 import GameIntro from "@/component/gamedetail/GameIntro";
 import GamePlay from "@/component/gamedetail/GamePlay";
 import GamePreview from "@/component/gamedetail/GamePreview";
+import {useEffect} from "react";
 
 interface GameContainerProps {
     id: string
 }
 
 export default function GameContainer({id}: GameContainerProps) {
+
+    useEffect(() => {
+
+    }, []);
+
     return (
         <div>
             <GameBanner

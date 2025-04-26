@@ -1,5 +1,6 @@
 package com.brettspiel.boardgameguide.game.controller;
 
+import com.brettspiel.security.JwtHandler;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
 
 /**
  * Created by Quach Thanh Phong
@@ -19,11 +22,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private JwtHandler jwtHandler;
 
 
     @GetMapping("")
     public Object test() {
         return "OK";
     }
+
+    @GetMapping("/token")
+    public String token() {
+        return jwtHandler.generateToken("userId", new HashMap<>() {
+            {
+                put("name", "username");
+            }
+        });
+    }
+
 }

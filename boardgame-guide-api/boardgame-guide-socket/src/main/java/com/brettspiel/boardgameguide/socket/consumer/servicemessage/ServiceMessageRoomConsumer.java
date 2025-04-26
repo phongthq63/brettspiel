@@ -20,6 +20,7 @@ public class ServiceMessageRoomConsumer implements SocketAssist.ISocketMessageRo
 
     private final GameSplendorHandler gameSplendorHandler;
 
+
     @Override
     public void handlerMessage(Map<String, Object> data) {
         log.info("ServiceMessageRoomHandler - handlerMessage - {}", data);

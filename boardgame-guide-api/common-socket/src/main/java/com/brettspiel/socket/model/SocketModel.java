@@ -15,22 +15,19 @@ import java.util.Map;
  * Created by Quach Thanh Phong
  * On 7/3/2023 - 3:56 PM
  */
+@Getter
 @NoArgsConstructor
 public class SocketModel<T> implements Serializable {
 
-    @Getter
     @Setter
     private String cmd;
 
-    @Getter
     @Setter
     private T data;
 
-    @Getter
     @Setter
     private int err;
 
-    @Getter
     private final long ts = Instant.now().toEpochMilli();
 
 
@@ -44,6 +41,7 @@ public class SocketModel<T> implements Serializable {
             throw new RuntimeException("Can't format object. ");
         }
 
+        assert socketModel != null;
         this.cmd = socketModel.getCmd();
         this.data = socketModel.getData();
         this.err = socketModel.getErr();
@@ -51,6 +49,8 @@ public class SocketModel<T> implements Serializable {
 
     public SocketModel(String json) throws JsonProcessingException {
         SocketModel<T> socketModel = JsonHelper.toObject(json, SocketModel.class);
+
+        assert socketModel != null;
         this.cmd = socketModel.getCmd();
         this.data = socketModel.getData();
         this.err = socketModel.getErr();

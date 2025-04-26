@@ -22,74 +22,44 @@ import java.util.Objects;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * @param e
-     * @return
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public R<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        e.printStackTrace();
         log.error(e.getMessage());
-        return R.failed(e.getBindingResult().getFieldError().getDefaultMessage());
+        return R.failed(Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage());
     }
 
-    /**
-     * @param e
-     * @return
-     */
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseBody
     public R<?> handlerNoFoundException(Exception e) {
-        e.printStackTrace();
         log.error(e.getMessage());
         return R.failed("Invalid request.");
     }
 
-    /**
-     * @param e
-     * @return
-     */
     @ExceptionHandler(DuplicateKeyException.class)
     @ResponseBody
     public R<?> handleDuplicateKeyException(DuplicateKeyException e) {
-        e.printStackTrace();
         log.error(e.getMessage());
         return R.failed("Invalid data.");
     }
 
-    /**
-     * @param e
-     * @return
-     */
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
     public R<?> handleConstraintViolationException(ConstraintViolationException e) {
-        e.printStackTrace();
         log.error(e.getMessage());
         return R.failed(new ArrayList<>(e.getConstraintViolations()).getFirst().getMessage());
     }
 
-    /**
-     * @param e
-     * @return
-     */
     @ExceptionHandler(BindException.class)
     @ResponseBody
     public R<?> handleBindException(BindException e) {
-        e.printStackTrace();
         log.error(e.getMessage());
         return R.failed(Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
     }
 
-    /**
-     * @param e
-     * @return
-     */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public R<?> error(Exception e) {
-        e.printStackTrace();
         log.error(e.getMessage());
         return R.failed(e.getMessage());
     }

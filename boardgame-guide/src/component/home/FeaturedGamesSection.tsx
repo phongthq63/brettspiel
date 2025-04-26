@@ -195,15 +195,15 @@ function GameCard({ game }: GameCardProps) {
             </CardBody>
             <CardFooter>
                 <div className="w-full flex justify-between text-xs text-gray-500">
-                    <div className="flex items-center">
-                        <PeopleAltOutlined className="h-4 w-4 mr-1"/>
+                    <div className="flex items-center gap-1">
+                        <PeopleAltOutlined />
                         {game.minPlayers === game.maxPlayers
                             ? `${game.minPlayers} ${t('gameCard.players')}`
                             : `${game.minPlayers}-${game.maxPlayers} ${"players"}`
                         }
                     </div>
-                    <div className="flex items-center">
-                        <AccessTime className="h-4 w-4 mr-1"/>
+                    <div className="flex items-center gap-1">
+                        <AccessTime />
                         {game.minPlayTime === game.maxPlayTime
                             ? `${game.minPlayTime} ${t('gameCard.minutes')}`
                             : `${game.minPlayTime}-${game.maxPlayTime} ${"minutes"}`

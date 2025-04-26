@@ -27,7 +27,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  */
 @Configuration
 @EnableMongoAuditing
-@EnableMongoRepositories(basePackages = {"com.brettspiel.boardgameguide.splendor.repository"})
+@EnableMongoRepositories(basePackages = {"com.brettspiel.boardgameguide.game.repository"})
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Value("${spring.data.mongodb.uri}")

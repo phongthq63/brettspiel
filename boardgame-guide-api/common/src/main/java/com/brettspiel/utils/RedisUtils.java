@@ -31,7 +31,7 @@ public class RedisUtils {
     /**
      * Common cache fetch
      *
-     * @param
+     * @param key
      * @return
      */
     public boolean exists(String key) {
@@ -48,7 +48,7 @@ public class RedisUtils {
 
     /**
      * Common cache fetch
-     * @param
+     * @param regex
      * @return
      */
     public Set<String> keys(String regex) {
@@ -82,7 +82,7 @@ public class RedisUtils {
     /**
      * Common cache fetch
      *
-     * @param
+     * @param key
      * @return
      */
     public Object get(String key) {
@@ -99,7 +99,7 @@ public class RedisUtils {
     /**
      * Common cache fetch
      *
-     * @param
+     * @param keys
      * @return
      */
     public List<Object> multiget(List<String> keys) {
@@ -121,7 +121,7 @@ public class RedisUtils {
     /**
      * Common cache fetch
      *
-     * @param
+     * @param keyValueMap
      * @return
      */
     public void multiset(Map<String, ?> keyValueMap) {

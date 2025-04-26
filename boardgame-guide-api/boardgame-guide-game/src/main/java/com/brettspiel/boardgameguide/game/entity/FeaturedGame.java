@@ -3,8 +3,7 @@ package com.brettspiel.boardgameguide.game.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * Created by Quach Thanh Phong
@@ -15,18 +14,33 @@ import java.util.List;
 @Document("featured_game")
 public class FeaturedGame extends BaseMongodbEntity {
 
+    @Field("game_id")
+    private String gameId;
+
     private String title;
 
     private String description;
 
-    private String duration;
+    @Field("image_url")
+    private String imageUrl;
 
-    private String players;
+    @Field("min_play_time")
+    private String minPlayTime;
 
-    private String image;
+    @Field("max_play_time")
+    private String maxPlayTime;
 
-    private String badge;
+    @Field("min_players")
+    private String minPlayers;
 
-    private List<String> tags;
+    @Field("max_players")
+    private String maxPlayers;
+
+    private Integer popular;
+
+    private Integer hot;
+
+    @Field("top_rated")
+    private Integer topRated;
 
 }

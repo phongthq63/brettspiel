@@ -2,7 +2,7 @@ package com.brettspiel.utils;
 
 import cn.hutool.core.net.url.UrlBuilder;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Retention;
@@ -16,13 +16,13 @@ import java.util.List;
  * On 4/18/2023 - 11:14 AM
  */
 @Component
+@RequiredArgsConstructor
 public class ResourceUtils {
 
     private static final String DEFAULT_PROTOCOL = "http";
     private static final List<String> protocol = Arrays.asList("http", "https");
 
-    @Autowired
-    private MinIOUtils minIOUtils;
+    private final MinIOUtils minIOUtils;
 
 
     public String formatSaveUrl(String url) {

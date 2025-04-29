@@ -9,18 +9,23 @@ import java.util.List;
 
 /**
  * Created by Quach Thanh Phong
- * On 4/25/2025 - 10:58 AM
+ * On 4/27/2025 - 7:04 PM
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Document("featured_game")
-public class FeaturedGame extends BaseMongodbEntity {
+@Document("game")
+public class Game extends BaseMongodbEntity {
 
     @Field("game_id")
     private String gameId;
 
     @Field("image_url")
     private String imageUrl;
+
+    @Field("image_box_url")
+    private String imageBoxUrl;
+
+    private String name;
 
     private String title;
 

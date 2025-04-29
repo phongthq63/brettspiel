@@ -52,8 +52,8 @@
   "section.features.browser": "Browser",
 
 
-  "section.featuredGame.title": "Featured Boardgames",
-  "section.featuredGame.seeAll": "See all games",
+  "section.featuredBoardgames.title": "Featured Boardgames",
+  "section.featuredBoardgames.seeAll": "See all games",
 
 
   "section.statistics.title": "Our Community",
@@ -100,6 +100,9 @@
   "section.feedback.success.message": "Your feedback has been submitted successfully.",
   "section.feedback.error.title": "Submission Failed",
   "section.feedback.error.message": "There was an error submitting your feedback. Please try again.",
+
+
+  "section.featuredGame.title": "Featured Games",
 
 
   "section.games.title": "Explore All Games",

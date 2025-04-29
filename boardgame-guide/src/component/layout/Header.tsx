@@ -42,7 +42,7 @@ const Header = () => {
                     <Link
                         href="/"
                         prefetch={true}
-                        className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
+                        className="bg-transparent text-sm font-medium text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
                     >
                         {t("header.playNow")}
                     </Link>
@@ -51,7 +51,7 @@ const Header = () => {
                     <Link
                         href="/news"
                         prefetch={true}
-                        className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
+                        className="bg-transparent text-sm font-medium text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
                     >
                         {t("header.news")}
                     </Link>
@@ -60,7 +60,7 @@ const Header = () => {
                     <Link
                         href="/game"
                         prefetch={true}
-                        className="bg-transparent text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
+                        className="bg-transparent text-sm font-medium text-gray-700 hover:bg-gradient-to-r hover:from-[rgba(156,252,248,1)] hover:to-[rgba(110,123,251,1)] hover:bg-clip-text hover:text-transparent"
                     >
                         {t("header.games")}
                     </Link>

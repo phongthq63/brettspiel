@@ -43,7 +43,7 @@ export default function FeaturedGameSection() {
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
                     >
-                        {t("section.featuredGame.title")}
+                        {t("section.featuredBoardgames.title")}
                     </motion.h2>
                     <motion.a
                         href="/"
@@ -54,7 +54,7 @@ export default function FeaturedGameSection() {
                         viewport={{ once: true }}
                         aria-label="See all featured games"
                     >
-                        {t("section.featuredGame.seeAll")}
+                        {t("section.featuredBoardgames.seeAll")}
                         <ArrowForwardOutlined className="text-blue-500" />
                     </motion.a>
                 </header>
@@ -93,25 +93,15 @@ interface GameCardProps {
     maxPlayTime: number;
     minPlayers: number;
     maxPlayers: number;
-    popular?: number;
-    hot?: number;
-    topRated?: number;
+    popular?: boolean;
+    hot?: boolean;
+    topRated?: boolean;
     delay: number;
     onClickPlay: () => void;
 }
 
 function GameCard({ title, description, image, minPlayTime, maxPlayTime, minPlayers, maxPlayers, popular, hot, topRated, delay, onClickPlay }: GameCardProps) {
     const { t } = useTranslation();
-
-    // Determine the highest priority chip
-    const getHighestPriorityChip = () => {
-        if (hot && hot > 0) return { label: t("hot"), className: "bg-red-500" };
-        if (topRated && topRated > 0) return { label: t("topRated"), className: "bg-yellow-300" };
-        if (popular && popular > 0) return { label: t("popular"), className: "bg-blue-400" };
-        return null;
-    };
-
-    const highestPriorityChip = getHighestPriorityChip();
 
     return (
         <motion.article
@@ -125,15 +115,34 @@ function GameCard({ title, description, image, minPlayTime, maxPlayTime, minPlay
                 <CardBody>
                     <div className="mb-6">
                         <div className="relative w-full h-56 rounded-lg overflow-hidden">
-                            <Image alt={`Image of ${title}`} src={image} fill sizes="100%" />
-                        </div>
-                        {highestPriorityChip && (
-                            <div className="absolute top-4 right-4">
-                                <Chip className={`px-2 py-1 ${highestPriorityChip.className}`} size="sm">
-                                    {highestPriorityChip.label}
-                                </Chip>
+                            <Image alt={`Image of ${title}`} src={image} fill sizes="100%"/>
+                            <div className="absolute top-2 left-2 flex gap-2">
+                                {popular && (
+                                    <Chip
+                                        className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded"
+                                        size="sm"
+                                    >
+                                        {t('popular')}
+                                    </Chip>
+                                )}
+                                {hot && (
+                                    <Chip
+                                        className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded"
+                                        size="sm"
+                                    >
+                                        {t('hot')}
+                                    </Chip>
+                                )}
+                                {topRated && (
+                                    <Chip
+                                        className="bg-yellow-300 text-white text-xs font-bold px-2 py-1 rounded"
+                                        size="sm"
+                                    >
+                                        {t('topRated')}
+                                    </Chip>
+                                )}
                             </div>
-                        )}
+                        </div>
                     </div>
                     <div>
                         <h3 className="font-semibold text-xl mb-2">{title}</h3>
@@ -143,7 +152,7 @@ function GameCard({ title, description, image, minPlayTime, maxPlayTime, minPlay
                 <CardFooter className="flex flex-col">
                     <div className="w-full flex justify-between text-sm text-gray-500 mb-6">
                         <div className="flex items-center gap-1">
-                            <AccessTime />
+                            <AccessTime/>
                             <span>
                                 {minPlayers === maxPlayers
                                     ? `${minPlayers} ${t('gameCard.players')}`
@@ -152,7 +161,7 @@ function GameCard({ title, description, image, minPlayTime, maxPlayTime, minPlay
                             </span>
                         </div>
                         <div className="flex items-center gap-1">
-                            <PeopleAltOutlined />
+                            <PeopleAltOutlined/>
                             <span>
                                 {minPlayTime === maxPlayTime
                                     ? `${minPlayTime} ${t('gameCard.minutes')}`

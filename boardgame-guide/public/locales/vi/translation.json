@@ -52,8 +52,8 @@
   "section.features.browser": "Trình duyệt",
 
 
-  "section.featuredGame.title": "Boardgame Nổi Bật",
-  "section.featuredGame.seeAll": "Xem tất cả",
+  "section.featuredBoardgames.title": "Boardgame Nổi Bật",
+  "section.featuredBoardgames.seeAll": "Xem tất cả",
 
 
   "section.statistics.title": "Cộng Đồng Của Chúng Tôi",
@@ -100,6 +100,9 @@
   "section.feedback.success.message": "Phản hồi của bạn đã được gửi thành công.",
   "section.feedback.error.title": "Gửi không thành công",
   "section.feedback.error.message": "Đã xảy ra lỗi khi gửi phản hồi của bạn. Vui lòng thử lại.",
+
+
+  "section.featuredGame.title": "Trò chơi nổi bật",
 
 
   "section.games.title": "Khám phá tất cả trò chơi",

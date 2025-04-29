@@ -1,0 +1,122 @@
+[
+  {
+    "genre_id": "genre001",
+    "name": "Strategy"
+  },
+  {
+    "genre_id": "genre002",
+    "name": "Adventure"
+  },
+  {
+    "genre_id": "genre003",
+    "name": "Cooperative"
+  },
+  {
+    "genre_id": "genre004",
+    "name": "Deck Building"
+  },
+  {
+    "genre_id": "genre005",
+    "name": "Tile Placement"
+  },
+  {
+    "genre_id": "genre006",
+    "name": "Card Game"
+  },
+  {
+    "genre_id": "genre007",
+    "name": "Party Game"
+  },
+  {
+    "genre_id": "genre008",
+    "name": "Role-Playing"
+  },
+  {
+    "genre_id": "genre009",
+    "name": "Abstract"
+  },
+  {
+    "genre_id": "genre010",
+    "name": "Economic"
+  },
+  {
+    "genre_id": "genre011",
+    "name": "War Game"
+  },
+  {
+    "genre_id": "genre012",
+    "name": "Family Game"
+  },
+  {
+    "genre_id": "genre013",
+    "name": "Fantasy"
+  },
+  {
+    "genre_id": "genre014",
+    "name": "Sci-Fi"
+  },
+  {
+    "genre_id": "genre015",
+    "name": "Horror"
+  },
+  {
+    "genre_id": "genre016",
+    "name": "Puzzle"
+  },
+  {
+    "genre_id": "genre017",
+    "name": "Bluffing"
+  },
+  {
+    "genre_id": "genre018",
+    "name": "Trivia"
+  },
+  {
+    "genre_id": "genre019",
+    "name": "Dexterity"
+  },
+  {
+    "genre_id": "genre020",
+    "name": "Negotiation"
+  },
+  {
+    "genre_id": "genre021",
+    "name": "Area Control"
+  },
+  {
+    "genre_id": "genre022",
+    "name": "Worker Placement"
+  },
+  {
+    "genre_id": "genre023",
+    "name": "Legacy"
+  },
+  {
+    "genre_id": "genre024",
+    "name": "Drafting"
+  },
+  {
+    "genre_id": "genre025",
+    "name": "Set Collection"
+  },
+  {
+    "genre_id": "genre026",
+    "name": "Hidden Role"
+  },
+  {
+    "genre_id": "genre027",
+    "name": "Survival"
+  },
+  {
+    "genre_id": "genre028",
+    "name": "Exploration"
+  },
+  {
+    "genre_id": "genre029",
+    "name": "Educational"
+  },
+  {
+    "genre_id": "genre030",
+    "name": "Social Deduction"
+  }
+]

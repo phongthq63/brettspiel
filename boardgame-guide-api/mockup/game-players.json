@@ -1,0 +1,26 @@
+[
+  {
+    "players_id": "1",
+    "display": "1 player (Solo)",
+    "min_players": "1",
+    "max_players": "1"
+  },
+  {
+    "players_id": "2",
+    "display": "2 players",
+    "min_players": "2",
+    "max_players": "2"
+  },
+  {
+    "players_id": "3-4",
+    "display": "3-4 players",
+    "min_players": "3",
+    "max_players": "4"
+  },
+  {
+    "players_id": "5+",
+    "display": "5+ players",
+    "min_players": "5",
+    "max_players": null
+  }
+]

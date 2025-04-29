@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.List;
+
 /**
  * Created by Quach Thanh Phong
  * On 4/26/2025 - 9:49 AM
@@ -16,14 +18,14 @@ public class FeaturedGameDTO extends BaseDTO {
     @Schema(description = "ID của game", example = "game123")
     private String id;
 
+    @Schema(description = "Đường dẫn ảnh đại diện game", example = "https://example.com/image.jpg")
+    private String imageUrl;
+
     @Schema(description = "Tiêu đề game", example = "Cờ tỷ phú")
     private String title;
 
     @Schema(description = "Mô tả game", example = "Trò chơi kinh điển về bất động sản")
     private String description;
-
-    @Schema(description = "Đường dẫn ảnh đại diện game", example = "https://example.com/image.jpg")
-    private String imageUrl;
 
     @Schema(description = "Thời gian chơi tối thiểu", example = "30")
     private Integer minPlayTime;
@@ -37,13 +39,15 @@ public class FeaturedGameDTO extends BaseDTO {
     @Schema(description = "Số người chơi tối đa", example = "6")
     private Integer maxPlayers;
 
-    @Schema(description = "Độ phổ biến của game", example = "1000")
-    private Integer popular;
+    private List<GenreDTO> genres;
 
-    @Schema(description = "Game hot", example = "1")
-    private Integer hot;
+    @Schema(description = "Độ phổ biến của game", example = "true")
+    private Boolean popular;
 
-    @Schema(description = "Game được đánh giá cao", example = "1")
-    private Integer topRated;
+    @Schema(description = "Game hot", example = "false")
+    private Boolean hot;
+
+    @Schema(description = "Game được đánh giá cao", example = "true")
+    private Boolean topRated;
 
 }

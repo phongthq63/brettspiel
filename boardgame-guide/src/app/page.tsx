@@ -10,32 +10,32 @@ import FeedbackSection from "@/component/home/FeedbackSection";
 import GamesSection from "@/component/home/GamesSection";
 import GameStats from "@/hoc/GameStats";
 import GameFavorite from "@/component/home/GameFavorite";
-import {BuyMeCoffee} from "@/component/ui/BuyMeACoffee";
+import { BuyMeCoffee } from "@/component/ui/BuyMeACoffee";
 
 export default function Page() {
     return (
         <div id="root" className="min-h-screen flex flex-col justify-between">
-            <Header/>
+            <Header />
             <main>
                 <GameStats>
                     <BannerSection/>
                     <div className="flex justify-between flex-wrap mb-32">
                         <div className="w-full lg:w-4/5 px-4 flex flex-col gap-8">
-                            <FeaturedGamesSection/>
-                            <GamesSection/>
+                            <FeaturedGamesSection />
+                            <GamesSection />
                         </div>
                         <div className="w-full lg:w-1/5 px-4 flex flex-col gap-8">
-                            <GameHistory/>
+                            <GameHistory />
                             <GameFavorite />
                         </div>
                     </div>
                     <div className="w-full flex justify-center">
                         <BuyMeCoffee />
                     </div>
-                    <FeedbackSection/>
+                    <FeedbackSection />
                 </GameStats>
             </main>
-            <Footer/>
+            <Footer />
         </div>
-    )
+    );
 }

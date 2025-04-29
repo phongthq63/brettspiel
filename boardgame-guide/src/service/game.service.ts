@@ -33,7 +33,7 @@ export async function axios(configs: IRequestConfig, resolve: (p: any) => void, 
 
 export class WelcomeService {
     /**
-     *
+     * Lấy thống kê
      */
     static getStatistics(options: IRequestOptions = {}): Promise<RGetStatisticsWelcomeResponse> {
         return new Promise((resolve, reject) => {
@@ -44,9 +44,8 @@ export class WelcomeService {
             axios(configs, resolve, reject);
         });
     }
-    
     /**
-     *
+     * Lấy danh sách trò chơi nổi bật
      */
     static getListFeatureGame(
         params: {
@@ -68,9 +67,24 @@ export class WelcomeService {
     }
 }
 
+export class HomeService {
+    /**
+     * Lấy danh sách banner
+     */
+    static getListBanner(options: IRequestOptions = {}): Promise<RListBannerDTO> {
+        return new Promise((resolve, reject) => {
+            const url = basePath + '/home/banner';
+
+            const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+            axios(configs, resolve, reject);
+        });
+    }
+}
+
 export class ContactService {
     /**
-     *
+     * Gửi thông tin liên hệ
      */
     static sendContact(
         params: {
@@ -93,7 +107,7 @@ export class ContactService {
 
 export class FeedbackService {
     /**
-     *
+     * Gửi phản hồi
      */
     static sendFeedback(
         params: {
@@ -114,6 +128,56 @@ export class FeedbackService {
     }
 }
 
+export class GameService {
+    /**
+     * Lấy danh sách trò chơi
+     */
+    static getListGame(
+        params: {
+            /**  */
+            players?: any | null[];
+            /**  */
+            playTimes?: any | null[];
+            /**  */
+            genres?: any | null[];
+            /** Sắp xếp theo */
+            softBy?: string;
+            /** Trang */
+            page?: number;
+            /** Số lượng */
+            size?: number;
+        } = {} as any,
+        options: IRequestOptions = {}
+    ): Promise<RPageDTOGameDTO> {
+        return new Promise((resolve, reject) => {
+            const url = basePath + '/game';
+
+            const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+            configs.params = {
+                players: params['players'],
+                play_times: params['playTimes'],
+                genres: params['genres'],
+                soft_by: params['softBy'],
+                page: params['page'],
+                size: params['size']
+            };
+
+            axios(configs, resolve, reject);
+        });
+    }
+    /**
+     * Lấy bộ lọc trò chơi
+     */
+    static getFilterGame(options: IRequestOptions = {}): Promise<RGetFilterGameResponse> {
+        return new Promise((resolve, reject) => {
+            const url = basePath + '/game/filter';
+
+            const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+            axios(configs, resolve, reject);
+        });
+    }
+}
 
 
 
@@ -127,6 +191,46 @@ export interface RObject {
 
     /**  */
     data?: object;
+
+    /**  */
+    ts?: string;
+}
+
+export interface BannerDTO {
+    /**  */
+    id?: string;
+
+    /**  */
+    game_id?: string;
+
+    /**  */
+    game_image_url?: string;
+
+    /**  */
+    game_image_box_url?: string;
+
+    /**  */
+    game_title?: string;
+
+    /**  */
+    game_description?: string;
+
+    /**  */
+    game_tutorial_url?: string;
+
+    /**  */
+    game_play_url?: string;
+}
+
+export interface RListBannerDTO {
+    /**  */
+    code?: number;
+
+    /**  */
+    msg?: string;
+
+    /**  */
+    data?: BannerDTO[];
 
     /**  */
     ts?: string;
@@ -185,14 +289,25 @@ export interface FeaturedGameDTO {
     /** Số người chơi tối đa */
     max_players?: number;
 
+    /**  */
+    genres?: GenreDTO[];
+
     /** Độ phổ biến của game */
-    popular?: number;
+    popular?: boolean;
 
     /** Game hot */
-    hot?: number;
+    hot?: boolean;
 
     /** Game được đánh giá cao */
-    top_rated?: number;
+    top_rated?: boolean;
+}
+
+export interface GenreDTO {
+    /** Mã định danh duy nhất của thể loại */
+    id?: string;
+
+    /** Tên của thể loại */
+    name?: string;
 }
 
 export interface RListFeaturedGameDTO {
@@ -235,4 +350,117 @@ export interface SendFeedbackRequest {
 
     /** Nội dung */
     message?: string;
+}
+
+export interface GameDTO {
+    /** Mã định danh duy nhất của trò chơi */
+    id?: string;
+
+    /** URL hình ảnh của trò chơi */
+    image_url?: string;
+
+    /** URL hình ảnh hộp trò chơi */
+    image_box_url?: string;
+
+    /** Tên của trò chơi */
+    name?: string;
+
+    /** Tiêu đề của trò chơi */
+    title?: string;
+
+    /** Mô tả chi tiết về trò chơi */
+    description?: string;
+
+    /** Thời gian chơi tối thiểu (phút) */
+    min_play_time?: number;
+
+    /** Thời gian chơi tối đa (phút) */
+    max_play_time?: number;
+
+    /** Số lượng người chơi tối thiểu */
+    min_players?: number;
+
+    /** Số lượng người chơi tối đa */
+    max_players?: number;
+
+    /** Danh sách thể loại của trò chơi */
+    genres?: GenreDTO[];
+
+    /** Trò chơi có phổ biến không */
+    popular?: boolean;
+
+    /** Trò chơi có đang hot không */
+    hot?: boolean;
+
+    /** Trò chơi có được đánh giá cao không */
+    top_rated?: boolean;
+}
+
+export interface PageDTOGameDTO {
+    /**  */
+    list?: GameDTO[];
+
+    /**  */
+    page?: number;
+
+    /**  */
+    size?: number;
+
+    /**  */
+    total?: number;
+}
+
+export interface RPageDTOGameDTO {
+    /**  */
+    code?: number;
+
+    /**  */
+    msg?: string;
+
+    /**  */
+    data?: PageDTOGameDTO;
+
+    /**  */
+    ts?: string;
+}
+
+export interface GamePlayTimeDTO {
+    /** Mã định danh duy nhất của thời gian chơi */
+    id?: string;
+
+    /** Hiển thị thời gian chơi */
+    display?: string;
+}
+
+export interface GamePlayersDTO {
+    /** Mã định danh duy nhất của số lượng người chơi */
+    id?: string;
+
+    /** Hiển thị số lượng người chơi */
+    display?: string;
+}
+
+export interface GetFilterGameResponse {
+    /** Danh sách số lượng người chơi */
+    players?: GamePlayersDTO[];
+
+    /** Danh sách thời gian chơi */
+    play_times?: GamePlayTimeDTO[];
+
+    /** Danh sách thể loại trò chơi */
+    genres?: GenreDTO[];
+}
+
+export interface RGetFilterGameResponse {
+    /**  */
+    code?: number;
+
+    /**  */
+    msg?: string;
+
+    /**  */
+    data?: GetFilterGameResponse;
+
+    /**  */
+    ts?: string;
 }

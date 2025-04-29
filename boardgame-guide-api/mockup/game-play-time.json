@@ -1,0 +1,26 @@
+[
+  {
+    "play_time_id": "quick",
+    "display": "Quick (< 30 min)",
+    "min_play_time": null,
+    "max_play_time": 30
+  },
+  {
+    "play_time_id": "medium",
+    "display": "Medium (30-60 min)",
+    "min_play_time": 30,
+    "max_play_time": 60
+  },
+  {
+    "play_time_id": "long",
+    "display": "Long (1-2 hours)",
+    "min_play_time": 60,
+    "max_play_time": 120
+  },
+  {
+    "play_time_id": "epic",
+    "display": "Epic (2+ hours)",
+    "min_play_time": 240,
+    "max_play_time": null
+  }
+]

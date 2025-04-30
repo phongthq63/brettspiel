@@ -6,6 +6,8 @@
     "description": "A strategy game where players collect resources and build settlements.",
     "image_url": "/news-banner-899_wide.jpg",
     "image_box_url": "/en_280.png",
+    "image_name_url": "/en_2000.png",
+    "image_banner_url": "/news-banner-899_wide.jpg",
     "min_play_time": 60,
     "max_play_time": 120,
     "min_players": 3,
@@ -16,7 +18,12 @@
     ],
     "popular": 95,
     "hot": 80,
-    "top_rated": 90
+    "top_rated": 90,
+    "play_url": "/game123",
+    "designers": ["Klaus Teuber"],
+    "artists": ["Franz Vohwinkel"],
+    "publishers": ["Kosmos", "Mayfair Games"],
+    "year": "1995"
   },
   {
     "game_id": "game456",
@@ -25,6 +32,8 @@
     "description": "A railway-themed board game where players collect train cards to claim routes.",
     "image_url": "/news-banner-904_wide.jpg",
     "image_box_url": "/en_281.png",
+    "image_name_url": "/en_2000.png",
+    "image_banner_url": "/news-banner-904_wide.jpg",
     "min_play_time": 30,
     "max_play_time": 60,
     "min_players": 2,
@@ -35,7 +44,12 @@
     ],
     "popular": 85,
     "hot": 75,
-    "top_rated": 88
+    "top_rated": 88,
+    "play_url": "/game456",
+    "designers": ["Alan R. Moon"],
+    "artists": ["Julien Delval"],
+    "publishers": ["Days of Wonder"],
+    "year": "2004"
   },
   {
     "game_id": "game789",
@@ -44,6 +58,8 @@
     "description": "A cooperative game where players work together to stop global outbreaks.",
     "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "image_box_url": "/en_280.png",
+    "image_name_url": "/en_2000.png",
+    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "min_play_time": 45,
     "max_play_time": 60,
     "min_players": 2,
@@ -54,7 +70,12 @@
     ],
     "popular": 90,
     "hot": 85,
-    "top_rated": 92
+    "top_rated": 92,
+    "play_url": "/game789",
+    "designers": ["Alan R. Moon"],
+    "artists": ["Julien Delval"],
+    "publishers": ["Days of Wonder"],
+    "year": "2004"
   },
   {
     "game_id": "game101",
@@ -63,6 +84,8 @@
     "description": "A tile-placement game where players build cities, roads, and farms.",
     "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "image_box_url": "/en_281.png",
+    "image_name_url": "/en_2000.png",
+    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "min_play_time": 35,
     "max_play_time": 45,
     "min_players": 2,
@@ -73,7 +96,12 @@
     ],
     "popular": 88,
     "hot": 78,
-    "top_rated": 85
+    "top_rated": 85,
+    "play_url": "/game101",
+    "designers": ["Alan R. Moon"],
+    "artists": ["Julien Delval"],
+    "publishers": ["Days of Wonder"],
+    "year": "2004"
   },
   {
     "game_id": "game102",
@@ -82,6 +110,8 @@
     "description": "A card drafting game where players develop civilizations and build wonders.",
     "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "image_box_url": "/en_280.png",
+    "image_name_url": "/en_2000.png",
+    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "min_play_time": 30,
     "max_play_time": 45,
     "min_players": 2,
@@ -92,7 +122,12 @@
     ],
     "popular": 92,
     "hot": 84,
-    "top_rated": 89
+    "top_rated": 89,
+    "play_url": "/game102",
+    "designers": ["Alan R. Moon"],
+    "artists": ["Julien Delval"],
+    "publishers": ["Days of Wonder"],
+    "year": "2004"
   },
   {
     "game_id": "game103",
@@ -101,6 +136,8 @@
     "description": "A game of chip-collecting and card development where players become Renaissance merchants.",
     "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "image_box_url": "/en_281.png",
+    "image_name_url": "/en_2000.png",
+    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "min_play_time": 30,
     "max_play_time": 45,
     "min_players": 2,
@@ -111,7 +148,12 @@
     ],
     "popular": 87,
     "hot": 79,
-    "top_rated": 86
+    "top_rated": 86,
+    "play_url": "/game103",
+    "designers": ["Alan R. Moon"],
+    "artists": ["Julien Delval"],
+    "publishers": ["Days of Wonder"],
+    "year": "2004"
   },
   {
     "game_id": "game104",
@@ -120,6 +162,8 @@
     "description": "A deck-building game where players compete to build the most efficient deck.",
     "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "image_box_url": "/en_280.png",
+    "image_name_url": "/en_2000.png",
+    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "min_play_time": 30,
     "max_play_time": 45,
     "min_players": 2,
@@ -130,7 +174,12 @@
     ],
     "popular": 90,
     "hot": 82,
-    "top_rated": 88
+    "top_rated": 88,
+    "play_url": "/game104",
+    "designers": ["Alan R. Moon"],
+    "artists": ["Julien Delval"],
+    "publishers": ["Days of Wonder"],
+    "year": "2004"
   },
   {
     "game_id": "game105",
@@ -139,6 +188,8 @@
     "description": "A tile-drafting game where players decorate the walls of a royal palace.",
     "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "image_box_url": "/en_281.png",
+    "image_name_url": "/en_2000.png",
+    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "min_play_time": 30,
     "max_play_time": 45,
     "min_players": 2,
@@ -149,7 +200,12 @@
     ],
     "popular": 89,
     "hot": 81,
-    "top_rated": 87
+    "top_rated": 87,
+    "play_url": "/game105",
+    "designers": ["Alan R. Moon"],
+    "artists": ["Julien Delval"],
+    "publishers": ["Days of Wonder"],
+    "year": "2004"
   },
   {
     "game_id": "game106",
@@ -158,6 +214,8 @@
     "description": "A strategy game where players compete to terraform the planet Mars.",
     "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "image_box_url": "/en_280.png",
+    "image_name_url": "/en_2000.png",
+    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "min_play_time": 120,
     "max_play_time": 180,
     "min_players": 1,
@@ -168,7 +226,12 @@
     ],
     "popular": 94,
     "hot": 88,
-    "top_rated": 93
+    "top_rated": 93,
+    "play_url": "/game106",
+    "designers": ["Alan R. Moon"],
+    "artists": ["Julien Delval"],
+    "publishers": ["Days of Wonder"],
+    "year": "2004"
   },
   {
     "game_id": "game107",
@@ -177,6 +240,8 @@
     "description": "A cooperative campaign game with tactical combat and character progression.",
     "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "image_box_url": "/en_281.png",
+    "image_name_url": "/en_2000.png",
+    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
     "min_play_time": 90,
     "max_play_time": 150,
     "min_players": 1,
@@ -187,6 +252,11 @@
     ],
     "popular": 96,
     "hot": 90,
-    "top_rated": 95
+    "top_rated": 95,
+    "play_url": "/game107",
+    "designers": ["Alan R. Moon"],
+    "artists": ["Julien Delval"],
+    "publishers": ["Days of Wonder"],
+    "year": "2004"
   }
 ]

@@ -11,8 +11,10 @@ import java.util.Set;
  */
 public interface ICustomGameRepository {
 
-    List<Game> findList(List<Integer[]> players, List<Integer[]> playTimes, Set<String> genreIds, String sortBy, Integer page, Integer size);
+    List<Game> findList(String keyword, List<Integer[]> players, List<Integer[]> playTimes, Set<String> genreIds, String sortBy, Integer page, Integer size);
 
-    long count(List<Integer[]> players, List<Integer[]> playTimes, Set<String> genreIds);
+    Game findById(String id);
+
+    long count(String keyword, List<Integer[]> players, List<Integer[]> playTimes, Set<String> genreIds);
 
 }

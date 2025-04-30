@@ -47,40 +47,37 @@ const BannerSection = () => {
         router.push(gamePlayUrl);
     }
 
-
-    if (banners.length === 0) {
-        return null; // Render nothing if no banners are available
-    }
-
     return (
         <section className="relative h-[600px] md:h-[700px] mb-60 overflow-hidden">
             <div className="absolute w-full h-full">
-                <AnimatePresence>
-                    <motion.div
-                        key={currentBanner.id}
-                        initial={{ opacity: 0, x: 100 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -100 }}
-                        transition={{ duration: 0.8 }}
-                        className="absolute w-full h-full grid grid-cols-5 grid-rows-5"
-                    >
-                        {/* Image Banner */}
+                {currentBanner?.image_url && (
+                    <AnimatePresence>
                         <motion.div
-                            className="relative col-span-5 row-span-4 shadow-2xl"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            key={currentBanner?.id}
+                            initial={{ opacity: 0, x: 100 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -100 }}
                             transition={{ duration: 0.8 }}
+                            className="absolute w-full h-full grid grid-cols-5 grid-rows-5"
                         >
-                            <Image
-                                src={currentBanner.game_image_url || "/placeholder.jpg"}
-                                alt={currentBanner.game_title || "Banner"}
-                                fill
-                                sizes={"100%"}
-                            />
+                            {/* Image Banner */}
+                            <motion.div
+                                className="relative col-span-5 row-span-4 shadow-2xl"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.8 }}
+                            >
+                                <Image
+                                    src={currentBanner?.image_url}
+                                    alt={currentBanner?.game_title || "Banner"}
+                                    fill
+                                    sizes={"100%"}
+                                />
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
-                </AnimatePresence>
+                    </AnimatePresence>
+                )}
             </div>
             <div className="absolute w-full h-full grid grid-cols-5 grid-rows-5">
                 <div className="col-span-3 row-span-3 col-start-2"></div>
@@ -94,26 +91,28 @@ const BannerSection = () => {
                                 exit={{ opacity: 0, y: -20 }}
                                 transition={{ duration: 0.8 }}
                             >
-                                {currentBanner.game_title || "Default Banner Title"}
+                                {currentBanner?.game_title}
                             </motion.h2>
                         </div>
                         <div className="hidden lg:flex justify-center items-center col-start-1 row-start-1">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={currentBanner.id + "-box-image"} // Ensure unique key for animation
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ duration: 0.8 }}
-                                >
-                                    <Image
-                                        src={currentBanner.game_image_box_url || "/placeholder-thumbnail.jpg"}
-                                        alt={currentBanner.game_title || "Image box game"}
-                                        width={400}
-                                        height={300}
-                                    />
-                                </motion.div>
-                            </AnimatePresence>
+                            {currentBanner?.game_image_box_url && (
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={currentBanner?.id + "-box-image"} // Ensure unique key for animation
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.8 }}
+                                    >
+                                        <Image
+                                            src={currentBanner.game_image_box_url}
+                                            alt={currentBanner?.game_title || "Image box game"}
+                                            width={400}
+                                            height={300}
+                                        />
+                                    </motion.div>
+                                </AnimatePresence>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -126,23 +125,25 @@ const BannerSection = () => {
                         transition={{ duration: 0.8 }}
                     >
                         <p className="text-gray-700 text-lg line-clamp-3">
-                            {currentBanner.game_description || "Default banner description."}
+                            {currentBanner?.game_description}
                         </p>
                     </motion.div>
-                    <div className="flex justify-end w-full gap-4">
-                        <Button
-                            className="bg-cyan-600 font-semibold text-white shadow-md"
-                            onPress={() => onClickTutorial(currentBanner.game_tutorial_url ?? "/")}
-                        >
-                            {t("tutorial")}
-                        </Button>
-                        <Button
-                            className="bg-[rgba(110,123,251,1)] font-semibold text-white shadow-md"
-                            onPress={() => onClickPlayNow(currentBanner.game_play_url ?? "/")}
-                        >
-                            {t("playNow")}
-                        </Button>
-                    </div>
+                    {currentBanner && (
+                        <div className="flex justify-end w-full gap-4">
+                            <Button
+                                className="bg-cyan-600 font-semibold text-white shadow-md"
+                                onPress={() => onClickTutorial(currentBanner?.game_tutorial_url ?? "/")}
+                            >
+                                {t("tutorial")}
+                            </Button>
+                            <Button
+                                className="bg-[rgba(110,123,251,1)] font-semibold text-white shadow-md"
+                                onPress={() => onClickPlayNow(currentBanner?.game_play_url ?? "/")}
+                            >
+                                {t("playNow")}
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
         </section>

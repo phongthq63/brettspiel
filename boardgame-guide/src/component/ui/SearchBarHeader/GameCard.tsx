@@ -8,7 +8,7 @@ interface GameCardProps {
     game: any;
 }
 
-export default function GameCard({game}: GameCardProps) {
+export function GameCard({game}: GameCardProps) {
     const {t} = useTranslation();
 
     return (

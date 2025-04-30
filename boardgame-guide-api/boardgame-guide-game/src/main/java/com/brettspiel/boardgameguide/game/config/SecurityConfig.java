@@ -62,7 +62,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.POST, "/contact").permitAll()
                         .requestMatchers(HttpMethod.POST, "/feedback").permitAll()
                         .requestMatchers(HttpMethod.GET, "/game/filter").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/game").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/game", "/game/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer

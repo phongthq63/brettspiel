@@ -57,4 +57,7 @@ public class GameDTO extends BaseDTO {
     @Schema(description = "Trò chơi có được đánh giá cao không", example = "true")
     private Boolean topRated;
 
+    @Schema(description = "URL video chơi trò chơi", example = "https://example.com/gameplay/catan")
+    private String playUrl;
+
 }

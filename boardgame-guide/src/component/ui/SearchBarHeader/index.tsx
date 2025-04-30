@@ -3,7 +3,7 @@
 import {Clear, Search} from "@mui/icons-material";
 import {Input} from "@heroui/react";
 import React, {useState, useEffect} from "react";
-import GameSearch from "@/component/ui/SearchBarHeader/GameSearch";
+import { GameSearch } from "./GameSearch";
 import {useTranslation} from "react-i18next";
 
 export default function SearchBarHeader() {

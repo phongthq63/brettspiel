@@ -1,9 +1,9 @@
 import Carousel from "@/hoc/Carousel";
 import {Button} from "@heroui/react";
 import React from "react";
-import GameCard from "./GameCard";
+import { GameCard } from "./GameCard";
 
-export default function GameSearch() {
+export function GameSearch() {
     const game = {
         id: 2,
         title: "Ticket to Ride",

@@ -3,6 +3,7 @@ package com.brettspiel.boardgameguide.game.controller;
 import com.brettspiel.boardgameguide.game.constants.GameConstants;
 import com.brettspiel.boardgameguide.game.controller.dto.response.GetFilterGameResponse;
 import com.brettspiel.boardgameguide.game.dto.GameDTO;
+import com.brettspiel.boardgameguide.game.dto.GameDetailDTO;
 import com.brettspiel.boardgameguide.game.service.IGameService;
 import com.brettspiel.service.dto.PageDTO;
 import com.brettspiel.utils.R;
@@ -14,10 +15,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -44,9 +42,10 @@ public class GameController {
     @GetMapping("")
     @Operation(summary = "Lấy danh sách trò chơi", description = "API này trả về danh sách các trò chơi dựa trên các bộ lọc và sắp xếp được cung cấp.")
     public R<PageDTO<GameDTO>> getListGame(
-            @RequestParam(required = false) Set<String> players,
-            @RequestParam(name = "play_times", required = false) Set<String> playTimes,
-            @RequestParam(required = false) Set<String> genres,
+            @Parameter(description = "Từ khóa") @RequestParam(required = false) String keyword,
+            @Parameter(description = "Số lượng người chơi (id)") @RequestParam(required = false) Set<String> players,
+            @Parameter(description = "Thời lượng chơi (id)") @RequestParam(name = "play_times", required = false) Set<String> playTimes,
+            @Parameter(description = "Thể loại (id)") @RequestParam(required = false) Set<String> genres,
             @Parameter(description = "Sắp xếp theo", schema = @Schema(allowableValues = {
                     GameConstants.SORT_BY_HOT,
                     GameConstants.SORT_BY_POPULAR,
@@ -54,7 +53,13 @@ public class GameController {
             })) @RequestParam(name = "soft_by", required = false) String sortBy,
             @PositiveOrZero @Parameter(description = "Trang") @RequestParam(defaultValue = "0") Integer page,
             @Positive @Parameter(description = "Số lượng") @RequestParam(defaultValue = "10") Integer size) {
-        return gameService.getListGame(players, playTimes, genres, sortBy, page, size);
+        return gameService.getListGame(keyword, players, playTimes, genres, sortBy, page, size);
+    }
+
+    @GetMapping("/{gameId}")
+    @Operation(summary = "Lấy thông tin trò chơi", description = "API này trả về thông tin trò chơi.")
+    public R<GameDetailDTO> getGameInfo(@PathVariable String gameId) {
+        return gameService.getGameInfo(gameId);
     }
 
 }

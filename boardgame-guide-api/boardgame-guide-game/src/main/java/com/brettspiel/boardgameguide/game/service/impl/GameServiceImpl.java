@@ -3,6 +3,7 @@ package com.brettspiel.boardgameguide.game.service.impl;
 import com.brettspiel.boardgameguide.game.controller.dto.response.GetFilterGameResponse;
 import com.brettspiel.boardgameguide.game.dto.FeaturedGameDTO;
 import com.brettspiel.boardgameguide.game.dto.GameDTO;
+import com.brettspiel.boardgameguide.game.dto.GameDetailDTO;
 import com.brettspiel.boardgameguide.game.entity.*;
 import com.brettspiel.boardgameguide.game.mapper.GameMapper;
 import com.brettspiel.boardgameguide.game.mapper.GamePlayTimeMapper;
@@ -76,25 +77,31 @@ public class GameServiceImpl implements IGameService {
     }
 
     @Override
-    public R<PageDTO<GameDTO>> getListGame(Set<String> playersIds, Set<String> playTimeIds, Set<String> genreIds, String sortBy, Integer page, Integer size) {
-        List<Integer[]> players = new ArrayList<>();
+    public R<PageDTO<GameDTO>> getListGame(String keyword, Set<String> playersIds, Set<String> playTimeIds, Set<String> genreIds, String sortBy, Integer page, Integer size) {
+        List<Integer[]> players = null;
         if (playersIds != null && !playersIds.isEmpty()) {
             List<GamePlayers> gamePlayers = gamePlayersRepository.findList(playersIds);
             if (gamePlayers.isEmpty()) {
                 return R.failed("Invalid playersIds");
             }
+            players = gamePlayers.stream()
+                    .map(gamePlayer -> new Integer[]{gamePlayer.getMinPlayers(), gamePlayer.getMaxPlayers()})
+                    .toList();
         }
-        List<Integer[]> playTimes = new ArrayList<>();
+        List<Integer[]> playTimes = null;
         if (playTimeIds != null && !playTimeIds.isEmpty()) {
             List<GamePlayTime> gamePlayTimes = gamePlayTimeRepository.findList(playTimeIds);
             if (gamePlayTimes.isEmpty()) {
                 return R.failed("Invalid playTimeIds");
             }
+            playTimes = gamePlayTimes.stream()
+                    .map(gamePlayTime -> new Integer[]{gamePlayTime.getMinPlayTime(), gamePlayTime.getMaxPlayTime()})
+                    .toList();
         }
 
         //
-        List<Game> games = gameRepository.findList(players, playTimes, genreIds, sortBy, page, size);
-        long total = gameRepository.count(players, playTimes, genreIds);
+        List<Game> games = gameRepository.findList(keyword, players, playTimes, genreIds, sortBy, page, size);
+        long total = gameRepository.count(keyword, players, playTimes, genreIds);
         List<GameDTO> gameDTOS = games.stream()
                 .map(gameMapper::toGameDTO)
                 .toList();
@@ -105,5 +112,14 @@ public class GameServiceImpl implements IGameService {
                 .size(size)
                 .build();
         return R.ok(pageDTO);
+    }
+
+    @Override
+    public R<GameDetailDTO> getGameInfo(String gameId) {
+        Game game = gameRepository.findById(gameId);
+        if (game == null) {
+            return R.failed("Game not found");
+        }
+        return R.ok(gameMapper.toGameDetailDTO(game));
     }
 }

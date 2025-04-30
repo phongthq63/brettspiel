@@ -22,8 +22,14 @@ public class Game extends BaseMongodbEntity {
     @Field("image_url")
     private String imageUrl;
 
+    @Field("image_name_url")
+    private String imageNameUrl;
+
     @Field("image_box_url")
     private String imageBoxUrl;
+
+    @Field("image_banner_url")
+    private String imageBannerUrl;
 
     private String name;
 
@@ -51,5 +57,16 @@ public class Game extends BaseMongodbEntity {
 
     @Field("top_rated")
     private Integer topRated;
+
+    @Field("play_url")
+    private String playUrl;
+
+    private List<String> designers;
+
+    private List<String> artists;
+
+    private List<String> publishers;
+
+    private String year;
 
 }

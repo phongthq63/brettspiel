@@ -3,6 +3,7 @@ package com.brettspiel.boardgameguide.game.service;
 import com.brettspiel.boardgameguide.game.controller.dto.response.GetFilterGameResponse;
 import com.brettspiel.boardgameguide.game.dto.FeaturedGameDTO;
 import com.brettspiel.boardgameguide.game.dto.GameDTO;
+import com.brettspiel.boardgameguide.game.dto.GameDetailDTO;
 import com.brettspiel.service.dto.PageDTO;
 import com.brettspiel.utils.R;
 
@@ -19,6 +20,8 @@ public interface IGameService {
 
     R<List<FeaturedGameDTO>> getListFeatureGame(String sortBy, Integer size);
 
-    R<PageDTO<GameDTO>> getListGame(Set<String> playersIds, Set<String> playTimeIds, Set<String> genreIds, String sortBy, Integer page, Integer size);
+    R<PageDTO<GameDTO>> getListGame(String keyword, Set<String> playersIds, Set<String> playTimeIds, Set<String> genreIds, String sortBy, Integer page, Integer size);
+
+    R<GameDetailDTO> getGameInfo(String gameId);
 
 }

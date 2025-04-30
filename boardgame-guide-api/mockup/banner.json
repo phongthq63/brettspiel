@@ -1,22 +1,22 @@
 [
   {
     "banner_id": "banner001",
+    "image_url": "/news-banner-899_wide.jpg",
     "game_id": "game123",
-    "game_image_url": "/news-banner-899_wide.jpg",
     "game_image_box_url": "/en_280.png",
     "game_title": "SYMBIOSE: it all started like a primordial soup...",
     "game_description": "Get ready to dive into a world of strategy, synergy, and stunning gameplay: Symbiose has just landed on Board Game Arena! In this clever and tactical card game, you are ...",
     "game_tutorial_url": "https://example.com/tutorials/catan",
-    "game_play_url": "https://example.com/gameplays/catan"
+    "game_play_url": "/game123"
   },
   {
     "banner_id": "banner002",
+    "image_url": "/news-banner-904_wide.jpg",
     "game_id": "game456",
-    "game_image_url": "/news-banner-904_wide.jpg",
     "game_image_box_url": "/en_281.png",
     "game_title": "RATS OF WISTAR: Because in the end, they will rule the world!",
     "game_description": "In Rats of Wistar, you play the role of one of the four rats who organized the escape from a lab. As such, you will have to lead your family to prove that you are the most deserving of leading",
     "game_tutorial_url": "https://example.com/tutorials/ticket-to-ride",
-    "game_play_url": "https://example.com/gameplays/ticket-to-ride"
+    "game_play_url": "/game456"
   }
 ]

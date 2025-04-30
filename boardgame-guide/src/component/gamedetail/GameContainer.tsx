@@ -5,54 +5,67 @@ import GameInfo from "@/component/gamedetail/GameInfo";
 import GameIntro from "@/component/gamedetail/GameIntro";
 import GamePlay from "@/component/gamedetail/GamePlay";
 import GamePreview from "@/component/gamedetail/GamePreview";
-import {useEffect} from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import {GameDetailDTO, GameService} from "@/service/game.service";
 
 interface GameContainerProps {
-    id: string
+    id: string;
 }
 
-export default function GameContainer({id}: GameContainerProps) {
+export default function GameContainer({ id }: GameContainerProps) {
+    const router = useRouter();
+    const [gameData, setGameData] = useState<GameDetailDTO>();
 
     useEffect(() => {
+        async function fetchGameData() {
+            try {
+                const response = await GameService.getGameInfo({ gameId: id });
+                if (response.data) {
+                    setGameData(response.data);
+                } else {
+                    router.push("/404"); // Redirect to 404 if no data
+                }
+            } catch (error) {
+                console.error("Failed to fetch game data:", error);
+                router.push("/404"); // Redirect to 404 on error
+            }
+        }
 
-    }, []);
+        fetchGameData();
+    }, [id, router]);
 
     return (
         <div>
             <GameBanner
-                game={{
-                    id: 3,
-                    title: "Codenames",
-                    description: "Give one-word clues to help your team identify secret agents.",
-                    imageUrl: "/photo-1496449903678-68ddcb189a24.jpg",
-                    minPlayers: 4,
-                    maxPlayers: 8,
-                    minPlayTime: 15,
-                    maxPlayTime: 30,
-                    rating: 47,
-                    isHot: false,
-                    isPopular: false,
-                    isTopRated: false,
-                    genres: ["Party", "Word Game"]
-                }}/>
+                id={gameData?.id || ""}
+                imageBannerUrl={gameData?.image_banner_url || ""}
+                imageNameUrl={gameData?.image_name_url || ""}
+                minPlayers={gameData?.min_players || 1}
+                maxPlayers={gameData?.max_players || 1}
+                minPlayTime={gameData?.min_play_time || 30}
+                maxPlayTime={gameData?.max_play_time || 30}
+                genres={gameData?.genres?.map((genre) => genre.name || "") || []}
+            />
 
             <div className="grid grid-cols-7 grid-rows-5">
                 <div className="col-span-7 lg:col-span-2 lg:row-span-5">
-                    <GameInfo game={{
-                        id: 3,
-                        title: "Codenames",
-                        description: "Give one-word clues to help your team identify secret agents.",
-                        imageUrl: "/photo-1496449903678-68ddcb189a24.jpg",
-                        minPlayers: 4,
-                        maxPlayers: 8,
-                        minPlayTime: 15,
-                        maxPlayTime: 30,
-                        rating: 47,
-                        isHot: false,
-                        isPopular: false,
-                        isTopRated: false,
-                        genres: ["Party", "Word Game"]
-                    }}/>
+                    <GameInfo
+                        image_box_url={gameData?.image_box_url || ""}
+                        minPlayers={gameData?.min_players || 1}
+                        maxPlayers={gameData?.max_players || 1}
+                        minPlayTime={gameData?.min_play_time || 30}
+                        maxPlayTime={gameData?.max_play_time || 30}
+                        designers={gameData?.designers || []}
+                        artists={gameData?.artists || []}
+                        publishers={gameData?.publishers || []}
+                        year={gameData?.year || 0}
+                        gamesPlayed={gameData?.games_played || 0}
+                        complexity={gameData?.complexity || 0}
+                        strategy={gameData?.strategy || 0}
+                        luck={gameData?.luck || 0}
+                        interaction={gameData?.interaction || 0}
+                    />
                 </div>
                 <div className="col-span-7 lg:col-span-3 lg:row-span-5 lg:col-start-3">
                     <GameIntro />
@@ -65,5 +78,5 @@ export default function GameContainer({id}: GameContainerProps) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

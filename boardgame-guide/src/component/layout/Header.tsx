@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import LogoSVG from "@/assets/svg/logo";
 import LanguageSwitcher from "@/component/ui/LanguageSwitcher";
-import SearchBarHeader from "@/component/ui/SearchBarHeader/SearchBarHeader";
+import SearchBarHeader from "@/component/ui/SearchBarHeader";
 
 
 const Header = () => {

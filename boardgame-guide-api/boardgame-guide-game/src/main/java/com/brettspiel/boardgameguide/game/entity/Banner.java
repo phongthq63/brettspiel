@@ -17,11 +17,11 @@ public class Banner extends BaseMongodbEntity{
     @Field("banner_id")
     private String bannerId;
 
+    @Field("image_url")
+    private String imageUrl;
+
     @Field("game_id")
     private String gameId;
-
-    @Field("game_image_url")
-    private String gameImageUrl;
 
     @Field("game_image_box_url")
     private String gameImageBoxUrl;

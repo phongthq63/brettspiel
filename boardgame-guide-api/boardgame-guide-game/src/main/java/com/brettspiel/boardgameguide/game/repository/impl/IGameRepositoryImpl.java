@@ -7,8 +7,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.TextCriteria;
+import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,47 +27,49 @@ public class IGameRepositoryImpl implements ICustomGameRepository {
 
 
     @Override
-    public List<Game> findList(List<Integer[]> players, List<Integer[]> playTimes, Set<String> genreIds, String sortBy, Integer page, Integer size) {
+    public List<Game> findList(String keyword, List<Integer[]> players, List<Integer[]> playTimes, Set<String> genreIds, String sortBy, Integer page, Integer size) {
         Criteria criteria = new Criteria();
         if (players != null && !players.isEmpty()) {
-            Criteria orCriteria = new Criteria();
+            List<Criteria> orCriteria = new ArrayList<>();
             for (Integer[] player: players) {
                 if (player[0] == null) {
-                    orCriteria.orOperator(Criteria.where("max_players").lte(player[1]));
+                    orCriteria.add(Criteria.where("max_players").lte(player[1]));
                 } else if (player[1] == null) {
-                    orCriteria.orOperator(Criteria.where("min_players").gte(player[0]));
+                    orCriteria.add(Criteria.where("min_players").gte(player[0]));
                 } else {
-                    orCriteria.orOperator(
-                            Criteria.where("min_players").gte(player[0]).and("max_players").lte(player[1])
-                    );
+                    orCriteria.add(Criteria.where("min_players").gte(player[0]).and("max_players").lte(player[1]));
                 }
             }
-            criteria.andOperator(orCriteria);
+            criteria.andOperator(new Criteria().orOperator(orCriteria));
         }
         if (playTimes != null && !playTimes.isEmpty()) {
-            Criteria orCriteria = new Criteria();
+            List<Criteria> orCriteria = new ArrayList<>();
             for (Integer[] playTime: playTimes) {
                 if (playTime[0] == null) {
-                    orCriteria.orOperator(Criteria.where("max_play_time").lte(playTime[1]));
+                    orCriteria.add(Criteria.where("max_play_time").lte(playTime[1]));
                 } else if (playTime[1] == null) {
-                    orCriteria.orOperator(Criteria.where("min_play_time").gte(playTime[0]));
+                    orCriteria.add(Criteria.where("min_play_time").gte(playTime[0]));
                 } else {
-                    orCriteria.orOperator(
-                            Criteria.where("min_play_time").gte(playTime[0]).and("max_play_time").lte(playTime[1])
-                    );
+                    orCriteria.add(Criteria.where("min_play_time").gte(playTime[0]).and("max_play_time").lte(playTime[1]));
                 }
             }
-            criteria.andOperator(orCriteria);
+            criteria.andOperator(new Criteria().orOperator(orCriteria));
         }
         if (genreIds != null && !genreIds.isEmpty()) {
-            Criteria orCriteria = new Criteria();
+            List<Criteria> orCriteria = new ArrayList<>();
             for (String genreId : genreIds) {
-                orCriteria.andOperator(Criteria.where("genres.genre_id").is(genreId));
+                orCriteria.add(Criteria.where("genres.genre_id").is(genreId));
             }
-            criteria.andOperator(orCriteria);
+            criteria.andOperator(new Criteria().orOperator(orCriteria));
         }
 
-        Query query = Query.query(criteria);
+        Query query;
+        if (keyword == null || keyword.isEmpty()) {
+            query = Query.query(criteria);
+        } else {
+            query = TextQuery.queryText(TextCriteria.forDefaultLanguage().matching(keyword))
+                    .addCriteria(criteria);
+        }
         query.skip((long) page * size);
         query.limit(size);
         if (sortBy != null && !sortBy.isEmpty()) {
@@ -75,47 +80,56 @@ public class IGameRepositoryImpl implements ICustomGameRepository {
     }
 
     @Override
-    public long count(List<Integer[]> players, List<Integer[]> playTimes, Set<String> genreIds) {
+    public Game findById(String id) {
+        Query query = Query.query(Criteria.where("game_id").is(id));
+
+        return mongoTemplate.findOne(query, Game.class);
+    }
+
+    @Override
+    public long count(String keyword, List<Integer[]> players, List<Integer[]> playTimes, Set<String> genreIds) {
         Criteria criteria = new Criteria();
         if (players != null && !players.isEmpty()) {
-            Criteria orCriteria = new Criteria();
+            List<Criteria> orCriteria = new ArrayList<>();
             for (Integer[] player: players) {
                 if (player[0] == null) {
-                    orCriteria.orOperator(Criteria.where("max_players").lte(player[1]));
+                    orCriteria.add(Criteria.where("max_players").lte(player[1]));
                 } else if (player[1] == null) {
-                    orCriteria.orOperator(Criteria.where("min_players").gte(player[0]));
+                    orCriteria.add(Criteria.where("min_players").gte(player[0]));
                 } else {
-                    orCriteria.orOperator(
-                            Criteria.where("min_players").gte(player[0]).and("max_players").lte(player[1])
-                    );
+                    orCriteria.add(Criteria.where("min_players").gte(player[0]).and("max_players").lte(player[1]));
                 }
             }
-            criteria.andOperator(orCriteria);
+            criteria.andOperator(new Criteria().orOperator(orCriteria));
         }
         if (playTimes != null && !playTimes.isEmpty()) {
-            Criteria orCriteria = new Criteria();
+            List<Criteria> orCriteria = new ArrayList<>();
             for (Integer[] playTime: playTimes) {
                 if (playTime[0] == null) {
-                    orCriteria.orOperator(Criteria.where("max_play_time").lte(playTime[1]));
+                    orCriteria.add(Criteria.where("max_play_time").lte(playTime[1]));
                 } else if (playTime[1] == null) {
-                    orCriteria.orOperator(Criteria.where("min_play_time").gte(playTime[0]));
+                    orCriteria.add(Criteria.where("min_play_time").gte(playTime[0]));
                 } else {
-                    orCriteria.orOperator(
-                            Criteria.where("min_play_time").gte(playTime[0]).and("max_play_time").lte(playTime[1])
-                    );
+                    orCriteria.add(Criteria.where("min_play_time").gte(playTime[0]).and("max_play_time").lte(playTime[1]));
                 }
             }
-            criteria.andOperator(orCriteria);
+            criteria.andOperator(new Criteria().orOperator(orCriteria));
         }
         if (genreIds != null && !genreIds.isEmpty()) {
-            Criteria orCriteria = new Criteria();
+            List<Criteria> orCriteria = new ArrayList<>();
             for (String genreId : genreIds) {
-                orCriteria.andOperator(Criteria.where("genres.genre_id").is(genreId));
+                orCriteria.add(Criteria.where("genres.genre_id").is(genreId));
             }
-            criteria.andOperator(orCriteria);
+            criteria.andOperator(new Criteria().orOperator(orCriteria));
         }
 
-        Query query = Query.query(criteria);
+        Query query;
+        if (keyword == null || keyword.isEmpty()) {
+            query = Query.query(criteria);
+        } else {
+            query = TextQuery.queryText(TextCriteria.forDefaultLanguage().matching(keyword))
+                    .addCriteria(criteria);
+        }
         return mongoTemplate.count(query, Game.class);
     }
 }

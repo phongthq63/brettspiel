@@ -134,11 +134,13 @@ export class GameService {
      */
     static getListGame(
         params: {
-            /**  */
+            /** Từ khóa */
+            keyword?: string;
+            /** Số lượng người chơi (id) */
             players?: any | null[];
-            /**  */
+            /** Thời lượng chơi (id) */
             playTimes?: any | null[];
-            /**  */
+            /** Thể loại (id) */
             genres?: any | null[];
             /** Sắp xếp theo */
             softBy?: string;
@@ -154,13 +156,33 @@ export class GameService {
 
             const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
             configs.params = {
-                players: params['players'],
-                play_times: params['playTimes'],
-                genres: params['genres'],
+                keyword: params['keyword'],
+                players: params['players']?.join(','),
+                play_times: params['playTimes']?.join(','),
+                genres: params['genres']?.join(','),
                 soft_by: params['softBy'],
                 page: params['page'],
                 size: params['size']
             };
+
+            axios(configs, resolve, reject);
+        });
+    }
+    /**
+     * Lấy thông tin trò chơi
+     */
+    static getGameInfo(
+        params: {
+            /**  */
+            gameId: string;
+        } = {} as any,
+        options: IRequestOptions = {}
+    ): Promise<RGameDetailDTO> {
+        return new Promise((resolve, reject) => {
+            let url = basePath + '/game/{gameId}';
+            url = url.replace('{gameId}', params['gameId'] + '');
+
+            const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
             axios(configs, resolve, reject);
         });
@@ -204,7 +226,7 @@ export interface BannerDTO {
     game_id?: string;
 
     /**  */
-    game_image_url?: string;
+    image_url?: string;
 
     /**  */
     game_image_box_url?: string;
@@ -394,6 +416,9 @@ export interface GameDTO {
 
     /** Trò chơi có được đánh giá cao không */
     top_rated?: boolean;
+
+    /** Đường dẫn đến trang hướng dẫn chơi trò chơi */
+    play_url?: string;
 }
 
 export interface PageDTOGameDTO {
@@ -419,6 +444,40 @@ export interface RPageDTOGameDTO {
 
     /**  */
     data?: PageDTOGameDTO;
+
+    /**  */
+    ts?: string;
+}
+
+export interface GameDetailDTO extends GameDTO {
+    /** URL hình ảnh tên trò chơi */
+    image_name_url?: string
+
+    /** URL hình ảnh banner của trò chơi */
+    image_banner_url?: string;
+
+    /** Danh sách nhà thiết kế của trò chơi */
+    designers?: string[];
+
+    /** Danh sách nhà phát triển của trò chơi */
+    artists?: string[];
+
+    /** Danh sách nhà xuất bản của trò chơi */
+    publishers?: string[];
+
+    /** Năm phát hành của trò chơi */
+    year?: number;
+}
+
+export interface RGameDetailDTO {
+    /**  */
+    code?: number;
+
+    /**  */
+    msg?: string;
+
+    /**  */
+    data?: GameDetailDTO;
 
     /**  */
     ts?: string;

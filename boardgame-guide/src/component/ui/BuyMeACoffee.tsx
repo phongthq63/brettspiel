@@ -150,7 +150,7 @@ const CoffeeCup = ({hover}: {hover: boolean}) => {
             ></motion.div>
 
             {/* Steam */}
-            {true && (
+            {hover && (
                 <>
                     <motion.div
                         className="absolute -top-3 left-0 w-1.5 h-1.5 bg-white/40 rounded-full blur-[1px]"

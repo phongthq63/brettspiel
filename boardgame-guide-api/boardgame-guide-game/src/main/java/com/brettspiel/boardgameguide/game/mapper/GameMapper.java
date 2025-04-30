@@ -2,6 +2,7 @@ package com.brettspiel.boardgameguide.game.mapper;
 
 import com.brettspiel.boardgameguide.game.dto.FeaturedGameDTO;
 import com.brettspiel.boardgameguide.game.dto.GameDTO;
+import com.brettspiel.boardgameguide.game.dto.GameDetailDTO;
 import com.brettspiel.boardgameguide.game.entity.FeaturedGame;
 import com.brettspiel.boardgameguide.game.entity.Game;
 import org.mapstruct.Mapper;
@@ -25,5 +26,11 @@ public interface GameMapper {
     @Mapping(target = "hot", constant = "true")
     @Mapping(target = "topRated", constant = "false")
     GameDTO toGameDTO(Game game);
+
+    @Mapping(target = "id", source = "gameId")
+    @Mapping(target = "popular", constant = "true")
+    @Mapping(target = "hot", constant = "true")
+    @Mapping(target = "topRated", constant = "false")
+    GameDetailDTO toGameDetailDTO(Game game);
 
 }

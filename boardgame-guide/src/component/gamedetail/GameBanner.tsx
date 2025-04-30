@@ -35,23 +35,19 @@ export default function GameBanner({
     return (
         <div className="relative h-[600px] md:h-[500px]">
             <div className="absolute w-full h-full grid grid-cols-6 grid-rows-6">
-                <div className="relative col-span-6 row-span-6">
-                    {imageBannerUrl && (
-                        <Image src={imageBannerUrl}
-                               alt="Board games banner"
-                               fill
-                               sizes={"100%"}/>
-                    )}
+                <div className="relative col-span-6 row-span-6 bg-gray-300">
+                    <Image src={imageBannerUrl}
+                           alt="Board games banner"
+                           fill
+                           sizes={"100%"}/>
                 </div>
             </div>
             <div className="absolute w-full h-full grid grid-cols-6 grid-rows-6">
                 <div className="col-span-6 lg:col-span-2 row-span-2 flex justify-center items-center">
-                    {imageNameUrl && (
-                        <Image src={imageNameUrl}
-                               alt="Board games avatar"
-                               width={400}
-                               height={300}/>
-                    )}
+                    <Image src={imageNameUrl}
+                           alt="Board games avatar"
+                           width={400}
+                           height={300}/>
                 </div>
                 <div className="col-span-6 lg:col-span-2 row-span-1 lg:row-span-2 row-start-3 lg:row-start-auto lg:col-start-5">
                     <div
@@ -79,15 +75,15 @@ export default function GameBanner({
                             <div className="flex items-center gap-1">
                                 <PeopleAltOutlined fontSize="small"/>
                                 {minPlayers === maxPlayers
-                                    ? `${minPlayers} ${t('gameCard.players')}`
-                                    : `${minPlayers}-${maxPlayers} ${t('gameCard.players')}`
+                                    ? `${minPlayers} ${t('players')}`
+                                    : `${minPlayers}-${maxPlayers} ${t('players')}`
                                 }
                             </div>
                             <div className="flex items-center gap-1">
                                 <AccessTime fontSize="small"/>
                                 {minPlayTime === maxPlayTime
-                                    ? `${minPlayTime} ${t('gameCard.minutes')}`
-                                    : `${minPlayTime}-${maxPlayTime} ${t('gameCard.minutes')}`
+                                    ? `${minPlayTime} ${t('minutes')}`
+                                    : `${minPlayTime}-${maxPlayTime} ${t('minutes')}`
                                 }
                             </div>
                         </div>

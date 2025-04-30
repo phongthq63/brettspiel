@@ -23,11 +23,14 @@ export function GameFilter({filters, onFilterChange}: GameFilterProps) {
         playTime: [...filters.playTime],
         genres: [...filters.genres]
     });
-    const [showAllGenres, setShowAllGenres] = useState(false);
     const [playerOptions, setPlayerOptions] = useState<GamePlayersDTO[]>([]);
     const [playTimeOptions, setPlayTimeOptions] = useState<GamePlayTimeDTO[]>([]);
     const [genreOptions, setGenreOptions] = useState<GenreDTO[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [showAllGenres, setShowAllGenres] = useState(false);
+    const sizeVisibleGenres = 5;
+    const visibleGenres = showAllGenres ? genreOptions : genreOptions.slice(0, sizeVisibleGenres);
+
 
     useEffect(() => {
         // Fetch filter data from API
@@ -47,7 +50,6 @@ export function GameFilter({filters, onFilterChange}: GameFilterProps) {
             });
     }, []);
 
-    const visibleGenres = showAllGenres ? genreOptions : genreOptions.slice(0, 5);
 
     const handlePlayerCountChange = (players: string[]) => {
         setLocalFilters(prev => ({
@@ -180,11 +182,13 @@ export function GameFilter({filters, onFilterChange}: GameFilterProps) {
                             </Checkbox>
                         ))}
                     </CheckboxGroup>
-                    <h3 className="mt-2 text-sm text-blue-600 hover:text-blue-800 focus:outline-none cursor-pointer"
-                        onClick={() => setShowAllGenres(!showAllGenres)}
-                    >
-                        {showAllGenres ? t('section.games.filter.showLess') : t('section.games.filter.showMore')}
-                    </h3>
+                    {sizeVisibleGenres < genreOptions.length && (
+                        <h3 className="mt-2 text-sm text-blue-600 hover:text-blue-800 focus:outline-none cursor-pointer"
+                            onClick={() => setShowAllGenres(!showAllGenres)}
+                        >
+                            {showAllGenres ? t('section.games.filter.showLess') : t('section.games.filter.showMore')}
+                        </h3>
+                    )}
                 </div>
             )}
             {playerOptions.length > 0 && playTimeOptions.length > 0 && genreOptions.length > 0 && (

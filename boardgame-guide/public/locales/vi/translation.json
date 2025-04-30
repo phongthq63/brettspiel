@@ -5,7 +5,10 @@
   "popular": "Phổ Biến",
   "topRated": "Đánh Giá Cao",
   "new": "Mới",
-  "tutorial": "Hướng dẫn chơi",
+  "tutorial": "Hướng dẫn",
+  "players": "người chơi",
+  "minutes": "phút",
+  "information": "Thông tin",
 
 
   "header.features": "Tính Năng",
@@ -196,11 +199,6 @@
   "featuredGames.filters.popular": "Phổ biến",
   "featuredGames.filters.hot": "Hot",
   "featuredGames.filters.topRated": "Đánh giá cao",
-  "featuredGames.viewAllButton": "Xem tất cả trò chơi",
+  "featuredGames.viewAllButton": "Xem tất cả trò chơi"
 
-  "gameCard.hot": "HOT",
-  "gameCard.popular": "PHỔ BIẾN",
-  "gameCard.topRated": "ĐÁNH GIÁ CAO",
-  "gameCard.players": "người chơi",
-  "gameCard.minutes": "phút"
 }

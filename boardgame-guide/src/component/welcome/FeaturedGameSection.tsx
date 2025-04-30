@@ -155,8 +155,8 @@ function GameCard({ title, description, image, minPlayTime, maxPlayTime, minPlay
                             <AccessTime/>
                             <span>
                                 {minPlayers === maxPlayers
-                                    ? `${minPlayers} ${t('gameCard.players')}`
-                                    : `${minPlayers}-${maxPlayers} ${t("gameCard.players")}`
+                                    ? `${minPlayers} ${t('players')}`
+                                    : `${minPlayers}-${maxPlayers} ${t("players")}`
                                 }
                             </span>
                         </div>
@@ -164,8 +164,8 @@ function GameCard({ title, description, image, minPlayTime, maxPlayTime, minPlay
                             <PeopleAltOutlined/>
                             <span>
                                 {minPlayTime === maxPlayTime
-                                    ? `${minPlayTime} ${t('gameCard.minutes')}`
-                                    : `${minPlayTime}-${maxPlayTime} ${t("gameCard.minutes")}`
+                                    ? `${minPlayTime} ${t('minutes')}`
+                                    : `${minPlayTime}-${maxPlayTime} ${t("minutes")}`
                                 }
                             </span>
                         </div>

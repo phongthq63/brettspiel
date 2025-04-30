@@ -23,7 +23,36 @@
     "designers": ["Klaus Teuber"],
     "artists": ["Franz Vohwinkel"],
     "publishers": ["Kosmos", "Mayfair Games"],
-    "year": "1995"
+    "year": "1995",
+    "rules": [
+      {
+        "ruleId": "rule-001",
+        "gameId": "game123",
+        "name": "Basic Rules",
+        "language": "English",
+        "imageIconUrl": "https://example.com/images/rule-basic.png",
+        "documentUrl": "https://example.com/docs/rule-basic.pdf"
+      },
+      {
+        "ruleId": "rule-002",
+        "gameId": "game123",
+        "name": "Advanced Rules",
+        "language": "Spanish",
+        "imageIconUrl": "https://example.com/images/rule-advanced.png",
+        "documentUrl": "https://example.com/docs/rule-advanced.pdf"
+      }
+    ],
+    "videos": [
+      {
+        "video_id": "video-001",
+        "game_id": "game123",
+        "title": "Catan Gameplay Overview",
+        "platform": "YouTube",
+        "thumbnail_url": "https://example.com/images/video-thumbnail.png",
+        "url": "https://youtube.com/watch?v=example"
+      }
+    ],
+    "tutorial_url": "/tutorial/game123"
   },
   {
     "game_id": "game456",
@@ -49,7 +78,28 @@
     "designers": ["Alan R. Moon"],
     "artists": ["Julien Delval"],
     "publishers": ["Days of Wonder"],
-    "year": "2004"
+    "year": "2004",
+    "rules": [
+      {
+        "ruleId": "rule-003",
+        "gameId": "game456",
+        "name": "Expansion Rules",
+        "language": "English",
+        "imageIconUrl": "https://example.com/images/rule-expansion.png",
+        "documentUrl": "https://example.com/docs/rule-expansion.pdf"
+      }
+    ],
+    "videos": [
+      {
+        "video_id": "video-002",
+        "game_id": "game456",
+        "title": "Ticket to Ride Strategy Guide",
+        "platform": "YouTube",
+        "thumbnail_url": "https://example.com/images/video-thumbnail2.png",
+        "url": "https://youtube.com/watch?v=example2"
+      }
+    ],
+    "tutorial_url": "/tutorial/game456"
   },
   {
     "game_id": "game789",
@@ -75,7 +125,28 @@
     "designers": ["Alan R. Moon"],
     "artists": ["Julien Delval"],
     "publishers": ["Days of Wonder"],
-    "year": "2004"
+    "year": "2004",
+    "tutorial_url": "/tutorial/game789",
+    "rules": [
+      {
+        "ruleId": "rule-004",
+        "gameId": "game789",
+        "name": "Pandemic Rules",
+        "language": "English",
+        "imageIconUrl": "https://example.com/images/rule-pandemic.png",
+        "documentUrl": "https://example.com/docs/rule-pandemic.pdf"
+      }
+    ],
+    "videos": [
+      {
+        "video_id": "video-003",
+        "game_id": "game789",
+        "title": "Pandemic Gameplay",
+        "platform": "YouTube",
+        "thumbnail_url": "https://example.com/images/video-thumbnail3.png",
+        "url": "https://youtube.com/watch?v=example3"
+      }
+    ]
   },
   {
     "game_id": "game101",
@@ -101,7 +172,28 @@
     "designers": ["Alan R. Moon"],
     "artists": ["Julien Delval"],
     "publishers": ["Days of Wonder"],
-    "year": "2004"
+    "year": "2004",
+    "tutorial_url": "/tutorial/game101",
+    "rules": [
+      {
+        "ruleId": "rule-005",
+        "gameId": "game101",
+        "name": "Carcassonne Rules",
+        "language": "English",
+        "imageIconUrl": "https://example.com/images/rule-carcassonne.png",
+        "documentUrl": "https://example.com/docs/rule-carcassonne.pdf"
+      }
+    ],
+    "videos": [
+      {
+        "video_id": "video-004",
+        "game_id": "game101",
+        "title": "Carcassonne Strategy",
+        "platform": "YouTube",
+        "thumbnail_url": "https://example.com/images/video-thumbnail4.png",
+        "url": "https://youtube.com/watch?v=example4"
+      }
+    ]
   },
   {
     "game_id": "game102",
@@ -127,7 +219,28 @@
     "designers": ["Alan R. Moon"],
     "artists": ["Julien Delval"],
     "publishers": ["Days of Wonder"],
-    "year": "2004"
+    "year": "2004",
+    "tutorial_url": "/tutorial/game102",
+    "rules": [
+      {
+        "ruleId": "rule-006",
+        "gameId": "game102",
+        "name": "7 Wonders Rules",
+        "language": "English",
+        "imageIconUrl": "https://example.com/images/rule-7wonders.png",
+        "documentUrl": "https://example.com/docs/rule-7wonders.pdf"
+      }
+    ],
+    "videos": [
+      {
+        "video_id": "video-005",
+        "game_id": "game102",
+        "title": "7 Wonders Gameplay",
+        "platform": "YouTube",
+        "thumbnail_url": "https://example.com/images/video-thumbnail5.png",
+        "url": "https://youtube.com/watch?v=example5"
+      }
+    ]
   },
   {
     "game_id": "game103",
@@ -153,7 +266,28 @@
     "designers": ["Alan R. Moon"],
     "artists": ["Julien Delval"],
     "publishers": ["Days of Wonder"],
-    "year": "2004"
+    "year": "2004",
+    "tutorial_url": "/tutorial/game103",
+    "rules": [
+      {
+        "ruleId": "rule-007",
+        "gameId": "game103",
+        "name": "Splendor Rules",
+        "language": "English",
+        "imageIconUrl": "https://example.com/images/rule-splendor.png",
+        "documentUrl": "https://example.com/docs/rule-splendor.pdf"
+      }
+    ],
+    "videos": [
+      {
+        "video_id": "video-006",
+        "game_id": "game103",
+        "title": "Splendor Strategy",
+        "platform": "YouTube",
+        "thumbnail_url": "https://example.com/images/video-thumbnail6.png",
+        "url": "https://youtube.com/watch?v=example6"
+      }
+    ]
   },
   {
     "game_id": "game104",
@@ -179,7 +313,28 @@
     "designers": ["Alan R. Moon"],
     "artists": ["Julien Delval"],
     "publishers": ["Days of Wonder"],
-    "year": "2004"
+    "year": "2004",
+    "tutorial_url": "/tutorial/game104",
+    "rules": [
+      {
+        "ruleId": "rule-008",
+        "gameId": "game104",
+        "name": "Dominion Rules",
+        "language": "English",
+        "imageIconUrl": "https://example.com/images/rule-dominion.png",
+        "documentUrl": "https://example.com/docs/rule-dominion.pdf"
+      }
+    ],
+    "videos": [
+      {
+        "video_id": "video-007",
+        "game_id": "game104",
+        "title": "Dominion Gameplay",
+        "platform": "YouTube",
+        "thumbnail_url": "https://example.com/images/video-thumbnail7.png",
+        "url": "https://youtube.com/watch?v=example7"
+      }
+    ]
   },
   {
     "game_id": "game105",
@@ -205,7 +360,28 @@
     "designers": ["Alan R. Moon"],
     "artists": ["Julien Delval"],
     "publishers": ["Days of Wonder"],
-    "year": "2004"
+    "year": "2004",
+    "tutorial_url": "/tutorial/game105",
+    "rules": [
+      {
+        "ruleId": "rule-009",
+        "gameId": "game105",
+        "name": "Azul Rules",
+        "language": "English",
+        "imageIconUrl": "https://example.com/images/rule-azul.png",
+        "documentUrl": "https://example.com/docs/rule-azul.pdf"
+      }
+    ],
+    "videos": [
+      {
+        "video_id": "video-008",
+        "game_id": "game105",
+        "title": "Azul Strategy",
+        "platform": "YouTube",
+        "thumbnail_url": "https://example.com/images/video-thumbnail8.png",
+        "url": "https://youtube.com/watch?v=example8"
+      }
+    ]
   },
   {
     "game_id": "game106",
@@ -224,39 +400,29 @@
       { "genre_id": "genre001", "name": "Strategy" },
       { "genre_id": "genre014", "name": "Sci-Fi" }
     ],
-    "popular": 94,
-    "hot": 88,
-    "top_rated": 93,
-    "play_url": "/game106",
-    "designers": ["Alan R. Moon"],
-    "artists": ["Julien Delval"],
-    "publishers": ["Days of Wonder"],
-    "year": "2004"
-  },
-  {
-    "game_id": "game107",
-    "name": "Gloomhaven",
-    "title": "Gloomhaven",
-    "description": "A cooperative campaign game with tactical combat and character progression.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "image_box_url": "/en_281.png",
-    "image_name_url": "/en_2000.png",
-    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 90,
-    "max_play_time": 150,
-    "min_players": 1,
-    "max_players": 4,
-    "genres": [
-      { "genre_id": "genre003", "name": "Cooperative" },
-      { "genre_id": "genre008", "name": "Role-Playing" }
+    "videos": [
+      {
+        "video_id": "video-009",
+        "game_id": "game106",
+        "title": "Terraforming Mars Gameplay",
+        "platform": "YouTube",
+        "thumbnail_url": "https://example.com/images/video-thumbnail9.png",
+        "url": "https://youtube.com/watch?v=example9"
+      }
     ],
-    "popular": 96,
-    "hot": 90,
-    "top_rated": 95,
-    "play_url": "/game107",
+    "tutorial_url": "/tutorial/game106",
     "designers": ["Alan R. Moon"],
-    "artists": ["Julien Delval"],
     "publishers": ["Days of Wonder"],
-    "year": "2004"
+    "artists": ["Julien Delval"],
+    "rules": [
+      {
+        "ruleId": "rule-010",
+        "gameId": "game106",
+        "name": "Terraforming Mars Rules",
+        "language": "English",
+        "imageIconUrl": "https://example.com/images/rule-terraforming.png",
+        "documentUrl": "https://example.com/docs/rule-terraforming.pdf"
+      }
+    ]
   }
 ]

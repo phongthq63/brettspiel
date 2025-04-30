@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
  * Created by Quach Thanh Phong
  * On 4/26/2025 - 10:14 AM
  */
-@Mapper(componentModel = "spring", uses = {GenreMapper.class})
+@Mapper(componentModel = "spring", uses = {GenreMapper.class, GameRuleMapper.class, GameVideoMapper.class})
 public interface GameMapper {
 
     @Mapping(target = "id", source = "gameId")

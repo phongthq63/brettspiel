@@ -62,7 +62,7 @@ const BannerSection = () => {
                         >
                             {/* Image Banner */}
                             <motion.div
-                                className="relative col-span-5 row-span-4 shadow-2xl"
+                                className="relative col-span-5 row-span-4 shadow-2xl bg-gray-300"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}

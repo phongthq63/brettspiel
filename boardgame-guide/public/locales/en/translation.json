@@ -6,6 +6,9 @@
   "topRated": "Top Rated",
   "new": "New",
   "tutorial": "Tutorial",
+  "players": "players",
+  "minutes": "minutes",
+  "information": "Information",
 
 
   "header.features": "Features",
@@ -142,8 +145,7 @@
 
 
 
-  "gameCard.players": "players",
-  "gameCard.minutes": "min",
+
 
 
 

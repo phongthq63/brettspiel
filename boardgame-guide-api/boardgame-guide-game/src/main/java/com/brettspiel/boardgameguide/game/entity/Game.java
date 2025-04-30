@@ -61,6 +61,9 @@ public class Game extends BaseMongodbEntity {
     @Field("play_url")
     private String playUrl;
 
+    @Field("tutorial_url")
+    private String tutorialUrl;
+
     private List<String> designers;
 
     private List<String> artists;
@@ -68,5 +71,9 @@ public class Game extends BaseMongodbEntity {
     private List<String> publishers;
 
     private String year;
+
+    private List<GameRule> rules;
+
+    private List<GameVideo> videos;
 
 }

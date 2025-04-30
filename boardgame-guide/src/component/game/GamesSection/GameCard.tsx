@@ -12,7 +12,7 @@ interface GameCardProps {
     title: string;
     description: string;
     imageUrl?: string;
-    imageBoxUrl?: string;
+    imageBoxUrl: string;
     isHot?: boolean;
     isPopular?: boolean;
     isTopRated?: boolean;
@@ -43,15 +43,13 @@ export function GameCard({title, description, imageUrl, imageBoxUrl, isHot, isPo
                 transition={{duration: 0.5}}
             >
                 <div className="relative h-full transition-transform duration-300 ease-in-out hover:-translate-y-2">
-                    {imageBoxUrl && (
-                        <Image
-                            src={imageBoxUrl}
-                            alt="Board games box"
-                            width={140}
-                            height={100}
-                            className="absolute hidden xl:block left-[-60] translate-y-1/4 z-10"
-                        />
-                    )}
+                    <Image
+                        src={imageBoxUrl}
+                        alt="Board games box"
+                        width={140}
+                        height={100}
+                        className="absolute hidden xl:block left-[-60] translate-y-1/4 z-10"
+                    />
                     <Card className="h-full hover:shadow-xl">
                         <CardBody className="p-0">
                             <div className="relative w-full h-48">
@@ -114,14 +112,14 @@ export function GameCard({title, description, imageUrl, imageBoxUrl, isHot, isPo
                                 <div className="flex items-center gap-1">
                                     <PeopleAltOutlined/>
                                     {minPlayers === maxPlayers
-                                        ? `${minPlayers} ${t("gameCard.players")}`
-                                        : `${minPlayers}-${maxPlayers} ${t("gameCard.players")}`}
+                                        ? `${minPlayers} ${t("players")}`
+                                        : `${minPlayers}-${maxPlayers} ${t("players")}`}
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <AccessTime/>
                                     {minPlayTime === maxPlayTime
-                                        ? `${minPlayTime} ${t("gameCard.minutes")}`
-                                        : `${minPlayTime}-${maxPlayTime} ${t("gameCard.minutes")}`}
+                                        ? `${minPlayTime} ${t("minutes")}`
+                                        : `${minPlayTime}-${maxPlayTime} ${t("minutes")}`}
                                 </div>
                             </div>
                             <Button

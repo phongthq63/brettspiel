@@ -6,6 +6,8 @@ import {Modal, ModalBody, ModalContent, useDisclosure} from "@heroui/modal";
 import {Button, Spinner} from "@heroui/react";
 
 
+export type Platform = "youtube" | "vimeo" | "iframe" | "local";
+
 const videoHandlers = {
     youtube: (videoId: string) => {
         return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
@@ -26,7 +28,7 @@ interface VideoCardProps {
         id: string;
         title: string;
         videoId: string;
-        platform: 'youtube' | 'vimeo' | 'iframe' | 'local';
+        platform: Platform;
         thumbnail: string;
         videoUrl?: string;
     }
@@ -106,16 +108,21 @@ const GameVideo = ({ video }: VideoCardProps) => {
                     {(onClose) => (
                         <>
                             {/* Custom Close Button */}
-                            <Button
-                                className="absolute top-4 right-4 z-10 bg-transparent"
-                                onPress={onClose}
-                                isIconOnly
-                            >
-                                <CloseRounded
-                                    className="text-[rgba(156,252,248,1)]"
-                                    fontSize="large" />
-                            </Button>
-                            <ModalBody className="bg-black px-0 pt-10">
+                            <ModalBody className="bg-black px-0">
+                                <div className="flex justify-between items-center px-4">
+                                    <h3 className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-text font-semibold text-2xl text-transparent">
+                                        {video.title}
+                                    </h3>
+                                    <Button
+                                        className="bg-transparent"
+                                        onPress={onClose}
+                                        isIconOnly
+                                    >
+                                        <CloseRounded
+                                            className="text-[rgba(156,252,248,1)]"
+                                            fontSize="large" />
+                                    </Button>
+                                </div>
                                 <div className="relative w-full h-56 sm:h-[60vh] overflow-hidden bg-gray-900">
                                     {loading && (
                                         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">

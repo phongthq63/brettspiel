@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import {Button, Input, Pagination, Select, SelectItem} from "@heroui/react";
+import {Input, Pagination, Select, SelectItem} from "@heroui/react";
 import {FilterAltRounded, Search} from "@mui/icons-material";
 import { GameService, GameDTO, GamePlayersDTO, GamePlayTimeDTO, GenreDTO } from "@/service/game.service";
 import { useMobile } from "@/hooks/useMobile";

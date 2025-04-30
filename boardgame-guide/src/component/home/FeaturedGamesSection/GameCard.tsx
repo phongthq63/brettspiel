@@ -38,13 +38,11 @@ export function GameCard({
         <Card className="hover:transform hover:-translate-y-2 hover:shadow-xl">
             <CardBody className="p-0">
                 <div className="relative w-full h-48">
-                    {image_url && (
-                        <Image src={image_url}
-                               alt={title || "Game Image"}
-                               fill
-                               sizes={"100%"}
-                        />
-                    )}
+                    <Image src={image_url}
+                           alt={title || "Game Image"}
+                           fill
+                           sizes={"100%"}
+                    />
                     <div className="absolute top-2 left-2 flex gap-2">
                         {popular && (
                             <Chip
@@ -97,15 +95,15 @@ export function GameCard({
                     <div className="flex items-center gap-1">
                         <PeopleAltOutlined />
                         {min_players === max_players
-                            ? `${min_players} ${t('gameCard.players')}`
-                            : `${min_players}-${max_players} ${t('gameCard.players')}`
+                            ? `${min_players} ${t('players')}`
+                            : `${min_players}-${max_players} ${t('players')}`
                         }
                     </div>
                     <div className="flex items-center gap-1">
                         <AccessTime />
                         {min_play_time === max_play_time
-                            ? `${min_play_time} ${t('gameCard.minutes')}`
-                            : `${min_play_time}-${max_play_time} ${t('gameCard.minutes')}`
+                            ? `${min_play_time} ${t('minutes')}`
+                            : `${min_play_time}-${max_play_time} ${t('minutes')}`
                         }
                     </div>
                 </div>

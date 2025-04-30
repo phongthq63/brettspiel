@@ -37,7 +37,7 @@ export function GameCard({game}: GameCardProps) {
                                 <PeopleAltOutlined fontSize="small" />
                                 <h6 className="ml-1">
                                     {game.minPlayers === game.maxPlayers
-                                        ? `${game.minPlayers} ${t('gameCard.players')}`
+                                        ? `${game.minPlayers} ${t('players')}`
                                         : `${game.minPlayers}-${game.maxPlayers} ${"players"}`
                                     }
                                 </h6>
@@ -47,7 +47,7 @@ export function GameCard({game}: GameCardProps) {
                                 <AccessTime fontSize="small" />
                                 <h6 className="ml-1">
                                     {game.minPlayTime === game.maxPlayTime
-                                        ? `${game.minPlayTime} ${t('gameCard.minutes')}`
+                                        ? `${game.minPlayTime} ${t('minutes')}`
                                         : `${game.minPlayTime}-${game.maxPlayTime} ${"minutes"}`
                                     }
                                 </h6>

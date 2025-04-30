@@ -1,19 +1,28 @@
 import {ArrowDropDownRounded, StarBorderRounded, StarRateRounded} from "@mui/icons-material";
 import {useState, useEffect, useRef} from "react";
 import {Button, Tooltip} from "@heroui/react";
+import Image from "next/image";
 
-export default function GameIntro() {
-    const [isFavoriteGame, setIsFavoriteGame] = useState<boolean>(false);
-    const [isFullIntroGame, setIsFullIntroGame] = useState<boolean>(false);
-    const [isFullRules, setIsFullRules] = useState<boolean>(false);
-    const [rules] = useState<{ title: string, language: string, flag: string }[]>([
-        { title: "Rules", language: "English", flag: "🇺🇸" },
-        { title: "Reglas (unofficial)", language: "Spanish", flag: "🇪🇸" },
-        { title: "Regole (unofficial)", language: "Italia", flag: "🇮🇹" },
-        { title: "Règles (unofficial)", language: "French", flag: "🇫🇷" },
-        { title: "Regeln (unofficial)", language: "Russian", flag: "🇩🇪" }
-    ]);
+interface GameIntroProps {
+    name: string;
+    description: string;
+    isFavorite?: boolean;
+    rules: {
+        name: string;
+        language: string;
+        image_icon_url: string;
+        document_url: string;
+    }[]
+}
+
+export default function GameIntro({ name, description, isFavorite, rules }: GameIntroProps) {
+    const [isFavoriteGame, setIsFavoriteGame] = useState<boolean>(isFavorite ?? false);
+    const [isFullIntroGame, setIsFullIntroGame] = useState<boolean>(true);
+    const [isFullRules, setIsFullRules] = useState<boolean>(true);
     const introRef = useRef<HTMLDivElement>(null);
+    const sizeVisibleRules = 3
+    const visibleRules = isFullRules ? rules : rules.slice(0, sizeVisibleRules);
+
 
     useEffect(() => {
         if (introRef.current) {
@@ -27,7 +36,7 @@ export default function GameIntro() {
         <div className="flex flex-col gap-10 p-8">
             <div>
                 <div className="flex justify-between mb-6">
-                    <h1 className="text-3xl md:text-4xl font-bold">Calico</h1>
+                    <h1 className="text-3xl md:text-4xl font-bold">{name}</h1>
                     {isFavoriteGame ? (
                         <Tooltip content={"Remove from Bookmarks"}>
                             <Button
@@ -56,16 +65,7 @@ export default function GameIntro() {
                         ref={introRef}
                         className={`font-medium ${!isFullIntroGame ? 'line-clamp-5' : ''}`}
                     >
-                        Symbiose is a tactical and clever collection game. Expand your personal pond from the river to
-                        create
-                        maximum synergy between your different cards and those of your neighbors! Who will create the
-                        most
-                        beautiful symbiosis? In this turn-based game, your goal is to strategically place your cards to
-                        maximize your overall score. But be aware, each card score depending of its placement: on the
-                        left,
-                        you score depending on your left neighbor ; on the right, depending of your right neighbor and
-                        in
-                        the center depending of your own cards. Choose wisely!
+                        {description}
                     </p>
                 </div>
                 {!isFullIntroGame && (
@@ -84,22 +84,27 @@ export default function GameIntro() {
                     <h1 className="text-xl md:text-2xl font-bold">Rules</h1>
                 </div>
                 <div className="flex flex-col mb-4">
-                    {rules.slice(0, isFullRules ? rules.length : 3).map((rule, index) => (
+                    {visibleRules.map((rule, index) => (
                         <div key={index}
                              className="flex gap-2">
-                            {rule.flag}
+                            <Image
+                                src={rule.image_icon_url}
+                                alt={rule.name}
+                                width={24}
+                                height={24}
+                            />
                             <Tooltip
                                 placement="top-start"
                                 content={rule.language}
                             >
                                 <p className="w-fit font-medium text-blue-500 hover:underline cursor-pointer">
-                                    {rule.title}
+                                    {rule.name}
                                 </p>
                             </Tooltip>
                         </div>
                     ))}
                 </div>
-                {!isFullRules && (
+                {sizeVisibleRules < rules.length && !isFullRules && (
                     <div className="flex justify-end">
                         <h3 className="text-sm text-blue-600 hover:text-blue-800 hover:underline focus:outline-none cursor-pointer"
                             onClick={() => setIsFullRules(true)}

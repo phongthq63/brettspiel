@@ -450,6 +450,9 @@ export interface RPageDTOGameDTO {
 }
 
 export interface GameDetailDTO extends GameDTO {
+    /** URL huớng dẫn chơi trò chơi */
+    tutorial_url?: string
+
     /** URL hình ảnh tên trò chơi */
     image_name_url?: string
 
@@ -467,6 +470,67 @@ export interface GameDetailDTO extends GameDTO {
 
     /** Năm phát hành của trò chơi */
     year?: number;
+
+    /** Số lượng trò chơi đã được chơi */
+    games_played?: number;
+
+    /** Độ phức tạp của trò chơi */
+    complexity?: number;
+
+    /** Chỉ số chiến lược của trò chơi */
+    strategy?: number;
+
+    /** Chỉ số may mắn của trò chơi */
+    luck?: number;
+
+    /** Chỉ số tương tác của trò chơi */
+    interaction?:number;
+
+    /** Danh sách luật chơi của trò chơi */
+    rules?: GameRuleDTO[];
+
+    /** Danh sách video của trò chơi */
+    videos?: GameVideoDTO[];
+}
+
+export interface GameRuleDTO {
+    /** Mã định danh duy nhất của luật chơi */
+    id?: string;
+
+    /** Mã của trò chơi mà luật này thuộc về */
+    game_id?: string;
+
+    /** Tên của luật chơi */
+    name?: string;
+
+    /** Ngôn ngữ của luật chơi */
+    language?: string;
+
+    /** URL đến biểu tượng hình ảnh đại diện cho luật */
+    image_icon_url?: string;
+
+    /** URL đến tài liệu chứa chi tiết về luật chơi */
+    document_url?: string;
+}
+
+export interface GameVideoDTO {
+    /** Mã định danh duy nhất của video */
+    id?: string;
+
+    /** Mã của trò chơi mà video này thuộc về */
+    game_id?: string;
+
+    /** Tiêu đề của video */
+    title?: string;
+
+    /** Nền tảng của video (ví dụ: YouTube, Vimeo) */
+    platform?: string;
+
+    /** URL đến hình ảnh thu nhỏ của video */
+    thumbnail_url?: string;
+
+    /** URL đến source của video */
+    url?: string;
 }
 
 export interface RGameDetailDTO {

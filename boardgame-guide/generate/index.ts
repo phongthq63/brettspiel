@@ -442,11 +442,11 @@ export interface BannerDTO {
   /** Mã định danh duy nhất của banner */
   id?: string;
 
+  /** URL hình ảnh của banner */
+  image_url?: string;
+
   /** Mã định danh của trò chơi liên kết với banner */
   game_id?: string;
-
-  /** URL hình ảnh của trò chơi */
-  game_image_url?: string;
 
   /** URL hình ảnh hộp trò chơi */
   game_image_box_url?: string;
@@ -521,7 +521,7 @@ export interface GameDTO {
   /** Trò chơi có được đánh giá cao không */
   top_rated?: boolean;
 
-  /** URL video chơi trò chơi */
+  /** URL chơi trò chơi */
   play_url?: string;
 }
 
@@ -553,7 +553,136 @@ export interface RPageDTOGameDTO {
   ts?: string;
 }
 
-export interface RGameDTO {
+export interface GameDetailDTO {
+  /** Mã định danh duy nhất của trò chơi */
+  id?: string;
+
+  /** URL hình ảnh của trò chơi */
+  image_url?: string;
+
+  /** URL hình ảnh hộp trò chơi */
+  image_box_url?: string;
+
+  /** Tên của trò chơi */
+  name?: string;
+
+  /** Tiêu đề của trò chơi */
+  title?: string;
+
+  /** Mô tả chi tiết về trò chơi */
+  description?: string;
+
+  /** Thời gian chơi tối thiểu (phút) */
+  min_play_time?: number;
+
+  /** Thời gian chơi tối đa (phút) */
+  max_play_time?: number;
+
+  /** Số lượng người chơi tối thiểu */
+  min_players?: number;
+
+  /** Số lượng người chơi tối đa */
+  max_players?: number;
+
+  /** Danh sách thể loại của trò chơi */
+  genres?: GenreDTO[];
+
+  /** Trò chơi có phổ biến không */
+  popular?: boolean;
+
+  /** Trò chơi có đang hot không */
+  hot?: boolean;
+
+  /** Trò chơi có được đánh giá cao không */
+  top_rated?: boolean;
+
+  /** URL chơi trò chơi */
+  play_url?: string;
+
+  /** URL hướng dẫn chơi trò chơi */
+  tutorial_url?: string;
+
+  /** URL hình ảnh tên trò chơi */
+  image_name_url?: string;
+
+  /** URL hình ảnh banner của trò chơi */
+  image_banner_url?: string;
+
+  /** Danh sách nhà thiết kế của trò chơi */
+  designers?: string[];
+
+  /** Danh sách nghệ sĩ tham gia thiết kế trò chơi */
+  artists?: string[];
+
+  /** Danh sách nhà xuất bản của trò chơi */
+  publishers?: string[];
+
+  /** Năm phát hành của trò chơi */
+  year?: string;
+
+  /** Số lần trò chơi đã được chơi */
+  games_played?: number;
+
+  /** Độ phức tạp của trò chơi (1-5) */
+  complexity?: number;
+
+  /** Chỉ số chiến lược của trò chơi (1-5) */
+  strategy?: number;
+
+  /** Chỉ số may mắn của trò chơi (1-5) */
+  luck?: number;
+
+  /** Chỉ số tương tác của trò chơi (1-5) */
+  interaction?: number;
+
+  /** Danh sách luật chơi của trò chơi */
+  rules?: GameRuleDTO[];
+
+  /** Danh sách video của trò chơi */
+  videos?: GameVideoDTO[];
+}
+
+export interface GameRuleDTO {
+  /** Mã định danh duy nhất của luật chơi */
+  id?: string;
+
+  /** Mã của trò chơi mà luật này thuộc về */
+  game_id?: string;
+
+  /** Tên của luật chơi */
+  name?: string;
+
+  /** Ngôn ngữ của luật chơi */
+  language?: string;
+
+  /** URL đến biểu tượng hình ảnh đại diện cho luật */
+  image_icon_url?: string;
+
+  /** URL đến tài liệu chứa chi tiết về luật chơi */
+  document_url?: string;
+}
+
+export interface GameVideoDTO {
+  /** Mã định danh duy nhất của video */
+  id?: string;
+
+  /** Mã của trò chơi mà video này thuộc về */
+  game_id?: string;
+
+  /** Tiêu đề của video */
+  title?: string;
+
+  /** Nền tảng của video (ví dụ: YouTube, Vimeo) */
+  platform?: string;
+
+  /** URL đến hình ảnh thu nhỏ của video */
+  thumbnail_url?: string;
+
+  /** URL đến source của video */
+  url?: string;
+}
+
+export interface RGameDetailDTO {
   /**  */
   code?: number;
 
@@ -561,7 +690,7 @@ export interface RGameDTO {
   msg?: string;
 
   /**  */
-  data?: GameDTO;
+  data?: GameDetailDTO;
 
   /**  */
   ts?: string;

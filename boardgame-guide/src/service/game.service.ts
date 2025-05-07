@@ -393,6 +393,9 @@ export interface GameDTO {
     /** Mô tả chi tiết về trò chơi */
     description?: string;
 
+    /** Tuổi chơi tối thiểu */
+    min_age?: number;
+
     /** Thời gian chơi tối thiểu (phút) */
     min_play_time?: number;
 

@@ -33,6 +33,9 @@ public class GameDTO extends BaseDTO {
     @Schema(description = "Mô tả chi tiết về trò chơi", example = "Cờ tỷ phú là một trò chơi kinh điển, nơi người chơi cạnh tranh để trở thành người giàu nhất.")
     private String description;
 
+    @Schema(description = "Tuổi chơi tối thiểu", example = "16")
+    private Integer minAge;
+
     @Schema(description = "Thời gian chơi tối thiểu (phút)", example = "30")
     private Integer minPlayTime;
 

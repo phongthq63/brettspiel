@@ -13,6 +13,7 @@ import LogoSVG from "@/assets/svg/logo";
 import LanguageSwitcher from "@/component/ui/LanguageSwitcher";
 import SearchBarHeader from "@/component/ui/SearchBarHeader";
 import {useState} from "react";
+import {Menu, X} from "lucide-react";
 
 
 const Header = () => {
@@ -27,6 +28,7 @@ const Header = () => {
             onMenuOpenChange={setIsMenuOpen}
         >
             <NavbarMenuToggle
+                icon={(isOpen) => isOpen ? (<X />) : (<Menu />)}
                 aria-label={isMenuOpen ? "Close menu" : "Open menu"}
                 className="md:hidden"
             />

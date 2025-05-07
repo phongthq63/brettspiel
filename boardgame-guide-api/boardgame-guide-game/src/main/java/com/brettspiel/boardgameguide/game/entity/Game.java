@@ -37,6 +37,9 @@ public class Game extends BaseMongodbEntity {
 
     private String description;
 
+    @Field("min_age")
+    private Integer minAge;
+
     @Field("min_play_time")
     private Integer minPlayTime;
 

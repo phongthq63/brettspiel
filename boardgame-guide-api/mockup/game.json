@@ -26,20 +26,20 @@
     "year": "1995",
     "rules": [
       {
-        "ruleId": "rule-001",
-        "gameId": "game123",
+        "rule_id": "rule-001",
+        "game_id": "game123",
         "name": "Basic Rules",
         "language": "English",
-        "imageIconUrl": "https://example.com/images/rule-basic.png",
-        "documentUrl": "https://example.com/docs/rule-basic.pdf"
+        "image_icon_url": "https://example.com/images/rule-basic.png",
+        "document_url": "https://example.com/docs/rule-basic.pdf"
       },
       {
-        "ruleId": "rule-002",
-        "gameId": "game123",
+        "rule_id": "rule-002",
+        "game_id": "game123",
         "name": "Advanced Rules",
         "language": "Spanish",
-        "imageIconUrl": "https://example.com/images/rule-advanced.png",
-        "documentUrl": "https://example.com/docs/rule-advanced.pdf"
+        "image_icon_url": "https://example.com/images/rule-advanced.png",
+        "document_url": "https://example.com/docs/rule-advanced.pdf"
       }
     ],
     "videos": [
@@ -81,12 +81,12 @@
     "year": "2004",
     "rules": [
       {
-        "ruleId": "rule-003",
-        "gameId": "game456",
+        "rule_id": "rule-003",
+        "game_id": "game456",
         "name": "Expansion Rules",
         "language": "English",
-        "imageIconUrl": "https://example.com/images/rule-expansion.png",
-        "documentUrl": "https://example.com/docs/rule-expansion.pdf"
+        "image_icon_url": "https://example.com/images/rule-expansion.png",
+        "document_url": "https://example.com/docs/rule-expansion.pdf"
       }
     ],
     "videos": [
@@ -129,12 +129,12 @@
     "tutorial_url": "/tutorial/game789",
     "rules": [
       {
-        "ruleId": "rule-004",
-        "gameId": "game789",
+        "rule_id": "rule-004",
+        "game_id": "game789",
         "name": "Pandemic Rules",
         "language": "English",
-        "imageIconUrl": "https://example.com/images/rule-pandemic.png",
-        "documentUrl": "https://example.com/docs/rule-pandemic.pdf"
+        "image_icon_url": "https://example.com/images/rule-pandemic.png",
+        "document_url": "https://example.com/docs/rule-pandemic.pdf"
       }
     ],
     "videos": [
@@ -176,12 +176,12 @@
     "tutorial_url": "/tutorial/game101",
     "rules": [
       {
-        "ruleId": "rule-005",
-        "gameId": "game101",
+        "rule_id": "rule-005",
+        "game_id": "game101",
         "name": "Carcassonne Rules",
         "language": "English",
-        "imageIconUrl": "https://example.com/images/rule-carcassonne.png",
-        "documentUrl": "https://example.com/docs/rule-carcassonne.pdf"
+        "image_icon_url": "https://example.com/images/rule-carcassonne.png",
+        "document_url": "https://example.com/docs/rule-carcassonne.pdf"
       }
     ],
     "videos": [
@@ -223,12 +223,12 @@
     "tutorial_url": "/tutorial/game102",
     "rules": [
       {
-        "ruleId": "rule-006",
-        "gameId": "game102",
+        "rule_id": "rule-006",
+        "game_id": "game102",
         "name": "7 Wonders Rules",
         "language": "English",
-        "imageIconUrl": "https://example.com/images/rule-7wonders.png",
-        "documentUrl": "https://example.com/docs/rule-7wonders.pdf"
+        "image_icon_url": "https://example.com/images/rule-7wonders.png",
+        "document_url": "https://example.com/docs/rule-7wonders.pdf"
       }
     ],
     "videos": [
@@ -270,12 +270,12 @@
     "tutorial_url": "/tutorial/game103",
     "rules": [
       {
-        "ruleId": "rule-007",
-        "gameId": "game103",
+        "rule_id": "rule-007",
+        "game_id": "game103",
         "name": "Splendor Rules",
         "language": "English",
-        "imageIconUrl": "https://example.com/images/rule-splendor.png",
-        "documentUrl": "https://example.com/docs/rule-splendor.pdf"
+        "image_icon_url": "https://example.com/images/rule-splendor.png",
+        "document_url": "https://example.com/docs/rule-splendor.pdf"
       }
     ],
     "videos": [
@@ -317,12 +317,12 @@
     "tutorial_url": "/tutorial/game104",
     "rules": [
       {
-        "ruleId": "rule-008",
-        "gameId": "game104",
+        "rule_id": "rule-008",
+        "game_id": "game104",
         "name": "Dominion Rules",
         "language": "English",
-        "imageIconUrl": "https://example.com/images/rule-dominion.png",
-        "documentUrl": "https://example.com/docs/rule-dominion.pdf"
+        "image_icon_url": "https://example.com/images/rule-dominion.png",
+        "document_url": "https://example.com/docs/rule-dominion.pdf"
       }
     ],
     "videos": [
@@ -364,12 +364,12 @@
     "tutorial_url": "/tutorial/game105",
     "rules": [
       {
-        "ruleId": "rule-009",
-        "gameId": "game105",
+        "rule_id": "rule-009",
+        "game_id": "game105",
         "name": "Azul Rules",
         "language": "English",
-        "imageIconUrl": "https://example.com/images/rule-azul.png",
-        "documentUrl": "https://example.com/docs/rule-azul.pdf"
+        "image_icon_url": "https://example.com/images/rule-azul.png",
+        "document_url": "https://example.com/docs/rule-azul.pdf"
       }
     ],
     "videos": [
@@ -416,12 +416,12 @@
     "artists": ["Julien Delval"],
     "rules": [
       {
-        "ruleId": "rule-010",
-        "gameId": "game106",
+        "rule_id": "rule-010",
+        "game_id": "game106",
         "name": "Terraforming Mars Rules",
         "language": "English",
-        "imageIconUrl": "https://example.com/images/rule-terraforming.png",
-        "documentUrl": "https://example.com/docs/rule-terraforming.pdf"
+        "image_icon_url": "https://example.com/images/rule-terraforming.png",
+        "document_url": "https://example.com/docs/rule-terraforming.pdf"
       }
     ]
   }

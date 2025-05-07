@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import {Facebook, FmdGoodOutlined, Instagram, Mail, Phone, Twitter, ChatBubbleOutlineOutlined} from "@mui/icons-material";
 import {Button, Input, Textarea, Form} from "@heroui/react";
 import {Card, CardHeader, CardBody} from "@heroui/card";
 import {ContactService} from "@/service/game.service";
 import {toast} from "@/utils/toast";
+import {Facebook, Instagram, Mail, MapPinned, MessageSquare, Phone, Twitter} from "lucide-react";
 
 export default function ContactSection() {
     const { t } = useTranslation()
@@ -85,7 +85,7 @@ export default function ContactSection() {
                                 <span>+1 (555) 123-4567</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <FmdGoodOutlined />
+                                <MapPinned />
                                 <span>123 Game Street, Digital City</span>
                             </div>
                         </address>
@@ -102,7 +102,7 @@ export default function ContactSection() {
                                     <Instagram />
                                 </a>
                                 <a href="#" className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-all" aria-label="Chat">
-                                    <ChatBubbleOutlineOutlined />
+                                    <MessageSquare />
                                 </a>
                             </div>
                         </nav>

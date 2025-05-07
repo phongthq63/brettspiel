@@ -1,11 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import {Chip} from "@heroui/react";
-import {AccessTime, ChildCareOutlined, PeopleAltOutlined} from "@mui/icons-material";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
+import {getRandomColor} from "@/utils";
+import {Baby, Clock, Users} from "lucide-react";
+
 
 interface GameBannerProps {
-    id: string;
     imageBannerUrl: string;
     imageNameUrl: string;
     minPlayers: number;
@@ -25,12 +28,15 @@ export default function GameBanner({
     genres,
 }: GameBannerProps) {
     const {t} = useTranslation();
+    const [genreChips, setGenreChips] = useState<{
+        name: string;
+        color: string;
+    }[]>([]);
 
-    // Function to generate a truly random color
-    const getRandomColor = () => {
-        const randomValue = () => Math.floor(Math.random() * 256); // Generate a value between 0-255
-        return `rgb(${randomValue()}, ${randomValue()}, ${randomValue()})`;
-    };
+
+    useEffect(() => {
+        setGenreChips(genres.map((genre) => ({name: genre, color: getRandomColor()})));
+    }, [genres]);
 
     return (
         <div className="relative h-[600px] md:h-[500px]">
@@ -39,55 +45,56 @@ export default function GameBanner({
                     <Image src={imageBannerUrl}
                            alt="Board games banner"
                            fill
-                           sizes={"100%"}/>
+                           sizes={"100%"}
+                           className="object-cover"
+                    />
                 </div>
             </div>
             <div className="absolute w-full h-full grid grid-cols-6 grid-rows-6">
-                <div className="col-span-6 lg:col-span-2 row-span-2 flex justify-center items-center">
+                <div className="col-span-2 row-span-2 hidden lg:flex justify-center items-center">
                     <Image src={imageNameUrl}
                            alt="Board games avatar"
                            width={400}
                            height={300}/>
                 </div>
-                <div className="col-span-6 lg:col-span-2 row-span-1 lg:row-span-2 row-start-3 lg:row-start-auto lg:col-start-5">
+                <div className="col-span-6 lg:col-span-2 row-span-1 lg:row-span-2 row-start-2 lg:row-start-1 lg:col-start-5">
                     <div
                         className="w-full h-full flex flex-col justify-start lg:justify-center items-center lg:items-start gap-2 lg:gap-6 scale-75 lg:scale-100">
                         <div className="flex justify-start items-center gap-2">
-                            {genres.map((genre, index) => (
+                            {genreChips.map((genreChip, index) => (
                                 <Chip
                                     key={index}
-                                    style={{ backgroundColor: getRandomColor() }} // Apply random color
+                                    style={{ backgroundColor: genreChip.color }}
                                     classNames={{
                                         content: "text-white font-semibold text-xs",
                                     }}
                                     radius="sm"
                                     size="sm"
                                 >
-                                    {genre}
+                                    {genreChip.name}
                                 </Chip>
                             ))}
                         </div>
                         <div className="flex gap-2 text-white text-xs">
                             <div className="flex items-center gap-1">
-                                <ChildCareOutlined fontSize="small"/>
+                                <Baby size="16px" />
                                 16+
                             </div>
                             <div className="flex items-center gap-1">
-                                <PeopleAltOutlined fontSize="small"/>
+                                <Users size="16px" />
                                 {minPlayers === maxPlayers
                                     ? `${minPlayers} ${t('players')}`
                                     : `${minPlayers}-${maxPlayers} ${t('players')}`
                                 }
                             </div>
                             <div className="flex items-center gap-1">
-                                <AccessTime fontSize="small"/>
+                                <Clock size="16px" />
                                 {minPlayTime === maxPlayTime
                                     ? `${minPlayTime} ${t('minutes')}`
                                     : `${minPlayTime}-${maxPlayTime} ${t('minutes')}`
                                 }
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

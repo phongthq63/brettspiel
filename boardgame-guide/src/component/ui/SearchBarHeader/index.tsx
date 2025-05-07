@@ -1,10 +1,10 @@
 "use client"
 
-import {Clear, Search} from "@mui/icons-material";
 import {Input} from "@heroui/react";
 import React, {useState, useEffect} from "react";
 import { GameSearch } from "./GameSearch";
 import {useTranslation} from "react-i18next";
+import {Search, X} from "lucide-react";
 
 export default function SearchBarHeader() {
     const {t} = useTranslation();
@@ -58,7 +58,7 @@ export default function SearchBarHeader() {
                    radius="lg"
                    endContent={isSearch
                        ? (
-                           <Clear className="cursor-pointer" onClick={handleCancelSearch} />)
+                           <X className="cursor-pointer" onClick={handleCancelSearch} />)
                        : (
                            <Search className="cursor-pointer" onClick={handleSearch}/>
                        )}
@@ -68,7 +68,7 @@ export default function SearchBarHeader() {
                 <div className="fixed left-0 w-full flex flex-col gap-8 bg-black/[.6] py-2 md:py-4 px-1 md:px-40"
                      style={{
                          top: `${headerHeight}px`,
-                         minHeight: `calc(100vh - ${headerHeight}px)`, // Giới hạn chiều cao tối đa
+                         minHeight: `calc(100vh - ${headerHeight}px)`,
                      }}
                 >
                     <GameSearch />

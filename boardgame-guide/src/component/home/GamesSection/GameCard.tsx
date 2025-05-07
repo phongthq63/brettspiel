@@ -3,9 +3,9 @@ import {AnimatePresence, motion} from "framer-motion";
 import Image from "next/image";
 import {Card, CardBody, CardFooter} from "@heroui/card";
 import {Button, Chip, Skeleton} from "@heroui/react";
-import {AccessTime, PeopleAltOutlined, Star} from "@mui/icons-material";
 import React from "react";
 import {useRouter} from "next/navigation";
+import {Clock, Star, Users} from "lucide-react";
 
 interface GameCardProps {
     id: string;
@@ -89,7 +89,7 @@ export function GameCard({title, description, imageUrl, imageBoxUrl, isHot, isPo
                                 <div className="flex justify-between items-start">
                                     <h3 className="text-lg font-semibold text-gray-800 mb-1">{title}</h3>
                                     <div className="flex items-center">
-                                        <Star className="h-5 w-5 text-yellow-500 fill-current"/>
+                                        <Star size="16px" className="text-yellow-300 fill-current"/>
                                         <span className="ml-1 text-sm font-medium text-gray-700">
                                     {(rating / 10).toFixed(1)}
                                 </span>
@@ -98,7 +98,11 @@ export function GameCard({title, description, imageUrl, imageBoxUrl, isHot, isPo
                                 <p className="text-sm text-gray-600 mb-3">{description}</p>
                                 <div className="flex flex-wrap gap-2 mb-3">
                                     {genres.map((genre, index) => (
-                                        <Chip key={index} className="px-2 py-1 text-xs font-medium">
+                                        <Chip
+                                            key={index}
+                                            className="px-2 py-1 text-xs"
+                                            size="sm"
+                                        >
                                             {genre}
                                         </Chip>
                                     ))}
@@ -108,13 +112,13 @@ export function GameCard({title, description, imageUrl, imageBoxUrl, isHot, isPo
                         <CardFooter className="flex flex-col gap-3">
                             <div className="w-full flex justify-between text-xs text-gray-500">
                                 <div className="flex items-center gap-1">
-                                    <PeopleAltOutlined/>
+                                    <Users size="16px" />
                                     {minPlayers === maxPlayers
                                         ? `${minPlayers} ${t("players")}`
                                         : `${minPlayers}-${maxPlayers} ${t("players")}`}
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <AccessTime/>
+                                    <Clock size="16px" />
                                     {minPlayTime === maxPlayTime
                                         ? `${minPlayTime} ${t("minutes")}`
                                         : `${minPlayTime}-${maxPlayTime} ${t("minutes")}`}

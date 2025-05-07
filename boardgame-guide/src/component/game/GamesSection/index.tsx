@@ -3,12 +3,12 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import {Input, Pagination, Select, SelectItem} from "@heroui/react";
-import {FilterAltRounded, Search} from "@mui/icons-material";
 import { GameService, GameDTO, GamePlayersDTO, GamePlayTimeDTO, GenreDTO } from "@/service/game.service";
 import { useMobile } from "@/hooks/useMobile";
 import { GameCard, GameCardSkeleton } from "./GameCard";
 import { GameFilter } from "./GameFilter";
 import {AnimatePresence, motion } from "framer-motion";
+import {Funnel, Search} from "lucide-react";
 
 export default function GamesSection() {
     const { t } = useTranslation();
@@ -107,7 +107,7 @@ export default function GamesSection() {
     };
 
     return (
-        <section id="games" className="p-10 py-12">
+        <section id="games">
             <div className="flex justify-between items-end">
                 <h2 className="text-3xl font-bold text-gray-800 mb-4">{t("section.games.title")}</h2>
                 <motion.div
@@ -125,7 +125,7 @@ export default function GamesSection() {
                     className="flex items-center gap-2 px-4 py-2 bg-[rgba(156,252,248,0.3)]"
                     onClick={() => setIsFilterExpanded(!isFilterExpanded)}
                 >
-                    <FilterAltRounded />
+                    <Funnel />
                     <h3 className="text-xl font-semibold">
                         {t("section.games.filter.title")}
                     </h3>
@@ -138,7 +138,7 @@ export default function GamesSection() {
                         initial={{ maxHeight: 0 }}
                         animate={{ maxHeight: 1000 }}
                         exit={{ maxHeight: 0 }}
-                        transition={{ duration: 1, ease: "easeInOut" }}
+                        transition={{ duration: 0.5, ease: "easeInOut" }}
                         style={{ overflow: "hidden" }}
                     >
                         <GameFilter
@@ -192,7 +192,7 @@ export default function GamesSection() {
                 </div>
 
                 {/* Games Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 2xl:grid-cols-5 gap-12 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 gap-12 mb-8">
                     {isLoading
                         ? Array.from({ length: 5 }).map((_, index) => (
                               <GameCardSkeleton key={`skeleton-${index}`} />

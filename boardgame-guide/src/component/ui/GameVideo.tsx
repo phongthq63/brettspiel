@@ -1,9 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import {useEffect, useState } from "react";
 import {Card, CardBody} from "@heroui/card";
-import {CloseRounded, InfoOutlined, PlayCircle} from "@mui/icons-material";
 import {Modal, ModalBody, ModalContent, useDisclosure} from "@heroui/modal";
 import {Button, Spinner} from "@heroui/react";
+import {CircleAlert, CirclePlay, X} from "lucide-react";
 
 
 export type Platform = "youtube" | "vimeo" | "iframe" | "local";
@@ -24,21 +26,21 @@ const videoHandlers = {
 };
 
 interface VideoCardProps {
-    video: {
-        id: string;
-        title: string;
-        videoId: string;
-        platform: Platform;
-        thumbnail: string;
-        videoUrl?: string;
-    }
+    id: string;
+    title?: string;
+    videoId: string;
+    platform: Platform;
+    thumbnail?: string;
+    videoUrl?: string;
 }
 
-const GameVideo = ({ video }: VideoCardProps) => {
+const GameVideo = ({ id, title, videoId, platform, thumbnail, videoUrl }: VideoCardProps) => {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const [imageError, setImageError] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const videoSrc = videoHandlers[platform]?.(videoId, videoUrl) ?? ""
+    const isDirectVideo = platform === "local"
 
 
     useEffect(() => {
@@ -46,7 +48,7 @@ const GameVideo = ({ video }: VideoCardProps) => {
             setLoading(true);
             setError(null);
         }
-    }, [isOpen, video])
+    }, [id, isOpen])
 
     const handleImageError = () => {
         setImageError(true)
@@ -61,15 +63,10 @@ const GameVideo = ({ video }: VideoCardProps) => {
         setError("Failed to load video. Please try again later.")
     };
 
-    const videoSrc = videoHandlers[video.platform]?.(video.videoId, video.videoUrl) ?? ""
-
-    // Determine if we're using a video player or iframe
-    const isDirectVideo = video.platform === "local"
-
     return (
         <>
             <Card
-                className="w-72 h-48"
+                className="w-full aspect-video"
                 isPressable
                 onPress={onOpen}
             >
@@ -80,21 +77,21 @@ const GameVideo = ({ video }: VideoCardProps) => {
                 ) : (
                     <div>
                         <Image
-                            alt={video.title}
-                            src={video.thumbnail}
+                            alt={title ?? ""}
+                            src={thumbnail || ""}
                             onError={handleImageError}
                             fill
                             sizes={"100%"}
                         />
                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                            <PlayCircle className="text-white" fontSize="large"/>
+                            <CirclePlay className="text-white" fontSize="large"/>
                         </div>
                     </div>
 
                 )}
 
                 <CardBody className="absolute bg-black/[.6]">
-                    <h3 className="text-sm font-medium text-white truncate">{"How to play"}</h3>
+                    <h3 className="text-sm font-medium text-white truncate">{title}</h3>
                 </CardBody>
             </Card>
             <Modal
@@ -111,19 +108,17 @@ const GameVideo = ({ video }: VideoCardProps) => {
                             <ModalBody className="bg-black px-0">
                                 <div className="flex justify-between items-center px-4">
                                     <h3 className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-text font-semibold text-2xl text-transparent">
-                                        {video.title}
+                                        {title}
                                     </h3>
                                     <Button
                                         className="bg-transparent"
                                         onPress={onClose}
                                         isIconOnly
                                     >
-                                        <CloseRounded
-                                            className="text-[rgba(156,252,248,1)]"
-                                            fontSize="large" />
+                                        <X size="20px" className="text-[rgba(156,252,248,1)]" />
                                     </Button>
                                 </div>
-                                <div className="relative w-full h-56 sm:h-[60vh] overflow-hidden bg-gray-900">
+                                <div className="relative w-full aspect-video overflow-hidden bg-gray-900">
                                     {loading && (
                                         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
                                             <div className="flex flex-col items-center">
@@ -136,13 +131,13 @@ const GameVideo = ({ video }: VideoCardProps) => {
                                         <div
                                             className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
                                             <div className="text-center">
-                                                <InfoOutlined color="error"/>
+                                                <CircleAlert color="error"/>
                                                 <p className="mt-2 text-white">{error}</p>
                                             </div>
                                         </div>
                                     )}
 
-                                    {video && isDirectVideo ? (
+                                    {isDirectVideo ? (
                                         <video
                                             src={videoSrc}
                                             className="absolute top-0 left-0 w-full h-full"

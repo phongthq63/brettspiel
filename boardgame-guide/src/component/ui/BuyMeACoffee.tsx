@@ -9,7 +9,7 @@ interface BuyMeCoffeeProps {
     username?: string;
 }
 
-export const BuyMeCoffee = ({
+export const BuyMeACoffee = ({
                                 qrValue = "https://buymeacoffee.com/username",
                             }: BuyMeCoffeeProps) => {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();

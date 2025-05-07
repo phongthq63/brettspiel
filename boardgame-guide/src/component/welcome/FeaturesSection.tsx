@@ -1,7 +1,7 @@
-import {Computer, Language, Smartphone, Tablet} from "@mui/icons-material";
 import {motion} from "framer-motion";
 import {useTranslation} from "react-i18next";
 import Image from "next/image";
+import {Globe, LaptopMinimal, PcCase, Smartphone, Tablet} from "lucide-react";
 
 export default function FeaturesSection() {
     const { t } = useTranslation()
@@ -43,7 +43,7 @@ export default function FeaturesSection() {
                         </motion.div>
 
                         {/* Mobile Devices */}
-                        <div className="flex gap-4 items-end">
+                        <div className="w-full md:w-fit flex justify-center items-end gap-4">
                             {/* Tablet */}
                             <motion.div
                                 className="relative border-8 border-gray-800 rounded-xl overflow-hidden shadow-xl w-48 h-64"
@@ -94,20 +94,20 @@ export default function FeaturesSection() {
                         viewport={{once: true}}
                     >
                         <div className="flex justify-center gap-4 md:gap-10 mt-8">
-                            <div className="text-center">
-                                <Computer/>
+                            <div className="flex flex-col justify-center items-center">
+                                <LaptopMinimal />
                                 <p className="text-sm font-medium mt-2">{t('section.features.desktop')}</p>
                             </div>
-                            <div className="text-center">
-                                <Tablet/>
+                            <div className="flex flex-col justify-center items-center">
+                                <Tablet />
                                 <p className="text-sm font-medium mt-2">{t('section.features.tablet')}</p>
                             </div>
-                            <div className="text-center">
-                                <Smartphone/>
+                            <div className="flex flex-col justify-center items-center">
+                                <Smartphone />
                                 <p className="text-sm font-medium mt-2">{t('section.features.mobile')}</p>
                             </div>
-                            <div className="text-center">
-                                <Language/>
+                            <div className="flex flex-col justify-center items-center">
+                                <Globe />
                                 <p className="text-sm font-medium mt-2">{t('section.features.browser')}</p>
                             </div>
                         </div>

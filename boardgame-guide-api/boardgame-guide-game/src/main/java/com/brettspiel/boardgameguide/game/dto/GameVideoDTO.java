@@ -3,7 +3,6 @@ package com.brettspiel.boardgameguide.game.dto;
 import com.brettspiel.service.dto.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.data.mongodb.core.mapping.Field;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**

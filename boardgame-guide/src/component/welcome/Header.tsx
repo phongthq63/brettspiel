@@ -31,7 +31,7 @@ const Header = () => {
             <NavbarBrand>
                 {/* Logo */}
                 <Link
-                    href="#"
+                    href="/"
                     prefetch
                     shallow
                     className="flex items-center"

@@ -1,8 +1,8 @@
 import {useTranslation} from "react-i18next";
 import Image from "next/image";
 import {Card, CardBody} from "@heroui/card";
-import {AccessTime, PeopleAltOutlined} from "@mui/icons-material";
 import React from "react";
+import {Clock, Users} from "lucide-react";
 
 interface GameCardProps {
     game: any;
@@ -34,7 +34,7 @@ export function GameCard({game}: GameCardProps) {
                         <p className="text-xs text-gray-600 line-clamp-3 mb-2">{game.description}</p>
                         <div className="flex justify-between text-xs text-gray-500">
                             <div className="flex items-center">
-                                <PeopleAltOutlined fontSize="small" />
+                                <Users size="16px" />
                                 <h6 className="ml-1">
                                     {game.minPlayers === game.maxPlayers
                                         ? `${game.minPlayers} ${t('players')}`
@@ -44,7 +44,7 @@ export function GameCard({game}: GameCardProps) {
 
                             </div>
                             <div className="flex items-center">
-                                <AccessTime fontSize="small" />
+                                <Clock size="16px" />
                                 <h6 className="ml-1">
                                     {game.minPlayTime === game.maxPlayTime
                                         ? `${game.minPlayTime} ${t('minutes')}`

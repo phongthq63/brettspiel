@@ -3,11 +3,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Input, Pagination, Select, SelectItem } from "@heroui/react";
-import { Search } from "@mui/icons-material";
 import { GameService, GameDTO } from "@/service/game.service";
 import { useMobile } from "@/hooks/useMobile";
 import { GameCard, GameCardSkeleton } from "./GameCard";
 import { GameFilter } from "./GameFilter";
+import {Search} from "lucide-react";
 
 export default function GamesSection() {
     const { t } = useTranslation();
@@ -24,7 +24,7 @@ export default function GamesSection() {
     const [totalGame, setTotalGame] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
-    const size = 6;
+    const size = 8;
     const searchBarRef = useRef<HTMLDivElement>(null);
 
     const fetchGames = useCallback(
@@ -137,7 +137,7 @@ export default function GamesSection() {
                     </div>
 
                     {/* Games Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-12 mb-8">
                         {isLoading
                             ? Array.from({ length: 4 }).map((_, index) => (
                                   <GameCardSkeleton key={`skeleton-${index}`} />
@@ -148,7 +148,7 @@ export default function GamesSection() {
                                       id={game.id ?? ""}
                                       title={game.title ?? ""}
                                       description={game.description ?? ""}
-                                      imageUrl={game.image_url}
+                                      imageUrl={game.image_url ?? ""}
                                       imageBoxUrl={game.image_box_url ?? ""}
                                       isHot={game.hot}
                                       isPopular={game.popular}

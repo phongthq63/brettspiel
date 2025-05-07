@@ -1,6 +1,6 @@
 import axios from "axios";
 import {socketApiUrl} from "../../../config";
-import {getItem} from "@/hooks/useCookie";
+import {getItem} from "@/hooks/cookie/useCookie";
 
 export const instanceSocket = axios.create({
     baseURL: socketApiUrl,

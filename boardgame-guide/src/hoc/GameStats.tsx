@@ -1,7 +1,7 @@
 "use client"
 
 import {useTranslation} from "react-i18next";
-import {PeopleAltOutlined, VideogameAssetOutlined} from "@mui/icons-material";
+import {Users, Gamepad} from "lucide-react";
 
 interface LiveStats {
     playerCount: number
@@ -29,7 +29,7 @@ export default function GameStats({children}: any) {
                         className="bg-white dark:bg-gray-800 rounded-xl shadow-lg backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90 p-3 border border-gray-200 dark:border-gray-700 flex items-center gap-3 transition-all hover:shadow-xl">
                         <div
                             className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-2.5 rounded-lg shadow">
-                            <PeopleAltOutlined/>
+                            <Users />
                         </div>
                         <div>
                             <p className="text-xs text-gray-500 dark:text-gray-400">{t('gameStats.currentPlayers')}</p>
@@ -42,7 +42,7 @@ export default function GameStats({children}: any) {
                     <div
                         className="bg-white dark:bg-gray-800 rounded-xl shadow-lg backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90 p-3 border border-gray-200 dark:border-gray-700 flex items-center gap-3 transition-all hover:shadow-xl">
                         <div className="bg-gradient-to-r from-green-500 to-teal-500 text-white p-2.5 rounded-lg shadow">
-                            <VideogameAssetOutlined/>
+                            <Gamepad />
                         </div>
                         <div>
                             <p className="text-xs text-gray-500 dark:text-gray-400">{t('gameStats.currentGames')}</p>

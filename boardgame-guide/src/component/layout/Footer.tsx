@@ -1,7 +1,8 @@
 "use client"
 
 import { useTranslation } from "react-i18next";
-import {ChatBubbleOutlineOutlined, Facebook, Instagram, Twitter} from "@mui/icons-material";
+import {Facebook, Instagram, Mail, MapPinned, MessageSquare, Phone, Twitter} from "lucide-react";
+import React from "react";
 
 
 export default function Footer() {
@@ -24,18 +25,32 @@ export default function Footer() {
                             BoardGame Hub
                         </h3>
                         <p className="text-gray-400 mb-4">{t("footer.tagline")}</p>
+                        <div className="mb-4 text-gray-400 text-sm">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Mail size="20px" />
+                                <span>support@boardgamehub.com</span>
+                            </div>
+                            <div className="flex items-center gap-2 mb-2">
+                                <Phone size="20px" />
+                                <span>+1 (555) 123-4567</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <MapPinned size="20px" />
+                                <span>123 Game Street, Digital City</span>
+                            </div>
+                        </div>
                         <div className="flex space-x-4">
                             <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                                <Facebook className="h-5 w-5" />
+                                <Facebook/>
                             </a>
                             <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                                <Twitter className="h-5 w-5" />
+                                <Twitter/>
                             </a>
                             <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                                <Instagram className="h-5 w-5" />
+                                <Instagram/>
                             </a>
                             <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                                <ChatBubbleOutlineOutlined className="h-5 w-5" />
+                                <MessageSquare/>
                             </a>
                         </div>
                     </div>

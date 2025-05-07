@@ -1,6 +1,6 @@
 import axios from "axios";
 import {splendorApiUrl} from "../../../../../config";
-import {getItem} from "@/hooks/useCookie";
+import {getItem} from "@/hooks/cookie/useCookie";
 
 export const instanceSplendor = axios.create({
     baseURL: splendorApiUrl,

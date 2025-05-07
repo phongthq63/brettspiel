@@ -3,6 +3,7 @@ package com.brettspiel.boardgameguide.game.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * Created by Quach Thanh Phong
@@ -13,16 +14,20 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("game_rule")
 public class GameRule extends BaseMongodbEntity {
 
+    @Field("rule_id")
     private String ruleId;
 
+    @Field("game_id")
     private String gameId;
 
     private String name;
 
     private String language;
 
+    @Field("image_icon_url")
     private String imageIconUrl;
 
+    @Field("document_url")
     private String documentUrl;
 
 }

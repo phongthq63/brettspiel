@@ -2,11 +2,11 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Button, Chip } from "@heroui/react";
-import { AccessTime, ArrowForwardOutlined, PeopleAltOutlined } from "@mui/icons-material";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {useEffect, useState} from "react";
 import {FeaturedGameDTO, WelcomeService} from "@/service/game.service";
+import {ArrowRight, Clock, Users} from "lucide-react";
 
 export default function FeaturedGameSection() {
     const router = useRouter();
@@ -55,7 +55,7 @@ export default function FeaturedGameSection() {
                         aria-label="See all featured games"
                     >
                         {t("section.featuredBoardgames.seeAll")}
-                        <ArrowForwardOutlined className="text-blue-500" />
+                        <ArrowRight color="text-blue-500" />
                     </motion.a>
                 </header>
 
@@ -152,7 +152,7 @@ function GameCard({ title, description, image, minPlayTime, maxPlayTime, minPlay
                 <CardFooter className="flex flex-col">
                     <div className="w-full flex justify-between text-sm text-gray-500 mb-6">
                         <div className="flex items-center gap-1">
-                            <AccessTime/>
+                            <Clock />
                             <span>
                                 {minPlayers === maxPlayers
                                     ? `${minPlayers} ${t('players')}`
@@ -161,7 +161,7 @@ function GameCard({ title, description, image, minPlayTime, maxPlayTime, minPlay
                             </span>
                         </div>
                         <div className="flex items-center gap-1">
-                            <PeopleAltOutlined/>
+                            <Users />
                             <span>
                                 {minPlayTime === maxPlayTime
                                     ? `${minPlayTime} ${t('minutes')}`

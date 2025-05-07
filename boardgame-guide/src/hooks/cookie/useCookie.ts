@@ -15,6 +15,7 @@ export const setItem = (key: string, value: string, numberOfDays: number) => {
     document.cookie = `${key}=${value};     expires=${now.toUTCString()}; path=/`
 }
 
+
 const useCookie = (key: string, defaultValue: string) => {
     const getCookie = () => getItem(key) || defaultValue
     const [cookie, setCookie] = useState(getCookie())

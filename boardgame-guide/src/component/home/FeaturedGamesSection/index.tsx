@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Chip, Skeleton } from "@heroui/react";
+import { Skeleton, Tab, Tabs } from "@heroui/react";
 import { FeaturedGameDTO, WelcomeService } from "@/service/game.service";
 import Carousel from "@/hoc/Carousel";
 import { GameCard } from "@/component/home/FeaturedGamesSection/GameCard";
 
-type Tag = "popular" | "hot" | "topRated";
+
+type Tag = "popular" | "hot" | "top_rated";
 
 export default function FeaturedGamesSection() {
     const { t } = useTranslation();
@@ -21,7 +22,7 @@ export default function FeaturedGamesSection() {
 
     useEffect(() => {
         setLoading(true);
-        WelcomeService.getListFeatureGame({ softBy: activeTag, size: 6 }) // Fetch more games for the slider
+        WelcomeService.getListFeatureGame({ softBy: activeTag, size: 6 })
             .then((response) => {
                 setFeaturedGames(response.data || []);
             })
@@ -37,43 +38,22 @@ export default function FeaturedGamesSection() {
         <section className="min-h-[500] rounded-3xl p-5">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <h2 className="text-3xl font-bold text-gray-800">{t("section.featuredGame.title")}</h2>
-                <div className="flex space-x-2">
-                    {/* Filter Chips */}
-                    <Chip
-                        className={`px-4 py-1 text-sm rounded-full cursor-pointer ${
-                            activeTag === "popular"
-                                ? "bg-blue-500 hover:bg-blue-600 text-white"
-                                : "bg-gray-200 text-gray-700 hover:bg-blue-500 hover:text-white"
-                        }`}
-                        onClick={() => handleTagChange("popular")}
-                    >
-                        {t("popular")}
-                    </Chip>
-                    <Chip
-                        className={`px-4 py-1 text-sm rounded-full cursor-pointer ${
-                            activeTag === "hot"
-                                ? "bg-orange-500 hover:bg-orange-600 text-white"
-                                : "bg-gray-200 text-gray-700 hover:bg-orange-500 hover:text-white"
-                        }`}
-                        onClick={() => handleTagChange("hot")}
-                    >
-                        {t("hot")}
-                    </Chip>
-                    <Chip
-                        className={`px-4 py-1 text-sm rounded-full cursor-pointer ${
-                            activeTag === "topRated"
-                                ? "bg-yellow-300 hover:bg-yellow-400 text-white"
-                                : "bg-gray-200 text-gray-700 hover:bg-yellow-300 hover:text-white"
-                        }`}
-                        onClick={() => handleTagChange("topRated")}
-                    >
-                        {t("topRated")}
-                    </Chip>
-                </div>
+                <Tabs
+                    classNames={{
+                        cursor: "bg-[#90e0ef]",
+                    }}
+                    variant="light"
+                    selectedKey={activeTag}
+                    onSelectionChange={(e) => handleTagChange(e.toString() as Tag)}
+                >
+                    <Tab key="popular" title={`⭐ ${t("popular")}`}></Tab>
+                    <Tab key="hot" title={`🔥 ${t("hot")}`}></Tab>
+                    <Tab key="topRated" title={`🏆 ${t("topRated")}`}></Tab>
+                </Tabs>
             </div>
 
             {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-10">
                     {/* Skeleton loaders */}
                     {Array.from({ length: 3 }).map((_, index) => (
                         <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -95,11 +75,13 @@ export default function FeaturedGamesSection() {
                 </div>
             ) : (
                 <Carousel
-                    classNames={{ container: "w-full", item: "w-[300px]" }}
+                    classNames={{
+                        item: "py-10"
+                    }}
                     breakpoints={{
                         640: { slidesPerView: 1, spaceBetween: 16 },
                         768: { slidesPerView: 2, spaceBetween: 16 },
-                        1024: { slidesPerView: 3, spaceBetween: 24 },
+                        1024: { slidesPerView: 4, spaceBetween: 24 },
                     }}
                 >
                     {featuredGames.map((game) => (
@@ -109,9 +91,6 @@ export default function FeaturedGamesSection() {
                             title={game.title ?? ""}
                             description={game.description ?? ""}
                             image_url={game.image_url ?? ""}
-                            hot={game.hot}
-                            popular={game.popular}
-                            top_rated={game.top_rated}
                             genres={game.genres?.map((genre) => genre.name ?? "")}
                             min_players={game.min_players ?? 1}
                             max_players={game.max_players ?? 1}

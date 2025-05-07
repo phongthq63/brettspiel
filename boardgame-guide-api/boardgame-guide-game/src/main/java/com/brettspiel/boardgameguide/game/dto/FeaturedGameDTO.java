@@ -41,13 +41,4 @@ public class FeaturedGameDTO extends BaseDTO {
 
     private List<GenreDTO> genres;
 
-    @Schema(description = "Độ phổ biến của game", example = "true")
-    private Boolean popular;
-
-    @Schema(description = "Game hot", example = "false")
-    private Boolean hot;
-
-    @Schema(description = "Game được đánh giá cao", example = "true")
-    private Boolean topRated;
-
 }

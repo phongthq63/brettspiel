@@ -25,3 +25,8 @@ export const decodeJWT = (token: string) => {
 
     return JSON.parse(jsonPayload); // Parse JSON string to object
 }
+
+export const getRandomColor = () => {
+    const randomValue = () => Math.floor(Math.random() * 256);
+    return `rgb(${randomValue()}, ${randomValue()}, ${randomValue()})`;
+}

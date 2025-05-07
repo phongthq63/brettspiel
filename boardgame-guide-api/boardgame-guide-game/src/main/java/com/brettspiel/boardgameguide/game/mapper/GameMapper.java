@@ -16,9 +16,6 @@ import org.mapstruct.Mapping;
 public interface GameMapper {
 
     @Mapping(target = "id", source = "gameId")
-    @Mapping(target = "popular", constant = "true")
-    @Mapping(target = "hot", constant = "true")
-    @Mapping(target = "topRated", constant = "false")
     FeaturedGameDTO toFeaturedGameDTO(FeaturedGame featuredGame);
 
     @Mapping(target = "id", source = "gameId")

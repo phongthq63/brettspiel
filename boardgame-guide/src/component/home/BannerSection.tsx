@@ -48,7 +48,7 @@ const BannerSection = () => {
     }
 
     return (
-        <section className="relative h-[600px] md:h-[700px] mb-60 overflow-hidden">
+        <section className="relative h-[500px] md:h-[700px] mb-60 overflow-hidden">
             <div className="absolute w-full h-full">
                 {currentBanner?.image_url && (
                     <AnimatePresence>
@@ -131,13 +131,13 @@ const BannerSection = () => {
                     {currentBanner && (
                         <div className="flex justify-end w-full gap-4">
                             <Button
-                                className="bg-cyan-600 font-semibold text-white shadow-md"
+                                className="bg-[#0077B6] font-semibold text-white shadow-md"
                                 onPress={() => onClickTutorial(currentBanner?.game_tutorial_url ?? "/")}
                             >
                                 {t("tutorial")}
                             </Button>
                             <Button
-                                className="bg-[rgba(110,123,251,1)] font-semibold text-white shadow-md"
+                                className="bg-[#03045E] font-semibold text-white shadow-md"
                                 onPress={() => onClickPlayNow(currentBanner?.game_play_url ?? "/")}
                             >
                                 {t("playNow")}

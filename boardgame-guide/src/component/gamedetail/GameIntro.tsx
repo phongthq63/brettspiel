@@ -1,27 +1,23 @@
-import {ArrowDropDownRounded, StarBorderRounded, StarRateRounded} from "@mui/icons-material";
-import {useState, useEffect, useRef} from "react";
-import {Button, Tooltip} from "@heroui/react";
-import Image from "next/image";
+"use client";
+
+import React, {useState, useEffect, useRef} from "react";
+import {Button, Progress, Tooltip} from "@heroui/react";
+import {Castle, Dice6, Puzzle, RefreshCcw, Star} from "lucide-react";
 
 interface GameIntroProps {
     name: string;
     description: string;
     isFavorite?: boolean;
-    rules: {
-        name: string;
-        language: string;
-        image_icon_url: string;
-        document_url: string;
-    }[]
+    complexity?: number;
+    strategy?: number;
+    luck?: number;
+    interaction?: number;
 }
 
-export default function GameIntro({ name, description, isFavorite, rules }: GameIntroProps) {
+export default function GameIntro({ name, description, isFavorite, complexity, strategy, luck, interaction }: GameIntroProps) {
     const [isFavoriteGame, setIsFavoriteGame] = useState<boolean>(isFavorite ?? false);
     const [isFullIntroGame, setIsFullIntroGame] = useState<boolean>(true);
-    const [isFullRules, setIsFullRules] = useState<boolean>(true);
     const introRef = useRef<HTMLDivElement>(null);
-    const sizeVisibleRules = 3
-    const visibleRules = isFullRules ? rules : rules.slice(0, sizeVisibleRules);
 
 
     useEffect(() => {
@@ -33,7 +29,7 @@ export default function GameIntro({ name, description, isFavorite, rules }: Game
     }, []);
 
     return (
-        <div className="flex flex-col gap-10 p-8">
+        <div className="flex flex-col gap-10">
             <div>
                 <div className="flex justify-between mb-6">
                     <h1 className="text-3xl md:text-4xl font-bold">{name}</h1>
@@ -44,7 +40,7 @@ export default function GameIntro({ name, description, isFavorite, rules }: Game
                                 isIconOnly
                                 onPress={() => setIsFavoriteGame(false)}
                             >
-                                <StarRateRounded className="text-yellow-300" fontSize="large" />
+                                <Star size="26px" className="text-yellow-300 fill-current" />
                             </Button>
 
                         </Tooltip>
@@ -55,16 +51,13 @@ export default function GameIntro({ name, description, isFavorite, rules }: Game
                                 isIconOnly
                                 onPress={() => setIsFavoriteGame(true)}
                             >
-                                <StarBorderRounded fontSize="large" />
+                                <Star size="26px" className="text-yellow-300"/>
                             </Button>
                         </Tooltip>
                     )}
                 </div>
                 <div className="mb-4">
-                    <p
-                        ref={introRef}
-                        className={`font-medium ${!isFullIntroGame ? 'line-clamp-5' : ''}`}
-                    >
+                    <p ref={introRef} className={`font-medium ${!isFullIntroGame ? 'line-clamp-5' : ''}`}>
                         {description}
                     </p>
                 </div>
@@ -74,46 +67,54 @@ export default function GameIntro({ name, description, isFavorite, rules }: Game
                             onClick={() => setIsFullIntroGame(true)}
                         >
                             Read more
-                            <ArrowDropDownRounded/>
                         </h3>
                     </div>
                 )}
             </div>
             <div>
-                <div className="mb-3">
-                    <h1 className="text-xl md:text-2xl font-bold">Rules</h1>
-                </div>
-                <div className="flex flex-col mb-4">
-                    {visibleRules.map((rule, index) => (
-                        <div key={index}
-                             className="flex gap-2">
-                            <Image
-                                src={rule.image_icon_url}
-                                alt={rule.name}
-                                width={24}
-                                height={24}
-                            />
-                            <Tooltip
-                                placement="top-start"
-                                content={rule.language}
-                            >
-                                <p className="w-fit font-medium text-blue-500 hover:underline cursor-pointer">
-                                    {rule.name}
-                                </p>
-                            </Tooltip>
+                <p className="text-sm font-semibold">Ratings</p>
+                <div>
+                    <div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-500">Complexity</span>
+                            <span className="text-xs font-medium">{complexity ?? 0}/5</span>
                         </div>
-                    ))}
-                </div>
-                {sizeVisibleRules < rules.length && !isFullRules && (
-                    <div className="flex justify-end">
-                        <h3 className="text-sm text-blue-600 hover:text-blue-800 hover:underline focus:outline-none cursor-pointer"
-                            onClick={() => setIsFullRules(true)}
-                        >
-                            Show more
-                            <ArrowDropDownRounded/>
-                        </h3>
+                        <div className="flex items-center gap-3 text-red-500">
+                            <Puzzle size="16px" />
+                            <Progress size="sm" value={((complexity ?? 0) / 5) * 100}/>
+                        </div>
                     </div>
-                )}
+                    <div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-500">Strategy</span>
+                            <span className="text-xs font-medium">{strategy ?? 0}/5</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-blue-500">
+                            <Castle size="16px" />
+                            <Progress size="sm" value={((strategy ?? 0) / 5) * 100}/>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-500">Luck</span>
+                            <span className="text-xs font-medium">{luck ?? 0}/5</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <Dice6 size="16px" />
+                            <Progress size="sm" value={((luck ?? 0) / 5) * 100}/>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-500">Interaction</span>
+                            <span className="text-xs font-medium">{interaction ?? 0}/5</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-green-500">
+                            <RefreshCcw size="16px" />
+                            <Progress size="sm" value={((interaction ?? 0) / 5) * 100}/>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )

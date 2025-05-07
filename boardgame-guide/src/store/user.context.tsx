@@ -1,7 +1,7 @@
 "use client"
 
 import React, {createContext, useContext, useEffect, useState} from "react";
-import {getItem} from "@/hooks/useCookie";
+import {getItem} from "@/hooks/cookie/useCookie";
 import {decodeJWT} from "@/utils";
 
 const UserContext = createContext<{

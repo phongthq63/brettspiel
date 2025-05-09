@@ -11,7 +11,12 @@ export const instanceGame = axios.create({
 instanceGame.interceptors.request.use(
     (config) => {
         const customHeaders: Record<string, string> = {}
-        // const token = getItem('access-token')
+        // let token;
+        // if (typeof window !== 'undefined') {
+        //     token = getItem('access-token')
+        // } else {
+        //
+        // }
         // if (token && config.headers?.Authorization !== 'no-auth') {
         //     customHeaders['Authorization'] = `Bearer ${token}`
         // }

@@ -1,7 +1,7 @@
 import {motion} from "framer-motion";
 import {useTranslation} from "react-i18next";
 import Image from "next/image";
-import {Globe, LaptopMinimal, PcCase, Smartphone, Tablet} from "lucide-react";
+import {Globe, LaptopMinimal, Smartphone, Tablet} from "lucide-react";
 
 export default function FeaturesSection() {
     const { t } = useTranslation()

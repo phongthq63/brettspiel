@@ -8,16 +8,14 @@ const UserContext = createContext<{
     user: User | undefined
 } | undefined>(undefined);
 
-export class User {
-    user_id: string;
-
-    constructor(user_id: string) {
-        this.user_id = user_id;
-    }
+export interface User {
+    id: string;
+    name: string;
+    avatarUrl?: string;
 }
 
 export const UserProvider = ({children}: any) => {
-    const [user, setUser] = useState<User>();
+    const [user, setUser] = useState<User>({id: "test", name: "Quách Thanh Phong", avatarUrl: "/test.jpg"});
 
 
     useEffect(() => {
@@ -33,7 +31,7 @@ export const UserProvider = ({children}: any) => {
             return;
         }
 
-        setUser({user_id: jwtData.sub})
+        setUser({id: jwtData.sub, name: "Quách Thanh Phong"});
     }, [])
 
     return (

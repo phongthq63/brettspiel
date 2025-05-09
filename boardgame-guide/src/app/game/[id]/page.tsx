@@ -3,7 +3,7 @@ import Header from "@/component/layout/Header";
 import Footer from "@/component/layout/Footer";
 import {GameService} from "@/service/game.service";
 import {notFound} from "next/navigation";
-import GameDetail from "@/component/game-detail/GameDetail";
+import {GameDetail} from "@/component/game-detail";
 
 
 export default async function Page({ params } : { params: Promise<{ id: string }>}) {

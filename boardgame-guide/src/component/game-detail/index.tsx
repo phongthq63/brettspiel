@@ -6,27 +6,31 @@ import GameRule from "@/component/game-detail/GameRule";
 import GameCredits from "@/component/game-detail/GameCredits";
 import GameLinks from "@/component/game-detail/GameLinks";
 import Image from "next/image";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import {GameDetailDTO} from "@/service/game.service";
 import {useRouter} from "next/navigation";
 import {useTranslation} from "react-i18next";
 import {Button, Chip} from "@heroui/react";
 import {getRandomColor} from "@/utils";
-import {Baby, Clock, Users} from "lucide-react";
+import {Baby, Clock, Users, X} from "lucide-react";
 import {ImageGallery} from "@/component/ui/ImageGallery";
+import GamePlay from "@/component/game-detail/GamePlay";
+import {AnimatePresence, motion} from "framer-motion";
+import {Card, CardBody, CardHeader} from "@heroui/card";
 
 interface GameDetailProps {
     data: GameDetailDTO
 }
 
-export default function GameDetail({data}: GameDetailProps) {
+export function GameDetail({data}: GameDetailProps) {
     const router = useRouter();
     const { t } = useTranslation();
     const [genreChips, setGenreChips] = useState<{
         name: string;
         color: string;
     }[]>([]);
-
+    const [showGamePlay, setShowGamePlay] = useState(false);
+    const gamePlayRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setGenreChips(data.genres?.map((genre) => ({
@@ -45,8 +49,22 @@ export default function GameDetail({data}: GameDetailProps) {
 
 
     const handleClickPlayNow = () => {
-
+        setShowGamePlay(true);
+        setTimeout(() => {
+            if (gamePlayRef.current) {
+                const top = gamePlayRef.current.getBoundingClientRect().top + window.scrollY;
+                window.scrollTo({
+                    top: top - 100,
+                    behavior: "smooth",
+                });
+            }
+        }, 300);
     };
+
+    const handleClosePlayNow = () => {
+        setShowGamePlay(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     const handleClickTutorial = () => {
         router.push(data.tutorial_url || "/404");
@@ -54,7 +72,8 @@ export default function GameDetail({data}: GameDetailProps) {
     
     return (
         <>
-            <div className="relative h-[600px] md:h-[500px] shadow">
+            {/* Game Banner */}
+            <div className="relative h-[600px] md:h-[500px] shadow z-10">
                 <div className="absolute w-full h-full">
                     <div className="relative w-full h-full bg-gray-300">
                         <Image src={data.image_banner_url ?? ""}
@@ -82,6 +101,7 @@ export default function GameDetail({data}: GameDetailProps) {
                                         key={index}
                                         style={{backgroundColor: genreChip.color}}
                                         classNames={{
+                                            base: "shadow-md",
                                             content: "text-white font-semibold text-xs",
                                         }}
                                         radius="sm"
@@ -125,7 +145,7 @@ export default function GameDetail({data}: GameDetailProps) {
                         </div>
                     </div>
                     <div
-                        className="col-span-6 lg:col-span-2 row-span-2 col-start-1 lg:col-start-5 row-start-6 flex items-center gap-6 p-4 lg:p-0">
+                        className="col-span-6 lg:col-span-2 row-span-2 col-start-1 lg:col-start-5 row-start-6 flex justify-center lg:justify-start items-center gap-6 p-4 lg:p-0">
                         <Button
                             className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-border text-white w-52 h-16 text-2xl font-semibold uppercase shadow-lg"
                             onPress={handleClickPlayNow}
@@ -142,6 +162,46 @@ export default function GameDetail({data}: GameDetailProps) {
                 </div>
             </div>
 
+            {/* Game Play */}
+            <div className="overflow-hidden transition-all duration-500">
+                <AnimatePresence>
+                    {showGamePlay && (
+                        <motion.div
+                            initial={{y: -100}}
+                            animate={{y: 0}}
+                            exit={{y: "-100%"}}
+                            transition={{duration: 0.5, ease: "easeOut"}}
+                            className="relative bg-[#0077b6] pt-10 px-2 pb-20 z-0"
+                        >
+                            <Card>
+                                <CardHeader className="justify-end">
+                                    <Button
+                                        className="bg-transparent"
+                                        radius="full"
+                                        isIconOnly
+                                        onPress={handleClosePlayNow}
+                                    >
+                                        <X/>
+                                    </Button>
+                                </CardHeader>
+                                <CardBody>
+                                    <GamePlay
+                                        ref={gamePlayRef}
+                                        rules={data.rules?.map((rule) => ({
+                                            name: rule.name ?? "",
+                                            language: rule.language ?? "",
+                                            image_icon_url: rule.image_icon_url ?? "",
+                                            document_url: rule.document_url ?? "",
+                                        })) ?? []}
+                                    />
+                                </CardBody>
+                            </Card>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            {/* Game Info */}
             <div className="flex flex-col lg:flex-row mt-8 mb-60">
                 <div className="w-full lg:w-3/12 flex flex-col gap-8 px-4 mt-10 mb-20">
                     <GameCredits

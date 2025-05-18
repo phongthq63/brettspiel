@@ -79,7 +79,7 @@ export function GameFilter({filters, onFilterChange, playerOptions, playTimeOpti
     return playerOptions.length <= 0 && playTimeOptions.length <= 0 && genreOptions.length <= 0 ? (
         <></>
     ) : (
-        <div className="bg-[rgba(156,252,248,0.3)] p-4 rounded-l-xl rounded-br-xl">
+        <div className="bg-[rgba(156,252,248,0.3)] p-4 rounded-b-xl">
             <div>
                 {/* Player Count Filter */}
                 {playerOptions.length > 0 && (

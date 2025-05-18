@@ -1,9 +1,11 @@
 import React from "react";
 import Header from "@/component/layout/Header";
 import Footer from "@/component/layout/Footer";
-import {GameService} from "@/service/game.service";
+import {GameService} from "@/service/server/game.service";
 import {notFound} from "next/navigation";
 import {GameDetail} from "@/component/game-detail";
+import {GameSetupProvider} from "@/store/game-setup/game-setup.context";
+import {GameDetailProvider} from "@/store/game-detail.context";
 
 
 export default async function Page({ params } : { params: Promise<{ id: string }>}) {
@@ -26,7 +28,11 @@ export default async function Page({ params } : { params: Promise<{ id: string }
         <div id="root" className="min-h-screen flex flex-col justify-between">
             <Header/>
             <main>
-                <GameDetail data={gameData} />
+                <GameDetailProvider data={gameData}>
+                    <GameSetupProvider>
+                        <GameDetail />
+                    </GameSetupProvider>
+                </GameDetailProvider>
             </main>
             <Footer/>
         </div>

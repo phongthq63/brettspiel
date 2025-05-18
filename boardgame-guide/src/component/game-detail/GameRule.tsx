@@ -1,22 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import {Tooltip} from "@heroui/react";
-import React, {useState} from "react";
+import { Tooltip } from "@heroui/react";
+import React, { useState } from "react";
+import { useGameDetail } from "@/store/game-detail.context";
 
-
-interface GameRuleProps {
-    rules: {
-        name: string;
-        language: string;
-        image_icon_url: string;
-        document_url: string;
-    }[]
-}
-
-export default function GameRule({rules}: GameRuleProps) {
+export function GameRule() {
+    const { data } = useGameDetail();
     const [isFullRules, setIsFullRules] = useState<boolean>(true);
-    const sizeVisibleRules = 3
+    const sizeVisibleRules = 3;
+
+    const rules = data?.rules ?? [];
     const visibleRules = isFullRules ? rules : rules.slice(0, sizeVisibleRules);
 
     return (
@@ -26,17 +20,16 @@ export default function GameRule({rules}: GameRuleProps) {
                 {visibleRules.map((rule, index) => (
                     <div key={index} className="flex items-center gap-2">
                         <div className="relative w-6 h-4">
-                            <Image
-                                src={rule.image_icon_url}
-                                alt={rule.name}
-                                fill
-                                sizes="100%"
-                            />
+                            {rule.language_icon_url && (
+                                <Image
+                                    src={rule.language_icon_url}
+                                    alt={"Language Icon"}
+                                    fill
+                                    sizes="100%"
+                                />
+                            )}
                         </div>
-                        <Tooltip
-                            placement="top-start"
-                            content={rule.language}
-                        >
+                        <Tooltip placement="top-start" content={rule.language}>
                             <p className="w-fit text-sm text-blue-500 cursor-pointer">
                                 {rule.name}
                             </p>

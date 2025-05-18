@@ -97,7 +97,7 @@ export function GameCard({title, description, imageUrl, imageBoxUrl, isHot, isPo
                                         </span>
                                     </div>
                                 </div>
-                                <p className="text-sm text-gray-600 mb-3">{description}</p>
+                                <p className="text-sm text-gray-600 line-clamp-3 mb-3">{description}</p>
                                 <div className="flex flex-wrap gap-2 mb-3">
                                     {genres.map((genre, index) => (
                                         <Chip

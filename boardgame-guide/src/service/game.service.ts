@@ -31,6 +31,7 @@ export async function axios(configs: IRequestConfig, resolve: (p: any) => void, 
 }
 
 
+
 export class WelcomeService {
     /**
      * Lấy thống kê
@@ -76,6 +77,44 @@ export class HomeService {
             const url = basePath + '/home/banner';
 
             const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+            axios(configs, resolve, reject);
+        });
+    }
+}
+
+export class UserService {
+    /**
+     * Lấy thông tin người dùng
+     */
+    static getMe(options: IRequestOptions = {}): Promise<RUserDTO> {
+        return new Promise((resolve, reject) => {
+            const url = basePath + '/user/me';
+
+            const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+            axios(configs, resolve, reject);
+        });
+    }
+}
+
+export class PlayService {
+    /**
+     *
+     */
+    static startPlay(
+        params: {
+            /** requestBody */
+            body?: StartPlayRequest;
+        } = {} as any,
+        options: IRequestOptions = {}
+    ): Promise<RObject> {
+        return new Promise((resolve, reject) => {
+            const url = basePath + '/play';
+
+            const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+            configs.data = params.body;
 
             axios(configs, resolve, reject);
         });
@@ -164,25 +203,6 @@ export class GameService {
                 page: params['page'],
                 size: params['size']
             };
-
-            axios(configs, resolve, reject);
-        });
-    }
-    /**
-     * Lấy thông tin trò chơi
-     */
-    static getGameInfo(
-        params: {
-            /**  */
-            gameId: string;
-        } = {} as any,
-        options: IRequestOptions = {}
-    ): Promise<RGameDetailDTO> {
-        return new Promise((resolve, reject) => {
-            let url = basePath + '/game/{gameId}';
-            url = url.replace('{gameId}', params['gameId'] + '');
-
-            const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
             axios(configs, resolve, reject);
         });
@@ -286,6 +306,31 @@ export interface RGetStatisticsWelcomeResponse {
     ts?: string;
 }
 
+export interface RUserDTO {
+    /**  */
+    code?: number;
+
+    /**  */
+    msg?: string;
+
+    /**  */
+    data?: UserDTO;
+
+    /**  */
+    ts?: string;
+}
+
+export interface UserDTO {
+    /** Id */
+    id?: string;
+
+    /** Tên hiển thị */
+    name?: string;
+
+    /** URL ảnh đại diện */
+    avatar_url?: string;
+}
+
 export interface FeaturedGameDTO {
     /** ID của game */
     id?: string;
@@ -378,6 +423,8 @@ export interface GameDTO {
     /** Mã định danh duy nhất của trò chơi */
     id?: string;
 
+    type?: string;
+
     /** URL hình ảnh của trò chơi */
     image_url?: string;
 
@@ -452,104 +499,6 @@ export interface RPageDTOGameDTO {
     ts?: string;
 }
 
-export interface GameDetailDTO extends GameDTO {
-    /** URL huớng dẫn chơi trò chơi */
-    tutorial_url?: string
-
-    /** URL hình ảnh tên trò chơi */
-    image_name_url?: string
-
-    /** URL hình ảnh banner của trò chơi */
-    image_banner_url?: string;
-
-    /** Danh sách nhà thiết kế của trò chơi */
-    designers?: string[];
-
-    /** Danh sách nhà phát triển của trò chơi */
-    artists?: string[];
-
-    /** Danh sách nhà xuất bản của trò chơi */
-    publishers?: string[];
-
-    /** Năm phát hành của trò chơi */
-    year?: number;
-
-    /** Số lượng trò chơi đã được chơi */
-    games_played?: number;
-
-    /** Độ phức tạp của trò chơi */
-    complexity?: number;
-
-    /** Chỉ số chiến lược của trò chơi */
-    strategy?: number;
-
-    /** Chỉ số may mắn của trò chơi */
-    luck?: number;
-
-    /** Chỉ số tương tác của trò chơi */
-    interaction?:number;
-
-    /** Danh sách luật chơi của trò chơi */
-    rules?: GameRuleDTO[];
-
-    /** Danh sách video của trò chơi */
-    videos?: GameVideoDTO[];
-}
-
-export interface GameRuleDTO {
-    /** Mã định danh duy nhất của luật chơi */
-    id?: string;
-
-    /** Mã của trò chơi mà luật này thuộc về */
-    game_id?: string;
-
-    /** Tên của luật chơi */
-    name?: string;
-
-    /** Ngôn ngữ của luật chơi */
-    language?: string;
-
-    /** URL đến biểu tượng hình ảnh đại diện cho luật */
-    image_icon_url?: string;
-
-    /** URL đến tài liệu chứa chi tiết về luật chơi */
-    document_url?: string;
-}
-
-export interface GameVideoDTO {
-    /** Mã định danh duy nhất của video */
-    id?: string;
-
-    /** Mã của trò chơi mà video này thuộc về */
-    game_id?: string;
-
-    /** Tiêu đề của video */
-    title?: string;
-
-    /** Nền tảng của video (ví dụ: YouTube, Vimeo) */
-    platform?: string;
-
-    /** URL đến hình ảnh thu nhỏ của video */
-    thumbnail_url?: string;
-
-    /** URL đến source của video */
-    url?: string;
-}
-
-export interface RGameDetailDTO {
-    /**  */
-    code?: number;
-
-    /**  */
-    msg?: string;
-
-    /**  */
-    data?: GameDetailDTO;
-
-    /**  */
-    ts?: string;
-}
-
 export interface GamePlayTimeDTO {
     /** Mã định danh duy nhất của thời gian chơi */
     id?: string;
@@ -589,4 +538,29 @@ export interface RGetFilterGameResponse {
 
     /**  */
     ts?: string;
+}
+
+export interface PlayerInfo {
+    /** Unique identifier for the player */
+    id?: string;
+
+    /** Name of the player */
+    name?: string;
+
+    /** Indicates if this player is the local player */
+    local_player?: string;
+
+    /**  */
+    bot?: boolean;
+}
+
+export interface StartPlayRequest {
+    /** Id game */
+    game_id?: string;
+
+    /** List of players participating in the game */
+    players?: PlayerInfo[];
+
+    /** Configuration setup for starting the game */
+    setup?: object;
 }

@@ -1,41 +1,52 @@
 "use client"
 
 import React, {createContext, useContext, useEffect, useState} from "react";
-import {getItem} from "@/hooks/cookie/useCookie";
-import {decodeJWT} from "@/utils";
+import {generateUUID} from "@/utils";
+import {UserService} from "@/service/game.service";
 
 const UserContext = createContext<{
-    user: User | undefined
+    user: User | null
+    reload: () => void
 } | undefined>(undefined);
 
 export interface User {
     id: string;
+    tagName: string;
     name: string;
     avatarUrl?: string;
 }
 
 export const UserProvider = ({children}: any) => {
-    const [user, setUser] = useState<User>({id: "test", name: "Quách Thanh Phong", avatarUrl: "/test.jpg"});
+    const [id, setId] = useState('')
+    const [user, setUser] = useState<User | null>(null);
 
 
     useEffect(() => {
-        const token = getItem('access-token')
-        // const userId = getItem('user-id')
-        if (!token) {
-            return;
-        }
+        UserService
+            .getMe()
+            .then(response => {
+                if (response.code == 0 && response.data) {
+                    setUser({
+                        id: response.data.id ?? 'id',
+                        tagName: `@${response.data.id}`,
+                        name: response.data.name ?? '',
+                        avatarUrl: response.data.avatar_url
+                    })
+                } else {
+                    setUser(null)
+                }
+            })
+            .catch(() => {
+                setUser(null)
+            });
+    }, [id])
 
-        // Test
-        const jwtData = decodeJWT(token);
-        if (!jwtData) {
-            return;
-        }
-
-        setUser({id: jwtData.sub, name: "Quách Thanh Phong"});
-    }, [])
+    const reload = () => {
+        setId(generateUUID())
+    }
 
     return (
-        <UserContext.Provider value={{ user }}>
+        <UserContext.Provider value={{ user, reload }}>
             {children}
         </UserContext.Provider>
     )

@@ -50,6 +50,9 @@ service:
 jwt:
   secret: ThisIsSecretKey
 
+allow:
+  origins: ${ALLOW_ORIGINS:http://localhost:3000}
+
 
 sentry:
   dsn: ${SENTRY_DSN:}

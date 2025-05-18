@@ -6,7 +6,7 @@ import HeroSection from "@/component/welcome/HeroSection";
 import FeaturesSection from "@/component/welcome/FeaturesSection";
 import ContactSection from "@/component/welcome/ContactSection";
 import Footer from "@/component/layout/Footer";
-import FeaturedGameSection from "@/component/welcome/FeaturedGameSection";
+import FeaturedSection from "@/component/welcome/FeaturedSection";
 import StatisticsSection from "@/component/welcome/StatisticsSection";
 
 
@@ -29,7 +29,7 @@ export default function Page() {
             <main role="main">
                 <HeroSection />
                 <FeaturesSection />
-                <FeaturedGameSection />
+                <FeaturedSection />
                 <StatisticsSection />
                 <ContactSection />
             </main>

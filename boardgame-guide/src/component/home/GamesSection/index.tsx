@@ -57,7 +57,7 @@ export default function GamesSection() {
 
     useEffect(() => {
         fetchGames(page);
-    }, [sortBy, page]);
+    }, [sortBy, page, fetchGames]);
 
     const handlerSearch = () => {
         fetchGames(1);

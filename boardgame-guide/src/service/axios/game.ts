@@ -4,22 +4,17 @@ import {getItem} from "@/hooks/cookie/useCookie";
 
 export const instanceGame = axios.create({
     baseURL: apiUrl,
-    timeout: 100000,
-    withCredentials: false
+    timeout: 10000,
+    withCredentials: true
 })
 
 instanceGame.interceptors.request.use(
     (config) => {
         const customHeaders: Record<string, string> = {}
-        // let token;
-        // if (typeof window !== 'undefined') {
-        //     token = getItem('access-token')
-        // } else {
-        //
-        // }
-        // if (token && config.headers?.Authorization !== 'no-auth') {
-        //     customHeaders['Authorization'] = `Bearer ${token}`
-        // }
+        const token = getItem('access-token')
+        if (token && config.headers?.Authorization !== 'no-auth') {
+            customHeaders['Authorization'] = `Bearer ${token}`
+        }
 
         config.headers = Object.assign(config.headers, customHeaders)
         return config;

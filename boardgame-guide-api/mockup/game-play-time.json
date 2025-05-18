@@ -20,7 +20,7 @@
   {
     "play_time_id": "epic",
     "display": "Epic (2+ hours)",
-    "min_play_time": 240,
+    "min_play_time": 120,
     "max_play_time": null
   }
 ]

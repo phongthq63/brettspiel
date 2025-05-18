@@ -32,10 +32,13 @@ export function GameCard({
         <Card className="hover:transform hover:-translate-y-2 hover:shadow-xl">
             <CardBody className="p-0">
                 <div className="relative w-full h-48">
-                    <Image src={image_url}
-                           alt={title || "Game Image"}
-                           fill
-                           sizes={"100%"}
+                    <Image
+                        className="object-cover"
+                        src={image_url}
+                        alt={title || "Game Image"}
+                        fill
+                        sizes={"100%"}
+                        priority
                     />
                 </div>
                 <div className="p-4">
@@ -48,7 +51,7 @@ export function GameCard({
                             </span>
                         </div>
                     </div>
-                    <p className="text-sm text-gray-600 mb-3">{description}</p>
+                    <p className="text-sm text-gray-600 line-clamp-3 mb-3">{description}</p>
                     <div className="flex flex-wrap gap-2 mb-3">
                         {genres?.map((genre, index) => (
                             <Chip key={index} className="px-2 py-1 text-xs font-medium">

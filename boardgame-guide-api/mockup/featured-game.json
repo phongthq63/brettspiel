@@ -1,172 +1,19 @@
 [
   {
-    "game_id": "game123",
-    "title": "Catan",
-    "description": "A strategy game where players collect resources and build settlements.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 60,
-    "max_play_time": 120,
-    "min_players": 3,
-    "max_players": 4,
-    "genres": [
-      { "genre_id": "genre001", "name": "Strategy" },
-      { "genre_id": "genre010", "name": "Economic" }
-    ],
-    "popular": 95,
-    "hot": 80,
-    "top_rated": 90
-  },
-  {
-    "game_id": "game456",
-    "title": "Ticket to Ride",
-    "description": "A railway-themed board game where players collect train cards to claim routes.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 30,
-    "max_play_time": 60,
-    "min_players": 2,
-    "max_players": 5,
-    "genres": [
-      { "genre_id": "genre001", "name": "Strategy" },
-      { "genre_id": "genre028", "name": "Exploration" }
-    ],
-    "popular": 85,
-    "hot": 75,
-    "top_rated": 88
-  },
-  {
-    "game_id": "game789",
-    "title": "Pandemic",
-    "description": "A cooperative game where players work together to stop global outbreaks.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 45,
-    "max_play_time": 60,
-    "min_players": 2,
-    "max_players": 4,
-    "genres": [
-      { "genre_id": "genre003", "name": "Cooperative" },
-      { "genre_id": "genre027", "name": "Survival" }
-    ],
-    "popular": 90,
-    "hot": 85,
-    "top_rated": 92
-  },
-  {
-    "game_id": "game101",
-    "title": "Carcassonne",
-    "description": "A tile-placement game where players build cities, roads, and farms.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 35,
-    "max_play_time": 45,
-    "min_players": 2,
-    "max_players": 5,
-    "genres": [
-      { "genre_id": "genre005", "name": "Tile Placement" },
-      { "genre_id": "genre012", "name": "Family Game" }
-    ],
-    "popular": 88,
-    "hot": 78,
-    "top_rated": 85
-  },
-  {
-    "game_id": "game102",
-    "title": "7 Wonders",
-    "description": "A card drafting game where players develop civilizations and build wonders.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 30,
-    "max_play_time": 45,
-    "min_players": 2,
-    "max_players": 7,
-    "genres": [
-      { "genre_id": "genre004", "name": "Deck Building" },
-      { "genre_id": "genre025", "name": "Set Collection" }
-    ],
-    "popular": 92,
-    "hot": 84,
-    "top_rated": 89
-  },
-  {
-    "game_id": "game103",
+    "game_id": "splendor",
     "title": "Splendor",
-    "description": "A game of chip-collecting and card development where players become Renaissance merchants.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
+    "description": "During the game, the players take gem and gold tokens. With these tokens, they purchase development cards,\nwhich are worth prestige points and/or bonuses. These bonuses allow players to purchase subsequent\ndevelopment cards for a lesser cost. When a player has enough bonuses, they immediately receive a visit\nfrom a noble (which is also worth prestige points).\nAs soon as a player reaches 15 prestige points, the current turn ends and the player\nwith the most prestige points is declared the winner",
+    "image_url": "/game/splendor/splendor-img.jpg",
     "min_play_time": 30,
-    "max_play_time": 45,
+    "max_play_time": 30,
     "min_players": 2,
     "max_players": 4,
     "genres": [
-      { "genre_id": "genre010", "name": "Economic" },
-      { "genre_id": "genre025", "name": "Set Collection" }
+      { "genre_id": "strategy", "name": "Strategy" },
+      { "genre_id": "card_drafting", "name": "Card Drafting" }
     ],
-    "popular": 87,
-    "hot": 79,
-    "top_rated": 86
-  },
-  {
-    "game_id": "game104",
-    "title": "Dominion",
-    "description": "A deck-building game where players compete to build the most efficient deck.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 30,
-    "max_play_time": 45,
-    "min_players": 2,
-    "max_players": 4,
-    "genres": [
-      { "genre_id": "genre004", "name": "Deck Building" },
-      { "genre_id": "genre001", "name": "Strategy" }
-    ],
-    "popular": 90,
-    "hot": 82,
-    "top_rated": 88
-  },
-  {
-    "game_id": "game105",
-    "title": "Azul",
-    "description": "A tile-drafting game where players decorate the walls of a royal palace.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 30,
-    "max_play_time": 45,
-    "min_players": 2,
-    "max_players": 4,
-    "genres": [
-      { "genre_id": "genre005", "name": "Tile Placement" },
-      { "genre_id": "genre009", "name": "Abstract" }
-    ],
-    "popular": 89,
-    "hot": 81,
-    "top_rated": 87
-  },
-  {
-    "game_id": "game106",
-    "title": "Terraforming Mars",
-    "description": "A strategy game where players compete to terraform the planet Mars.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 120,
-    "max_play_time": 180,
-    "min_players": 1,
-    "max_players": 5,
-    "genres": [
-      { "genre_id": "genre001", "name": "Strategy" },
-      { "genre_id": "genre014", "name": "Sci-Fi" }
-    ],
-    "popular": 94,
-    "hot": 88,
-    "top_rated": 93
-  },
-  {
-    "game_id": "game107",
-    "title": "Gloomhaven",
-    "description": "A cooperative campaign game with tactical combat and character progression.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 90,
-    "max_play_time": 150,
-    "min_players": 1,
-    "max_players": 4,
-    "genres": [
-      { "genre_id": "genre003", "name": "Cooperative" },
-      { "genre_id": "genre008", "name": "Role-Playing" }
-    ],
-    "popular": 96,
-    "hot": 90,
-    "top_rated": 95
+    "popular": 0,
+    "hot": 0,
+    "top_rated": 0
   }
 ]

@@ -1,427 +1,113 @@
 [
   {
-    "game_id": "game123",
-    "name": "Catan",
-    "title": "Catan",
-    "description": "A strategy game where players collect resources and build settlements.",
-    "image_url": "/news-banner-899_wide.jpg",
-    "image_box_url": "/en_280.png",
-    "image_name_url": "/en_2000.png",
-    "image_banner_url": "/news-banner-899_wide.jpg",
-    "min_play_time": 60,
-    "max_play_time": 120,
-    "min_players": 3,
-    "max_players": 4,
-    "genres": [
-      { "genre_id": "genre001", "name": "Strategy" },
-      { "genre_id": "genre010", "name": "Economic" }
-    ],
-    "popular": 95,
-    "hot": 80,
-    "top_rated": 90,
-    "play_url": "/game123",
-    "designers": ["Klaus Teuber"],
-    "artists": ["Franz Vohwinkel"],
-    "publishers": ["Kosmos", "Mayfair Games"],
-    "year": "1995",
-    "rules": [
-      {
-        "rule_id": "rule-001",
-        "game_id": "game123",
-        "name": "Basic Rules",
-        "language": "English",
-        "image_icon_url": "https://example.com/images/rule-basic.png",
-        "document_url": "https://example.com/docs/rule-basic.pdf"
-      },
-      {
-        "rule_id": "rule-002",
-        "game_id": "game123",
-        "name": "Advanced Rules",
-        "language": "Spanish",
-        "image_icon_url": "https://example.com/images/rule-advanced.png",
-        "document_url": "https://example.com/docs/rule-advanced.pdf"
-      }
-    ],
-    "videos": [
-      {
-        "video_id": "video-001",
-        "game_id": "game123",
-        "title": "Catan Gameplay Overview",
-        "platform": "YouTube",
-        "thumbnail_url": "https://example.com/images/video-thumbnail.png",
-        "url": "https://youtube.com/watch?v=example"
-      }
-    ],
-    "tutorial_url": "/tutorial/game123"
-  },
-  {
-    "game_id": "game456",
-    "name": "Ticket to Ride",
-    "title": "Ticket to Ride",
-    "description": "A railway-themed board game where players collect train cards to claim routes.",
-    "image_url": "/news-banner-904_wide.jpg",
-    "image_box_url": "/en_281.png",
-    "image_name_url": "/en_2000.png",
-    "image_banner_url": "/news-banner-904_wide.jpg",
-    "min_play_time": 30,
-    "max_play_time": 60,
-    "min_players": 2,
-    "max_players": 5,
-    "genres": [
-      { "genre_id": "genre001", "name": "Strategy" },
-      { "genre_id": "genre028", "name": "Exploration" }
-    ],
-    "popular": 85,
-    "hot": 75,
-    "top_rated": 88,
-    "play_url": "/game456",
-    "designers": ["Alan R. Moon"],
-    "artists": ["Julien Delval"],
-    "publishers": ["Days of Wonder"],
-    "year": "2004",
-    "rules": [
-      {
-        "rule_id": "rule-003",
-        "game_id": "game456",
-        "name": "Expansion Rules",
-        "language": "English",
-        "image_icon_url": "https://example.com/images/rule-expansion.png",
-        "document_url": "https://example.com/docs/rule-expansion.pdf"
-      }
-    ],
-    "videos": [
-      {
-        "video_id": "video-002",
-        "game_id": "game456",
-        "title": "Ticket to Ride Strategy Guide",
-        "platform": "YouTube",
-        "thumbnail_url": "https://example.com/images/video-thumbnail2.png",
-        "url": "https://youtube.com/watch?v=example2"
-      }
-    ],
-    "tutorial_url": "/tutorial/game456"
-  },
-  {
-    "game_id": "game789",
-    "name": "Pandemic",
-    "title": "Pandemic",
-    "description": "A cooperative game where players work together to stop global outbreaks.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "image_box_url": "/en_280.png",
-    "image_name_url": "/en_2000.png",
-    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 45,
-    "max_play_time": 60,
-    "min_players": 2,
-    "max_players": 4,
-    "genres": [
-      { "genre_id": "genre003", "name": "Cooperative" },
-      { "genre_id": "genre027", "name": "Survival" }
-    ],
-    "popular": 90,
-    "hot": 85,
-    "top_rated": 92,
-    "play_url": "/game789",
-    "designers": ["Alan R. Moon"],
-    "artists": ["Julien Delval"],
-    "publishers": ["Days of Wonder"],
-    "year": "2004",
-    "tutorial_url": "/tutorial/game789",
-    "rules": [
-      {
-        "rule_id": "rule-004",
-        "game_id": "game789",
-        "name": "Pandemic Rules",
-        "language": "English",
-        "image_icon_url": "https://example.com/images/rule-pandemic.png",
-        "document_url": "https://example.com/docs/rule-pandemic.pdf"
-      }
-    ],
-    "videos": [
-      {
-        "video_id": "video-003",
-        "game_id": "game789",
-        "title": "Pandemic Gameplay",
-        "platform": "YouTube",
-        "thumbnail_url": "https://example.com/images/video-thumbnail3.png",
-        "url": "https://youtube.com/watch?v=example3"
-      }
-    ]
-  },
-  {
-    "game_id": "game101",
-    "name": "Carcassonne",
-    "title": "Carcassonne",
-    "description": "A tile-placement game where players build cities, roads, and farms.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "image_box_url": "/en_281.png",
-    "image_name_url": "/en_2000.png",
-    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 35,
-    "max_play_time": 45,
-    "min_players": 2,
-    "max_players": 5,
-    "genres": [
-      { "genre_id": "genre005", "name": "Tile Placement" },
-      { "genre_id": "genre012", "name": "Family Game" }
-    ],
-    "popular": 88,
-    "hot": 78,
-    "top_rated": 85,
-    "play_url": "/game101",
-    "designers": ["Alan R. Moon"],
-    "artists": ["Julien Delval"],
-    "publishers": ["Days of Wonder"],
-    "year": "2004",
-    "tutorial_url": "/tutorial/game101",
-    "rules": [
-      {
-        "rule_id": "rule-005",
-        "game_id": "game101",
-        "name": "Carcassonne Rules",
-        "language": "English",
-        "image_icon_url": "https://example.com/images/rule-carcassonne.png",
-        "document_url": "https://example.com/docs/rule-carcassonne.pdf"
-      }
-    ],
-    "videos": [
-      {
-        "video_id": "video-004",
-        "game_id": "game101",
-        "title": "Carcassonne Strategy",
-        "platform": "YouTube",
-        "thumbnail_url": "https://example.com/images/video-thumbnail4.png",
-        "url": "https://youtube.com/watch?v=example4"
-      }
-    ]
-  },
-  {
-    "game_id": "game102",
-    "name": "7 Wonders",
-    "title": "7 Wonders",
-    "description": "A card drafting game where players develop civilizations and build wonders.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "image_box_url": "/en_280.png",
-    "image_name_url": "/en_2000.png",
-    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 30,
-    "max_play_time": 45,
-    "min_players": 2,
-    "max_players": 7,
-    "genres": [
-      { "genre_id": "genre004", "name": "Deck Building" },
-      { "genre_id": "genre025", "name": "Set Collection" }
-    ],
-    "popular": 92,
-    "hot": 84,
-    "top_rated": 89,
-    "play_url": "/game102",
-    "designers": ["Alan R. Moon"],
-    "artists": ["Julien Delval"],
-    "publishers": ["Days of Wonder"],
-    "year": "2004",
-    "tutorial_url": "/tutorial/game102",
-    "rules": [
-      {
-        "rule_id": "rule-006",
-        "game_id": "game102",
-        "name": "7 Wonders Rules",
-        "language": "English",
-        "image_icon_url": "https://example.com/images/rule-7wonders.png",
-        "document_url": "https://example.com/docs/rule-7wonders.pdf"
-      }
-    ],
-    "videos": [
-      {
-        "video_id": "video-005",
-        "game_id": "game102",
-        "title": "7 Wonders Gameplay",
-        "platform": "YouTube",
-        "thumbnail_url": "https://example.com/images/video-thumbnail5.png",
-        "url": "https://youtube.com/watch?v=example5"
-      }
-    ]
-  },
-  {
-    "game_id": "game103",
+    "game_id": "splendor",
+    "type": "base",
     "name": "Splendor",
     "title": "Splendor",
-    "description": "A game of chip-collecting and card development where players become Renaissance merchants.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "image_box_url": "/en_281.png",
-    "image_name_url": "/en_2000.png",
-    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
+    "description": "During the game, the players take gem and gold tokens. With these tokens, they purchase development cards,\nwhich are worth prestige points and/or bonuses. These bonuses allow players to purchase subsequent\ndevelopment cards for a lesser cost. When a player has enough bonuses, they immediately receive a visit\nfrom a noble (which is also worth prestige points).\nAs soon as a player reaches 15 prestige points, the current turn ends and the player\nwith the most prestige points is declared the winner",
+    "image_url": "/game/splendor/splendor-img.jpg",
+    "image_box_url": "/game/splendor/splendor-box.png",
+    "image_name_url": "/game/splendor/splendor-name.png",
+    "image_banner_url": "/game/splendor/splendor-banner.png",
+    "min_age": 10,
     "min_play_time": 30,
-    "max_play_time": 45,
+    "max_play_time": 30,
     "min_players": 2,
     "max_players": 4,
     "genres": [
-      { "genre_id": "genre010", "name": "Economic" },
-      { "genre_id": "genre025", "name": "Set Collection" }
+      { "genre_id": "strategy", "name": "Strategy" },
+      { "genre_id": "card_drafting", "name": "Card Drafting" }
     ],
-    "popular": 87,
-    "hot": 79,
-    "top_rated": 86,
-    "play_url": "/game103",
-    "designers": ["Alan R. Moon"],
-    "artists": ["Julien Delval"],
-    "publishers": ["Days of Wonder"],
-    "year": "2004",
-    "tutorial_url": "/tutorial/game103",
+    "popular": 0,
+    "hot": 0,
+    "top_rated": 0,
+    "play_url": "/game/splendor",
+    "designers": ["Marc André"],
+    "artists": ["Paul Vérité", "Pascal Quidault"],
+    "publishers": ["Space Cowboys"],
+    "year": "2014",
     "rules": [
       {
-        "rule_id": "rule-007",
-        "game_id": "game103",
-        "name": "Splendor Rules",
+        "rule_id": "680e0c43fb3e27a23db95102",
+        "game_id": "splendor",
+        "name": "Rules",
         "language": "English",
-        "image_icon_url": "https://example.com/images/rule-splendor.png",
-        "document_url": "https://example.com/docs/rule-splendor.pdf"
+        "language_icon_url": "/icon-england.png",
+        "document_url": "/game/splendor/splendor-rulebook.pdf"
       }
     ],
     "videos": [
       {
-        "video_id": "video-006",
-        "game_id": "game103",
-        "title": "Splendor Strategy",
+        "video_id": "rue8-jvbc9I",
+        "game_id": "splendor",
+        "title": "Splendor - How To Play",
         "platform": "YouTube",
-        "thumbnail_url": "https://example.com/images/video-thumbnail6.png",
-        "url": "https://youtube.com/watch?v=example6"
-      }
-    ]
-  },
-  {
-    "game_id": "game104",
-    "name": "Dominion",
-    "title": "Dominion",
-    "description": "A deck-building game where players compete to build the most efficient deck.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "image_box_url": "/en_280.png",
-    "image_name_url": "/en_2000.png",
-    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 30,
-    "max_play_time": 45,
-    "min_players": 2,
-    "max_players": 4,
-    "genres": [
-      { "genre_id": "genre004", "name": "Deck Building" },
-      { "genre_id": "genre001", "name": "Strategy" }
-    ],
-    "popular": 90,
-    "hot": 82,
-    "top_rated": 88,
-    "play_url": "/game104",
-    "designers": ["Alan R. Moon"],
-    "artists": ["Julien Delval"],
-    "publishers": ["Days of Wonder"],
-    "year": "2004",
-    "tutorial_url": "/tutorial/game104",
-    "rules": [
-      {
-        "rule_id": "rule-008",
-        "game_id": "game104",
-        "name": "Dominion Rules",
-        "language": "English",
-        "image_icon_url": "https://example.com/images/rule-dominion.png",
-        "document_url": "https://example.com/docs/rule-dominion.pdf"
+        "thumbnail_url": "https://img.youtube.com/vi/rue8-jvbc9I/0.jpg",
+        "url": "https://youtube.com/watch?v=rue8-jvbc9I"
       }
     ],
-    "videos": [
+    "links": [
       {
-        "video_id": "video-007",
-        "game_id": "game104",
-        "title": "Dominion Gameplay",
-        "platform": "YouTube",
-        "thumbnail_url": "https://example.com/images/video-thumbnail7.png",
-        "url": "https://youtube.com/watch?v=example7"
-      }
-    ]
-  },
-  {
-    "game_id": "game105",
-    "name": "Azul",
-    "title": "Azul",
-    "description": "A tile-drafting game where players decorate the walls of a royal palace.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "image_box_url": "/en_281.png",
-    "image_name_url": "/en_2000.png",
-    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 30,
-    "max_play_time": 45,
-    "min_players": 2,
-    "max_players": 4,
-    "genres": [
-      { "genre_id": "genre005", "name": "Tile Placement" },
-      { "genre_id": "genre009", "name": "Abstract" }
-    ],
-    "popular": 89,
-    "hot": 81,
-    "top_rated": 87,
-    "play_url": "/game105",
-    "designers": ["Alan R. Moon"],
-    "artists": ["Julien Delval"],
-    "publishers": ["Days of Wonder"],
-    "year": "2004",
-    "tutorial_url": "/tutorial/game105",
-    "rules": [
-      {
-        "rule_id": "rule-009",
-        "game_id": "game105",
-        "name": "Azul Rules",
-        "language": "English",
-        "image_icon_url": "https://example.com/images/rule-azul.png",
-        "document_url": "https://example.com/docs/rule-azul.pdf"
+        "link_id": "bgg",
+        "game_id": "splendor",
+        "name": "BoardGameGeek",
+        "icon_url": "/BGG.jpeg",
+        "url": "https://boardgamegeek.com/boardgame/148228/splendor"
       }
     ],
-    "videos": [
+    "tutorial_url": "/game/splendor/tutorial",
+    "expansions": [
       {
-        "video_id": "video-008",
-        "game_id": "game105",
-        "title": "Azul Strategy",
-        "platform": "YouTube",
-        "thumbnail_url": "https://example.com/images/video-thumbnail8.png",
-        "url": "https://youtube.com/watch?v=example8"
-      }
-    ]
-  },
-  {
-    "game_id": "game106",
-    "name": "Terraforming Mars",
-    "title": "Terraforming Mars",
-    "description": "A strategy game where players compete to terraform the planet Mars.",
-    "image_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "image_box_url": "/en_280.png",
-    "image_name_url": "/en_2000.png",
-    "image_banner_url": "/photo-1496449903678-68ddcb189a24.jpg",
-    "min_play_time": 120,
-    "max_play_time": 180,
-    "min_players": 1,
-    "max_players": 5,
-    "genres": [
-      { "genre_id": "genre001", "name": "Strategy" },
-      { "genre_id": "genre014", "name": "Sci-Fi" }
-    ],
-    "videos": [
-      {
-        "video_id": "video-009",
-        "game_id": "game106",
-        "title": "Terraforming Mars Gameplay",
-        "platform": "YouTube",
-        "thumbnail_url": "https://example.com/images/video-thumbnail9.png",
-        "url": "https://youtube.com/watch?v=example9"
-      }
-    ],
-    "tutorial_url": "/tutorial/game106",
-    "designers": ["Alan R. Moon"],
-    "publishers": ["Days of Wonder"],
-    "artists": ["Julien Delval"],
-    "rules": [
-      {
-        "rule_id": "rule-010",
-        "game_id": "game106",
-        "name": "Terraforming Mars Rules",
-        "language": "English",
-        "image_icon_url": "https://example.com/images/rule-terraforming.png",
-        "document_url": "https://example.com/docs/rule-terraforming.pdf"
+        "expansion_id": "splendor_cities",
+        "game_id": "splendor",
+        "name": "Cities of Splendor",
+        "title": "Splendor: Cities of Splendor",
+        "image_url": "/game/splendor/splendor-cities.png",
+        "image_box_url": "/game/splendor/splendor-cities-box.png",
+        "description": "Cities of Splendor is an expansion for Splendor that adds four new modules to the game. Each module can be played separately or combined with others. The modules are: \n- The Orient: Players can now buy cards from the Orient, which are worth more points and have different bonuses.\n- The Guilds: Players can now buy guild cards, which give them special abilities.\n- The Trade Routes: Players can now buy trade route cards, which give them bonuses for collecting certain types of cards.\n- The Cities: Players can now buy city cards, which give them bonuses for collecting certain types of cards.",
+        "min_players": 2,
+        "max_players": 4,
+        "rules": [
+          {
+            "rule_id": "681fa0f470e6d5c34fb9ce6e",
+            "game_id": "splendor",
+            "name": "Rules",
+            "language": "English",
+            "language_icon_url": "/icon-england.png",
+            "document_url": "/game/splendor/cities-of-splendor-rulebook.pdf"
+          }
+        ],
+        "setup": {
+          "setting": [
+            {
+              "id": "module",
+              "name": "Module",
+              "type": "selection",
+              "selection": [
+                {
+                  "id": "orient",
+                  "name": "The Orient",
+                  "description": "Players can now buy cards from the Orient, which are worth more points and have different bonuses."
+                },
+                {
+                  "id": "guilds",
+                  "name": "The Guilds",
+                  "description": "Players can now buy guild cards, which give them special abilities."
+                },
+                {
+                  "id": "trade_routes",
+                  "name": "The Trade Routes",
+                  "description": "Players can now buy trade route cards, which give them bonuses for collecting certain types of cards."
+                },
+                {
+                  "id": "cities",
+                  "name": "The Cities",
+                  "description": "Players can now buy city cards, which give them bonuses for collecting certain types of cards."
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   }

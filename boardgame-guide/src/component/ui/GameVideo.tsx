@@ -8,14 +8,23 @@ import {Button, Spinner} from "@heroui/react";
 import {CircleAlert, CirclePlay, X} from "lucide-react";
 
 
-export type Platform = "youtube" | "vimeo" | "iframe" | "local";
+export type Platform = "youtube" | "iframe" | "local";
+
+const thumbnailHandlers = {
+    youtube: (videoId: string) => {
+        return `https://img.youtube.com/vi/${videoId}/0.jpg`;
+    },
+    iframe: (_videoId: string, thumbnailUrl?: string) => {
+        return thumbnailUrl || "";
+    },
+    local: (_videoId: string, thumbnailUrl?: string) => {
+        return thumbnailUrl || "";
+    }
+}
 
 const videoHandlers = {
     youtube: (videoId: string) => {
         return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-    },
-    vimeo: (videoId: string) => {
-        return `https://player.vimeo.com/video/${videoId}?autoplay=1`;
     },
     iframe: (_videoId: string, videoUrl?: string) => {
         return videoUrl || "";
@@ -30,16 +39,17 @@ interface VideoCardProps {
     title?: string;
     videoId: string;
     platform: Platform;
-    thumbnail?: string;
+    thumbnailUrl?: string;
     videoUrl?: string;
 }
 
-const GameVideo = ({ id, title, videoId, platform, thumbnail, videoUrl }: VideoCardProps) => {
+const GameVideo = ({ id, title, videoId, platform, thumbnailUrl, videoUrl }: VideoCardProps) => {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const [imageError, setImageError] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const videoSrc = videoHandlers[platform]?.(videoId, videoUrl) ?? ""
+    const thumbnailSrc = thumbnailHandlers[platform]?.(videoId, thumbnailUrl) ?? ""
     const isDirectVideo = platform === "local"
 
 
@@ -70,15 +80,15 @@ const GameVideo = ({ id, title, videoId, platform, thumbnail, videoUrl }: VideoC
                 isPressable
                 onPress={onOpen}
             >
-                {imageError ? (
+                {(imageError || !thumbnailSrc) ? (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                         <span className="text-gray-500">URL not available</span>
                     </div>
                 ) : (
-                    <div>
+                    <div className="relative w-full h-full">
                         <Image
                             alt={title ?? ""}
-                            src={thumbnail || ""}
+                            src={thumbnailSrc}
                             onError={handleImageError}
                             fill
                             sizes={"100%"}
@@ -107,7 +117,7 @@ const GameVideo = ({ id, title, videoId, platform, thumbnail, videoUrl }: VideoC
                             {/* Custom Close Button */}
                             <ModalBody className="bg-black px-0">
                                 <div className="flex justify-between items-center px-4">
-                                    <h3 className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-text font-semibold text-2xl text-transparent">
+                                    <h3 className="text-[rgba(156,252,248,1)] font-semibold text-2xl">
                                         {title}
                                     </h3>
                                     <Button

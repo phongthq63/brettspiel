@@ -64,7 +64,7 @@ export default function GamesSection() {
 
     useEffect(() => {
         fetchGames(page);
-    }, [sortBy, page]);
+    }, [sortBy, page, fetchGames]);
 
     useEffect(() => {
         // Fetch filter data from API
@@ -108,8 +108,8 @@ export default function GamesSection() {
 
     return (
         <section id="games">
-            <div className="flex justify-between items-end">
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">{t("section.games.title")}</h2>
+            <div className="flex justify-between items-end flex-wrap">
+                <h2 className="text-3xl font-bold text-gray-800 whitespace-nowrap mb-1">{t("section.games.title")}</h2>
                 <motion.div
                     initial={{
                         borderTopLeftRadius: "20px",
@@ -132,25 +132,31 @@ export default function GamesSection() {
                 </motion.div>
             </div>
 
-            <AnimatePresence>
-                {isFilterExpanded && (
-                    <motion.div
-                        initial={{ maxHeight: 0 }}
-                        animate={{ maxHeight: 1000 }}
-                        exit={{ maxHeight: 0 }}
-                        transition={{ duration: 0.5, ease: "easeInOut" }}
-                        style={{ overflow: "hidden" }}
-                    >
-                        <GameFilter
-                            filters={filters}
-                            onFilterChange={handleFilterChange}
-                            playerOptions={filterData.playerOptions}
-                            playTimeOptions={filterData.playTimeOptions}
-                            genreOptions={filterData.genreOptions}
-                        />
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {(filterData.genreOptions.length == 0 &&
+                filterData.playerOptions.length == 0 &&
+                filterData.playTimeOptions.length == 0) &&
+                (
+                    <AnimatePresence>
+                        {isFilterExpanded && (
+                            <motion.div
+                                initial={{ maxHeight: 0 }}
+                                animate={{ maxHeight: 1000 }}
+                                exit={{ maxHeight: 0 }}
+                                transition={{ duration: 0.5, ease: "easeInOut" }}
+                                style={{ overflow: "hidden" }}
+                            >
+                                <GameFilter
+                                    filters={filters}
+                                    onFilterChange={handleFilterChange}
+                                    playerOptions={filterData.playerOptions}
+                                    playTimeOptions={filterData.playTimeOptions}
+                                    genreOptions={filterData.genreOptions}
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                )
+            }
 
             <div ref={searchBarRef} className="w-full mt-6">
                 {/* Search and Sort */}

@@ -4,8 +4,8 @@ import {getItem} from "@/hooks/cookie/useCookie";
 
 export const instanceSocket = axios.create({
     baseURL: socketApiUrl,
-    timeout: 100000,
-    withCredentials: false
+    timeout: 10000,
+    withCredentials: true
 })
 
 instanceSocket.interceptors.request.use(

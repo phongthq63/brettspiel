@@ -24,9 +24,28 @@ spring:
       enabled: true
 
 
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://root:root@localhost:27017}
+      database: ${MONGODB_DATABASE:brettspiel}
+      auto-index-creation: true
+
+    redis:
+      mode: ${REDIS_MODE:single}
+      cluster:
+        nodes: ${REDIS_HOST:localhost:6379}
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      username: ${REDIS_USERNAME:default}
+      password: ${REDIS_PASSWORD:default}
+      database: 0
+
 
 jwt:
   secret: ThisIsSecretKey
+
+allow:
+  origins: ${ALLOW_ORIGINS:http://localhost:3000}
 
 
 sentry:

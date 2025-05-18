@@ -169,10 +169,7 @@ export default function ContactSection() {
                                     />
                                     <Button
                                         type="submit"
-                                        className="w-full bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] py-3 font-medium text-white"
-                                        style={{
-                                            backgroundImage: "linear-gradient(109.6deg, rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1%)"
-                                        }}
+                                        className="w-full bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] py-3 text-white"
                                         disabled={isSubmitting}
                                     >
                                         {isSubmitting ? t("section.contact.form.sending") : t("section.contact.form.submit")}

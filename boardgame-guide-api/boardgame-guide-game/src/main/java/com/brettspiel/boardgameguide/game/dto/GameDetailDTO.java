@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Quach Thanh Phong
@@ -55,5 +56,14 @@ public class GameDetailDTO extends GameDTO {
 
     @Schema(description = "Danh sách video của trò chơi")
     private List<GameVideoDTO> videos;
+
+    @Schema(description = "Danh sách liên kết đến các tài nguyên bên ngoài của trò chơi")
+    private List<GameLinkDTO> links;
+
+    @Schema(description = "Danh sách mở rộng của trò chơi")
+    private List<GameExpansionDTO> expansions;
+
+    @Schema(description = "Thông tin chuẩn bị cho trò chơi")
+    private Map<String, Object> setup;
 
 }

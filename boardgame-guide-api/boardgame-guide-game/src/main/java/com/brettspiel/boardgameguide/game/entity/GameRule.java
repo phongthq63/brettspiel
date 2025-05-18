@@ -2,7 +2,6 @@ package com.brettspiel.boardgameguide.game.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
@@ -11,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Document("game_rule")
 public class GameRule extends BaseMongodbEntity {
 
     @Field("rule_id")
@@ -24,8 +22,8 @@ public class GameRule extends BaseMongodbEntity {
 
     private String language;
 
-    @Field("image_icon_url")
-    private String imageIconUrl;
+    @Field("language_icon_url")
+    private String languageIconUrl;
 
     @Field("document_url")
     private String documentUrl;

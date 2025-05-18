@@ -48,7 +48,7 @@ const BannerSection = () => {
     }
 
     return (
-        <section className="relative h-[500px] md:h-[700px] mb-60 overflow-hidden">
+        <section className="relative h-[500px] md:h-[700px] mb-60">
             <div className="absolute w-full h-full">
                 {currentBanner?.image_url && (
                     <AnimatePresence>
@@ -69,10 +69,12 @@ const BannerSection = () => {
                                 transition={{ duration: 0.8 }}
                             >
                                 <Image
+                                    className="object-cover"
                                     src={currentBanner?.image_url}
                                     alt={currentBanner?.game_title || "Banner"}
                                     fill
                                     sizes={"100%"}
+                                    priority
                                 />
                             </motion.div>
                         </motion.div>
@@ -105,10 +107,12 @@ const BannerSection = () => {
                                         transition={{ duration: 0.8 }}
                                     >
                                         <Image
+                                            className="drop-shadow-lg"
                                             src={currentBanner.game_image_box_url}
                                             alt={currentBanner?.game_title || "Image box game"}
                                             width={400}
                                             height={300}
+                                            priority
                                         />
                                     </motion.div>
                                 </AnimatePresence>

@@ -1,9 +1,9 @@
 import React, {useCallback, useMemo} from "react";
-import {Button} from "@mui/material";
 import GameBoard from "@/games/splendor/hoc/GameBoard";
 import {useGameController} from "@/games/splendor/hooks/useGameController";
 import {useGameStore} from "@/games/splendor/store/game.store";
 import {useShallow} from "zustand/react/shallow";
+import {Button} from "@heroui/react";
 
 
 interface ActionDialogProps {
@@ -57,25 +57,26 @@ const ActionDialog = ({open, position, rotation, onClose}: ActionDialogProps) =>
                     {currentAction && (
                         currentAction.type == "option-action" ? (currentAction.option?.map(option => (
                             <Button key={option}
-                                    variant="contained"
                                     color="success"
                                     onClick={() => selectAction({...currentAction, type: option})}
                                     style={{textTransform: "none"}}>
                                 {textButtonOption(option)}
                             </Button>
                         ))) : (
-                            <Button variant="contained"
-                                    color="success"
-                                    onClick={() => confirmAction(currentAction)}
-                                    style={{textTransform: "none"}}>
+                            <Button
+                                color="success"
+                                onPress={() => confirmAction(currentAction)}
+                                style={{textTransform: "none"}}
+                            >
                                 Confirm
                             </Button>
                         )
                     )}
-                    <Button variant="contained"
-                            color="error"
-                            onClick={handlerCancelAction}
-                            style={{textTransform: "none"}}>
+                    <Button
+                        color="danger"
+                        onPress={handlerCancelAction}
+                        style={{textTransform: "none"}}
+                    >
                         Cancel
                     </Button>
                 </div>

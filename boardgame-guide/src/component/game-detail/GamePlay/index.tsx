@@ -1,238 +1,374 @@
-import {Card, CardBody, CardFooter, CardHeader} from "@heroui/card";
-import {Button, Select, SelectItem, Tooltip} from "@heroui/react";
-import React, {forwardRef, Ref, useEffect, useState} from "react";
-import {useUser} from "@/store/user.context";
-import {PlayerSeat} from "@/component/game-detail/GamePlay/RoomSeat/PlayerSeat";
-import RoomSeat from "@/component/game-detail/GamePlay/RoomSeat";
-import { motion, AnimatePresence } from "framer-motion";
+import {Button, Chip, Select, SelectItem, Spinner, Tooltip} from "@heroui/react";
+import React, { forwardRef, Ref, useEffect, useState } from "react";
 import Image from "next/image";
+import GameSetupSetting from "@/component/game-detail/GamePlay/GameSetupSetting";
+import { useGameSetup } from "@/store/game-setup/game-setup.context";
+import { useGameDetail } from "@/store/game-detail.context";
+import {useShallow} from "zustand/react/shallow";
+import {useUser} from "@/store/user.context";
+import {Card, CardBody, CardFooter, CardHeader} from "@heroui/card";
+import {X} from "lucide-react";
+import {AnimatePresence, motion} from "framer-motion";
+import {PlayService} from "@/service/game.service";
+import {PlayerSeat} from "@/component/game-detail/GamePlay/GameSeats/PlayerSeat";
+import {EmptySeat} from "@/component/game-detail/GamePlay/GameSeats/EmptySeat";
+import {toast} from "@/utils/toast";
 
 
 interface GamePlayProps {
-    rules: {
-        name: string;
-        language: string;
-        image_icon_url: string;
-        document_url: string;
-    }[]
+    onClose?: () => void;
 }
 
-const GamePlay = forwardRef(({rules}: GamePlayProps, ref: Ref<any>) => {
+const GamePlay = forwardRef(({ onClose }: GamePlayProps, ref: Ref<any>) => {
     const { user } = useUser();
-    const [players, setPlayers] = useState(2);
-    const [inviteLink, setInviteLink] = useState('');
+    const { data } = useGameDetail();
+    const {
+        minPlayers,
+        maxPlayers,
+        players,
+        seats,
+        rules,
+        setupSettings,
+        setSeats,
+        resizeSeats,
+        setInviteLink,
+        setGameSetup,
+        setPlayers,
+        clearGameSetup,
+    } = useGameSetup(useShallow((state) => ({
+        minPlayers: state.minPlayers,
+        maxPlayers: state.maxPlayers,
+        players: state.players,
+        seats: state.seats,
+        rules: state.rules,
+        setupSettings: state.setupSettings,
+        setSeats: state.setSeats,
+        resizeSeats: state.resizeSeats,
+        setInviteLink: state.setInviteLink,
+        setGameSetup: state.setGameSetup,
+        setPlayers: state.setPlayers,
+        clearGameSetup: state.clearGameSetup,
+    })));
+    const [isStarting, setIsStarting] = useState(false);
+    const [isSearching, setIsSearching] = useState(false);
 
 
+
+    // Set up the game setup store with the game data
     useEffect(() => {
-        setInviteLink(`https://boardgames.example.com/invite/${Math.random().toString(36).substring(2, 10)}`);
-    }, []);
+        setGameSetup({
+            id: data.id,
+            type: data.type,
+            imageBoxUrl: data.image_box_url,
+            description: data.description,
+            minPlayers: data.min_players,
+            maxPlayers: data.max_players,
+            players: data.min_players,
+            rules: data.rules?.map((rule) => ({
+                ...rule,
+                id: rule.id ?? "id",
+                name: rule.name ?? "Rules",
+                language: rule.language ?? "English",
+                players: data.min_players ?? 1,
+            })),
+            setup: data.setup,
+        });
+    }, [data, setGameSetup]);
+
+    // Add user to seats
+    useEffect(() => {
+        if (user) {
+            setSeats([{
+                id: user.id,
+                tagName: `@${user.id}`,
+                name: user.name,
+                avatarUrl: user.avatarUrl,
+                isOnline: true,
+                isMe: true
+            }])
+        } else {
+            setSeats([])
+        }
+
+    }, [setSeats, user]);
+
+    // Create invite link
+    useEffect(() => {
+        if (data?.id) {
+            setInviteLink(`https://boardgames.example.com/${data.id}/invite/${Math.random().toString(36).substring(2, 10)}`);
+        }
+    }, [data?.id, setInviteLink]);
+
+
+    const handleClosePlayNow = () => {
+        onClose?.()
+        clearGameSetup()
+    }
 
     const handleSelectPlayers = (values: Set<number>) => {
-        if (values.size === 0) {
-            setPlayers(1)
+        const currentPlayers = values.size === 0 ? minPlayers : [...values][0];
+        setPlayers(currentPlayers);
+        resizeSeats(currentPlayers);
+    };
+
+    const handleStart = () => {
+        if (!data.id) return;
+        if (players <= seats.length) {
+            setIsStarting(true);
+            PlayService
+                .startPlay({
+                    body: {
+                        game_id: data.id,
+                        players: seats.map((player) => ({
+                            id: player.id,
+                            name: player.name,
+                            bot: player.isBot ?? false,
+                            local_player: player.local,
+                        })),
+                        setup: {
+                            ...setupSettings,
+                            id: data.id,
+                            type: data.type,
+                        },
+                    },
+                })
+                .then((response) => {
+                    if (response.code == 0) {
+                        toast({
+                            title: "Game Started Successfully",
+                            description: "The game has been started. Enjoy playing!",
+                            autoClose: 2000,
+                        });
+                    } else {
+                        toast({
+                            title: "Game Start Failed",
+                            description: "An issue occurred while starting the game. Please try again.",
+                            autoClose: 2000,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Failed to start game:", error);
+                    toast({
+                        title: "Error Starting Game",
+                        description: "Unable to start the game due to a server error. Please try again later.",
+                        autoClose: 2000,
+                    });
+                })
+                .finally(() => {
+                    setIsStarting(false);
+                });
         } else {
-            setPlayers([...values][0]);
+            setIsSearching(true);
         }
     }
 
+    const handleCancelGame = () => {
+        setIsSearching(false);
+        setIsStarting(false);
+    };
+
     return (
-        <div className="flex flex-wrap">
-            {/* Intro */}
-            <div className="w-full lg:w-1/3 order-last lg:order-first">1</div>
+        <Card>
+            <CardHeader className="justify-end">
+                <Button
+                    className="bg-transparent"
+                    radius="full"
+                    isIconOnly
+                    onPress={handleClosePlayNow}
+                >
+                    <X />
+                </Button>
+            </CardHeader>
+            <CardBody>
+                <div className="flex flex-wrap">
+                    {/* Intro */}
+                    <div className="w-full lg:w-1/3 order-last lg:order-first">
+                        Làm thế nào để bắt đầu một trò chơi?
+                        <br/>
+                        <br/>
+                        Chọn số lượng người chơi
+                        <br/>
+                        <br/>
+                        Bạn có thể mời bạn bè , nếu không bạn sẽ chơi với đối thủ ngẫu nhiên/n
+                        <br/>
+                        <br/>
+                        ...và nhấn BẮT ĐẦU!
+                    </div>
 
-            {/* Game Setting + Game Room */}
-            <div className="w-full lg:w-2/3 flex flex-col md:flex-row">
+                    <div className="w-full lg:w-2/3 flex flex-col md:flex-row">
+                        <div className="w-full md:w-1/2 flex flex-col gap-20 py-4">
 
-                {/* Game Setting */}
-                <div className="w-full md:w-1/2 flex flex-col gap-8 py-4">
-                    <div>
-                        <Select
-                            variant="bordered"
-                            defaultSelectedKeys={["default"]}
-                        >
-                            <SelectItem key={"default"} textValue={"Splendor"}>
-                                <div className="flex items-center gap-2">
-                                    <Image
-                                        src={"/en_280.png"}
-                                        alt={"Image box url"}
-                                        width={100}
-                                        height={100}
-                                    />
-                                    <div className="grow font-semibold">{"Splendor"}</div>
-                                </div>
-                            </SelectItem>
-                            <SelectItem key={"cities"} textValue={"Cities of Splendor"}>
-                                <div className="flex items-center gap-2">
-                                    <Image
-                                        src={"/en_281.png"}
-                                        alt={"Image box url"}
-                                        width={100}
-                                        height={100}
-                                    />
-                                    <div className="grow font-semibold">{"Cities of Splendor"}</div>
-                                </div>
-                            </SelectItem>
-                            <SelectItem key={"duel"} textValue={"Splendor Duel"}>
-                                <div className="flex items-center gap-2">
-                                    <Image
-                                        src={"/en_281.png"}
-                                        alt={"Image box url"}
-                                        width={100}
-                                        height={100}
-                                    />
-                                    <div className="grow font-semibold">{"Splendor Duel"}</div>
-                                </div>
-                            </SelectItem>
-                        </Select>
-                        <p className="text-sm text-gray-700 my-4">
-                            Symbiose is a tactical and clever collection game. Expand your personal pond from
-                            the river to create maximum synergy between your different cards and those of your
-                            neighbors! Who will create the most beautiful symbiosis? In this turn-based game,
-                            your goal is to strategically place your cards to maximize your overall score. But
-                            be aware
-                        </p>
-                    </div>
-                    <div>
-                        <Select
-                            variant="bordered"
-                            defaultSelectedKeys={["default"]}
-                        >
-                            <SelectItem key={"default"}>{"Splendor"}</SelectItem>
-                            <SelectItem key={"cities"}>{"Cities of Splendor"}</SelectItem>
-                            <SelectItem key={"duel"}>{"Splendor Duel"}</SelectItem>
-                        </Select>
-                        <p className="text-sm text-gray-700 my-4">
-                            Symbiose is a tactical and clever collection game. Expand your personal pond from
-                            the river to create maximum synergy between your different cards and those of your
-                            neighbors! Who will create the most beautiful symbiosis? In this turn-based game,
-                            your goal is to strategically place your cards to maximize your overall score. But
-                            be aware
-                        </p>
-                    </div>
-                    <div>
-                        <Select
-                            variant="bordered"
-                            defaultSelectedKeys={["default"]}
-                        >
-                            <SelectItem key={"default"}>{"Splendor"}</SelectItem>
-                            <SelectItem key={"cities"}>{"Cities of Splendor"}</SelectItem>
-                            <SelectItem key={"duel"}>{"Splendor Duel"}</SelectItem>
-                        </Select>
-                        <p className="text-sm text-gray-700 my-4">
-                            Symbiose is a tactical and clever collection game. Expand your personal pond from
-                            the river to create maximum synergy between your different cards and those of your
-                            neighbors! Who will create the most beautiful symbiosis? In this turn-based game,
-                            your goal is to strategically place your cards to maximize your overall score. But
-                            be aware
-                        </p>
-                    </div>
-                    <div className="flex flex-col gap-3">
-                        {rules.map((rule, index) => (
-                            <div key={index} className="flex items-center gap-2">
-                                <div className="relative w-6 h-4">
-                                    <Image
-                                        src={rule.image_icon_url}
-                                        alt={rule.name}
-                                        fill
-                                        sizes="100%"
-                                    />
-                                </div>
-                                <Tooltip
-                                    placement="top-start"
-                                    content={rule.language}
-                                >
-                                    <p className="w-fit text-xs text-blue-500 cursor-pointer">
-                                        {rule.name}
-                                    </p>
-                                </Tooltip>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                            {/* Game Setup */}
+                            <GameSetupSetting/>
 
-                {/* Game Room */}
-                <div ref={ref} className="w-full md:w-1/2">
-                    <Card
-                        className="border-none bg-transparent"
-                        shadow="none"
-                    >
-                        <CardHeader>
-                            <div className="w-full text-center">
-                                <Select
-                                    classNames={{
-                                        base: "w-fit",
-                                        mainWrapper: "w-20",
-                                        label: "text-lg font-semibold",
-                                    }}
-                                    size="lg"
-                                    variant="bordered"
-                                    label="Số người chơi"
-                                    labelPlacement="outside-left"
-                                    selectedKeys={[players.toString()]}
-                                    onSelectionChange={(keys) => handleSelectPlayers(keys as Set<number>)}
-                                >
-                                    <SelectItem key={2}>{"2"}</SelectItem>
-                                    <SelectItem key={3}>{"3"}</SelectItem>
-                                    <SelectItem key={4}>{"4"}</SelectItem>
-                                    <SelectItem key={5}>{"5"}</SelectItem>
-                                </Select>
-                            </div>
-                        </CardHeader>
-                        <CardBody>
-                            <div className="w-full grid grid-cols-4 gap-4 my-8">
-                                {user && (
-                                    <PlayerSeat
-                                        id={user.id}
-                                        tagName={'@test'}
-                                        name={user.name}
-                                        avatarUrl={user.avatarUrl}
-                                        isOnline
-                                        isMe
-                                    />
-                                )}
-                                <AnimatePresence>
-                                    {Array.from({length: players - 1}).map((_, index) => (
-                                        <motion.div
-                                            key={index}
-                                            className="flex"
-                                            initial={{opacity: 0, y: 20}}
-                                            animate={{opacity: 1, y: 0}}
-                                            exit={{opacity: 0, y: 20}}
-                                            transition={{
-                                                delay: index * 0.1, // Delay for appearance
-                                                duration: 0.4,
-                                                exit: {
-                                                    delay: (players - 2 - index) * 0.1,
-                                                    duration: 0.4
-                                                },
-                                            }}
+                            {/* Game Rules */}
+                            <div className="flex flex-col gap-3">
+                                {rules?.map((rule) => (
+                                    <div key={rule.id} className="flex items-center gap-2">
+                                        <div className="relative w-6 h-4">
+                                            {rule.language_icon_url && (
+                                                <Image
+                                                    src={rule.language_icon_url}
+                                                    alt={rule.name + " Language Icon"}
+                                                    fill
+                                                    sizes="100%"
+                                                />
+                                            )}
+                                        </div>
+                                        <Tooltip
+                                            placement="top-start"
+                                            content={rule.language}
                                         >
-                                            <RoomSeat
-                                                roomId={"test"}
-                                                inviteLink={inviteLink}
-                                            />
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
+                                            <p className="w-fit text-xs text-blue-500 cursor-pointer">
+                                                {rule.name}
+                                            </p>
+                                        </Tooltip>
+                                    </div>
+                                ))}
                             </div>
-                        </CardBody>
-                        <CardFooter>
-                            <div className="w-full flex justify-end">
-                                <Button
-                                    className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-border text-white text-xl"
-                                    size="lg"
-                                >
-                                    Start
-                                </Button>
-                            </div>
-                        </CardFooter>
-                    </Card>
-                </div>
-            </div>
-        </div>
-    )
-})
+                        </div>
 
-GamePlay.displayName = 'GamePlay';
+                        {/* Game Seats */}
+                        <div ref={ref} className="w-full md:w-1/2">
+                            <Card className="border-none bg-transparent" shadow="none">
+                                <CardHeader>
+                                    <div className="w-full text-center">
+                                        <Select
+                                            classNames={{
+                                                base: "w-fit",
+                                                mainWrapper: "w-20",
+                                                label: "text-lg font-semibold",
+                                                value: "font-semibold",
+                                            }}
+                                            size="lg"
+                                            variant="bordered"
+                                            label="Số người chơi"
+                                            labelPlacement="outside-left"
+                                            selectedKeys={[`${players}`]}
+                                            onSelectionChange={(keys) => handleSelectPlayers(keys as Set<number>)}
+                                        >
+                                            {Array.from({ length: maxPlayers - minPlayers + 1 }).map((_, index) => (
+                                                <SelectItem key={minPlayers + index}>
+                                                    {`${minPlayers + index}`}
+                                                </SelectItem>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                </CardHeader>
+                                <CardBody>
+                                    <div className="w-full grid grid-cols-4 gap-4 my-8">
+                                        <AnimatePresence>
+                                            {Array.from({ length: players }).map((_, index) => {
+                                                const seatInfo = seats?.at(index)
+                                                return (
+                                                    <motion.div
+                                                        key={`seat-${index}`}
+                                                        className="flex"
+                                                        initial={{opacity: 0, y: 20}}
+                                                        animate={{opacity: 1, y: 0}}
+                                                        exit={{opacity: 0, y: 20}}
+                                                        transition={{
+                                                            delay: index * 0.1, // Delay for appearance
+                                                            duration: 0.4,
+                                                        }}
+                                                    >
+                                                        {seatInfo ? (
+                                                            <PlayerSeat
+                                                                id={seatInfo.id}
+                                                                tagName={seatInfo.tagName}
+                                                                name={seatInfo.name}
+                                                                avatarUrl={seatInfo.avatarUrl}
+                                                                isOnline={seatInfo.isOnline}
+                                                                isFriended={seatInfo.isFriended}
+                                                                isMe={seatInfo.isMe}
+                                                                isBot={seatInfo.isBot}
+                                                                local={seatInfo.local}
+                                                            />
+                                                        ) : (
+                                                            <EmptySeat/>
+                                                        )}
+                                                    </motion.div>
+                                                )
+                                            })}
+                                        </AnimatePresence>
+                                    </div>
+                                </CardBody>
+                                <CardFooter>
+                                    <div className="w-full flex flex-col">
+                                        <AnimatePresence>
+                                            {isSearching && (
+                                                <motion.div
+
+                                                    initial={{opacity: 0, height: 0}}
+                                                    animate={{opacity: 1, height: 150}}
+                                                    exit={{opacity: 0, height: 0}}
+                                                    transition={{duration: 0.5, ease: "easeInOut"}}
+                                                >
+                                                    <div
+                                                        className="bg-indigo-50 rounded-lg border border-indigo-200 p-4">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <Spinner className="text-indigo-600"/>
+                                                            <h4 className="text-indigo-800 font-medium">Searching for
+                                                                players</h4>
+                                                        </div>
+                                                        <p className="text-sm text-indigo-700">
+                                                            Waiting for {players - seats.length} more player(s) to
+                                                            join...
+                                                        </p>
+                                                        <div className="flex gap-1 mt-3">
+                                                            <Chip
+                                                                className="bg-indigo-100 text-indigo-800 hover:bg-indigo-200">Auto-matching</Chip>
+                                                            <Chip
+                                                                className="bg-indigo-100 text-indigo-800 hover:bg-indigo-200">Random
+                                                                players</Chip>
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                        {isStarting ? (
+                                            <Button
+                                                className="text-white text-xl"
+                                                color="primary"
+                                                variant="shadow"
+                                                size="lg"
+                                                isDisabled
+                                                isLoading
+                                            >
+                                                Starting
+                                            </Button>
+                                        ) : isSearching ? (
+                                            <Button
+                                                className="text-white text-xl"
+                                                color="danger"
+                                                variant="shadow"
+                                                size="lg"
+                                                onPress={handleCancelGame}
+                                            >
+                                                Cancel
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-border text-white text-xl"
+                                                variant="shadow"
+                                                size="lg"
+                                                onPress={handleStart}
+                                            >
+                                                Start
+                                            </Button>
+                                        )}
+                                        </div>
+                                </CardFooter>
+                            </Card>
+                        </div>
+                    </div>
+                </div>
+            </CardBody>
+        </Card>
+    );
+});
+
+GamePlay.displayName = "GamePlay";
 
 export default GamePlay;

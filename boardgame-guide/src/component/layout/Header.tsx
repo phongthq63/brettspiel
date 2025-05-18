@@ -14,11 +14,22 @@ import LanguageSwitcher from "@/component/ui/LanguageSwitcher";
 import SearchBarHeader from "@/component/ui/SearchBarHeader";
 import {useState} from "react";
 import {Menu, X} from "lucide-react";
+import AuthModal from "@/component/layout/AuthModal";
+import {useDisclosure} from "@heroui/modal";
+import {useUser} from "@/store/user.context";
+import UserAvatar from "@/component/ui/UserAvatar";
 
 
 const Header = () => {
     const { t } = useTranslation()
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const { user } = useUser();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+
+    const handleOpenAuth = () => {
+        onOpen()
+    }
 
     return (
         <Navbar
@@ -86,16 +97,27 @@ const Header = () => {
                 <NavbarItem className="hidden lg:block">
                     <LanguageSwitcher />
                 </NavbarItem>
-                <NavbarItem className="hidden md:block">
-                    <div className="flex gap-2">
-                        <Button className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-text text-transparent">
-                            {t("signup")}
-                        </Button>
-                        <Button className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] text-white shadow-md">
-                            {t("login")}
-                        </Button>
-                    </div>
-                </NavbarItem>
+                {user ? (
+                    <UserAvatar />
+                ) : (
+                    <NavbarItem className="hidden md:block">
+                        <div className="flex gap-2">
+                            <Button
+                                className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-text text-transparent"
+                                onPress={handleOpenAuth}
+                            >
+                                {t("signup")}
+                            </Button>
+                            <Button
+                                className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] text-white shadow-md"
+                                onPress={handleOpenAuth}
+                            >
+                                {t("login")}
+                            </Button>
+                        </div>
+                        <AuthModal isOpen={isOpen} onOpenChange={onOpenChange} />
+                    </NavbarItem>
+                )}
             </NavbarContent>
 
             <NavbarMenu>

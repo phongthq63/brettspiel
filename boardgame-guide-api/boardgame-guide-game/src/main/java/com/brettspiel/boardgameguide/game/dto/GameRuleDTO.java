@@ -41,7 +41,7 @@ public class GameRuleDTO extends BaseDTO {
         description = "URL đến biểu tượng hình ảnh đại diện cho luật",
         example = "https://example.com/images/rule-basic.png"
     )
-    private String imageIconUrl;
+    private String languageIconUrl;
 
     @Schema(
         description = "URL đến tài liệu chứa chi tiết về luật chơi",

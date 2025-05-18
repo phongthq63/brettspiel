@@ -1,122 +1,58 @@
 [
   {
-    "genre_id": "genre001",
+    "genre_id": "strategy",
     "name": "Strategy"
   },
   {
-    "genre_id": "genre002",
-    "name": "Adventure"
+    "genre_id": "card_drafting",
+    "name": "Card Drafting"
   },
   {
-    "genre_id": "genre003",
+    "genre_id": "cooperative",
     "name": "Cooperative"
   },
   {
-    "genre_id": "genre004",
+    "genre_id": "deck_building",
     "name": "Deck Building"
   },
   {
-    "genre_id": "genre005",
-    "name": "Tile Placement"
-  },
-  {
-    "genre_id": "genre006",
+    "genre_id": "card_game",
     "name": "Card Game"
   },
   {
-    "genre_id": "genre007",
+    "genre_id": "party_game",
     "name": "Party Game"
   },
   {
-    "genre_id": "genre008",
-    "name": "Role-Playing"
+    "genre_id": "role_play",
+    "name": "Role Play"
   },
   {
-    "genre_id": "genre009",
-    "name": "Abstract"
-  },
-  {
-    "genre_id": "genre010",
+    "genre_id": "economic",
     "name": "Economic"
   },
   {
-    "genre_id": "genre011",
+    "genre_id": "war_game",
     "name": "War Game"
   },
   {
-    "genre_id": "genre012",
-    "name": "Family Game"
-  },
-  {
-    "genre_id": "genre013",
-    "name": "Fantasy"
-  },
-  {
-    "genre_id": "genre014",
-    "name": "Sci-Fi"
-  },
-  {
-    "genre_id": "genre015",
-    "name": "Horror"
-  },
-  {
-    "genre_id": "genre016",
-    "name": "Puzzle"
-  },
-  {
-    "genre_id": "genre017",
-    "name": "Bluffing"
-  },
-  {
-    "genre_id": "genre018",
-    "name": "Trivia"
-  },
-  {
-    "genre_id": "genre019",
-    "name": "Dexterity"
-  },
-  {
-    "genre_id": "genre020",
-    "name": "Negotiation"
-  },
-  {
-    "genre_id": "genre021",
+    "genre_id": "area_control",
     "name": "Area Control"
   },
   {
-    "genre_id": "genre022",
+    "genre_id": "worker_placement",
     "name": "Worker Placement"
   },
   {
-    "genre_id": "genre023",
-    "name": "Legacy"
-  },
-  {
-    "genre_id": "genre024",
-    "name": "Drafting"
-  },
-  {
-    "genre_id": "genre025",
+    "genre_id": "set_collection",
     "name": "Set Collection"
   },
   {
-    "genre_id": "genre026",
+    "genre_id": "hidden_role",
     "name": "Hidden Role"
   },
   {
-    "genre_id": "genre027",
+    "genre_id": "survival",
     "name": "Survival"
-  },
-  {
-    "genre_id": "genre028",
-    "name": "Exploration"
-  },
-  {
-    "genre_id": "genre029",
-    "name": "Educational"
-  },
-  {
-    "genre_id": "genre030",
-    "name": "Social Deduction"
   }
 ]

@@ -18,6 +18,9 @@ public class GameDTO extends BaseDTO {
     @Schema(description = "Mã định danh duy nhất của trò chơi", example = "game001")
     private String id;
 
+    @Schema(description = "Loại", example = "base")
+    private String type;
+
     @Schema(description = "URL hình ảnh của trò chơi", example = "https://example.com/images/game001.jpg")
     private String imageUrl;
 

@@ -43,21 +43,25 @@ export function GameCard({title, description, imageUrl, imageBoxUrl, isHot, isPo
                 transition={{duration: 0.5}}
             >
                 <div className="relative h-full transition-transform duration-300 ease-in-out hover:-translate-y-2">
-                    <Image
-                        src={imageBoxUrl}
-                        alt="Board games box"
-                        width={140}
-                        height={100}
-                        className="absolute hidden xl:block left-[-60] translate-y-1/4 z-10"
-                    />
+                    <div className="absolute hidden xl:block w-[140px] h-auto left-[-60] translate-y-1/2 z-10">
+                        <Image
+                            src={imageBoxUrl}
+                            alt="Board games box"
+                            width={400}
+                            height={300}
+                            priority
+                        />
+                    </div>
                     <Card className="h-full hover:shadow-xl">
                         <CardBody className="p-0">
                             <div className="relative w-full h-48">
                                 <Image
+                                    className="object-cover"
                                     src={imageUrl}
                                     alt={title}
                                     fill
                                     sizes={"100%"}
+                                    priority
                                 />
                                 <div className="absolute top-2 left-2 flex gap-2">
                                     {isPopular && (
@@ -95,7 +99,7 @@ export function GameCard({title, description, imageUrl, imageBoxUrl, isHot, isPo
                                 </span>
                                     </div>
                                 </div>
-                                <p className="text-sm text-gray-600 mb-3">{description}</p>
+                                <p className="text-sm text-gray-600 line-clamp-3 mb-3">{description}</p>
                                 <div className="flex flex-wrap gap-2 mb-3">
                                     {genres.map((genre, index) => (
                                         <Chip
@@ -126,10 +130,6 @@ export function GameCard({title, description, imageUrl, imageBoxUrl, isHot, isPo
                             </div>
                             <Button
                                 className="w-full bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] font-medium text-white"
-                                style={{
-                                    backgroundImage:
-                                        "linear-gradient(109.6deg, rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1%)",
-                                }}
                                 onPress={handlerClickPlay}
                             >
                                 {t("playNow")}

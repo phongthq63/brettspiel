@@ -38,7 +38,7 @@ const PlayerGameInfo = ({ playerId, data }: PlayerGameInfoProps) => {
 
 
     const imageCardReserveUrl = useMemo(() => (card: Card) => {
-        if (user?.user_id == playerId) {
+        if (user?.id == playerId) {
             return card.url
         } else {
             return card.urlBack

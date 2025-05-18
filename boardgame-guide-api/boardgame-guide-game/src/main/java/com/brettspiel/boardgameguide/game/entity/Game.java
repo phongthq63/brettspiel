@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Quach Thanh Phong
@@ -18,6 +19,8 @@ public class Game extends BaseMongodbEntity {
 
     @Field("game_id")
     private String gameId;
+
+    private String type;
 
     @Field("image_url")
     private String imageUrl;
@@ -78,5 +81,18 @@ public class Game extends BaseMongodbEntity {
     private List<GameRule> rules;
 
     private List<GameVideo> videos;
+
+    private List<GameLink> links;
+
+    private List<GameExpansion> expansions;
+
+    /**
+     * * Thông tin chuẩn bị cho mở rộng trò chơi
+     * {
+     *     "setting": {}
+     *     ...
+     * }
+     */
+    private Map<String, Object> setup;
 
 }

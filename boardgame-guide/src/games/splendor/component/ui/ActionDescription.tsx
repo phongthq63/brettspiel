@@ -1,9 +1,9 @@
-import {Button} from "@mui/material";
 import React, {useMemo} from "react";
 import {useGameStore} from "@/games/splendor/store/game.store";
 import {useSocket} from "@/store/socket.context";
 import {useGameActions} from "@/games/splendor/hooks/useGameActions";
 import {useShallow} from "zustand/react/shallow";
+import {Button} from "@heroui/react";
 
 
 export default function ActionDescription() {
@@ -65,20 +65,22 @@ export default function ActionDescription() {
                 <div className="flex absolute w-full bottom-0 bg-cyan-100 rounded-xl space-y-2 p-2">
                     {status == 0 && (
                         <div className="w-full flex justify-center items-center">
-                            <Button variant="contained"
-                                    color="error"
-                                    onClick={startGame}>Start game</Button>
+                            <Button
+                                color="danger"
+                                onPress={startGame}>Start game</Button>
                         </div>
                     )}
                     {status == 1 && (
                         <div className="w-full flex flex-col">
                             <div>
                                 {isMyTurn && (
-                                    <Button className="right-1 top-1"
-                                            variant="contained"
-                                            color="error"
-                                            onClick={endTurn}
-                                            style={{position: "absolute", textTransform: "none"}}>End turn</Button>
+                                    <Button
+                                        className="absolute right-1 top-1"
+                                        color="danger"
+                                        onPress={endTurn}
+                                    >
+                                        End turn
+                                    </Button>
                                 )}
                                 <p className="text-center text-xl">
                                     <span className="font-bold text-red-600">{playerName}</span> <span className="italic">turn</span>

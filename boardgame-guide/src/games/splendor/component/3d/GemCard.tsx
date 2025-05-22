@@ -3,7 +3,7 @@ import {useFrame, useLoader} from "@react-three/fiber";
 import {RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {Group, Mesh, Quaternion, TextureLoader, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
-import {CardDictionary} from "@/games/splendor/constants/card";
+import {CardDictionary} from "@/games/splendor/data/card";
 
 
 export const GemCardSize = {

@@ -3,17 +3,17 @@ import {CardNoble} from "@/games/splendor/types/noble";
 import {TokenGem, TokenGemType} from "@/games/splendor/types/gem";
 
 
-export interface Noble extends CardNoble{
+export interface NobleData extends CardNoble{
     position: [number, number, number]
     rotation: [number, number, number]
 }
 
-export interface Card extends CardGem {
+export interface CardData extends CardGem {
     position: [number, number, number]
     rotation: [number, number, number]
 }
 
-export interface Gem extends TokenGem {
+export interface GemData extends TokenGem {
     position: [number, number, number]
     rotation: [number, number, number]
 }
@@ -23,10 +23,10 @@ export interface Player {
     name: string
     avatar: string
     score: number
-    nobles: Noble[]
-    cards: Record<CardGemType, Card[]>
-    reserveCards: Card[]
-    gems: Record<TokenGemType, Gem[]>
+    nobles: NobleData[]
+    cards: Record<CardGemType, CardData[]>
+    reserveCards: CardData[]
+    gems: Record<TokenGemType, GemData[]>
 }
 
 export interface PhysicsObjectAction {
@@ -34,7 +34,7 @@ export interface PhysicsObjectAction {
     type: 'noble' | 'card' | 'gem' | "gem-player"
     ref: { [key: string]: any }
     animation?: gsap.core.Timeline
-    state: Noble | Card | Gem
+    state: NobleData | CardData | GemData
 }
 
 export interface Action {

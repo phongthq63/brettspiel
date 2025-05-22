@@ -5,6 +5,11 @@ package com.brettspiel.boardgameguide.splendor.constant;
  * On 11/16/2024 - 11:53 PM
  */
 public class GameConstants {
+
+    public final static String GAME_TYPE_BASE = "base";
+    public final static String GAME_TYPE_EXTENSION = "extension";
+
+
     public final static String GEM_TYPE_GOLD = "gold";
     public final static String GEM_TYPE_ONYX = "onyx";
     public final static String GEM_TYPE_RUBY = "ruby";

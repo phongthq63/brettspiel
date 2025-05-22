@@ -29,7 +29,7 @@ export default function UserAvatar() {
             </div>
             <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
                 <DrawerContent>
-                    {(onClose) => (
+                    {() => (
                         <>
                             <DrawerHeader className="flex flex-col gap-1">Drawer Title</DrawerHeader>
                             <DrawerBody>

@@ -6,6 +6,7 @@ import com.brettspiel.utils.IdGenerator;
 import com.brettspiel.utils.R;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class FeedbackServiceImpl implements IFeedbackService {
 
-    private final static String TOPIC_PUBLISH_FEEDBACK = "brettspiel.game-service.feedback";
+    @Value("${spring.kafka.producer.topic.feedback}")
+    private String topicFeedback;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -29,7 +31,7 @@ public class FeedbackServiceImpl implements IFeedbackService {
         contactData.put("email", request.getEmail());
         contactData.put("subject", request.getSubject());
         contactData.put("message", request.getMessage());
-        kafkaTemplate.send(TOPIC_PUBLISH_FEEDBACK, IdGenerator.nextUUID(), contactData);
+        kafkaTemplate.send(topicFeedback, IdGenerator.nextUUID(), contactData);
 
         return R.ok();
     }

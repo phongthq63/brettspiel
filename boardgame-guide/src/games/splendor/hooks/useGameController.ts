@@ -1,13 +1,13 @@
 import {useThree} from "@react-three/fiber";
-import {Action, Card, Gem, Noble, PhysicsObjectAction} from "@/games/splendor/types/game";
+import {Action, CardData, GemData, NobleData, PhysicsObjectAction} from "@/games/splendor/types/game";
 import {Euler, MathUtils, Quaternion, Vector3} from "three";
 import gsap from "gsap";
 import {NobleCardSize} from "@/games/splendor/component/3d/NobleCard";
 import {GemCardSize} from "@/games/splendor/component/3d/GemCard";
 import {CardPosition, GemPosition, NoblePosition, PlayerPosition} from "@/games/splendor/constants/game";
 import {GemTokenSize} from "@/games/splendor/component/3d/GemToken";
-import {CardDictionary} from "@/games/splendor/constants/card";
-import {NobleDictionary} from "@/games/splendor/constants/noble";
+import {CardDictionary} from "@/games/splendor/data/card";
+import {NobleDictionary} from "@/games/splendor/data/noble";
 import {TokenGemType} from "@/games/splendor/types/gem";
 import {useSharedRef} from "@/games/splendor/store/ref.context";
 import {useUser} from "@/store/user.context";
@@ -123,12 +123,12 @@ export function useGameController() {
                         }
                     })
                     .forEach(physicsObjectAction => {
-                        const userId = user?.user_id ?? ''
+                        const userId = user?.id ?? ''
 
                         switch (physicsObjectAction.type) {
                             case "gem":
                             {
-                                const gem: Gem = physicsObjectAction.state as Gem
+                                const gem: GemData = physicsObjectAction.state as GemData
                                 newStateGems = {
                                     ...newStateGems,
                                     [gem.type]: [
@@ -153,7 +153,7 @@ export function useGameController() {
                             }
                             case "gem-player":
                             {
-                                const gem: Gem = physicsObjectAction.state as Gem
+                                const gem: GemData = physicsObjectAction.state as GemData
                                 newStateGems = {
                                     ...newStateGems,
                                     [gem.type]: newStateGems[gem.type].filter(gem => gem.id != physicsObjectAction.id)
@@ -244,7 +244,7 @@ export function useGameController() {
         }
     }
 
-    const onClickNoble = (noble: Noble) => {
+    const onClickNoble = (noble: NobleData) => {
         if (currentAction) {
             return
         } else {
@@ -305,13 +305,13 @@ export function useGameController() {
         }
     }
 
-    const onClickNotCurrentNoble = (noble: Noble) => {
+    const onClickNotCurrentNoble = (noble: NobleData) => {
         if (!isMyTurn) {
             rollbackPhysicsObject(noble.id)
         }
     }
 
-    const onClickDeckCard = (card: Card) => {
+    const onClickDeckCard = (card: CardData) => {
         if (status != 1 || !isMyTurn) return
         if (currentAction) {
             return
@@ -375,7 +375,7 @@ export function useGameController() {
         }
     }
 
-    const onClickCard = (card: Card) => {
+    const onClickCard = (card: CardData) => {
         if (currentAction) {
             return
         } else {
@@ -443,14 +443,14 @@ export function useGameController() {
         }
     }
 
-    const onClickNotCurrentCard = (card: Card) => {
+    const onClickNotCurrentCard = (card: CardData) => {
         if (!isMyTurn) {
             rollbackPhysicsObject(card.id)
         }
     }
 
-    const onClickGem = (gem: Gem) =>  {
-        const userId = user?.user_id ?? ''
+    const onClickGem = (gem: GemData) =>  {
+        const userId = user?.id ?? ''
 
         if (userId != currentPlayer) return
         if (status != 1 || !isMyTurn) return
@@ -484,9 +484,9 @@ export function useGameController() {
             }
 
             //
-            const deckGems: Gem[] = gems[gem.type]
-            const playerGems: Gem[] = players[userId].gems[gem.type]
-            let tookGem: Gem = deckGems[deckGems.length - 1]
+            const deckGems: GemData[] = gems[gem.type]
+            const playerGems: GemData[] = players[userId].gems[gem.type]
+            let tookGem: GemData = deckGems[deckGems.length - 1]
             for (let i = deckGems.length - 1; i >= 0; i--) {
                 if (!currentAction?.gem?.some(gem => gem.id == tookGem.id && gem.count > 0)) {
                     break
@@ -582,8 +582,8 @@ export function useGameController() {
         }
     }
 
-    const onClickPlayerGem = (playerId: string, gem: Gem) => {
-        if (user?.user_id != playerId) return
+    const onClickPlayerGem = (playerId: string, gem: GemData) => {
+        if (user?.id != playerId) return
         if (!isMyTurn) return
         if (currentAction && currentAction.type != "gather-gem") {
             return
@@ -594,10 +594,10 @@ export function useGameController() {
             const playerLocate = PlayerPosition.total[playerIds.length ?? 0]?.player[player]
             if (!playerLocate) return       // Ko tim thay config vi tri player
 
-            const deckGems: Gem[] = gems[gem.type]
-            const playerDeckGems: Gem[] = players[playerId].gems[gem.type]
+            const deckGems: GemData[] = gems[gem.type]
+            const playerDeckGems: GemData[] = players[playerId].gems[gem.type]
             const gemPosition: Vector3 = new Vector3().fromArray(GemPosition[gem.type])
-            let gemReturn: Gem = playerDeckGems[playerDeckGems.length - 1]
+            let gemReturn: GemData = playerDeckGems[playerDeckGems.length - 1]
             for (let i = playerDeckGems.length - 1; i >= 0; i--) {
                 if (!currentAction?.gem?.some(gem => gem.id == gemReturn.id && gem.count < 0)) {
                     break
@@ -681,8 +681,8 @@ export function useGameController() {
         }
     }
 
-    const onClickPlayerReserveCard = (playerId: string, card: Card) => {
-        if (user?.user_id != playerId) return
+    const onClickPlayerReserveCard = (playerId: string, card: CardData) => {
+        if (user?.id != playerId) return
         if (currentAction) {
             return
         } else {
@@ -760,7 +760,7 @@ export function useGameController() {
         const fieldNoble = data.field_noble.filter((field_noble: any) => field_noble.noble)
             .sort((a: any, b: any) => a.position - b.position)
 
-        const card3Opens: Card[] = fieldCard3.map((field: any) => {
+        const card3Opens: CardData[] = fieldCard3.map((field: any) => {
             return {
                 ...field.card,
                 ...CardDictionary[field.card.id],
@@ -768,7 +768,7 @@ export function useGameController() {
                 rotation: [0, 0, 0]
             }
         })
-        const card2Opens: Card[] = fieldCard2.map((field: any) => {
+        const card2Opens: CardData[] = fieldCard2.map((field: any) => {
             return {
                 ...field.card,
                 ...CardDictionary[field.card.id],
@@ -776,13 +776,13 @@ export function useGameController() {
                 rotation: [0, 0, 0]
             }
         })
-        const card1Opens: Card[] = fieldCard1.map((field: any) => ({
+        const card1Opens: CardData[] = fieldCard1.map((field: any) => ({
             ...field.card,
             ...CardDictionary[field.card.id],
             position: CardPosition.level[1].field[field.position],
             rotation: [0, 0, 0]
         }))
-        const nobleOpens: Noble[] = fieldNoble.map((field: any) => {
+        const nobleOpens: NobleData[] = fieldNoble.map((field: any) => {
             return {
                 ...field.noble,
                 ...NobleDictionary[field.noble.id],
@@ -805,7 +805,7 @@ export function useGameController() {
         {
             // Timeline shuffle deck card 3
             {
-                deckCard[3].forEach((card: Card, index: number) => {
+                deckCard[3].forEach((card: CardData, index: number) => {
                     const instance = cardRefs.current[card.id];
                     const height = 0.8
                     timelineDeckCard3.add(gsap.timeline()
@@ -838,13 +838,13 @@ export function useGameController() {
                     .call(() => {
                         // Update new position + rotation
                         (fieldCard3
-                            .map((cardOpen: any) => deckCard[3].find((card: Card) => card.id == cardOpen.card.id))
-                            .concat(deckCard[3].filter((card: Card) => !fieldCard3.some((cardOpen: any) => card.id == cardOpen.card.id)))
-                            .map((card: Card, index: number) => ({
+                            .map((cardOpen: any) => deckCard[3].find((card: CardData) => card.id == cardOpen.card.id))
+                            .concat(deckCard[3].filter((card: CardData) => !fieldCard3.some((cardOpen: any) => card.id == cardOpen.card.id)))
+                            .map((card: CardData, index: number) => ({
                                 ...card,
                                 position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (deckCard[3].length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
                                 rotation: [0, Math.PI, 0]
-                            })) as Card[])
+                            })) as CardData[])
                             .forEach((card) => {
                                 cardRefs.current[card.id].setPosition(card.position)
                                 cardRefs.current[card.id].setRotation(card.rotation)
@@ -853,7 +853,7 @@ export function useGameController() {
             }
             // Timeline shuffle deck card 2
             {
-                deckCard[2].forEach((card: Card, index: number) => {
+                deckCard[2].forEach((card: CardData, index: number) => {
                     const instance = cardRefs.current[card.id];
                     const height = 0.8
                     timelineDeckCard2.add(gsap.timeline()
@@ -885,13 +885,13 @@ export function useGameController() {
                 timelineDeckCard2.call(() => {
                     // Update new position + rotation
                     (fieldCard2
-                        .map((cardOpen: any) => deckCard[2].find((card: Card) => card.id == cardOpen.card.id))
-                        .concat(deckCard[2].filter((card: Card) => !fieldCard2.some((cardOpen: any) => card.id == cardOpen.card.id)))
-                        .map((card: Card, index: any) => ({
+                        .map((cardOpen: any) => deckCard[2].find((card: CardData) => card.id == cardOpen.card.id))
+                        .concat(deckCard[2].filter((card: CardData) => !fieldCard2.some((cardOpen: any) => card.id == cardOpen.card.id)))
+                        .map((card: CardData, index: any) => ({
                             ...card,
                             position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (deckCard[2].length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
                             rotation: [0, Math.PI, 0]
-                        })) as Card[])
+                        })) as CardData[])
                         .forEach((card) => {
                             cardRefs.current[card.id].setPosition(card.position)
                             cardRefs.current[card.id].setRotation(card.rotation)
@@ -900,7 +900,7 @@ export function useGameController() {
             }
             // Timeline shuffle deck card 1
             {
-                deckCard[1].forEach((card: Card, index: number) => {
+                deckCard[1].forEach((card: CardData, index: number) => {
                     const instance = cardRefs.current[card.id];
                     const height = 0.8
                     timelineDeckCard1.add(gsap.timeline()
@@ -932,15 +932,15 @@ export function useGameController() {
                 timelineDeckCard1.call(() => {
                     // Update new position + rotation
                     (fieldCard1
-                        .map((cardOpen: any) => deckCard[1].find((card: Card) => card.id == cardOpen.card.id))
-                        .concat(deckCard[1].filter((card: Card) => !fieldCard1.some((cardOpen: any) => card.id == cardOpen.card.id)))
-                        .map((card: Card, index: number) => {
+                        .map((cardOpen: any) => deckCard[1].find((card: CardData) => card.id == cardOpen.card.id))
+                        .concat(deckCard[1].filter((card: CardData) => !fieldCard1.some((cardOpen: any) => card.id == cardOpen.card.id)))
+                        .map((card: CardData, index: number) => {
                             return {
                                 ...card,
                                 position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (deckCard[1].length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
                                 rotation: [0, Math.PI, 0]
                             }
-                        }) as Card[])
+                        }) as CardData[])
                         .forEach((card) => {
                             cardRefs.current[card.id].setPosition(card.position)
                             cardRefs.current[card.id].setRotation(card.rotation)
@@ -949,7 +949,7 @@ export function useGameController() {
             }
             // Timeline shuffle deck noble
             {
-                deckNoble.forEach((noble: Noble, index: number) => {
+                deckNoble.forEach((noble: NobleData, index: number) => {
                     const instance = nobleRefs.current[noble.id];
                     const height = 0.8
                     timelineDeckNoble.add(gsap.timeline()
@@ -981,15 +981,15 @@ export function useGameController() {
                 timelineDeckNoble.call(() => {
                     // Update new position + rotation
                     (fieldNoble
-                        .map((nobleOpen: any) => deckNoble.find((noble: Noble) => noble.id == nobleOpen.noble.id))
-                        .concat(deckNoble.filter((noble: Noble) => !fieldNoble.some((nobleOpen: any) => noble.id == nobleOpen.noble.id)))
-                        .map((noble: Noble, index: number) => {
+                        .map((nobleOpen: any) => deckNoble.find((noble: NobleData) => noble.id == nobleOpen.noble.id))
+                        .concat(deckNoble.filter((noble: NobleData) => !fieldNoble.some((nobleOpen: any) => noble.id == nobleOpen.noble.id)))
+                        .map((noble: NobleData, index: number) => {
                             return {
                                 ...noble,
                                 position: [NoblePosition.desk[0], NoblePosition.desk[1], (deckNoble.length - 1 - index) * NobleCardSize.depth + NoblePosition.desk[2]],
                                 rotation: [0, Math.PI, 0]
                             }
-                        }) as Noble[])
+                        }) as NobleData[])
                         .forEach((noble) => {
                             nobleRefs.current[noble.id].setPosition(noble.position)
                             nobleRefs.current[noble.id].setRotation(noble.rotation)
@@ -1189,25 +1189,25 @@ export function useGameController() {
             .add(timelineOpenNoble)
             .call(() => {
                 // Save state
-                const newDeckCard1 = deckCard[1].filter((card: Card) => !fieldCard1.some((field: any) => card.id == field.card.id))
-                const newDeckCard2 = deckCard[2].filter((card: Card) => !fieldCard2.some((field: any) => card.id == field.card.id))
-                const newDeckCard3 = deckCard[3].filter((card: Card) => !fieldCard3.some((field: any) => card.id == field.card.id))
+                const newDeckCard1 = deckCard[1].filter((card: CardData) => !fieldCard1.some((field: any) => card.id == field.card.id))
+                const newDeckCard2 = deckCard[2].filter((card: CardData) => !fieldCard2.some((field: any) => card.id == field.card.id))
+                const newDeckCard3 = deckCard[3].filter((card: CardData) => !fieldCard3.some((field: any) => card.id == field.card.id))
                 setDeckCard({
-                    [1]: newDeckCard1.map((card: Card, index: number) => {
+                    [1]: newDeckCard1.map((card: CardData, index: number) => {
                         return {
                             ...card,
                             position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeckCard1.length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
                             rotation: [0, Math.PI, 0]
                         }
                     }),
-                    [2]: newDeckCard2.map((card: Card, index: number) => {
+                    [2]: newDeckCard2.map((card: CardData, index: number) => {
                         return {
                             ...card,
                             position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeckCard2.length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
                             rotation: [0, Math.PI, 0]
                         }
                     }),
-                    [3]: newDeckCard3.map((card: Card, index: number) => {
+                    [3]: newDeckCard3.map((card: CardData, index: number) => {
                         return {
                             ...card,
                             position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeckCard3.length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
@@ -1220,9 +1220,9 @@ export function useGameController() {
                     [2]: card2Opens,
                     [1]: card1Opens,
                 })
-                // Noble
-                const newDeckNoble = deckNoble.filter((noble: Noble) => !fieldNoble.some((field: any) => noble.id == field.noble.id))
-                setDeckNoble(newDeckNoble.map((noble: Noble, index: number) => {
+                // NobleData
+                const newDeckNoble = deckNoble.filter((noble: NobleData) => !fieldNoble.some((field: any) => noble.id == field.noble.id))
+                setDeckNoble(newDeckNoble.map((noble: NobleData, index: number) => {
                     return {
                         ...noble,
                         position: [NoblePosition.desk[0], NoblePosition.desk[1], (newDeckNoble.length - 1 - index) * NobleCardSize.depth + NoblePosition.desk[2]],
@@ -1271,11 +1271,11 @@ export function useGameController() {
         }
 
         const timelineGems = gsap.timeline()
-        let newGems: Record<TokenGemType, Gem[]> = {...gems}
-        let newPlayerGems: Record<TokenGemType, Gem[]> = {...players[currentPlayer].gems}
+        let newGems: Record<TokenGemType, GemData[]> = {...gems}
+        let newPlayerGems: Record<TokenGemType, GemData[]> = {...players[currentPlayer].gems}
         {
-            function takeGem(tookGem: Gem) {
-                const playerDeckGems: Gem[] = players[currentPlayer].gems[tookGem.type]
+            function takeGem(tookGem: GemData) {
+                const playerDeckGems: GemData[] = players[currentPlayer].gems[tookGem.type]
                 const gemPosition: Vector3 = new Vector3().fromArray(PlayerPosition[tookGem.type])
 
                 // Animation
@@ -1323,8 +1323,8 @@ export function useGameController() {
                         }
                     }, [], ">0.1")
             }
-            function returnGem(returnGem: Gem) {
-                const deckGems: Gem[] = gems[returnGem.type]
+            function returnGem(returnGem: GemData) {
+                const deckGems: GemData[] = gems[returnGem.type]
                 const gemPosition: Vector3 = new Vector3().fromArray(GemPosition[returnGem.type])
 
                 // Animation
@@ -1370,7 +1370,7 @@ export function useGameController() {
                     }, [], ">0.1")
             }
             function takeGems(type: TokenGemType, total: number) {
-                const deckGems: Gem[] = gems[type]
+                const deckGems: GemData[] = gems[type]
                 let indexDeckGem
                 for (let i = 0; i < total; i++) {
                     indexDeckGem = deckGems.length - 1 - i
@@ -1382,7 +1382,7 @@ export function useGameController() {
                 }
             }
             function returnGems(type: TokenGemType, total: number) {
-                const playerDeckGems: Gem[] = players[currentPlayer].gems[type]
+                const playerDeckGems: GemData[] = players[currentPlayer].gems[type]
                 let indexDeckGem
                 for (let i = 0; i < total; i++) {
                     indexDeckGem = playerDeckGems.length - 1 - i
@@ -1485,7 +1485,7 @@ export function useGameController() {
             })
         }
 
-        const cards: Card[] = players[currentPlayer].cards[cardConfig.type]
+        const cards: CardData[] = players[currentPlayer].cards[cardConfig.type]
         const cardPosition: Vector3 = new Vector3().fromArray(PlayerPosition[cardConfig.type])
 
         // Animation
@@ -1509,7 +1509,7 @@ export function useGameController() {
 
         // Animation hold up
         {
-            const playerGems: Gem[] = players[currentPlayer].gems[cardConfig.type]
+            const playerGems: GemData[] = players[currentPlayer].gems[cardConfig.type]
 
             let instanceHoldUp = undefined
             if (cards.length > 0) {
@@ -1602,10 +1602,10 @@ export function useGameController() {
         }
 
         // Animation gem
-        const returnedGems: Gem[] = []
+        const returnedGems: GemData[] = []
         {
-            function returnGem(returnGem: Gem) {
-                const playerGems: Gem[] = players[currentPlayer].gems[returnGem.type]
+            function returnGem(returnGem: GemData) {
+                const playerGems: GemData[] = players[currentPlayer].gems[returnGem.type]
                 const gemPosition: Vector3 = new Vector3().fromArray(GemPosition[returnGem.type])
                 const instance = gemRefs.current[returnGem.id]
 
@@ -1642,7 +1642,7 @@ export function useGameController() {
                     }, [], ">0.1")
             }
             function returnGems(type: TokenGemType, total: number) {
-                const playerDeckGems: Gem[] = players[currentPlayer].gems[type]
+                const playerDeckGems: GemData[] = players[currentPlayer].gems[type]
                 let indexDeckGem
                 for (let i = 0; i < total; i++) {
                     indexDeckGem = playerDeckGems.length - 1 - i
@@ -1719,7 +1719,7 @@ export function useGameController() {
         }
 
         // Animation
-        const reserveCards: Card[] = players[currentPlayer].reserveCards
+        const reserveCards: CardData[] = players[currentPlayer].reserveCards
         const cardPosition: Vector3 = new Vector3().fromArray(PlayerPosition.reserveCard)
         const instance = cardRefs.current[cardId]
         const startPosition: Vector3 = instance.position.clone()
@@ -1821,7 +1821,7 @@ export function useGameController() {
         }
 
         // Animation
-        const nobles: Noble[] = players[currentPlayer].nobles
+        const nobles: NobleData[] = players[currentPlayer].nobles
         const noblePosition: Vector3 = new Vector3().fromArray(PlayerPosition.noble)
         const instance = nobleRefs.current[nobleId]
         const startPosition: Vector3 = instance.position.clone()

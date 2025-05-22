@@ -3,7 +3,7 @@ import React, {forwardRef, Ref, useImperativeHandle, useRef} from "react";
 import {RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
 import {Group, Mesh, Quaternion, TextureLoader, Vector3} from "three";
-import {NobleDictionary} from "@/games/splendor/constants/noble";
+import {NobleDictionary} from "@/games/splendor/data/noble";
 
 
 export const NobleCardSize = {

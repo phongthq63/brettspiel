@@ -15,7 +15,7 @@ interface GameTableProps {
 }
 
 function GameTable({onClick, ...props}: GameTableProps) {
-    const texture = useLoader(TextureLoader, "/gamedetail/splendor/board.jpg");
+    const texture = useLoader(TextureLoader, "/game/board.jpg");
 
     return (
         <RigidBody type={"fixed"}>

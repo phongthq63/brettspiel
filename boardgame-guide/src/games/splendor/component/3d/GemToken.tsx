@@ -4,7 +4,7 @@ import {Group, Mesh, Quaternion, TextureLoader, Vector3} from "three";
 import {RigidBodyType} from "@dimforge/rapier3d-compat";
 import {CylinderCollider, RapierRigidBody, RigidBody} from "@react-three/rapier";
 import {TokenGemType} from "@/games/splendor/types/gem";
-import {GemDictionary} from "@/games/splendor/constants/gem";
+import {GemDictionary} from "@/games/splendor/data/gem";
 
 
 export const GemTokenSize = {

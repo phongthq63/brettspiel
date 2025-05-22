@@ -19,6 +19,7 @@ export interface GameSeat {
     isFriended?: boolean;
 
     isMe?: boolean;
-    local?: string;
     isBot?: boolean;
+    isPlayer?: boolean;
+    local?: string;
 }

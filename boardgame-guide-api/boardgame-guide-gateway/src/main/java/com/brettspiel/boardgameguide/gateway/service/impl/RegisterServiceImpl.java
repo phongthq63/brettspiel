@@ -27,8 +27,6 @@ public class RegisterServiceImpl implements IRegisterService {
 
     @Override
     public R<?> registerByUsernamePassword(String email, String password, String confirmPassword) {
-        System.err.println(password);
-        System.err.println(confirmPassword);
         if (!Objects.equals(password, confirmPassword)) {
             return R.failed("Password and confirm password not same");
         }

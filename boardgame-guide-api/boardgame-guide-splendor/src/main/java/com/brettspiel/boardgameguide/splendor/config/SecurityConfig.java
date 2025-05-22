@@ -57,7 +57,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .securityContext(securityContext -> securityContext.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        .requestMatchers("/v3/api-docs/**",
+                        .requestMatchers(
+                                "/v3/api-docs/**",
                                 "/swagger-resources/configuration/ui",
                                 "/swagger-resources",
                                 "/swagger-resources/configuration/security",

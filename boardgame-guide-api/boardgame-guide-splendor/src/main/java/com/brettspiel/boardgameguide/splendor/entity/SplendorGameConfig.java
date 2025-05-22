@@ -1,6 +1,9 @@
-package com.brettspiel.boardgameguide.splendor.vo.config;
+package com.brettspiel.boardgameguide.splendor.entity;
 
+import com.brettspiel.boardgameguide.splendor.entity.vo.Card;
+import com.brettspiel.boardgameguide.splendor.entity.vo.Noble;
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
@@ -11,13 +14,15 @@ import java.util.List;
 @Data
 public class SplendorGameConfig {
 
+    @Field("endgame_score")
     private Integer endgameScore;
 
+    @Field("number_player")
     private Integer numberPlayer;
 
-    private List<CardConfig> cards;
+    private List<Card> cards;
 
-    private List<NobleConfig> nobles;
+    private List<Noble> nobles;
 
     private Integer noble;
 

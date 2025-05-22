@@ -2,20 +2,13 @@ import {Avatar, Badge, Button, Popover, PopoverContent, PopoverTrigger, Input} f
 import React, {useRef, useState} from "react";
 import {Bot, PencilLine, UserRound, X} from "lucide-react";
 import {GameSeat} from "@/types/game";
-import {useGameSetup} from "@/store/game-setup/game-setup.context";
-import {useShallow} from "zustand/react/shallow";
 import {SeatPopoverCard} from "@/component/game-detail/GamePlay/GameSeats/SeatPopoverCard";
+import {useGame} from "@/hooks/useGame";
 
 type PlayerSeatProps = GameSeat
 
-export function PlayerSeat({id, tagName, name, avatarUrl, isOnline, isFriended, isMe, local, isBot}: PlayerSeatProps) {
-    const {
-        setSeat,
-        removeSeat,
-    } = useGameSetup(useShallow((state) => ({
-        setSeat: state.setSeat,
-        removeSeat: state.removeSeat,
-    })))
+export function PlayerSeat({id, tagName, name, avatarUrl, isOnline, isFriended, isMe, isBot, isPlayer, local}: PlayerSeatProps) {
+    const { onSetSeatName, onKickSeat } = useGame();
     const [isOpenPopover, setIsOpenPopover] = useState(false);
     const [isEditingName, setIsEditingName] = useState(false);
     const [editedName, setEditedName] = useState(name);
@@ -34,12 +27,8 @@ export function PlayerSeat({id, tagName, name, avatarUrl, isOnline, isFriended, 
 
     const handleBlur = () => {
         setIsEditingName(false);
-        setSeat(id, {name: editedName})
+        onSetSeatName(id, editedName)
     };
-
-    const onSeatKick = (seatId: string) => {
-        removeSeat(seatId)
-    }
 
     return (
         <div className="w-full flex flex-col justify-start items-center gap-3">
@@ -64,12 +53,12 @@ export function PlayerSeat({id, tagName, name, avatarUrl, isOnline, isFriended, 
                         >
                             <Avatar
                                 classNames={{
-                                    base: `w-16 h-16 bg-[#caf0f8] ${(local || isBot) ? 'border-2 border-[#0077b6]' : 'border-2 border-[#90e0ef]'}`,
+                                    base: `w-16 h-16 bg-[#caf0f8] ${local ? 'border-2 border-[#0077b6]' : 'border-2 border-[#90e0ef]'}`,
                                     name: "font-semibold text-lg"
                                 }}
-                                src={(local || isBot) ? undefined : avatarUrl}
-                                name={(local || isBot) ? undefined : name}
-                                icon={local && (
+                                src={local ? undefined : avatarUrl}
+                                name={local ? undefined : name}
+                                icon={isPlayer && (
                                     <UserRound strokeWidth={1.5} size={50} className="text-[#0077b6]" />
                                 ) || isBot && (
                                     <Bot strokeWidth={1.5} size={50} className="text-[#0077b6]" />
@@ -98,8 +87,9 @@ export function PlayerSeat({id, tagName, name, avatarUrl, isOnline, isFriended, 
                             isFriended={isFriended}
                             isMe={isMe}
                             isBot={isBot}
+                            isPlayer={isPlayer}
                             local={local}
-                            onSeatKick={onSeatKick}
+                            onSeatKick={onKickSeat}
                         />
                     </div>
                 </PopoverContent>

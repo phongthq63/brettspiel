@@ -3,11 +3,11 @@ import {Avatar, Button, Card} from "@heroui/react";
 import React, {useState} from "react";
 import {wait} from "@/utils";
 import {GameSeat} from "@/types/game";
-import {MessageCircle, User} from "lucide-react";
+import {User} from "lucide-react";
 
 type PlayerInfoCardProps = GameSeat
 
-export function PlayerInfoCard({tagName, name, avatarUrl, isFriended, isMe, local, isBot}: PlayerInfoCardProps) {
+export function PlayerInfoCard({tagName, name, avatarUrl, isFriended, isMe, local}: PlayerInfoCardProps) {
     const [loading, setLoading] = useState(false);
 
 
@@ -43,7 +43,7 @@ export function PlayerInfoCard({tagName, name, avatarUrl, isFriended, isMe, loca
                         </div>
                     </div>
                     <div className="min-w-8 flex items-center gap-2">
-                        {!(isMe || local || isBot) && (
+                        {!(isMe || local) && (
                             <Button
                                 className="border-1 font-semibold"
                                 color="primary"

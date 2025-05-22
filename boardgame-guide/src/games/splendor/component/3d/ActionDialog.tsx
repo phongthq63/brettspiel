@@ -58,7 +58,7 @@ const ActionDialog = ({open, position, rotation, onClose}: ActionDialogProps) =>
                         currentAction.type == "option-action" ? (currentAction.option?.map(option => (
                             <Button key={option}
                                     color="success"
-                                    onClick={() => selectAction({...currentAction, type: option})}
+                                    onPress={() => selectAction({...currentAction, type: option})}
                                     style={{textTransform: "none"}}>
                                 {textButtonOption(option)}
                             </Button>

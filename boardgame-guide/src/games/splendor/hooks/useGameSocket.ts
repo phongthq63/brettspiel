@@ -23,12 +23,12 @@ export function useGameSocket(gameId: string) {
     // Socket join room gamedetail
     useEffect(() => {
         if (user && gameId && connected) {
-            RoomService.joinRoom({ body: { user_id: user.user_id, room_id: gameId } })
+            RoomService.joinRoom({ body: { user_id: user.id, room_id: gameId } })
                 .then(response => {
                     if (response.code == 0) {
-                        console.log("Join room successfully", user.user_id, gameId)
+                        console.log("Join room successfully", user.id, gameId)
                     } else {
-                        console.log("Join room fail", user.user_id, gameId)
+                        console.log("Join room fail", user.id, gameId)
                     }
                 })
                 .catch(error => {

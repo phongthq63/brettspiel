@@ -6,6 +6,7 @@ import com.brettspiel.utils.IdGenerator;
 import com.brettspiel.utils.R;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ContactServiceImpl implements IContactService {
 
-    private final static String TOPIC_PUBLISH_CONTACT = "brettspiel.game-service.contact";
+    @Value("${spring.kafka.producer.topic.contact}")
+    private String topicContact;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -29,7 +31,7 @@ public class ContactServiceImpl implements IContactService {
         contactData.put("email", request.getEmail());
         contactData.put("subject", request.getSubject());
         contactData.put("message", request.getMessage());
-        kafkaTemplate.send(TOPIC_PUBLISH_CONTACT, IdGenerator.nextUUID(), contactData);
+        kafkaTemplate.send(topicContact, IdGenerator.nextUUID(), contactData);
 
         return R.ok();
     }

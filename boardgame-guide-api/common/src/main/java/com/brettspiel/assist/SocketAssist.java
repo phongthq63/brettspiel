@@ -52,9 +52,10 @@ public class SocketAssist {
         kafkaTemplate.send(SocketConstants.TOPIC_PUBLISH_MESSAGE_USERS, IdGenerator.nextUUID(), socketData);
     }
 
-    public void broadcastMessageToRoom(String roomId, Map<String, Object> data) {
+    public void broadcastMessageToRoom(String roomId, String event, Map<String, Object> data) {
         Map<String, Object> socketData = new HashMap<>();
         socketData.put("room_id", roomId);
+        socketData.put("event", event);
         socketData.put("data", data);
         socketData.put("ts", System.currentTimeMillis());
         kafkaTemplate.send(SocketConstants.TOPIC_PUBLISH_MESSAGE_ROOM, IdGenerator.nextUUID(), socketData);

@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * On 11/18/2024 - 1:56 PM
  */
 @Data
-@Builder
+@Builder(toBuilder = true)
 public class Card {
 
     @Field("id")
@@ -22,5 +22,11 @@ public class Card {
     private Integer score;
 
     private CardCost cost;
+
+    @Field("image_front_url")
+    private String imageFrontUrl;
+
+    @Field("image_back_url")
+    private String imageBackUrl;
 
 }

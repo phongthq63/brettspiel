@@ -6,6 +6,7 @@ import { useGameDetail } from "@/store/game-detail.context";
 import { CollectionElement } from "@react-types/shared";
 import { useShallow } from "zustand/react/shallow";
 import DynamicGameSetupSetting from "@/component/game-detail/GamePlay/DynamicGameSetupSetting";
+import {useGame} from "@/hooks/useGame";
 
 const GameSetupSetting: React.FC = () => {
     const { data } = useGameDetail();
@@ -13,43 +14,13 @@ const GameSetupSetting: React.FC = () => {
         type,
         image_box_url,
         description,
-        setGameSetup,
     } = useGameSetup(useShallow((state) => ({
         type: state.type,
         image_box_url: state.imageBoxUrl,
         description: state.description,
-        setGameSetup: state.setGameSetup,
     })));
+    const { onSelectGameTypeChange } = useGame();
 
-
-    const handleSelectGameTypeChange = (gameType: string) => {
-        if (data.type === gameType) {
-            setGameSetup({
-                id: data.id,
-                type: gameType,
-                imageBoxUrl: data.image_box_url || "",
-                description: data.description || "",
-                minPlayers: (data.min_players ?? 1),
-                maxPlayers: (data.max_players ?? 999),
-                setup: data.setup,
-                setupSettings: {},
-            });
-        } else {
-            const expansion = data?.expansions?.find((exp) => exp.id === gameType);
-            if (expansion) {
-                setGameSetup({
-                    id: expansion.id,
-                    type: "expansion",
-                    imageBoxUrl: expansion.image_box_url || "",
-                    description: expansion.description || "",
-                    minPlayers: expansion.min_players ? expansion.min_players : (data.min_players ?? 1),
-                    maxPlayers: expansion.max_players ? expansion.max_players : (data.max_players ?? 999),
-                    setup: expansion.setup,
-                    setupSettings: {},
-                });
-            }
-        }
-    };
 
     return (
         <div>
@@ -64,7 +35,7 @@ const GameSetupSetting: React.FC = () => {
                         placeholder="Select game type"
                         isRequired
                         defaultSelectedKeys={[type]}
-                        onSelectionChange={(keys) => handleSelectGameTypeChange(Array.from(keys)[0] as string)}
+                        onSelectionChange={(keys) => onSelectGameTypeChange(Array.from(keys)[0] as string)}
                         aria-labelledby="type-label"
                     >
                         <SelectItem key={data.type} textValue={data.title}>

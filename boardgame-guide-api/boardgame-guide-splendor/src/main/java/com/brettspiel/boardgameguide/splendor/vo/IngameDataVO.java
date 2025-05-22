@@ -15,14 +15,8 @@ import java.util.List;
 @Data
 public class IngameDataVO extends BaseVO {
 
-    @Schema(description = "Số lượng người chơi", example = "4")
-    private Integer numberPlayer;
-
     @Schema(description = "Danh sách id người chơi", example = "[\"6739e185aa6d4921172c3ca2\"]")
     private List<String> playerIds;
-
-    @Schema(description = "Điểm kết thúc game")
-    private Integer endgameScore;
 
     @Schema(description = "Vòng", example = "14")
     private Integer round;

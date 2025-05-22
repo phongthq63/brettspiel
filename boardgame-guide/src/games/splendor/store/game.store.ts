@@ -1,51 +1,52 @@
 import {create} from 'zustand'
 import {TokenGemType} from "@/games/splendor/types/gem";
-import {Action, Card, Dialog, Gem, Noble, PhysicsObjectAction, Player} from "@/games/splendor/types/game";
+import {Action, CardData, Dialog, GemData, NobleData, PhysicsObjectAction, Player} from "@/games/splendor/types/game";
 import {GemTokenSize} from "@/games/splendor/component/3d/GemToken";
 
-interface GameState {
+interface GameStateStore {
     gameId: string
-    status?: number
+    status: number
     playerIds: string[]
     currentPlayer: string
     nextPlayer: string
-    deckCard: {[key: number]: Card[]}
-    fieldCard: {[key: number]: Card[]}
-    gems: Record<TokenGemType, Gem[]>
-    deckNoble: Noble[]
-    fieldNoble: Noble[]
+    deckCard: {[key: number]: CardData[]}
+    fieldCard: {[key: number]: CardData[]}
+    gems: Record<TokenGemType, GemData[]>
+    deckNoble: NobleData[]
+    fieldNoble: NobleData[]
     players: {[key: string]: Player}
     currentAction?: Action
     physicsObjectActions: PhysicsObjectAction[]
     dialog: Dialog
     isMyTurn: boolean
 
-    // Actions
+    // Method
+    setGameState: (data: Partial<GameStateStore>) => void;
     setGameId: (gameId: string) => void
     setStatus: (status: number | undefined) => void
     setPlayerIds: (playerIds: string[]) => void
     setCurrentPlayer: (playerId: string) => void
     setNextPlayer: (playerId: string) => void
-    setDeckCard: (deck: {[key: number]: Card[]}) => void
+    setDeckCard: (deck: {[key: number]: CardData[]}) => void
     removeCardDeckCard: (card: {id: string, level: number}) => void
-    setFieldCard: (field: {[key: number]: Card[]}) => void
+    setFieldCard: (field: {[key: number]: CardData[]}) => void
     removeCardFieldCard: (card: {id: string, level: number}) => void
-    setGems: (gems: Record<TokenGemType, Gem[]>) => void
-    addGem: (gem: Gem) => void
-    addGems: (gems: Gem[]) => void
+    setGems: (gems: Record<TokenGemType, GemData[]>) => void
+    addGem: (gem: GemData) => void
+    addGems: (gems: GemData[]) => void
     removeGem: (gem: {id: string, type: TokenGemType}) => void
-    setDeckNoble: (nobles: Noble[]) => void
-    setFieldNoble: (nobles: Noble[]) => void
+    setDeckNoble: (nobles: NobleData[]) => void
+    setFieldNoble: (nobles: NobleData[]) => void
     removeNobleFieldNoble: (id: string) => void
     setPlayers: (players: {[key: string]: Player}) => void
-    setPlayerGems: (playerId: string, gems: {[key in TokenGemType]: Gem[]}) => void
-    addPlayerGem: (playerId: string, gem: Gem) => void
+    setPlayerGems: (playerId: string, gems: {[key in TokenGemType]: GemData[]}) => void
+    addPlayerGem: (playerId: string, gem: GemData) => void
     removePlayerGem: (playerId: string, gem: {id: string, type: TokenGemType}) => void
     removePlayerGems: (playerId: string, gems: {id: string, type: TokenGemType}[]) => void
-    addPlayerCard: (playerId: string, card: Card) => void
-    addPlayerReserveCard: (playerId: string, card: Card) => void
+    addPlayerCard: (playerId: string, card: CardData) => void
+    addPlayerReserveCard: (playerId: string, card: CardData) => void
     removePlayerReserveCard: (playerId: string, id: string) => void
-    addPlayerNoble:  (playerId: string, noble: Noble) => void
+    addPlayerNoble:  (playerId: string, noble: NobleData) => void
     setCurrentAction: (action: Action | undefined) => void
     setPhysicsObjectActions: (actions: PhysicsObjectAction[]) => void
     addPhysicsObjectAction: (action: PhysicsObjectAction) => void
@@ -54,10 +55,10 @@ interface GameState {
     setIsMyTurn: (userId?: string) => void
 }
 
-export const useGameStore = create<GameState>((set) => ({
+export const useGameStore = create<GameStateStore>((set) => ({
     // Initial state
-    userId: "",
     gameId: "",
+    status: 0,
     playerIds: [],
     currentPlayer: "",
     nextPlayer: "",
@@ -90,7 +91,8 @@ export const useGameStore = create<GameState>((set) => ({
     },
     isMyTurn: false,
 
-    // Actions
+    // Method
+    setGameState: (data) => set((state) => ({ ...state, ...data })),
     setGameId: (gameId) => set({ gameId }),
     setStatus: (status) => set({ status }),
     setPlayerIds: (playerIds) => set({ playerIds }),
@@ -111,7 +113,7 @@ export const useGameStore = create<GameState>((set) => ({
         }
     })),
     setGems: (gems) => set({ gems }),
-    addGem: (gem: Gem) => set((state) => {
+    addGem: (gem: GemData) => set((state) => {
         let gemsOfType = state.gems[gem.type]
         gemsOfType.push(gem)
         gemsOfType = gemsOfType.map((gemOfType, index) => ({
@@ -122,9 +124,9 @@ export const useGameStore = create<GameState>((set) => ({
             gems: {...state.gems, [gem.type]: gemsOfType}
         }
     }),
-    addGems: (gems: Gem[]) => set((state) => {
+    addGems: (gems: GemData[]) => set((state) => {
         const typeGemMap = Object.groupBy(gems, item => item.type)
-        const newGems: Record<TokenGemType, Gem[]> = { ...state.gems }
+        const newGems: Record<TokenGemType, GemData[]> = { ...state.gems }
         for (const type of Object.keys(typeGemMap) as TokenGemType[]) {
             if (typeGemMap[type]) {
                 newGems[type] = state.gems[type]
@@ -152,7 +154,7 @@ export const useGameStore = create<GameState>((set) => ({
         fieldNoble: state.fieldNoble.filter(noble => noble.id != id),
     })),
     setPlayers: (players) => set({ players }),
-    setPlayerGems: (playerId: string, gems: {[key in TokenGemType]: Gem[]}) => set((state) => ({
+    setPlayerGems: (playerId: string, gems: {[key in TokenGemType]: GemData[]}) => set((state) => ({
         players: {
             ...state.players,
             [playerId]: {
@@ -161,8 +163,8 @@ export const useGameStore = create<GameState>((set) => ({
             }
         }
     })),
-    addPlayerGem: (playerId: string, gem: Gem) => set((state) => {
-        let playerGems: Gem[] = state.players[playerId].gems[gem.type]
+    addPlayerGem: (playerId: string, gem: GemData) => set((state) => {
+        let playerGems: GemData[] = state.players[playerId].gems[gem.type]
         playerGems.push(gem)
         playerGems = playerGems.map((playerGem, index) => ({
             ...playerGem,
@@ -196,7 +198,7 @@ export const useGameStore = create<GameState>((set) => ({
     })),
     removePlayerGems: (playerId: string, gems: {id: string, type: TokenGemType}[]) => set((state) => {
         const typeGemMap = Object.groupBy(gems, item => item.type)
-        const newPlayerGems: Record<TokenGemType, Gem[]> = { ...state.players[playerId].gems }
+        const newPlayerGems: Record<TokenGemType, GemData[]> = { ...state.players[playerId].gems }
         for (const type of Object.keys(typeGemMap) as TokenGemType[]) {
             if (typeGemMap[type]) {
                 newPlayerGems[type] = state.players[playerId].gems[type].filter(typeGem => typeGemMap[type]?.some(returnGem => returnGem.id == typeGem.id))
@@ -216,7 +218,7 @@ export const useGameStore = create<GameState>((set) => ({
             }
         }
     }),
-    addPlayerCard: (playerId: string, card: Card) => set((state) => ({
+    addPlayerCard: (playerId: string, card: CardData) => set((state) => ({
         players: {
             ...state.players,
             [playerId]: {
@@ -231,7 +233,7 @@ export const useGameStore = create<GameState>((set) => ({
             }
         }
     })),
-    addPlayerReserveCard: (playerId: string, card: Card) => set((state) => ({
+    addPlayerReserveCard: (playerId: string, card: CardData) => set((state) => ({
         players: {
             ...state.players,
             [playerId]: {
@@ -252,7 +254,7 @@ export const useGameStore = create<GameState>((set) => ({
             }
         }
     })),
-    addPlayerNoble: (playerId: string, noble: Noble) => set((state) => ({
+    addPlayerNoble: (playerId: string, noble: NobleData) => set((state) => ({
         players: {
             ...state.players,
             [playerId]: {

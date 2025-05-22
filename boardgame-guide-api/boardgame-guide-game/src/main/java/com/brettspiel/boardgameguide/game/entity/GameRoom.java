@@ -22,6 +22,12 @@ public class GameRoom extends BaseMongodbEntity {
     @Field("room_id")
     private String roomId;
 
+    @Field("session_id")
+    private String sessionId;
+
+    @Field("game_id")
+    private String gameId;
+
     private List<RoomPlayer> players;
 
     private Integer status;
@@ -29,4 +35,12 @@ public class GameRoom extends BaseMongodbEntity {
     @Field("host_id")
     private String hostId;
 
+
+
+    public static class Status {
+        public static final int INIT = 0;
+        public static final int WAITING = 1;
+        public static final int STARTED = 2;
+        public static final int FINISHED = 3;
+    }
 }

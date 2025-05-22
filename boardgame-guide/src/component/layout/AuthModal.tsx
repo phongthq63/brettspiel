@@ -19,7 +19,8 @@ export default function AuthModal({ isOpen, onOpenChange } : AuthModalProps) {
 
     return (
         <Modal
-            placement="top-center"
+            placement="center"
+            shouldBlockScroll={false}
             isOpen={isOpen}
             onOpenChange={onOpenChange}
         >

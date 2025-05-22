@@ -2,6 +2,7 @@ package com.brettspiel.boardgameguide.game.controller.dto.request;
 
 import com.brettspiel.service.dto.request.BaseRequest;
 import com.brettspiel.service.vo.BaseVO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +21,7 @@ public class StartPlayRequest extends BaseRequest {
 
     @NotEmpty
     @Schema(description = "Id game", example = "game01")
-    private String gameId;
+    private String roomId;
 
     @NotEmpty
     @Schema(description = "List of players participating in the game")
@@ -45,10 +46,15 @@ public class StartPlayRequest extends BaseRequest {
         @Schema(description = "Name of the player", example = "Alice")
         private String name;
 
-        @Schema(description = "Indicates if this player is the local player", example = "player1")
-        private String localPlayer;
-
+        @JsonProperty("is_bot")
         @Schema(description = "Indicates if this player is a bot", example = "false")
         private boolean isBot;
+
+        @JsonProperty("is_player")
+        @Schema(description = "Indicates if this player is a player", example = "false")
+        private boolean isPlayer;
+
+        @Schema(description = "Unique identifier for the local player", example = "player1")
+        private String local;
     }
 }

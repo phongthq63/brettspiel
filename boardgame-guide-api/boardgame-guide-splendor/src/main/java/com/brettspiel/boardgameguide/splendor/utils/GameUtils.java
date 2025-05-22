@@ -1,8 +1,8 @@
 package com.brettspiel.boardgameguide.splendor.utils;
 
 import cn.hutool.json.JSONUtil;
-import com.brettspiel.boardgameguide.splendor.vo.config.SplendorConfig;
-import com.brettspiel.boardgameguide.splendor.vo.config.SplendorGameConfig;
+import com.brettspiel.boardgameguide.splendor.entity.SplendorConfig;
+import com.brettspiel.boardgameguide.splendor.entity.SplendorGameConfig;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ResourceLoader;
@@ -11,7 +11,6 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 /**
  * Created by Quach Thanh Phong
@@ -34,28 +33,25 @@ public class GameUtils {
     }
 
 
-
-    public List<Integer> getNumberPlayerAvailable() {
-        return splendorConfig.getNumberPlayer();
-    }
-
-    public List<SplendorGameConfig> getListGameConfig() {
-        return splendorConfig.getConfig();
-    }
-
     public SplendorGameConfig getGameConfig(int numberPlayer) {
-        SplendorGameConfig gameConfig = splendorConfig.getConfig().stream()
-                .filter(splendorGameConfig -> splendorGameConfig.getNumberPlayer() == numberPlayer)
+        SplendorGameConfig splendorGameConfig = splendorConfig.getConfigs().stream()
+                .filter(splendorSplendorGameConfig -> splendorSplendorGameConfig.getNumberPlayer() == numberPlayer)
                 .findFirst()
                 .orElse(null);
-        if (gameConfig == null) {
+        if (splendorGameConfig == null) {
             return null;
         }
 
-        gameConfig.setEndgameScore(splendorConfig.getEndgameScore());
-        gameConfig.setCards(splendorConfig.getCard());
-        gameConfig.setNobles(splendorConfig.getNoble());
-        return gameConfig;
+        if (splendorGameConfig.getEndgameScore() == null) {
+            splendorGameConfig.setEndgameScore(splendorConfig.getEndgameScore());
+        }
+        if (splendorGameConfig.getCards() == null) {
+            splendorGameConfig.setCards(splendorConfig.getCards());
+        }
+        if (splendorGameConfig.getNobles() == null) {
+            splendorGameConfig.setNobles(splendorConfig.getNobles());
+        }
+        return splendorGameConfig;
     }
 
 }

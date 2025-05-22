@@ -18,22 +18,13 @@ import org.springframework.web.bind.annotation.*;
  */
 @Tag(name = "Game")
 @RestController
-@RequestMapping(value = "/game")
+@RequestMapping(value = "/")
 @RequiredArgsConstructor
 public class GameController {
 
     private final IGameService gameService;
 
 
-
-    @PostMapping("/init")
-    public R<SplendorGameDTO> initGame(@Parameter(hidden = true) Authentication authentication,
-                         @Valid @RequestBody InitGameRequest body) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        String userId = userPrincipal.getId();
-
-        return gameService.initGame(userId, body);
-    }
 
     @GetMapping("/{gameId}")
     public R<SplendorGameDTO> getGameInfo(@Parameter(hidden = true) Authentication authentication,

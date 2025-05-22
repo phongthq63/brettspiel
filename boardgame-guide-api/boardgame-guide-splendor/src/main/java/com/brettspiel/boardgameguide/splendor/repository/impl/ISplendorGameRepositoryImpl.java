@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.brettspiel.boardgameguide.splendor.constant.GameConstants;
 import com.brettspiel.boardgameguide.splendor.entity.SplendorGame;
 import com.brettspiel.boardgameguide.splendor.entity.vo.Card;
+import com.brettspiel.boardgameguide.splendor.entity.vo.IngameData;
 import com.brettspiel.boardgameguide.splendor.entity.vo.Noble;
 import com.brettspiel.boardgameguide.splendor.repository.custom.ICustomSplendorGameRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,37 +42,18 @@ public class ISplendorGameRepositoryImpl implements ICustomSplendorGameRepositor
     @Override
     public SplendorGame findGameUserIn(String gameId, String userId) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
-                        .and("player_ids").all(userId));
+                        .and("players").elemMatch(Criteria.where("id").is(userId)));
 
         return mongoTemplate.findOne(query, SplendorGame.class);
     }
 
     @Override
-    public SplendorGame startGame(String gameId, List<Noble> deckNoble, List<Noble> fieldNoble, List<Card> deckCard1, List<Card> deckCard2, List<Card> deckCard3, List<Card> fieldCard1, List<Card> fieldCard2, List<Card> fieldCard3) {
+    public SplendorGame startGame(String gameId, IngameData ingameData) {
         Query query = Query.query(Criteria.where("game_id").is(gameId)
                 .and("status").is(GameConstants.STATUS_INIT));
         Update update = new Update();
         update.set("status", GameConstants.STATUS_PLAY);
-        update.set("ingame_data.deck_noble", deckNoble);
-        update.set("ingame_data.deck_card_1", deckCard1);
-        update.set("ingame_data.deck_card_2", deckCard2);
-        update.set("ingame_data.deck_card_3", deckCard3);
-        IntStream.range(0, fieldNoble.size())
-                .forEach(index -> {
-                    update.set(StrUtil.format("ingame_data.field_noble.{}.noble", index), fieldNoble.get(index));
-                });
-        IntStream.range(0, fieldCard1.size())
-                .forEach(index -> {
-                    update.set(StrUtil.format("ingame_data.field_card_1.{}.card", index), fieldCard1.get(index));
-                });
-        IntStream.range(0, fieldCard2.size())
-                .forEach(index -> {
-                    update.set(StrUtil.format("ingame_data.field_card_2.{}.card", index), fieldCard2.get(index));
-                });
-        IntStream.range(0, fieldCard3.size())
-                .forEach(index -> {
-                    update.set(StrUtil.format("ingame_data.field_card_3.{}.card", index), fieldCard3.get(index));
-                });
+        update.set("ingame_data", ingameData);
         FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options()
                 .returnNew(true);
 

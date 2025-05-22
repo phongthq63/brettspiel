@@ -36,7 +36,7 @@ spring:
       topic:
     consumer:
       enable: true
-      instanceId: ${PROJECT:brettspiel}.${ENVIRONMENT:dev}.socket.${HOSTNAME:instance}
+      instance-id: ${PROJECT:brettspiel}.${ENVIRONMENT:dev}.socket.${HOSTNAME:instance}
       groupId: ${KAFKA_GROUP_ID:${PROJECT:brettspiel}.${ENVIRONMENT:dev}.brettspiel-socket}
       topic:
       auto-offset-reset: "latest"
@@ -57,6 +57,9 @@ spring:
 
 jwt:
   secret: ThisIsSecretKey
+
+allow:
+  origins: ${ALLOW_ORIGINS:http://localhost:3000}
 
 
 sentry:

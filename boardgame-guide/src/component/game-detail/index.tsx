@@ -187,9 +187,7 @@ export function GameDetail() {
                             className="relative bg-[#0077b6] pt-10 px-2 pb-20 z-0"
                         >
                             <AuthWrapper>
-                                <div>
-                                    <GamePlay ref={gamePlayRef} onClose={onClosePlayNow}/>
-                                </div>
+                                <GamePlay ref={gamePlayRef} onClose={onClosePlayNow}/>
                             </AuthWrapper>
                         </motion.div>
                     )}

@@ -24,6 +24,11 @@ export interface GameSetupStore {
         [key: string]: any;
     };
     setupSettings?: Record<string, string[]>;
+    roomId: string;
+    isStarting: boolean;
+    isSearching: boolean;
+
+
 
     // Methods
     setGameSetup: (data: Partial<GameSetupStore>) => void;
@@ -35,6 +40,9 @@ export interface GameSetupStore {
     resizeSeats: (size: number) => void;
     setInviteLink: (inviteLink: string) => void;
     setSetupSetting: (settingId: string, settingValue: string[]) => void;
+    setRoomId: (roomId: string) => void;
+    setIsStarting: (isStarting: boolean) => void;
+    setIsSearching: (isSearching: boolean) => void;
     clearGameSetup: () => void;
 }
 
@@ -50,6 +58,9 @@ export const createGameSetupStore = () =>
         seats: [],
         inviteLink: '',
         rules: [],
+        roomId: '',
+        isStarting: false,
+        isSearching: false,
 
         setGameSetup: (data) => set((state) => ({ ...state, ...data })),
         setPlayers: (players) => set({ players }),
@@ -79,7 +90,9 @@ export const createGameSetupStore = () =>
                 [settingId]: settingValue,
             },
         })),
-
+        setRoomId: (roomId: string) => set({ roomId }),
+        setIsStarting: (isStarting) => set({ isStarting }),
+        setIsSearching: (isSearching) => set({ isSearching }),
         clearGameSetup: () =>
             set({
                 id: '',
@@ -92,5 +105,8 @@ export const createGameSetupStore = () =>
                 seats: [],
                 inviteLink: '',
                 rules: [],
+                roomId: '',
+                isStarting: false,
+                isSearching: false,
             }),
 }));

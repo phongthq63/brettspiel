@@ -4,20 +4,20 @@ import { useGameSetup } from "@/store/game-setup/game-setup.context";
 import { CollectionElement } from "@react-types/shared";
 import { useShallow } from "zustand/react/shallow";
 import { GameSetupSetting } from "@/types/game";
+import { useGame } from "@/hooks/useGame";
 
 const DynamicGameSetupSetting: React.FC = () => {
     const {
         setup,
-        setSetupSetting
     } = useGameSetup(useShallow((state) => ({
         setup: state.setup,
-        setSetupSetting: state.setSetupSetting,
     })));
+    const { onSetupSettingChange } = useGame();
     const [selectedDescriptions, setSelectedDescriptions] = useState<Record<string, string[]>>({});
 
 
     const handleSettingChange = (settingId: string, values: string[], description?: string[]) => {
-        setSetupSetting(settingId, values);
+        onSetupSettingChange(settingId, values);
 
         if (description) {
             setSelectedDescriptions((prev) => ({

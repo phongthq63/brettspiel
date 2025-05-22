@@ -12,7 +12,7 @@ import {useGameSocket} from "@/games/splendor/hooks/useGameSocket";
 import {useGameController} from "@/games/splendor/hooks/useGameController";
 import {useGameStore} from "@/games/splendor/store/game.store";
 import {useShallow} from "zustand/react/shallow";
-import {Card, Gem} from "@/games/splendor/types/game";
+import {CardData, GemData} from "@/games/splendor/types/game";
 
 
 function GameArea() {
@@ -46,15 +46,15 @@ function GameArea() {
     } = useGameController()
     useGameSocket(gameId)
 
-    const [deckCard1, setDeckCard1] = useState<Card[]>([])
-    const [deckCard2, setDeckCard2] = useState<Card[]>([])
-    const [deckCard3, setDeckCard3] = useState<Card[]>([])
-    const [golds, setGolds] = useState<Gem[]>([])
-    const [diamonds, setDiamonds] = useState<Gem[]>([])
-    const [sapphires, setSapphires] = useState<Gem[]>([])
-    const [emeralds, setEmeralds] = useState<Gem[]>([])
-    const [rubies, setRubies] = useState<Gem[]>([])
-    const [onyxes, setOnyxes] = useState<Gem[]>([])
+    const [deckCard1, setDeckCard1] = useState<CardData[]>([])
+    const [deckCard2, setDeckCard2] = useState<CardData[]>([])
+    const [deckCard3, setDeckCard3] = useState<CardData[]>([])
+    const [golds, setGolds] = useState<GemData[]>([])
+    const [diamonds, setDiamonds] = useState<GemData[]>([])
+    const [sapphires, setSapphires] = useState<GemData[]>([])
+    const [emeralds, setEmeralds] = useState<GemData[]>([])
+    const [rubies, setRubies] = useState<GemData[]>([])
+    const [onyxes, setOnyxes] = useState<GemData[]>([])
 
 
     useEffect(() => {
@@ -90,7 +90,7 @@ function GameArea() {
         <>
             <OrbitControls/>
             <ambientLight intensity={2}/>
-            <GamePlane position={[0, 0, -5]}/>
+            <GamePlane position={[0, 0, -2]}/>
             <GameTable position={[0, 0, -GameTableSize.depth / 2]}/>
             <group>
                 <group>

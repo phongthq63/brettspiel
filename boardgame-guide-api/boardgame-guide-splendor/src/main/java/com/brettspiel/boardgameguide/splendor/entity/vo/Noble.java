@@ -1,7 +1,9 @@
 package com.brettspiel.boardgameguide.splendor.entity.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
@@ -9,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * On 11/18/2024 - 1:56 PM
  */
 @Data
-@Builder
+@Builder(toBuilder = true)
 public class Noble {
 
     @Field("id")
@@ -18,5 +20,11 @@ public class Noble {
     private Integer score;
 
     private NobleCost cost;
+
+    @Field("image_front_url")
+    private String imageFrontUrl;
+
+    @Field("image_back_url")
+    private String imageBackUrl;
 
 }

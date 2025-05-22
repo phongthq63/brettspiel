@@ -51,11 +51,13 @@ spring:
       batch-size: ${KAFKA_PRODUCER_BATCH_SIZE:50}
       linger: ${KAFKA_PRODUCER_LINGER:1000}
       topic:
+
     consumer:
       enable: true
-      instanceId: ${PROJECT:brettspiel}.${ENVIRONMENT:dev}.service-splendor.${HOSTNAME:instance}
+      instance-id: ${PROJECT:brettspiel}.${ENVIRONMENT:dev}.service-splendor.${HOSTNAME:instance}
       groupId: ${KAFKA_GROUP_ID:${PROJECT:brettspiel}.${ENVIRONMENT:dev}.brettspiel-splendor}
       topic:
+        game-start-play: brettspiel.game-service.splendor.start-play
       auto-offset-reset: "latest"
       max-poll-interval-ms: 300000
       retry: 5
@@ -70,12 +72,6 @@ spring:
           password: ${KAFKA_PASSWORD:}
       security:
         protocol: ${KAFKA_PROTOCOL:}
-
-
-service:
-  client:
-    brettspiel-socket:
-      url: http://localhost:8081
 
 
 jwt:

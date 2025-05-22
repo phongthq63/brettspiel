@@ -62,7 +62,7 @@ export default function ActionDescription() {
     return (
         <>
             {status != undefined && connected && (
-                <div className="flex absolute w-full bottom-0 bg-cyan-100 rounded-xl space-y-2 p-2">
+                <div className="sticky flex w-full bottom-0 bg-cyan-100 rounded-xl space-y-2 p-2">
                     {status == 0 && (
                         <div className="w-full flex justify-center items-center">
                             <Button

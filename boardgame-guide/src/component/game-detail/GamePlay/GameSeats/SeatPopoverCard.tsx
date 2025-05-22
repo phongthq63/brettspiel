@@ -9,7 +9,7 @@ interface SeatPopoverCardProps extends GameSeat {
     onSeatKick?: (seatId: string) => void
 }
 
-export function SeatPopoverCard({id, tagName, name, avatarUrl, isFriended, isMe, local, isBot, onSeatKick}: SeatPopoverCardProps) {
+export function SeatPopoverCard({id, tagName, name, avatarUrl, isFriended, isMe, local, onSeatKick}: SeatPopoverCardProps) {
     const [loading, setLoading] = useState(false);
 
 
@@ -67,7 +67,7 @@ export function SeatPopoverCard({id, tagName, name, avatarUrl, isFriended, isMe,
             </CardHeader>
             <CardBody className="border-t-1">
                 <div className="flex gap-2 mb-3">
-                    {!(isMe || local || isBot) && (
+                    {!(isMe || local) && (
                         <Button
                             className="border-1 font-semibold"
                             color="primary"
@@ -81,7 +81,7 @@ export function SeatPopoverCard({id, tagName, name, avatarUrl, isFriended, isMe,
                             {isFriended ? "Unfriend" : "Add friend"}
                         </Button>
                     )}
-                    {!(isMe || local || isBot) && (
+                    {!(isMe || local) && (
                         <Button
                             className="border-1 border-[#00b4d8] text-[#00b4d8] font-semibold"
                             variant="bordered"

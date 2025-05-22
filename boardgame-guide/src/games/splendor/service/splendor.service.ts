@@ -32,68 +32,6 @@ export async function axios(configs: IRequestConfig, resolve: (p: any) => void, 
 }
 
 
-export class TableService {
-    /**
-     *
-     */
-    static getListTableInfo(
-        params: {
-            /** Trang */
-            page?: number;
-            /** Số lượng */
-            size?: number;
-        } = {} as any,
-        options: IRequestOptions = {}
-    ): Promise<any> {
-        return new Promise((resolve, reject) => {
-            const url = basePath + '/table';
-
-            const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
-            configs.params = { page: params['page'], size: params['size'] };
-
-            axios(configs, resolve, reject);
-        });
-    }
-    /**
-     *
-     */
-    static createNewTable(
-        params: {
-            /** requestBody */
-            body?: CreateNewTableRequest;
-        } = {} as any,
-        options: IRequestOptions = {}
-    ): Promise<any> {
-        return new Promise((resolve, reject) => {
-            const url = basePath + '/table';
-
-            const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
-
-            configs.data = params.body;
-
-            axios(configs, resolve, reject);
-        });
-    }
-    /**
-     *
-     */
-    static getTableInfo(
-        params: {
-            /**  */
-            tableId: string;
-        } = {} as any,
-        options: IRequestOptions = {}
-    ): Promise<any> {
-        return new Promise((resolve, reject) => {
-            let url = basePath + '/table/{tableId}';
-            url = url.replace('{tableId}', params['tableId'] + '');
-
-            const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
-
-            axios(configs, resolve, reject);
-        });
-    }
-}
 
 export class GameService {
     /**
@@ -107,7 +45,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/gamedetail/{gameId}/turn/start';
+            let url = basePath + '/{gameId}/turn/start';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -126,7 +64,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/gamedetail/{gameId}/turn/end';
+            let url = basePath + '/{gameId}/turn/end';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -147,7 +85,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/gamedetail/{gameId}/turn/bonus-action/take-noble';
+            let url = basePath + '/{gameId}/turn/bonus-action/take-noble';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -168,7 +106,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/gamedetail/{gameId}/turn/action/skip';
+            let url = basePath + '/{gameId}/turn/action/skip';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -189,7 +127,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/gamedetail/{gameId}/turn/action/reserve-card';
+            let url = basePath + '/{gameId}/turn/action/reserve-card';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -212,7 +150,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/gamedetail/{gameId}/turn/action/gather-gem';
+            let url = basePath + '/{gameId}/turn/action/gather-gem';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -235,7 +173,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/gamedetail/{gameId}/turn/action/buy-card';
+            let url = basePath + '/{gameId}/turn/action/buy-card';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -256,7 +194,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/gamedetail/{gameId}/start';
+            let url = basePath + '/{gameId}/start';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
@@ -275,7 +213,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<any> {
         return new Promise((resolve, reject) => {
-            const url = basePath + '/gamedetail/init';
+            const url = basePath + '/init';
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -295,7 +233,7 @@ export class GameService {
         options: IRequestOptions = {}
     ): Promise<RSplendorGameDTO> {
         return new Promise((resolve, reject) => {
-            let url = basePath + '/gamedetail/{gameId}';
+            let url = basePath + '/{gameId}';
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
@@ -305,10 +243,6 @@ export class GameService {
     }
 }
 
-export interface CreateNewTableRequest {
-    /** Số lượng người chơi */
-    number_player?: number;
-}
 
 export interface TurnBonusActionTakeNobleRequest {
     /** Id quý tộc lấy */
@@ -551,63 +485,70 @@ export interface SplendorGameDTO {
     /** Id gamedetail */
     game_id?: string;
 
-    /** Danh sách id người chơi */
-    player_ids?: string[];
+    /** Danh sách thông tin người chơi */
+    players?: PlayerDTO[];
 
     /** Trạng thái */
     status?: number;
 
-    /** Thông tin các quý tộc */
-    nobles?: NobleVO[];
-
-    /** Thông tin các lá bài */
-    cards?: CardVO[];
+    /**  */
+    config?: SplendorGameConfigDTO;
 
     /**  */
     ingame_data?: IngameDataVO;
 }
 
-export interface SplendorTableDTO {
-    /** Id bàn */
-    table_id?: string;
+export interface SplendorGameConfigDTO {
+    /** The score required to end the game */
+    endgame_score?: number;
 
-    /** Số lượng người chơi */
+    /** The number of players in the game */
     number_player?: number;
 
-    /** Danh sách id người chơi */
-    user_ids?: string[];
+    /** The list of cards available in the game */
+    cards?: CardVO[];
 
-    /** Trạng thái (0: chờ; 1: đang tìm người chơi; 2: trong gamedetail) */
-    status?: number;
+    /** The list of nobles available in the game */
+    nobles?: NobleVO[];
 
-    /** Id chủ phòng */
-    host_id?: string;
+    /** The number of nobles available */
+    noble?: number;
+
+    /** The number of gold tokens available */
+    gold?: number;
+
+    /** The number of onyx tokens available */
+    onyx?: number;
+
+    /** The number of ruby tokens available */
+    ruby?: number;
+
+    /** The number of emerald tokens available */
+    emerald?: number;
+
+    /** The number of sapphire tokens available */
+    sapphire?: number;
+
+    /** The number of diamond tokens available */
+    diamond?: number;
 }
 
-export interface PageDTOSplendorTableDTO {
-    /**  */
-    list?: SplendorTableDTO[];
+export interface PlayerDTO {
+    /** ID của người chơi */
+    id?: string;
+
+    /** URL ảnh đại diện */
+    avatar_url?: string;
+
+    /** Tên người chơi */
+    name?: string;
+
+    /** Ngôn ngữ của người chơi */
+    local?: string;
 
     /**  */
-    page?: number;
+    bot?: boolean;
 
     /**  */
-    size?: number;
-
-    /**  */
-    total?: string;
-}
-
-export interface RPageDTOSplendorTableDTO {
-    /**  */
-    code?: number;
-
-    /**  */
-    msg?: string;
-
-    /**  */
-    data?: PageDTOSplendorTableDTO;
-
-    /**  */
-    ts?: string;
+    player?: boolean;
 }

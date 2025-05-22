@@ -3,7 +3,7 @@
   "name": "splendor",
   "number_player": [2, 3, 4],
   "endgame_score": 15,
-  "card": [
+  "cards": [
     {
       "id": "diamond_3",
       "type": "diamond",
@@ -15,9 +15,7 @@
         "emerald": 0,
         "sapphire": 3,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/diamond_3.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "diamond_4",
@@ -30,9 +28,7 @@
         "emerald": 4,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/diamond_4.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "diamond_21",
@@ -45,9 +41,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/diamond_21.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "diamond_22",
@@ -60,9 +54,7 @@
         "emerald": 0,
         "sapphire": 2,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/diamond_22.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "diamond_221",
@@ -75,9 +67,7 @@
         "emerald": 2,
         "sapphire": 2,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/diamond_221.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "diamond_311",
@@ -90,9 +80,7 @@
         "emerald": 0,
         "sapphire": 1,
         "diamond": 3
-      },
-      "image_front_url": "/game/splendor/card/1/diamond_311.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "diamond_1111",
@@ -105,9 +93,7 @@
         "emerald": 1,
         "sapphire": 1,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/diamond_1111.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "diamond_1211",
@@ -120,9 +106,7 @@
         "emerald": 2,
         "sapphire": 1,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/diamond_1211.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "emerald_3",
@@ -135,9 +119,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/emerald_3.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "emerald_4",
@@ -150,9 +132,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/emerald_4.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "emerald_21",
@@ -165,9 +145,7 @@
         "emerald": 0,
         "sapphire": 1,
         "diamond": 2
-      },
-      "image_front_url": "/game/splendor/card/1/emerald_21.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "emerald_22",
@@ -180,9 +158,7 @@
         "emerald": 0,
         "sapphire": 2,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/emerald_22.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "emerald_122",
@@ -195,9 +171,7 @@
         "emerald": 0,
         "sapphire": 1,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/emerald_122.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "emerald_131",
@@ -210,9 +184,7 @@
         "emerald": 1,
         "sapphire": 3,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/1/emerald_131.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "emerald_1111",
@@ -225,9 +197,7 @@
         "emerald": 0,
         "sapphire": 1,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/1/emerald_1111.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "emerald_1112",
@@ -240,9 +210,7 @@
         "emerald": 0,
         "sapphire": 1,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/1/emerald_1112.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "onyx_3",
@@ -255,9 +223,7 @@
         "emerald": 3,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/onyx_3.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "onyx_4",
@@ -270,9 +236,7 @@
         "emerald": 4,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/onyx_4.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "onyx_21",
@@ -285,9 +249,7 @@
         "emerald": 2,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/onyx_21.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "onyx_22",
@@ -300,9 +262,7 @@
         "emerald": 2,
         "sapphire": 0,
         "diamond": 2
-      },
-      "image_front_url": "/game/splendor/card/1/onyx_22.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "onyx_131",
@@ -315,9 +275,7 @@
         "emerald": 1,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/onyx_131.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "onyx_221",
@@ -330,9 +288,7 @@
         "emerald": 0,
         "sapphire": 2,
         "diamond": 2
-      },
-      "image_front_url": "/game/splendor/card/1/onyx_221.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "onyx_1111",
@@ -345,9 +301,7 @@
         "emerald": 1,
         "sapphire": 1,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/1/onyx_1111.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "onyx_1211",
@@ -360,9 +314,7 @@
         "emerald": 1,
         "sapphire": 2,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/1/onyx_1211.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "ruby_3",
@@ -375,9 +327,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 3
-      },
-      "image_front_url": "/game/splendor/card/1/ruby_3.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "ruby_21",
@@ -390,9 +340,7 @@
         "emerald": 1,
         "sapphire": 2,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/ruby_21.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "ruby_22",
@@ -405,9 +353,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 2
-      },
-      "image_front_url": "/game/splendor/card/1/ruby_22.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "ruby_113",
@@ -420,9 +366,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/1/ruby_113.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "ruby_212",
@@ -435,9 +379,7 @@
         "emerald": 1,
         "sapphire": 0,
         "diamond": 2
-      },
-      "image_front_url": "/game/splendor/card/1/ruby_212.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "ruby_1111",
@@ -450,9 +392,7 @@
         "emerald": 1,
         "sapphire": 1,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/1/ruby_1111.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "ruby_2111",
@@ -465,9 +405,7 @@
         "emerald": 1,
         "sapphire": 1,
         "diamond": 2
-      },
-      "image_front_url": "/game/splendor/card/1/ruby_2111.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "sapphire_3",
@@ -480,9 +418,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/sapphire_3.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "sapphire_4",
@@ -495,9 +431,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/sapphire_4.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "sapphire_12",
@@ -510,9 +444,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/1/sapphire_12.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "sapphire_22",
@@ -525,9 +457,7 @@
         "emerald": 2,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/sapphire_22.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "sapphire_122",
@@ -540,9 +470,7 @@
         "emerald": 2,
         "sapphire": 0,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/1/sapphire_122.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "sapphire_131",
@@ -555,9 +483,7 @@
         "emerald": 3,
         "sapphire": 1,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/1/sapphire_131.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "sapphire_1111",
@@ -570,9 +496,7 @@
         "emerald": 1,
         "sapphire": 0,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/1/sapphire_1111.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "sapphire_1121",
@@ -585,9 +509,7 @@
         "emerald": 1,
         "sapphire": 0,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/1/sapphire_1121.jpg",
-      "image_back_url": "/game/splendor/card/1/card1-back.jpg"
+      }
     },
     {
       "id": "diamond_5",
@@ -600,9 +522,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/diamond_5.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "diamond_6",
@@ -615,9 +535,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 6
-      },
-      "image_front_url": "/game/splendor/card/2/diamond_6.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "diamond_53",
@@ -630,9 +548,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/diamond_53.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "diamond_142",
@@ -645,9 +561,7 @@
         "emerald": 1,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/diamond_142.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "diamond_233",
@@ -660,9 +574,7 @@
         "emerald": 0,
         "sapphire": 3,
         "diamond": 2
-      },
-      "image_front_url": "/game/splendor/card/2/diamond_233.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "diamond_322",
@@ -675,9 +587,7 @@
         "emerald": 3,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/diamond_322.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "emerald_5",
@@ -690,9 +600,7 @@
         "emerald": 5,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/emerald_5.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "emerald_6",
@@ -705,9 +613,7 @@
         "emerald": 6,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/emerald_6.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "emerald_53",
@@ -720,9 +626,7 @@
         "emerald": 3,
         "sapphire": 5,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/emerald_53.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "emerald_232",
@@ -735,9 +639,7 @@
         "emerald": 0,
         "sapphire": 3,
         "diamond": 2
-      },
-      "image_front_url": "/game/splendor/card/2/emerald_232.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "emerald_323",
@@ -750,9 +652,7 @@
         "emerald": 2,
         "sapphire": 0,
         "diamond": 3
-      },
-      "image_front_url": "/game/splendor/card/2/emerald_323.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "emerald_421",
@@ -765,9 +665,7 @@
         "emerald": 0,
         "sapphire": 2,
         "diamond": 4
-      },
-      "image_front_url": "/game/splendor/card/2/emerald_421.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "onyx_5",
@@ -780,9 +678,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 5
-      },
-      "image_front_url": "/game/splendor/card/2/onyx_5.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "onyx_6",
@@ -795,9 +691,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/onyx_6.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "onyx_53",
@@ -810,9 +704,7 @@
         "emerald": 5,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/onyx_53.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "onyx_142",
@@ -825,9 +717,7 @@
         "emerald": 4,
         "sapphire": 1,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/onyx_142.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "onyx_322",
@@ -840,9 +730,7 @@
         "emerald": 2,
         "sapphire": 2,
         "diamond": 3
-      },
-      "image_front_url": "/game/splendor/card/2/onyx_322.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "onyx_332",
@@ -855,9 +743,7 @@
         "emerald": 3,
         "sapphire": 0,
         "diamond": 3
-      },
-      "image_front_url": "/game/splendor/card/2/onyx_332.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "ruby_5",
@@ -870,9 +756,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/ruby_5.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "ruby_6",
@@ -885,9 +769,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/ruby_6.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "ruby_35",
@@ -900,9 +782,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 3
-      },
-      "image_front_url": "/game/splendor/card/2/ruby_35.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "ruby_142",
@@ -915,9 +795,7 @@
         "emerald": 2,
         "sapphire": 4,
         "diamond": 1
-      },
-      "image_front_url": "/game/splendor/card/2/ruby_142.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "ruby_223",
@@ -930,9 +808,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 2
-      },
-      "image_front_url": "/game/splendor/card/2/ruby_223.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "ruby_323",
@@ -945,9 +821,7 @@
         "emerald": 0,
         "sapphire": 3,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/ruby_323.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "sapphire_5",
@@ -960,9 +834,7 @@
         "emerald": 0,
         "sapphire": 5,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/sapphire_5.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "sapphire_6",
@@ -975,9 +847,7 @@
         "emerald": 0,
         "sapphire": 6,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/sapphire_6.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "sapphire_53",
@@ -990,9 +860,7 @@
         "emerald": 0,
         "sapphire": 3,
         "diamond": 5
-      },
-      "image_front_url": "/game/splendor/card/2/sapphire_53.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "sapphire_214",
@@ -1005,9 +873,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 2
-      },
-      "image_front_url": "/game/splendor/card/2/sapphire_214.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "sapphire_223",
@@ -1020,9 +886,7 @@
         "emerald": 2,
         "sapphire": 2,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/sapphire_223.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "sapphire_233",
@@ -1035,9 +899,7 @@
         "emerald": 3,
         "sapphire": 2,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/2/sapphire_233.jpg",
-      "image_back_url": "/game/splendor/card/2/card2-back.jpg"
+      }
     },
     {
       "id": "diamond_7",
@@ -1050,10 +912,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/3/diamond_7.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
-
+      }
     },
     {
       "id": "diamond_37",
@@ -1066,9 +925,7 @@
         "emerald": 0,
         "sapphire": 6,
         "diamond": 3
-      },
-      "image_front_url": "/game/splendor/card/3/diamond_37.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "diamond_336",
@@ -1081,9 +938,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 3
-      },
-      "image_front_url": "/game/splendor/card/3/diamond_336.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "diamond_3353",
@@ -1096,9 +951,7 @@
         "emerald": 3,
         "sapphire": 3,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/3/diamond_3353.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "emerald_7",
@@ -1111,9 +964,7 @@
         "emerald": 0,
         "sapphire": 7,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/3/emerald_7.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "emerald_73",
@@ -1126,9 +977,7 @@
         "emerald": 3,
         "sapphire": 7,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/3/emerald_73.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "emerald_363",
@@ -1141,9 +990,7 @@
         "emerald": 3,
         "sapphire": 7,
         "diamond": 3
-      },
-      "image_front_url": "/game/splendor/card/3/emerald_363.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "emerald_5333",
@@ -1156,9 +1003,7 @@
         "emerald": 0,
         "sapphire": 3,
         "diamond": 5
-      },
-      "image_front_url": "/game/splendor/card/3/emerald_5333.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "onyx_7",
@@ -1171,9 +1016,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/3/onyx_7.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "onyx_73",
@@ -1186,9 +1029,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/3/onyx_73.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "onyx_363",
@@ -1201,9 +1042,7 @@
         "emerald": 3,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/3/onyx_363.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "onyx_3353",
@@ -1216,9 +1055,7 @@
         "emerald": 5,
         "sapphire": 3,
         "diamond": 3
-      },
-      "image_front_url": "/game/splendor/card/3/onyx_3353.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "ruby_7",
@@ -1231,9 +1068,7 @@
         "emerald": 7,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/3/ruby_7.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "ruby_73",
@@ -1246,9 +1081,7 @@
         "emerald": 7,
         "sapphire": 0,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/3/ruby_73.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "ruby_363",
@@ -1261,9 +1094,7 @@
         "emerald": 7,
         "sapphire": 3,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/3/ruby_363.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "ruby_3533",
@@ -1276,9 +1107,7 @@
         "emerald": 3,
         "sapphire": 5,
         "diamond": 3
-      },
-      "image_front_url": "/game/splendor/card/3/ruby_3533.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "sapphire_7",
@@ -1291,9 +1120,7 @@
         "emerald": 0,
         "sapphire": 0,
         "diamond": 7
-      },
-      "image_front_url": "/game/splendor/card/3/sapphire_7.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "sapphire_73",
@@ -1306,9 +1133,7 @@
         "emerald": 0,
         "sapphire": 3,
         "diamond": 7
-      },
-      "image_front_url": "/game/splendor/card/3/sapphire_73.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "sapphire_633",
@@ -1321,9 +1146,7 @@
         "emerald": 0,
         "sapphire": 3,
         "diamond": 6
-      },
-      "image_front_url": "/game/splendor/card/3/sapphire_633.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     },
     {
       "id": "sapphire_3335",
@@ -1336,12 +1159,10 @@
         "emerald": 3,
         "sapphire": 3,
         "diamond": 0
-      },
-      "image_front_url": "/game/splendor/card/3/sapphire_3335.jpg",
-      "image_back_url": "/game/splendor/card/3/card3-back.jpg"
+      }
     }
   ],
-  "noble": [
+  "nobles": [
     {
       "id": "noble_3b3b3w",
       "score": 3,
@@ -1351,9 +1172,7 @@
         "card_emerald": 0,
         "card_sapphire": 3,
         "card_diamond": 3
-      },
-      "image_front_url": "/game/splendor/noble/noble_3b3b3w.jpg",
-      "image_back_url": "/game/splendor/noble/noble-back.jpg"
+      }
     },
     {
       "id": "noble_3b3r3g",
@@ -1364,9 +1183,7 @@
         "card_emerald": 3,
         "card_sapphire": 3,
         "card_diamond": 0
-      },
-      "image_front_url": "/game/splendor/noble/noble_3b3r3g.jpg",
-      "image_back_url": "/game/splendor/noble/noble-back.jpg"
+      }
     },
     {
       "id": "noble_3b3r3w",
@@ -1377,9 +1194,7 @@
         "card_emerald": 0,
         "card_sapphire": 3,
         "card_diamond": 3
-      },
-      "image_front_url": "/game/splendor/noble/noble_3b3r3w.jpg",
-      "image_back_url": "/game/splendor/noble/noble-back.jpg"
+      }
     },
     {
       "id": "noble_3g3b3r",
@@ -1390,9 +1205,7 @@
         "card_emerald": 3,
         "card_sapphire": 0,
         "card_diamond": 0
-      },
-      "image_front_url": "/game/splendor/noble/noble_3g3b3r.jpg",
-      "image_back_url": "/game/splendor/noble/noble-back.jpg"
+      }
     },
     {
       "id": "noble_3g3b3w",
@@ -1403,9 +1216,7 @@
         "card_emerald": 3,
         "card_sapphire": 3,
         "card_diamond": 3
-      },
-      "image_front_url": "/game/splendor/noble/noble_3g3b3w.jpg",
-      "image_back_url": "/game/splendor/noble/noble-back.jpg"
+      }
     },
     {
       "id": "noble_4b4g",
@@ -1416,9 +1227,7 @@
         "card_emerald": 4,
         "card_sapphire": 4,
         "card_diamond": 0
-      },
-      "image_front_url": "/game/splendor/noble/noble_4b4g.jpg",
-      "image_back_url": "/game/splendor/noble/noble-back.jpg"
+      }
     },
     {
       "id": "noble_4b4r",
@@ -1429,9 +1238,7 @@
         "card_emerald": 0,
         "card_sapphire": 0,
         "card_diamond": 0
-      },
-      "image_front_url": "/game/splendor/noble/noble_4b4r.jpg",
-      "image_back_url": "/game/splendor/noble/noble-back.jpg"
+      }
     },
     {
       "id": "noble_4b4w",
@@ -1442,9 +1249,7 @@
         "card_emerald": 0,
         "card_sapphire": 0,
         "card_diamond": 4
-      },
-      "image_front_url": "/game/splendor/noble/noble_4b4w.jpg",
-      "image_back_url": "/game/splendor/noble/noble-back.jpg"
+      }
     },
     {
       "id": "noble_4r4g",
@@ -1455,9 +1260,7 @@
         "card_emerald": 4,
         "card_sapphire": 0,
         "card_diamond": 0
-      },
-      "image_front_url": "/game/splendor/noble/noble_4r4g.jpg",
-      "image_back_url": "/game/splendor/noble/noble-back.jpg"
+      }
     },
     {
       "id": "noble_4w4b",
@@ -1468,12 +1271,10 @@
         "card_emerald": 0,
         "card_sapphire": 4,
         "card_diamond": 4
-      },
-      "image_front_url": "/game/splendor/noble/noble_4w4b.jpg",
-      "image_back_url": "/game/splendor/noble/noble-back.jpg"
+      }
     }
   ],
-  "config": [
+  "configs": [
     {
       "number_player": 2,
       "noble": 3,

@@ -1,18 +1,16 @@
 import {Button, Chip, Select, SelectItem, Spinner, Tooltip} from "@heroui/react";
-import React, { forwardRef, Ref, useEffect, useState } from "react";
+import React, { forwardRef, Ref, useEffect } from "react";
 import Image from "next/image";
 import GameSetupSetting from "@/component/game-detail/GamePlay/GameSetupSetting";
 import { useGameSetup } from "@/store/game-setup/game-setup.context";
-import { useGameDetail } from "@/store/game-detail.context";
 import {useShallow} from "zustand/react/shallow";
-import {useUser} from "@/store/user.context";
 import {Card, CardBody, CardFooter, CardHeader} from "@heroui/card";
 import {X} from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
-import {PlayService} from "@/service/game.service";
 import {PlayerSeat} from "@/component/game-detail/GamePlay/GameSeats/PlayerSeat";
 import {EmptySeat} from "@/component/game-detail/GamePlay/GameSeats/EmptySeat";
-import {toast} from "@/utils/toast";
+import {useGame} from "@/hooks/useGame";
+import {useGameSocket} from "@/hooks/useGameSocket";
 
 
 interface GamePlayProps {
@@ -20,153 +18,48 @@ interface GamePlayProps {
 }
 
 const GamePlay = forwardRef(({ onClose }: GamePlayProps, ref: Ref<any>) => {
-    const { user } = useUser();
-    const { data } = useGameDetail();
+    const { init, setup, createInviteLink, onStartGame, onCancelGame, onSelectPlayers } = useGame();
     const {
         minPlayers,
         maxPlayers,
         players,
         seats,
         rules,
-        setupSettings,
-        setSeats,
-        resizeSeats,
-        setInviteLink,
-        setGameSetup,
-        setPlayers,
-        clearGameSetup,
+        roomId,
+        isStarting,
+        isSearching,
     } = useGameSetup(useShallow((state) => ({
         minPlayers: state.minPlayers,
         maxPlayers: state.maxPlayers,
         players: state.players,
         seats: state.seats,
         rules: state.rules,
-        setupSettings: state.setupSettings,
-        setSeats: state.setSeats,
-        resizeSeats: state.resizeSeats,
-        setInviteLink: state.setInviteLink,
-        setGameSetup: state.setGameSetup,
-        setPlayers: state.setPlayers,
-        clearGameSetup: state.clearGameSetup,
+        roomId: state.roomId,
+        isStarting: state.isStarting,
+        isSearching: state.isSearching,
     })));
-    const [isStarting, setIsStarting] = useState(false);
-    const [isSearching, setIsSearching] = useState(false);
+    useGameSocket(roomId)
 
 
-
-    // Set up the game setup store with the game data
+    // Initialize the game
     useEffect(() => {
-        setGameSetup({
-            id: data.id,
-            type: data.type,
-            imageBoxUrl: data.image_box_url,
-            description: data.description,
-            minPlayers: data.min_players,
-            maxPlayers: data.max_players,
-            players: data.min_players,
-            rules: data.rules?.map((rule) => ({
-                ...rule,
-                id: rule.id ?? "id",
-                name: rule.name ?? "Rules",
-                language: rule.language ?? "English",
-                players: data.min_players ?? 1,
-            })),
-            setup: data.setup,
-        });
-    }, [data, setGameSetup]);
+        init()
+    }, [init]);
 
-    // Add user to seats
+    // Setup game
     useEffect(() => {
-        if (user) {
-            setSeats([{
-                id: user.id,
-                tagName: `@${user.id}`,
-                name: user.name,
-                avatarUrl: user.avatarUrl,
-                isOnline: true,
-                isMe: true
-            }])
-        } else {
-            setSeats([])
-        }
-
-    }, [setSeats, user]);
+        setup()
+    }, [setup]);
 
     // Create invite link
     useEffect(() => {
-        if (data?.id) {
-            setInviteLink(`https://boardgames.example.com/${data.id}/invite/${Math.random().toString(36).substring(2, 10)}`);
-        }
-    }, [data?.id, setInviteLink]);
+        createInviteLink()
+    }, [createInviteLink]);
 
 
     const handleClosePlayNow = () => {
         onClose?.()
-        clearGameSetup()
     }
-
-    const handleSelectPlayers = (values: Set<number>) => {
-        const currentPlayers = values.size === 0 ? minPlayers : [...values][0];
-        setPlayers(currentPlayers);
-        resizeSeats(currentPlayers);
-    };
-
-    const handleStart = () => {
-        if (!data.id) return;
-        if (players <= seats.length) {
-            setIsStarting(true);
-            PlayService
-                .startPlay({
-                    body: {
-                        game_id: data.id,
-                        players: seats.map((player) => ({
-                            id: player.id,
-                            name: player.name,
-                            bot: player.isBot ?? false,
-                            local_player: player.local,
-                        })),
-                        setup: {
-                            ...setupSettings,
-                            id: data.id,
-                            type: data.type,
-                        },
-                    },
-                })
-                .then((response) => {
-                    if (response.code == 0) {
-                        toast({
-                            title: "Game Started Successfully",
-                            description: "The game has been started. Enjoy playing!",
-                            autoClose: 2000,
-                        });
-                    } else {
-                        toast({
-                            title: "Game Start Failed",
-                            description: "An issue occurred while starting the game. Please try again.",
-                            autoClose: 2000,
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error("Failed to start game:", error);
-                    toast({
-                        title: "Error Starting Game",
-                        description: "Unable to start the game due to a server error. Please try again later.",
-                        autoClose: 2000,
-                    });
-                })
-                .finally(() => {
-                    setIsStarting(false);
-                });
-        } else {
-            setIsSearching(true);
-        }
-    }
-
-    const handleCancelGame = () => {
-        setIsSearching(false);
-        setIsStarting(false);
-    };
 
     return (
         <Card>
@@ -246,7 +139,7 @@ const GamePlay = forwardRef(({ onClose }: GamePlayProps, ref: Ref<any>) => {
                                             label="Số người chơi"
                                             labelPlacement="outside-left"
                                             selectedKeys={[`${players}`]}
-                                            onSelectionChange={(keys) => handleSelectPlayers(keys as Set<number>)}
+                                            onSelectionChange={(keys) => onSelectPlayers(keys as Set<number>)}
                                         >
                                             {Array.from({ length: maxPlayers - minPlayers + 1 }).map((_, index) => (
                                                 <SelectItem key={minPlayers + index}>
@@ -344,7 +237,7 @@ const GamePlay = forwardRef(({ onClose }: GamePlayProps, ref: Ref<any>) => {
                                                 color="danger"
                                                 variant="shadow"
                                                 size="lg"
-                                                onPress={handleCancelGame}
+                                                onPress={onCancelGame}
                                             >
                                                 Cancel
                                             </Button>
@@ -353,7 +246,7 @@ const GamePlay = forwardRef(({ onClose }: GamePlayProps, ref: Ref<any>) => {
                                                 className="bg-gradient-to-r from-[rgba(156,252,248,1)] to-[rgba(110,123,251,1)] bg-clip-border text-white text-xl"
                                                 variant="shadow"
                                                 size="lg"
-                                                onPress={handleStart}
+                                                onPress={onStartGame}
                                             >
                                                 Start
                                             </Button>

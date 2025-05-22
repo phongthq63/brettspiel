@@ -9,113 +9,103 @@ import {
     SplendorGameDTO
 } from "@/games/splendor/service/splendor.service";
 import {CardPosition, GemPosition, NoblePosition, PlayerPosition} from "@/games/splendor/constants/game";
-import {Card, Gem, Noble, Player} from "@/games/splendor/types/game";
-import {CardDictionary} from "@/games/splendor/constants/card";
+import {CardData, GemData, NobleData, Player} from "@/games/splendor/types/game";
+import {CardDictionary} from "@/games/splendor/data/card";
 import {GemCardSize} from "@/games/splendor/component/3d/GemCard";
 import {generateUUID} from "@/utils";
 import {GemTokenSize} from "@/games/splendor/component/3d/GemToken";
-import {NobleDictionary} from "@/games/splendor/constants/noble";
+import {NobleDictionary} from "@/games/splendor/data/noble";
 import {NobleCardSize} from "@/games/splendor/component/3d/NobleCard";
 import {Euler, Vector3} from "three";
 import {CardGemType} from "@/games/splendor/types/card";
-import {GemDictionary} from "@/games/splendor/constants/gem";
+import {GemDictionary} from "@/games/splendor/data/gem";
 import {useUser} from "@/store/user.context";
 
 export function useFetchGameData(gameId: string) {
-    const { user } = useUser()
+    const { user } = useUser();
     const {
-        setGameId,
-        setStatus,
-        setPlayerIds,
-        setCurrentPlayer,
-        setNextPlayer,
-        setDeckCard,
-        setFieldCard,
-        setGems,
-        setDeckNoble,
-        setFieldNoble,
-        setPlayers,
-        setIsMyTurn
+        setGameState,
+        setIsMyTurn,
     } = useGameStore();
 
     useEffect(() => {
-        setGameId(gameId)
-
         GameService.getGameInfo({ gameId: gameId })
             .then(response => {
                 if (response.code !== 0 || !response.data) {
-                    console.error("Failed to fetch gamedetail data", response)
+                    console.error("Failed to fetch game detail data", response)
                     return
                 }
 
                 const gameData: SplendorGameDTO = response.data
-                if (!gameData || !gameData.ingame_data) {
-                    console.error("Invalid gamedetail data", gameData)
-                    return
+
+                // Save to store
+                const gameStatus = gameData.status ?? 0;
+                let currentPlayer: string = "";
+                let nextPlayer: string = "";
+                let deckCard1: CardVO[];
+                let deckCard2: CardVO[];
+                let deckCard3: CardVO[];
+                let fieldCard1: FieldCardVO[] = [];
+                let fieldCard2: FieldCardVO[] = [];
+                let fieldCard3: FieldCardVO[] = [];
+                let deckNoble: NobleVO[];
+                let fieldNoble: FieldNobleVO[] = [];
+                let ingamePlayerData: IngamePlayerDataVO[] = [];
+                if (gameStatus == 0) {
+                    deckCard1 = gameData.config?.cards?.filter(card => card.level == 1) ?? []
+                    deckCard2 = gameData.config?.cards?.filter(card => card.level == 2) ?? []
+                    deckCard3 = gameData.config?.cards?.filter(card => card.level == 3) ?? []
+                    deckNoble = gameData.config?.nobles ?? []
+                } else {
+                    currentPlayer = gameData.ingame_data?.current_player ?? ""
+                    nextPlayer = gameData.ingame_data?.next_player ?? ""
+                    deckCard1 = gameData.ingame_data?.deck_card1 ?? []
+                    deckCard2 = gameData.ingame_data?.deck_card2 ?? []
+                    deckCard3 = gameData.ingame_data?.deck_card3 ?? []
+                    fieldCard1 = gameData.ingame_data?.field_card1 ?? []
+                    fieldCard2 = gameData.ingame_data?.field_card2 ?? []
+                    fieldCard3 = gameData.ingame_data?.field_card3 ?? []
+                    deckNoble = gameData.ingame_data?.deck_noble ?? []
+                    fieldNoble = gameData.ingame_data?.field_noble ?? []
+                    ingamePlayerData = gameData.ingame_data?.players ?? []
                 }
 
-                // Update global state instead of using local state
-                if (gameData.status != undefined) {
-                    setStatus(gameData.status)
-                }
-                if (gameData.ingame_data.player_ids) {
-                    setPlayerIds(gameData.ingame_data.player_ids)
-                }
-                if (gameData.ingame_data.current_player) {
-                    setCurrentPlayer(gameData.ingame_data.current_player)
-                }
-                if (gameData.ingame_data.next_player) {
-                    setNextPlayer(gameData.ingame_data.next_player)
-                }
-
-                // Deck Cards
-                if (gameData.status != undefined && gameData.ingame_data.deck_card1 && gameData.ingame_data.deck_card2 && gameData.ingame_data.deck_card3) {
-                    setDeckCard({
-                        [1]: formatDeckCards(gameData.ingame_data.deck_card1, gameData.status, 1),
-                        [2]: formatDeckCards(gameData.ingame_data.deck_card2, gameData.status, 2),
-                        [3]: formatDeckCards(gameData.ingame_data.deck_card3, gameData.status, 3)
-                    })
-                }
-
-                // Open Cards
-                if (gameData.ingame_data.field_card1 && gameData.ingame_data.field_card2 && gameData.ingame_data.field_card3) {
-                    setFieldCard({
-                        [1]: formatFieldCards(gameData.ingame_data.field_card1, 1),
-                        [2]: formatFieldCards(gameData.ingame_data.field_card2, 2),
-                        [3]: formatFieldCards(gameData.ingame_data.field_card3, 3)
-                    })
-                }
-
-                // Gems
-                setGems(formatGems(
-                    gameData.ingame_data.gold ?? 0,
-                    gameData.ingame_data.onyx ?? 0,
-                    gameData.ingame_data.ruby ?? 0,
-                    gameData.ingame_data.emerald ?? 0,
-                    gameData.ingame_data.sapphire ?? 0,
-                    gameData.ingame_data.diamond ?? 0))
-
-                // Noble Cards
-                if (gameData.status != undefined && gameData.ingame_data.deck_noble) {
-                    setDeckNoble(formatNobleDeck(gameData.ingame_data.deck_noble, gameData.status))
-                }
-                if (gameData.ingame_data.field_noble) {
-                    setFieldNoble(formatNobleField(gameData.ingame_data.field_noble))
-                }
-
-                // Player
-                if (gameData.ingame_data.players) {
-                    setPlayers(formatPlayerData(gameData.ingame_data.players));
-                }
-
-                setIsMyTurn(user?.user_id)
+                setGameState({
+                    gameId: gameData.game_id,
+                    status: gameData.status,
+                    playerIds: gameData.players?.map(player => player.id ?? ''),
+                    currentPlayer: currentPlayer,
+                    nextPlayer: nextPlayer,
+                    deckCard: {
+                        [1]: formatDeckCards(deckCard1, gameStatus, 1),
+                        [2]: formatDeckCards(deckCard2, gameStatus, 2),
+                        [3]: formatDeckCards(deckCard3, gameStatus, 3)
+                    },
+                    fieldCard: {
+                        [1]: formatFieldCards(fieldCard1, 1),
+                        [2]: formatFieldCards(fieldCard2, 2),
+                        [3]: formatFieldCards(fieldCard3, 3)
+                    },
+                    gems: formatGems(
+                        gameData.ingame_data?.gold ?? 0,
+                        gameData.ingame_data?.onyx ?? 0,
+                        gameData.ingame_data?.ruby ?? 0,
+                        gameData.ingame_data?.emerald ?? 0,
+                        gameData.ingame_data?.sapphire ?? 0,
+                        gameData.ingame_data?.diamond ?? 0
+                    ),
+                    deckNoble: formatNobleDeck(deckNoble, gameStatus),
+                    fieldNoble: formatNobleField(fieldNoble),
+                    players: formatPlayerData(ingamePlayerData),
+                })
+                setIsMyTurn(user?.id)
             })
-            .catch(error => console.error("Error fetching gamedetail data", error))
-    }, [user, gameId]);
+            .catch(error => console.error("Error fetching game detail data", error))
+    }, [gameId, setGameState, setIsMyTurn, user]);
 }
 
 // Helper Functions
-function formatDeckCards(cards: CardVO[], status: number, level: number): Card[] {
+function formatDeckCards(cards: CardVO[], status: number, level: number): CardData[] {
     return cards
         .map((card, index) => {
             if (status == 0) {
@@ -136,7 +126,7 @@ function formatDeckCards(cards: CardVO[], status: number, level: number): Card[]
         })
 }
 
-function formatFieldCards(fieldCards: FieldCardVO[], level: number): Card[] {
+function formatFieldCards(fieldCards: FieldCardVO[], level: number): CardData[] {
     return fieldCards
         .filter((fieldCard: FieldCardVO) => fieldCard.card)
         .map((fieldCard) => {
@@ -151,12 +141,12 @@ function formatFieldCards(fieldCards: FieldCardVO[], level: number): Card[] {
 }
 
 function formatGems(gold: number, onyx: number, ruby: number, emerald: number, sapphire: number, diamond: number): {
-    gold: Gem[]
-    onyx: Gem[]
-    ruby: Gem[]
-    emerald: Gem[]
-    sapphire: Gem[]
-    diamond: Gem[]
+    gold: GemData[]
+    onyx: GemData[]
+    ruby: GemData[]
+    emerald: GemData[]
+    sapphire: GemData[]
+    diamond: GemData[]
 } {
     return {
         "gold": Array.from({length: gold}, (_, i) => i)
@@ -222,7 +212,7 @@ function formatGems(gold: number, onyx: number, ruby: number, emerald: number, s
     }
 }
 
-function formatNobleDeck(nobles: NobleVO[], status: number): Noble[] {
+function formatNobleDeck(nobles: NobleVO[], status: number): NobleData[] {
     return nobles.map((noble, index) => {
         if (status == 0) {
             return {
@@ -242,7 +232,7 @@ function formatNobleDeck(nobles: NobleVO[], status: number): Noble[] {
     });
 }
 
-function formatNobleField(fieldNobles: FieldNobleVO[]): Noble[] {
+function formatNobleField(fieldNobles: FieldNobleVO[]): NobleData[] {
     return fieldNobles.filter((fieldNoble: FieldNobleVO) => fieldNoble.noble)
         .map((fieldNoble) => {
             const position = NoblePosition.field[fieldNoble.position ?? 0]
@@ -256,7 +246,7 @@ function formatNobleField(fieldNobles: FieldNobleVO[]): Noble[] {
 }
 
 function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Player} {
-    function formatPlayerNobles(locate: {position: [number, number, number], rotation: [number, number, number]}, nobles: NobleVO[]): Noble[] {
+    function formatPlayerNobles(locate: {position: [number, number, number], rotation: [number, number, number]}, nobles: NobleVO[]): NobleData[] {
         const { position, rotation } = locate
 
         const vector = new Vector3().fromArray(position)
@@ -275,11 +265,11 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
             }))
     }
     function formatPlayerCards(locate: {position: [number, number, number], rotation: [number, number, number]}, cards: CardVO[]): {
-        onyx: Card[]
-        ruby: Card[]
-        emerald: Card[]
-        sapphire: Card[]
-        diamond: Card[]
+        onyx: CardData[]
+        ruby: CardData[]
+        emerald: CardData[]
+        sapphire: CardData[]
+        diamond: CardData[]
     } {
         const { position, rotation } = locate
 
@@ -345,7 +335,7 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
                 }))
         }
     }
-    function formatPlayerReserveCards(locate: {position: [number, number, number], rotation: [number, number, number]}, cards: CardVO[]): Card[] {
+    function formatPlayerReserveCards(locate: {position: [number, number, number], rotation: [number, number, number]}, cards: CardVO[]): CardData[] {
         const { position, rotation } = locate
 
         const vector = new Vector3().fromArray(position)
@@ -370,12 +360,12 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
                               emerald: number,
                               sapphire: number,
                               diamond: number): {
-        gold: Gem[]
-        onyx: Gem[]
-        ruby: Gem[]
-        emerald: Gem[]
-        sapphire: Gem[]
-        diamond: Gem[]
+        gold: GemData[]
+        onyx: GemData[]
+        ruby: GemData[]
+        emerald: GemData[]
+        sapphire: GemData[]
+        diamond: GemData[]
     } {
         const { position, rotation } = locate
 

@@ -98,6 +98,29 @@ export class UserService {
     }
 }
 
+export class RoomService {
+    /**
+     *
+     */
+    static createRoom(
+        params: {
+            /** requestBody */
+            body?: CreateRoomRequest;
+        } = {} as any,
+        options: IRequestOptions = {}
+    ): Promise<RGameRoomDTO> {
+        return new Promise((resolve, reject) => {
+            const url = basePath + '/room';
+
+            const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+            configs.data = params.body;
+
+            axios(configs, resolve, reject);
+        });
+    }
+}
+
 export class PlayService {
     /**
      *
@@ -540,6 +563,14 @@ export interface RGetFilterGameResponse {
     ts?: string;
 }
 
+export interface CreateRoomRequest {
+    /** Id game */
+    game_id?: string;
+
+    /** Id session */
+    session_id?: string;
+}
+
 export interface PlayerInfo {
     /** Unique identifier for the player */
     id?: string;
@@ -547,20 +578,45 @@ export interface PlayerInfo {
     /** Name of the player */
     name?: string;
 
-    /** Indicates if this player is the local player */
-    local_player?: string;
+    /** Indicates if this player is a bot*/
+    is_bot?: boolean;
 
-    /**  */
-    bot?: boolean;
+    /** Indicates if this player is a bot*/
+    is_player?: boolean;
+
+    /** Indicates if this player is the local player */
+    local?: string;
 }
 
 export interface StartPlayRequest {
     /** Id game */
-    game_id?: string;
+    room_id?: string;
 
     /** List of players participating in the game */
     players?: PlayerInfo[];
 
     /** Configuration setup for starting the game */
     setup?: object;
+}
+
+export interface GameRoomDTO {
+    /** Mã định danh duy nhất của phòng chơi */
+    id?: string;
+
+    /** Mã định danh duy nhất của trò chơi */
+    game_id?: string;
+}
+
+export interface RGameRoomDTO {
+    /**  */
+    code?: number;
+
+    /**  */
+    msg?: string;
+
+    /**  */
+    data?: GameRoomDTO;
+
+    /**  */
+    ts?: string;
 }

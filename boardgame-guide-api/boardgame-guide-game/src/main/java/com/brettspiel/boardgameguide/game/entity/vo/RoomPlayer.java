@@ -2,6 +2,7 @@ package com.brettspiel.boardgameguide.game.entity.vo;
 
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * Created by Quach Thanh Phong
@@ -15,8 +16,12 @@ public class RoomPlayer {
 
     private String name;
 
-    private String local;
+    @Field("is_bot")
+    private boolean isBot;
 
-    private String bot;
+    @Field("is_player")
+    private boolean isPlayer;
+
+    private String local;
 
 }

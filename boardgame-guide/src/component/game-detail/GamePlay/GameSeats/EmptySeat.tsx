@@ -17,18 +17,16 @@ import {AnimatePresence, motion} from "framer-motion";
 import {useGameSetup} from "@/store/game-setup/game-setup.context";
 import {useShallow} from "zustand/react/shallow";
 import {useUser} from "@/store/user.context";
+import {useGame} from "@/hooks/useGame";
 
 export function EmptySeat() {
     const { user } = useUser();
     const {
-        seats,
         inviteLink,
-        addSeat
     } = useGameSetup(useShallow((state) => ({
-        seats: state.seats,
         inviteLink: state.inviteLink,
-        addSeat: state.addSeat
     })));
+    const { onAddLocalPlayer, onAddBotPlayer } = useGame();
     const [isOpenPopover, setIsOpenPopover] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResultsVisible, setSearchResultsVisible] = useState(false);
@@ -95,33 +93,6 @@ export function EmptySeat() {
     const filteredSearchResults = searchResults.filter(user => {
         return user.name.toLowerCase().includes(searchTerm.toLowerCase());
     });
-
-    const handleAddLocalPlayer = () => {
-        if (!user) return;
-
-        const localCount = seats.filter(seat => seat.local).length;
-        addSeat({
-            id: `${user.id}-local${localCount + 1}`,
-            tagName: `@local${localCount + 1}`,
-            name: `Local player ${localCount + 1}`,
-            avatarUrl: "",
-            isOnline: true,
-            local: user.id
-        });
-    }
-
-    const handleAddBotPlayer = () => {
-        if (!user) return;
-
-        const botCount = seats.filter(seat => seat.isBot).length;
-        addSeat({
-            id: `${user.id}-bot${botCount + 1}`,
-            tagName: `@bot${botCount + 1}`,
-            name: `Bot ${botCount + 1}`,
-            isOnline: true,
-            isBot: true,
-        });
-    }
 
     const handleCopyInviteLink = () => {
         navigator.clipboard.writeText(inviteLink);
@@ -311,7 +282,7 @@ export function EmptySeat() {
                                             startContent={
                                                 <Users size={16} className="font-semibold"/>
                                             }
-                                            onPress={handleAddLocalPlayer}
+                                            onPress={onAddLocalPlayer}
                                         >
                                             Add local player
                                         </Button>
@@ -321,7 +292,7 @@ export function EmptySeat() {
                                             startContent={
                                                 <Bot size={16} className="font-semibold"/>
                                             }
-                                            onPress={handleAddBotPlayer}
+                                            onPress={onAddBotPlayer}
                                         >
                                             Add bot player
                                         </Button>

@@ -1,5 +1,6 @@
 package com.brettspiel.config.kafka;
 
+import io.confluent.kafka.serializers.json.KafkaJsonSchemaSerializer;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;

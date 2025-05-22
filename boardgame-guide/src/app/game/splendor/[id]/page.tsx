@@ -1,7 +1,7 @@
 "use client"
 
 import React, {use, useEffect} from "react";
-import GameContainer from "@/games/splendor/component/GameContainer";
+import GamePlaySection from "@/games/splendor/component/GamePlaySection";
 import Header from "@/component/layout/Header";
 import Footer from "@/component/layout/Footer";
 
@@ -18,7 +18,8 @@ export default function Page({ params } : { params: Promise<{ id: string }>}) {
         <div id="root" className="min-h-screen flex flex-col justify-between">
             <Header/>
             <main>
-                <GameContainer gameId={id}/>
+                <GamePlaySection gameId={id}/>
+                <div className="w-full h-96 bg-blue-500 mt-60"></div>
             </main>
             <Footer/>
         </div>

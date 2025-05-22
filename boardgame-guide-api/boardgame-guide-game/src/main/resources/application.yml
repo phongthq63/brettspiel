@@ -41,10 +41,44 @@ spring:
       database: 0
 
 
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:127.0.0.1:9092}
+    schema-registry: ${KAFKA_SCHEMA_REGISTRY:http://127.0.0.1:32253}
+    producer:
+      enable: true
+      client-id: ${PROJECT:brettspiel}.${ENVIRONMENT:dev}.splendor-producer
+      retry: 5
+      batch-size: ${KAFKA_PRODUCER_BATCH_SIZE:50}
+      linger: ${KAFKA_PRODUCER_LINGER:1000}
+      topic:
+        contact: brettspiel.game-service.contact
+        feedback: brettspiel.game-service.feedback
+        start-play: brettspiel.game-service.{}.start-play
+    consumer:
+      enable: true
+      instance-id: ${PROJECT:brettspiel}.${ENVIRONMENT:dev}.service-splendor.${HOSTNAME:instance}
+      groupId: ${KAFKA_GROUP_ID:${PROJECT:brettspiel}.${ENVIRONMENT:dev}.brettspiel-splendor}
+      topic:
+      auto-offset-reset: "latest"
+      max-poll-interval-ms: 300000
+      retry: 5
+      backoff-delay: 60000
+      session-timeout-ms: 60000
+      heartbeat-interval-ms: 20000
+    sasl:
+      mechanism: ${KAFKA_MECHANISM:}
+      jaas:
+        config:
+          username: ${KAFKA_USERNAME:}
+          password: ${KAFKA_PASSWORD:}
+      security:
+        protocol: ${KAFKA_PROTOCOL:}
+
+
 service:
   client:
-    brettspiel-socket:
-      url: http://localhost:8081
+    game-splendor-service:
+      url: http://localhost:8083
 
 
 jwt:

@@ -19,15 +19,9 @@ import java.util.List;
 @AllArgsConstructor
 public class IngameData {
 
-    @Field("number_player")
-    private int numberPlayer;
-
     @Builder.Default
     @Field("player_ids")
     private List<String> playerIds = new ArrayList<>();
-
-    @Field("endgame_score")
-    private Integer endgameScore;
 
     @Builder.Default
     private int round = 0;

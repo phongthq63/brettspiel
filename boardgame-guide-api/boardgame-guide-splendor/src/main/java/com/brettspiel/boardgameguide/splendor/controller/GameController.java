@@ -55,11 +55,12 @@ public class GameController {
 
     @PostMapping("/{gameId}/turn/end")
     public R<?> endTurn(@Parameter(hidden = true) Authentication authentication,
-                        @PathVariable String gameId) {
+                        @PathVariable String gameId,
+                        @RequestBody EndTurnRequest request) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         String userId = userPrincipal.getId();
 
-        return gameService.endTurn(userId, gameId);
+        return gameService.endTurn(userId, gameId, request.getPlayerId());
     }
 
     @PostMapping("/{gameId}/turn/action/gather-gem")

@@ -134,6 +134,8 @@ export class GameService {
     params: {
       /**  */
       gameId: string;
+      /** requestBody */
+      body?: EndTurnRequest;
     } = {} as any,
     options: IRequestOptions = {}
   ): Promise<any> {
@@ -142,6 +144,10 @@ export class GameService {
       url = url.replace('{gameId}', params['gameId'] + '');
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params.body;
+
+      configs.data = data;
 
       axios(configs, resolve, reject);
     });
@@ -334,6 +340,11 @@ export interface RObject {
   ts?: string;
 }
 
+export interface EndTurnRequest {
+  /** Id người chơi */
+  player_id?: string;
+}
+
 export interface TurnBonusActionTakeNobleRequest {
   /** Id quý tộc lấy */
   noble_id?: string;
@@ -357,6 +368,9 @@ export interface TurnActionReserveCardRequest {
 }
 
 export interface TurnActionGatherGemRequest {
+  /** Id người chơi */
+  player_id?: string;
+
   /** Số lượng mã não tương tác (+ lấy, - trả) */
   gold?: number;
 
@@ -449,9 +463,6 @@ export interface FieldNobleVO {
 export interface IngameDataVO {
   /** Danh sách id người chơi */
   player_ids?: string[];
-
-  /** Điểm kết thúc game */
-  endgame_score?: number;
 
   /** Vòng */
   round?: number;
@@ -587,11 +598,11 @@ export interface PlayerDTO {
   /** Ngôn ngữ của người chơi */
   local?: string;
 
-  /**  */
-  bot?: boolean;
+  /** Có phải là bot không */
+  is_bot?: boolean;
 
-  /**  */
-  player?: boolean;
+  /** Có phải là người chơi chính không */
+  is_player?: boolean;
 }
 
 export interface RSplendorGameDTO {

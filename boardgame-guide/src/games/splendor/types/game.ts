@@ -22,6 +22,9 @@ export interface Player {
     id: string
     name: string
     avatar: string
+    isPlayer: boolean
+    isBot: boolean
+    local?: string
     score: number
     nobles: NobleData[]
     cards: Record<CardGemType, CardData[]>

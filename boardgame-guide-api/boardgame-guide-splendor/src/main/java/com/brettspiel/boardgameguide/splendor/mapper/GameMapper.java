@@ -3,9 +3,9 @@ package com.brettspiel.boardgameguide.splendor.mapper;
 import com.brettspiel.boardgameguide.splendor.dto.PlayerDTO;
 import com.brettspiel.boardgameguide.splendor.dto.SplendorGameDTO;
 import com.brettspiel.boardgameguide.splendor.entity.SplendorGame;
-import com.brettspiel.boardgameguide.splendor.entity.vo.IngameData;
 import com.brettspiel.boardgameguide.splendor.entity.vo.PlayerInfo;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.Map;
 
@@ -16,10 +16,10 @@ import java.util.Map;
 @Mapper(componentModel = "spring")
 public interface GameMapper {
 
-    IngameData toIngameData(SplendorGame splendorGame);
-
     SplendorGameDTO toSplendorGameDTO(SplendorGame splendorGame);
 
+    @Mapping(target = "isPlayer", source = "player")
+    @Mapping(target = "isBot", source = "bot")
     PlayerInfo toPlayerInfo(PlayerDTO playerDTO);
 
 

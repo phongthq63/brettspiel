@@ -20,7 +20,7 @@ public interface IGameService {
 
     R<?> startTurn(String userId, String gameId);
 
-    R<?> endTurn(String userId, String gameId);
+    R<?> endTurn(String userId, String gameId, String playerId);
 
     R<?> turnActionGatherGem(String userId, String gameId, TurnActionGatherGemRequest body);
 

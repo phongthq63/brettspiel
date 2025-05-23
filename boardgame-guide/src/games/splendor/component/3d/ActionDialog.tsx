@@ -3,7 +3,8 @@ import GameBoard from "@/games/splendor/hoc/GameBoard";
 import {useGameController} from "@/games/splendor/hooks/useGameController";
 import {useGameStore} from "@/games/splendor/store/game.store";
 import {useShallow} from "zustand/react/shallow";
-import {Button} from "@heroui/react";
+import {Button, Card} from "@heroui/react";
+import {CardFooter, CardHeader} from "@heroui/card";
 
 
 interface ActionDialogProps {
@@ -51,36 +52,40 @@ const ActionDialog = ({open, position, rotation, onClose}: ActionDialogProps) =>
 
     return (open && (
         <GameBoard position={position} rotation={rotation}>
-            <div className="bg-cyan-100 p-4 rounded-md">
-                <h2 className="text-xl text-center mb-4">{textAction}</h2>
-                <div className="flex justify-center space-x-2">
-                    {currentAction && (
-                        currentAction.type == "option-action" ? (currentAction.option?.map(option => (
-                            <Button key={option}
+            <Card className="bg-[#caf0f8]">
+                <CardHeader>
+                    <h2 className="w-full text-xl text-center mb-4">{textAction}</h2>
+                </CardHeader>
+                {/*<CardBody>*/}
+                {/*</CardBody>*/}
+                <CardFooter>
+                    <div className="flex justify-center gap-2">
+                        {currentAction && (
+                            currentAction.type == "option-action" ? (currentAction.option?.map(option => (
+                                <Button key={option}
+                                        color="success"
+                                        onPress={() => selectAction({...currentAction, type: option})}
+                                >
+                                    {textButtonOption(option)}
+                                </Button>
+                            ))) : (
+                                <Button
                                     color="success"
-                                    onPress={() => selectAction({...currentAction, type: option})}
-                                    style={{textTransform: "none"}}>
-                                {textButtonOption(option)}
-                            </Button>
-                        ))) : (
-                            <Button
-                                color="success"
-                                onPress={() => confirmAction(currentAction)}
-                                style={{textTransform: "none"}}
-                            >
-                                Confirm
-                            </Button>
-                        )
-                    )}
-                    <Button
-                        color="danger"
-                        onPress={handlerCancelAction}
-                        style={{textTransform: "none"}}
-                    >
-                        Cancel
-                    </Button>
-                </div>
-            </div>
+                                    onPress={() => confirmAction(currentAction)}
+                                >
+                                    Confirm
+                                </Button>
+                            )
+                        )}
+                        <Button
+                            color="danger"
+                            onPress={handlerCancelAction}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </CardFooter>
+            </Card>
         </GameBoard>
     ))
 }

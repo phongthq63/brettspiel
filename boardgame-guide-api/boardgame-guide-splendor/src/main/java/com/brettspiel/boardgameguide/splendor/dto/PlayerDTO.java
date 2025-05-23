@@ -1,6 +1,7 @@
 package com.brettspiel.boardgameguide.splendor.dto;
 
 import com.brettspiel.service.dto.BaseDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,9 +25,11 @@ public class PlayerDTO extends BaseDTO {
     @Schema(description = "Tên người chơi", example = "Alice")
     private String name;
 
+    @JsonProperty("is_bot")
     @Schema(description = "Có phải là bot không", example = "false")
     private boolean isBot;
 
+    @JsonProperty("is_player")
     @Schema(description = "Có phải là người chơi chính không", example = "true")
     private boolean isPlayer;
 

@@ -3,7 +3,7 @@ import React, {memo, useEffect, useMemo, useState} from "react";
 import {useUser} from "@/store/user.context";
 import {CardData, NobleData} from "@/games/splendor/types/game";
 import {Avatar, Card} from "@heroui/react";
-import {CardBody, CardHeader} from "@heroui/card";
+import {CardBody, CardFooter, CardHeader} from "@heroui/card";
 import {useGameStore} from "@/games/splendor/store/game.store";
 import {useShallow} from "zustand/react/shallow";
 
@@ -13,8 +13,11 @@ interface PlayerInfoCardProps {
 }
 
 const PlayerInfoCard = ({ playerId }: PlayerInfoCardProps) => {
-    const {user} = useUser();
-    const players = useGameStore(useShallow((state) => state.players));
+    const { user } = useUser();
+    const { players, currentPlayer } = useGameStore(useShallow((state) => ({
+        players: state.players,
+        currentPlayer: state.currentPlayer,
+    })));
     const player = players[playerId];
     const [playerName, setPlayerName] = useState(player?.name ?? "Player");
     const [playerAvatar, setPlayerAvatar] = useState(player?.avatar ?? "");
@@ -68,7 +71,7 @@ const PlayerInfoCard = ({ playerId }: PlayerInfoCardProps) => {
     
     return (
         <Card
-            className="bg-stone-400"
+            className={`h-full ${currentPlayer == playerId ? "bg-orange-100 border-2 border-orange-600" : "bg-gray-200"}`}
         >
             <CardHeader className="flex justify-between gap-4 p-2">
                 <Avatar

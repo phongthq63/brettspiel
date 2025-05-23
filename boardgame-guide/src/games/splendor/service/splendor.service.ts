@@ -60,6 +60,8 @@ export class GameService {
         params: {
             /**  */
             gameId: string;
+            /** requestBody */
+            body?: EndTurnRequest;
         } = {} as any,
         options: IRequestOptions = {}
     ): Promise<any> {
@@ -68,6 +70,8 @@ export class GameService {
             url = url.replace('{gameId}', params['gameId'] + '');
 
             const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+            configs.data = params.body;
 
             axios(configs, resolve, reject);
         });
@@ -245,11 +249,17 @@ export class GameService {
 
 
 export interface TurnBonusActionTakeNobleRequest {
+    /** Id người chơi */
+    player_id?: string;
+
     /** Id quý tộc lấy */
     noble_id?: string;
 }
 
 export interface TurnActionReserveCardRequest {
+    /** Id người chơi */
+    player_id?: string;
+
     /** Số lượng lấy ẩn thẻ 1 */
     desk1?: number;
 
@@ -267,6 +277,9 @@ export interface TurnActionReserveCardRequest {
 }
 
 export interface TurnActionGatherGemRequest {
+    /** Id người chơi */
+    player_id?: string;
+
     /** Số lượng mã não tương tác (+ lấy, - trả) */
     gold?: number;
 
@@ -287,6 +300,9 @@ export interface TurnActionGatherGemRequest {
 }
 
 export interface TurnActionBuyCardRequest {
+    /** Id người chơi */
+    player_id?: string;
+
     /** Id thẻ bài mua */
     card_id?: string;
 
@@ -547,8 +563,13 @@ export interface PlayerDTO {
     local?: string;
 
     /**  */
-    bot?: boolean;
+    is_bot?: boolean;
 
     /**  */
-    player?: boolean;
+    is_player?: boolean;
+}
+
+export interface EndTurnRequest {
+    /** Id người chơi */
+    player_id?: string;
 }

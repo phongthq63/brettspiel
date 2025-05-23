@@ -18,10 +18,12 @@ interface GameStateStore {
     currentAction?: Action
     physicsObjectActions: PhysicsObjectAction[]
     dialog: Dialog
-    isMyTurn: boolean
+    isLocal: boolean
+
 
     // Method
-    setGameState: (data: Partial<GameStateStore>) => void;
+    isPlayerTurn: (playerId: string) => boolean
+    setGameState: (data: Partial<GameStateStore>) => void
     setGameId: (gameId: string) => void
     setStatus: (status: number | undefined) => void
     setPlayerIds: (playerIds: string[]) => void
@@ -52,10 +54,10 @@ interface GameStateStore {
     addPhysicsObjectAction: (action: PhysicsObjectAction) => void
     removePhysicsObjectAction: (id: string) => void
     setDialog: (dialog: Dialog) => void
-    setIsMyTurn: (userId?: string) => void
+    setIsLocal: (userId: string) => void
 }
 
-export const useGameStore = create<GameStateStore>((set) => ({
+export const useGameStore = create<GameStateStore>((set, get) => ({
     // Initial state
     gameId: "",
     status: 0,
@@ -89,9 +91,13 @@ export const useGameStore = create<GameStateStore>((set) => ({
         position: [0, 0, 0],
         rotation: [0, 0, 0]
     },
-    isMyTurn: false,
+    isLocal: false,
+
 
     // Method
+    isPlayerTurn: (playerId) => {
+        return playerId === get().currentPlayer;
+    },
     setGameState: (data) => set((state) => ({ ...state, ...data })),
     setGameId: (gameId) => set({ gameId }),
     setStatus: (status) => set({ status }),
@@ -289,7 +295,7 @@ export const useGameStore = create<GameStateStore>((set) => ({
         physicsObjectActions: state.physicsObjectActions.filter(physicsObjectAction => physicsObjectAction.id != id)
     })),
     setDialog: (dialog) => set({ dialog }),
-    setIsMyTurn: (userId) => set((state) => ({
-        isMyTurn: userId === state.currentPlayer
-    })),
+    setIsLocal: (userId) => set((state) => ({
+        isLocal: userId === state.players[state.currentPlayer].id || userId === state.players[state.currentPlayer].local
+    }))
 })) 

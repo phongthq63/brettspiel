@@ -14,6 +14,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class TurnBonusActionTakeNobleRequest extends BaseRequest {
 
+    @Schema(description = "Id người chơi", example = "a3b1ada4s12bs10b6d1a30x")
+    private String playerId;
+
     @NotBlank
     @Schema(description = "Id quý tộc lấy", requiredMode = Schema.RequiredMode.REQUIRED, example = "noble_4r4g")
     private String nobleId;

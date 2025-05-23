@@ -5,7 +5,7 @@ import {
     FieldCardVO,
     FieldNobleVO,
     GameService, IngamePlayerDataVO,
-    NobleVO,
+    NobleVO, PlayerDTO,
     SplendorGameDTO
 } from "@/games/splendor/service/splendor.service";
 import {CardPosition, GemPosition, NoblePosition, PlayerPosition} from "@/games/splendor/constants/game";
@@ -20,13 +20,17 @@ import {Euler, Vector3} from "three";
 import {CardGemType} from "@/games/splendor/types/card";
 import {GemDictionary} from "@/games/splendor/data/gem";
 import {useUser} from "@/store/user.context";
+import {useShallow} from "zustand/react/shallow";
 
 export function useFetchGameData(gameId: string) {
     const { user } = useUser();
     const {
         setGameState,
-        setIsMyTurn,
-    } = useGameStore();
+        setIsLocal,
+    } = useGameStore(useShallow((state) => ({
+        setGameState: state.setGameState,
+        setIsLocal: state.setIsLocal,
+    })));
 
     useEffect(() => {
         GameService.getGameInfo({ gameId: gameId })
@@ -40,6 +44,7 @@ export function useFetchGameData(gameId: string) {
 
                 // Save to store
                 const gameStatus = gameData.status ?? 0;
+                let playerIds: string[];
                 let currentPlayer: string = "";
                 let nextPlayer: string = "";
                 let deckCard1: CardVO[];
@@ -52,11 +57,13 @@ export function useFetchGameData(gameId: string) {
                 let fieldNoble: FieldNobleVO[] = [];
                 let ingamePlayerData: IngamePlayerDataVO[] = [];
                 if (gameStatus == 0) {
+                    playerIds = gameData.players?.map(player => player.id ?? '') ?? []
                     deckCard1 = gameData.config?.cards?.filter(card => card.level == 1) ?? []
                     deckCard2 = gameData.config?.cards?.filter(card => card.level == 2) ?? []
                     deckCard3 = gameData.config?.cards?.filter(card => card.level == 3) ?? []
                     deckNoble = gameData.config?.nobles ?? []
                 } else {
+                    playerIds = gameData.ingame_data?.player_ids ?? []
                     currentPlayer = gameData.ingame_data?.current_player ?? ""
                     nextPlayer = gameData.ingame_data?.next_player ?? ""
                     deckCard1 = gameData.ingame_data?.deck_card1 ?? []
@@ -73,7 +80,7 @@ export function useFetchGameData(gameId: string) {
                 setGameState({
                     gameId: gameData.game_id,
                     status: gameData.status,
-                    playerIds: gameData.players?.map(player => player.id ?? ''),
+                    playerIds: playerIds,
                     currentPlayer: currentPlayer,
                     nextPlayer: nextPlayer,
                     deckCard: {
@@ -96,12 +103,12 @@ export function useFetchGameData(gameId: string) {
                     ),
                     deckNoble: formatNobleDeck(deckNoble, gameStatus),
                     fieldNoble: formatNobleField(fieldNoble),
-                    players: formatPlayerData(ingamePlayerData),
+                    players: formatPlayerData(ingamePlayerData, gameData.players ?? []),
                 })
-                setIsMyTurn(user?.id)
+                setIsLocal(user?.id ?? '')
             })
             .catch(error => console.error("Error fetching game detail data", error))
-    }, [gameId, setGameState, setIsMyTurn, user]);
+    }, [gameId, setGameState, setIsLocal, user]);
 }
 
 // Helper Functions
@@ -245,7 +252,13 @@ function formatNobleField(fieldNobles: FieldNobleVO[]): NobleData[] {
         })
 }
 
-function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Player} {
+function formatPlayerData(ingamePlayerData: IngamePlayerDataVO[], players: PlayerDTO[]) : {[key: string]: Player} {
+    const playerMap = players.reduce((dict: {[key: string]: PlayerDTO}, item) => {
+        dict[item.id ?? ''] = item
+        return dict;
+    }, {})
+
+    // Function
     function formatPlayerNobles(locate: {position: [number, number, number], rotation: [number, number, number]}, nobles: NobleVO[]): NobleData[] {
         const { position, rotation } = locate
 
@@ -449,24 +462,28 @@ function formatPlayerData(players: IngamePlayerDataVO[]) : {[key: string]: Playe
         }
     }
 
-    return players.reduce((acc: {[key: string]: Player}, player, index) => {
-        const locate = PlayerPosition.total[players.length].player[index + 1]
+    return ingamePlayerData.reduce((acc: {[key: string]: Player}, ingamePlayer, index) => {
+        const locate = PlayerPosition.total[ingamePlayerData.length].player[index + 1]
+        const player = playerMap[ingamePlayer.player_id ?? '']
 
-        acc[player.player_id ?? ''] = {
-            id: player.player_id ?? '',
-            name: player.player_id ?? '',
-            avatar: player.player_id ?? '',
-            score: player.score ?? 0,
-            nobles: formatPlayerNobles(locate, player.nobles ?? []),
-            cards: formatPlayerCards(locate, player.cards ?? []),
-            reserveCards: formatPlayerReserveCards(locate, player.reserve_cards ?? []),
+        acc[player.id ?? ''] = {
+            id: player.id ?? '',
+            name: player.name ?? 'Player',
+            avatar: player.avatar_url ?? '',
+            isPlayer: player.is_player ?? false,
+            isBot: player.is_bot ?? false,
+            local: player.local,
+            score: ingamePlayer?.score ?? 0,
+            nobles: formatPlayerNobles(locate, ingamePlayer?.nobles ?? []),
+            cards: formatPlayerCards(locate, ingamePlayer?.cards ?? []),
+            reserveCards: formatPlayerReserveCards(locate, ingamePlayer?.reserve_cards ?? []),
             gems: formatPlayerGems(locate,
-                player.gold ?? 0,
-                player.onyx ?? 0,
-                player.ruby ?? 0,
-                player.emerald ?? 0,
-                player.sapphire ?? 0,
-                player.diamond ?? 0)
+                ingamePlayer?.gold ?? 0,
+                ingamePlayer?.onyx ?? 0,
+                ingamePlayer?.ruby ?? 0,
+                ingamePlayer?.emerald ?? 0,
+                ingamePlayer?.sapphire ?? 0,
+                ingamePlayer?.diamond ?? 0)
         }
         return acc;
     }, {})

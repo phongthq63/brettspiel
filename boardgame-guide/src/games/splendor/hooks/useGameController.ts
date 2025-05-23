@@ -23,21 +23,24 @@ export function useGameController() {
     const {user} = useUser()
     const {gatherGem, buyCard, reserveCard, takeNoble} = useGameActions()
     const {
-        status, setStatus,
+        setGameState,
+        status,
         playerIds,
         currentPlayer, setCurrentPlayer,
         setNextPlayer,
-        deckNoble, setDeckNoble,
-        setFieldNoble, removeNobleFieldNoble,
-        deckCard, setDeckCard, removeCardDeckCard,
-        setFieldCard, removeCardFieldCard,
+        deckNoble,
+        removeNobleFieldNoble,
+        deckCard,
+        removeCardDeckCard,
+        removeCardFieldCard,
         gems, setGems, addGem, addGems, removeGem,
         players, setPlayers, setPlayerGems, addPlayerGem, removePlayerGem, removePlayerGems, addPlayerCard, addPlayerReserveCard, removePlayerReserveCard, addPlayerNoble,
         currentAction, setCurrentAction,
         physicsObjectActions, setPhysicsObjectActions, addPhysicsObjectAction, removePhysicsObjectAction,
-        isMyTurn,
+        isLocal, isPlayerTurn,
         dialog, setDialog
     } = useGameStore();
+
 
     const rollbackPhysicsObjects = () => {
         const timelineReverse = gsap.timeline()
@@ -249,7 +252,7 @@ export function useGameController() {
             return
         } else {
             // Update action if in turn
-            if (isMyTurn) {
+            if (isLocal) {
                 setCurrentAction({
                     type: "take-noble",
                     noble: {id: noble.id}
@@ -295,7 +298,7 @@ export function useGameController() {
             })
 
             // Show action board
-            if (isMyTurn) {
+            if (isLocal) {
                 setDialog({
                     open: true,
                     position: targetPosition.clone().addScaledVector(new Vector3(1, 0, 0).applyQuaternion(camera.quaternion), NobleCardSize.width / 2 + 0.4).toArray(),
@@ -306,13 +309,19 @@ export function useGameController() {
     }
 
     const onClickNotCurrentNoble = (noble: NobleData) => {
-        if (!isMyTurn) {
+        if (!isLocal) {
             rollbackPhysicsObject(noble.id)
         }
     }
 
     const onClickDeckCard = (card: CardData) => {
-        if (status != 1 || !isMyTurn) return
+        if (status != 1) return
+        if (!isLocal) {
+            toast({
+                description: "Current is not your turn",
+                autoClose: 2000,
+            })
+        }
         if (currentAction) {
             return
         } else {
@@ -380,7 +389,7 @@ export function useGameController() {
             return
         } else {
             // Update action if in turn
-            if (isMyTurn) {
+            if (isLocal) {
                 setCurrentAction({
                     type: "option-action",
                     card: {
@@ -433,7 +442,7 @@ export function useGameController() {
             })
 
             // Show action board
-            if (isMyTurn) {
+            if (isLocal) {
                 setDialog({
                     open: true,
                     position: targetPosition.clone().addScaledVector(new Vector3(1, 0, 0).applyQuaternion(camera.quaternion), GemCardSize.width / 2 + 0.5).toArray(),
@@ -444,16 +453,19 @@ export function useGameController() {
     }
 
     const onClickNotCurrentCard = (card: CardData) => {
-        if (!isMyTurn) {
+        if (!isLocal) {
             rollbackPhysicsObject(card.id)
         }
     }
 
     const onClickGem = (gem: GemData) =>  {
-        const userId = user?.id ?? ''
-
-        if (userId != currentPlayer) return
-        if (status != 1 || !isMyTurn) return
+        if (status != 1) return
+        if (!isLocal) {
+            toast({
+                description: "Current is not your turn",
+                autoClose: 2000,
+            })
+        }
         if (currentAction && currentAction.type != "gather-gem") {
             return
         } else {
@@ -476,16 +488,16 @@ export function useGameController() {
             }
 
             //
-            const playerLocate = getPlayerLocate(playerIds, userId)
+            const playerLocate = getPlayerLocate(playerIds, currentPlayer)
             if (!playerLocate) {
                 // Ko tim thay config vi tri player
-                console.log(`Config player is not found - ${playerIds} ${userId}`)
+                console.log(`Config player is not found - ${playerIds} ${currentPlayer}`)
                 return
             }
 
             //
             const deckGems: GemData[] = gems[gem.type]
-            const playerGems: GemData[] = players[userId].gems[gem.type]
+            const playerGems: GemData[] = players[currentPlayer].gems[gem.type]
             let tookGem: GemData = deckGems[deckGems.length - 1]
             for (let i = deckGems.length - 1; i >= 0; i--) {
                 if (!currentAction?.gem?.some(gem => gem.id == tookGem.id && gem.count > 0)) {
@@ -545,7 +557,7 @@ export function useGameController() {
                 .call(() => {
                     // Update state
                     removeGem({id: tookGem.id, type: gem.type})
-                    addPlayerGem(userId, {
+                    addPlayerGem(currentPlayer, {
                         ...gem,
                         id: tookGem.id,
                         position: targetPosition.toArray(),
@@ -583,8 +595,13 @@ export function useGameController() {
     }
 
     const onClickPlayerGem = (playerId: string, gem: GemData) => {
-        if (user?.id != playerId) return
-        if (!isMyTurn) return
+        if (status != 1) return
+        if (!isPlayerTurn(playerId)) {
+            toast({
+                description: "Current is not your turn",
+                autoClose: 2000,
+            })
+        }
         if (currentAction && currentAction.type != "gather-gem") {
             return
         } else {
@@ -686,6 +703,8 @@ export function useGameController() {
         if (currentAction) {
             return
         } else {
+            const isMyTurn = isPlayerTurn(playerId)
+
             // Update action if in turn
             if (isMyTurn) {
                 setCurrentAction({
@@ -1192,49 +1211,50 @@ export function useGameController() {
                 const newDeckCard1 = deckCard[1].filter((card: CardData) => !fieldCard1.some((field: any) => card.id == field.card.id))
                 const newDeckCard2 = deckCard[2].filter((card: CardData) => !fieldCard2.some((field: any) => card.id == field.card.id))
                 const newDeckCard3 = deckCard[3].filter((card: CardData) => !fieldCard3.some((field: any) => card.id == field.card.id))
-                setDeckCard({
-                    [1]: newDeckCard1.map((card: CardData, index: number) => {
-                        return {
-                            ...card,
-                            position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeckCard1.length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
-                            rotation: [0, Math.PI, 0]
-                        }
-                    }),
-                    [2]: newDeckCard2.map((card: CardData, index: number) => {
-                        return {
-                            ...card,
-                            position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeckCard2.length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
-                            rotation: [0, Math.PI, 0]
-                        }
-                    }),
-                    [3]: newDeckCard3.map((card: CardData, index: number) => {
-                        return {
-                            ...card,
-                            position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeckCard3.length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
-                            rotation: [0, Math.PI, 0]
-                        }
-                    })
-                })
-                setFieldCard({
-                    [3]: card3Opens,
-                    [2]: card2Opens,
-                    [1]: card1Opens,
-                })
-                // NobleData
                 const newDeckNoble = deckNoble.filter((noble: NobleData) => !fieldNoble.some((field: any) => noble.id == field.noble.id))
-                setDeckNoble(newDeckNoble.map((noble: NobleData, index: number) => {
-                    return {
-                        ...noble,
-                        position: [NoblePosition.desk[0], NoblePosition.desk[1], (newDeckNoble.length - 1 - index) * NobleCardSize.depth + NoblePosition.desk[2]],
-                        rotation: [0, Math.PI, 0]
-                    }
-                }))
-                setFieldNoble(nobleOpens)
 
-                //
-                setStatus(data.status)
-                setCurrentPlayer(data.current_player)
-                setNextPlayer(data.next_player)
+                setGameState({
+                    status: data.status,
+                    playerIds: data.player_ids,
+                    currentPlayer: data.current_player,
+                    nextPlayer: data.next_player,
+                    deckCard: {
+                        [1]: newDeckCard1.map((card: CardData, index: number) => {
+                            return {
+                                ...card,
+                                position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeckCard1.length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
+                                rotation: [0, Math.PI, 0]
+                            }
+                        }),
+                        [2]: newDeckCard2.map((card: CardData, index: number) => {
+                            return {
+                                ...card,
+                                position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeckCard2.length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
+                                rotation: [0, Math.PI, 0]
+                            }
+                        }),
+                        [3]: newDeckCard3.map((card: CardData, index: number) => {
+                            return {
+                                ...card,
+                                position: [CardPosition.level[card.level].desk[0], CardPosition.level[card.level].desk[1], (newDeckCard3.length - 1 - index) * GemCardSize.depth + CardPosition.level[card.level].desk[2]],
+                                rotation: [0, Math.PI, 0]
+                            }
+                        })
+                    },
+                    fieldCard: {
+                        [3]: card3Opens,
+                        [2]: card2Opens,
+                        [1]: card1Opens,
+                    },
+                    deckNoble: newDeckNoble.map((noble: NobleData, index: number) => {
+                        return {
+                            ...noble,
+                            position: [NoblePosition.desk[0], NoblePosition.desk[1], (newDeckNoble.length - 1 - index) * NobleCardSize.depth + NoblePosition.desk[2]],
+                            rotation: [0, Math.PI, 0]
+                        }
+                    }),
+                    fieldNoble: nobleOpens,
+                })
             })
     }
 
@@ -1260,7 +1280,7 @@ export function useGameController() {
         }
 
         // Clear action + disable dialog
-        if (isMyTurn) {
+        if (isLocal) {
             setCurrentAction(undefined)
             setPhysicsObjectActions([])
             setDialog({
@@ -1395,7 +1415,7 @@ export function useGameController() {
             }
 
             //
-            if (!isMyTurn) {
+            if (!isLocal) {
                 if (goldCount < 0) {
                     returnGems(TokenGemType.GOLD, goldCount * -1)
                 }
@@ -1475,7 +1495,7 @@ export function useGameController() {
             return
         }
         // Clear action + disable dialog
-        if (isMyTurn) {
+        if (isLocal) {
             setCurrentAction(undefined)
             setPhysicsObjectActions([])
             setDialog({
@@ -1537,7 +1557,7 @@ export function useGameController() {
 
         // Animation card
         {
-            if (isMyTurn) {
+            if (isLocal) {
                 timelineCard
                     .call(() => {
                         // Stop physics
@@ -1708,7 +1728,7 @@ export function useGameController() {
         }
 
         // Clear action + disable dialog
-        if (isMyTurn) {
+        if (isLocal) {
             setCurrentAction(undefined)
             setPhysicsObjectActions([])
             setDialog({
@@ -1732,7 +1752,7 @@ export function useGameController() {
         const targetRotation: [number, number, number] = [0, Math.PI, 0]
         const timeline = gsap.timeline()
         {
-            if (isMyTurn) {
+            if (isLocal) {
                 timeline
                     .call(() => {
                         // Stop physics
@@ -1810,7 +1830,7 @@ export function useGameController() {
         }
 
         // Clear action + disable dialog
-        if (isMyTurn) {
+        if (isLocal) {
             setCurrentAction(undefined)
             setPhysicsObjectActions([])
             setDialog({
@@ -1834,7 +1854,7 @@ export function useGameController() {
         const targetRotation: [number, number, number] = [0, 0, 0]
         const timeline = gsap.timeline()
         {
-            if (isMyTurn) {
+            if (isLocal) {
                 timeline
                     .call(() => {
                         // Stop physics

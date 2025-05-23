@@ -3,6 +3,7 @@ import React, {memo, Suspense} from "react";
 import GameArea from "@/games/splendor/component/3d/GameArea";
 import {Physics} from "@react-three/rapier";
 import {SharedRefProvider} from "@/games/splendor/store/ref.context";
+import { Stats } from '@react-three/drei';
 
 
 function GameRenderer() {
@@ -11,6 +12,7 @@ function GameRenderer() {
                 camera={{fov: 75, near: 0.1, far: 1000, position: [0, 0, 6], rotation: [0, 0, 0]}}
                 shadows
         >
+            <Stats />
             <Suspense fallback={null}>
                 <Physics gravity={[0, 0, -5]} debug={true}>
                     <SharedRefProvider>

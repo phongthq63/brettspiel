@@ -29,7 +29,6 @@ public class SplendorGame extends BaseMongodbEntity {
     @Field("room_id")
     private String roomId;
 
-    @Field("type")
     private String type;
 
     private List<PlayerInfo> players;

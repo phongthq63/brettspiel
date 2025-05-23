@@ -14,6 +14,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class TurnActionReserveCardRequest extends BaseRequest {
 
+    @Schema(description = "Id người chơi", example = "a3b1ada4s12bs10b6d1a30x")
+    private String playerId;
+
     @PositiveOrZero
     @Schema(description = "Số lượng lấy ẩn thẻ 1", example = "0")
     private Integer desk1;
